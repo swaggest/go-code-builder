@@ -1,2 +1,2 @@
 # go-code-builder
-GO code builder abstraction
+GO code building abstraction for PHP

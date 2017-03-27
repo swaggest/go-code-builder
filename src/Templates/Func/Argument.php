@@ -1,0 +1,48 @@
+<?php
+
+namespace Swaggest\GoCodeBuilder\Templates\Func;
+
+use Swaggest\GoCodeBuilder\Templates\GoTemplate;
+use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\Type;
+
+class Argument extends GoTemplate
+{
+    /** @var string */
+    public $name;
+    /** @var Type */
+    public $type;
+    /** @var boolean */
+    public $isVariadic;
+
+    /**
+     * Argument constructor.
+     * @param string $name
+     * @param Type $type
+     * @param bool $isVariadic
+     */
+    public function __construct($name, AnyType $type, $isVariadic = false)
+    {
+        $this->name = $name;
+        $this->type = $type;
+        $this->isVariadic = $isVariadic;
+    }
+
+    public function toString()
+    {
+        if ($this->name === null) {
+            return $this->type->toString();
+        } else {
+            return $this->name . ' ' . $this->type->toString() . ($this->isVariadic ? '...' : '');
+        }
+    }
+
+    /**
+     * @return Type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+}
