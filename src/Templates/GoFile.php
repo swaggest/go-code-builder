@@ -159,11 +159,14 @@ GO;
     }
 
     /**
-     * @param GoFile $currentGoFile
+     * @param $currentGoFile
+     * @return GoFile previous go file
      */
     public static function setCurrentGoFile($currentGoFile)
     {
+        $previous = self::$currentGoFile;
         self::$currentGoFile = $currentGoFile;
+        return $previous;
     }
 
 
