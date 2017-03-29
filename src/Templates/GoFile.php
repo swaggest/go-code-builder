@@ -3,7 +3,6 @@
 namespace Swaggest\GoCodeBuilder\Templates;
 
 use PhpLang\ScopeExit;
-use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
 class GoFile extends GoTemplate
