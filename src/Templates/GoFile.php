@@ -15,6 +15,18 @@ class GoFile extends GoTemplate
     private $code;
     private $imports;
 
+    private $skipImportComment = false;
+
+    /**
+     * @param boolean $skipImportComment
+     * @return GoFile
+     */
+    public function setSkipImportComment($skipImportComment)
+    {
+        $this->skipImportComment = $skipImportComment;
+        return $this;
+    }
+
     /**
      * @return Imports
      */
@@ -141,7 +153,7 @@ GO;
 
     private function renderImportPath()
     {
-        if ($this->importPath) {
+        if ($this->importPath && !$this->skipImportComment) {
             return ' // import "' . $this->importPath . '"';
         }
         return '';

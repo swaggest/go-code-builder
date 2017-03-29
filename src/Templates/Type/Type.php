@@ -41,7 +41,7 @@ class Type extends GoTemplate implements AnyType
         $prefix = '';
         if ($this->import) {
             if ($goFile = GoFile::getCurrentGoFile()) {
-                if ($goFile->getPackage() !== $this->import->name) {
+                if ($goFile->getImportPath() !== $this->import->name) {
                     $goFile->getImports()->add($this->import);
                     $prefix = $this->import->getReferencePrefix();
                 }
