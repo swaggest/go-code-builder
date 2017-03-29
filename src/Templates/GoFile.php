@@ -3,7 +3,6 @@
 namespace Swaggest\GoCodeBuilder\Templates;
 
 use PhpLang\ScopeExit;
-use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
 class GoFile extends GoTemplate
@@ -160,11 +159,14 @@ GO;
     }
 
     /**
-     * @param GoFile $currentGoFile
+     * @param $currentGoFile
+     * @return GoFile previous go file
      */
     public static function setCurrentGoFile($currentGoFile)
     {
+        $previous = self::$currentGoFile;
         self::$currentGoFile = $currentGoFile;
+        return $previous;
     }
 
 
