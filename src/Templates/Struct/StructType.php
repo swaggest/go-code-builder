@@ -35,7 +35,11 @@ GO;
     private function renderProperties()
     {
         $rows = array();
-        foreach ($this->struct->getProperties() as $property) {
+        $properties = $this->struct->getProperties();
+        if (empty($properties)) {
+            return '';
+        }
+        foreach ($properties as $property) {
             if (null === $property->getName()) {
                 $rows [] = array(
                     '1' => $property->getType()->toString(),

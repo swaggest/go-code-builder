@@ -47,6 +47,9 @@ class StructDef extends GoTemplate
      */
     public function getProperties()
     {
+        if (null === $this->properties) {
+            return array();
+        }
         return $this->properties;
     }
 
