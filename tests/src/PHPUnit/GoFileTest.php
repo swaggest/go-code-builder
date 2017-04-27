@@ -36,7 +36,7 @@ func Sample()  {
 	fmt.Println("Hello world")
 }
 GO
-            , $goFile->toString());
+            , $goFile->render());
 
     }
 

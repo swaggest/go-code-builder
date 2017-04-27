@@ -21,7 +21,7 @@ class Arguments extends GoTemplate
         return count($this->items);
     }
 
-    public function toString()
+    protected function toString()
     {
         $result = '';
         if ($this->items === null) {
@@ -29,7 +29,7 @@ class Arguments extends GoTemplate
         }
         /** @todo combine similar types (`a, b string`) */
         foreach ($this->items as $argument) {
-            $result .= $argument->toString() . ', ';
+            $result .= $argument->render() . ', ';
         }
         if ($result) {
             $result = substr($result, 0, -2);

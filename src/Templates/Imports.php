@@ -39,7 +39,7 @@ class Imports extends GoTemplate
         }
     }
 
-    public function toString()
+    protected function toString()
     {
         $result = '';
         $builtin = array();

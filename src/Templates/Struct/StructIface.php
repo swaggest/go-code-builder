@@ -3,10 +3,8 @@
 namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
 
-use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 use Swaggest\GoCodeBuilder\Templates\Iface\IfaceDef;
-use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
 class StructIface extends GoTemplate
 {
@@ -29,9 +27,9 @@ class StructIface extends GoTemplate
         return $iface;
     }
 
-    public function toString()
+    protected function toString()
     {
-        return $this->getIface()->toString();
+        return $this->getIface()->render();
     }
 
 

@@ -116,7 +116,7 @@ class GoFile extends GoTemplate
         return array_pop($path);
     }
 
-    public function toString()
+    protected function toString()
     {
         $prevGoFile = self::getCurrentGoFile();
         self::setCurrentGoFile($this);
@@ -143,7 +143,7 @@ class GoFile extends GoTemplate
         $result = <<<GO
 {$this->renderComment()}package {$this->renderPackageName()}{$this->renderImportPath()}
 
-{$this->imports->toString()}
+{$this->imports->render()}
 
 {$codeResult}
 GO;

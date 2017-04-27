@@ -5,7 +5,6 @@ namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
 use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\CodeBuilder\TableRenderer;
-use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
 class StructType extends AbstractTemplate
 {
@@ -21,7 +20,7 @@ class StructType extends AbstractTemplate
         $this->struct = $struct;
     }
 
-    public function toString()
+    protected function toString()
     {
         return <<<GO
 type {$this->struct->getName()} struct {
@@ -42,15 +41,15 @@ GO;
         foreach ($properties as $property) {
             if (null === $property->getName()) {
                 $rows [] = array(
-                    '1' => $property->getType()->toString(),
-                    '3' => $property->getTags()->toString(),
+                    '1' => $property->getType()->render(),
+                    '3' => $property->getTags()->render(),
                     '4' => $property->getComment() ? '// ' . $property->getComment() : ''
                 );
             } else {
                 $rows [] = array(
                     '1' => $property->getName(),
-                    '2' => $property->getType()->toString(),
-                    '3' => $property->getTags()->toString(),
+                    '2' => $property->getType()->render(),
+                    '3' => $property->getTags()->render(),
                     '4' => $property->getComment() ? '// ' . $property->getComment() : ''
                 );
                 //$result .= "\t{$property->getName()}\t{$property->getType()->toString()}\t{$property->getTags()->toString()}\n";

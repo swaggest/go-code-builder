@@ -22,7 +22,7 @@ class Map extends GoTemplate implements AnyType
         $this->valueType = $valueType;
     }
 
-    public function toString()
+    protected function toString()
     {
         return 'map[' . $this->keyType . ']' . $this->valueType;
     }

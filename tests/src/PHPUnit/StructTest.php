@@ -38,7 +38,7 @@ type Sample struct {
 	PropTwo	int64	`schema:"prop_two" description:"The second property"`
 }
 GO
-            , $struct->toString());
+            , $struct->render());
     }
 
     public function testAnonProperty()
@@ -69,7 +69,7 @@ type Sample struct {
 	PropTwo	int64	`schema:"prop_two" description:"The second property"`
 }
 GO
-            , $struct->toString());
+            , $struct->render());
     }
 
 }

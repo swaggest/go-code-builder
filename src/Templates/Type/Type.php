@@ -35,7 +35,7 @@ class Type extends GoTemplate implements AnyType
         return $this->import;
     }
 
-    public function toString()
+    protected function toString()
     {
 
         $prefix = '';
