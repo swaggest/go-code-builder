@@ -2,7 +2,6 @@
 
 namespace Swaggest\GoCodeBuilder\Templates;
 
-use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\CodeBuilder\ClosureString;
 
 class Code extends GoTemplate
@@ -40,7 +39,7 @@ class Code extends GoTemplate
         return $this->imports;
     }
 
-    public function toString()
+    protected function toString()
     {
         $this->imports()->demand();
         $result = '';
@@ -49,7 +48,7 @@ class Code extends GoTemplate
         }
         foreach ($this->snippets as $code) {
             if ($code instanceof ClosureString) {
-                $result .= $code->toString();
+                $result .= $code->render();
             } else {
                 $result .= $code;
             }

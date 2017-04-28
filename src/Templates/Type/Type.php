@@ -35,13 +35,13 @@ class Type extends GoTemplate implements AnyType
         return $this->import;
     }
 
-    public function toString()
+    protected function toString()
     {
 
         $prefix = '';
         if ($this->import) {
             if ($goFile = GoFile::getCurrentGoFile()) {
-                if ($goFile->getPackage() !== $this->import->name) {
+                if ($goFile->getImportPath() !== $this->import->name) {
                     $goFile->getImports()->add($this->import);
                     $prefix = $this->import->getReferencePrefix();
                 }

@@ -67,7 +67,7 @@ class IfaceDef extends GoTemplate
         return $this->padLines("\t", substr($result, 0, -1), false);
     }
 
-    public function toString()
+    protected function toString()
     {
         $separator = !empty($this->types) && !empty($this->funcs) ? "\n" : '';
         $result = <<<GO

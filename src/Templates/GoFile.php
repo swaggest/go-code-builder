@@ -3,7 +3,6 @@
 namespace Swaggest\GoCodeBuilder\Templates;
 
 use PhpLang\ScopeExit;
-use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
 class GoFile extends GoTemplate
@@ -15,6 +14,18 @@ class GoFile extends GoTemplate
     /** @var Code */
     private $code;
     private $imports;
+
+    private $skipImportComment = false;
+
+    /**
+     * @param boolean $skipImportComment
+     * @return GoFile
+     */
+    public function setSkipImportComment($skipImportComment)
+    {
+        $this->skipImportComment = $skipImportComment;
+        return $this;
+    }
 
     /**
      * @return Imports
@@ -105,7 +116,7 @@ class GoFile extends GoTemplate
         return array_pop($path);
     }
 
-    public function toString()
+    protected function toString()
     {
         $prevGoFile = self::getCurrentGoFile();
         self::setCurrentGoFile($this);
@@ -132,7 +143,7 @@ class GoFile extends GoTemplate
         $result = <<<GO
 {$this->renderComment()}package {$this->renderPackageName()}{$this->renderImportPath()}
 
-{$this->imports->toString()}
+{$this->imports->render()}
 
 {$codeResult}
 GO;
@@ -142,7 +153,7 @@ GO;
 
     private function renderImportPath()
     {
-        if ($this->importPath) {
+        if ($this->importPath && !$this->skipImportComment) {
             return ' // import "' . $this->importPath . '"';
         }
         return '';
@@ -160,11 +171,14 @@ GO;
     }
 
     /**
-     * @param GoFile $currentGoFile
+     * @param $currentGoFile
+     * @return GoFile previous go file
      */
     public static function setCurrentGoFile($currentGoFile)
     {
+        $previous = self::$currentGoFile;
         self::$currentGoFile = $currentGoFile;
+        return $previous;
     }
 
 

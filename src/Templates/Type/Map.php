@@ -16,13 +16,13 @@ class Map extends GoTemplate implements AnyType
      * @param Type $keyType
      * @param Type $valueType
      */
-    public function __construct(Type $keyType, Type $valueType)
+    public function __construct(AnyType $keyType, AnyType $valueType)
     {
         $this->keyType = $keyType;
         $this->valueType = $valueType;
     }
 
-    public function toString()
+    protected function toString()
     {
         return 'map[' . $this->keyType . ']' . $this->valueType;
     }

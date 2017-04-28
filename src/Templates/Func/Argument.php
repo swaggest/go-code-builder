@@ -18,7 +18,7 @@ class Argument extends GoTemplate
     /**
      * Argument constructor.
      * @param string $name
-     * @param Type $type
+     * @param AnyType $type
      * @param bool $isVariadic
      */
     public function __construct($name, AnyType $type, $isVariadic = false)
@@ -28,12 +28,12 @@ class Argument extends GoTemplate
         $this->isVariadic = $isVariadic;
     }
 
-    public function toString()
+    protected function toString()
     {
         if ($this->name === null) {
-            return $this->type->toString();
+            return $this->type->render();
         } else {
-            return $this->name . ' ' . $this->type->toString() . ($this->isVariadic ? '...' : '');
+            return $this->name . ' ' . $this->type->render() . ($this->isVariadic ? '...' : '');
         }
     }
 

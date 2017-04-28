@@ -3,7 +3,6 @@ namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
 
 use Swaggest\CodeBuilder\AbstractTemplate;
-use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
 class StructFunctions extends AbstractTemplate
 {
@@ -20,11 +19,11 @@ class StructFunctions extends AbstractTemplate
     }
 
 
-    public function toString()
+    protected function toString()
     {
         $result = '';
         foreach ($this->struct->getFuncs() as $func) {
-            $result .= $func->toString();
+            $result .= $func->render();
         }
         return $result;
     }

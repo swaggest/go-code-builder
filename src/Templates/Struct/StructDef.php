@@ -5,7 +5,6 @@ namespace Swaggest\GoCodeBuilder\Templates\Struct;
 use Swaggest\GoCodeBuilder\Templates\Func;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
-use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 
 class StructDef extends GoTemplate
 {
@@ -47,6 +46,9 @@ class StructDef extends GoTemplate
      */
     public function getProperties()
     {
+        if (null === $this->properties) {
+            return array();
+        }
         return $this->properties;
     }
 
@@ -69,7 +71,7 @@ class StructDef extends GoTemplate
         return $this;
     }
 
-    public function toString()
+    protected function toString()
     {
         return <<<GO
 {$this->renderComment()}{$this->renderStruct()}{$this->renderFuncs()}

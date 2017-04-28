@@ -14,7 +14,7 @@ class Tags extends GoTemplate
         return $this;
     }
 
-    public function toString()
+    protected function toString()
     {
         $result = '';
         if ($this->items === null) {

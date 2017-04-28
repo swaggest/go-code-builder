@@ -4,7 +4,7 @@ namespace Swaggest\GoCodeBuilder\Templates\Func;
 
 class Result extends Arguments
 {
-    public function toString()
+    protected function toString()
     {
 
         if ($this->items === null) {

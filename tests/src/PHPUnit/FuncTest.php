@@ -25,7 +25,7 @@ func Sample() (*MyType, error) {
 
 
 GO
-            , $func->toString());
+            , $func->render());
 
     }
 
@@ -44,7 +44,7 @@ func Sample() error {
 
 
 GO
-            , $func->toString());
+            , $func->render());
 
     }
 
