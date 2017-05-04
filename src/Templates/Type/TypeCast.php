@@ -66,11 +66,6 @@ GO;
 
     private function processToPointer(Pointer $toType)
     {
-        //$res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $this->fromVarName);
-        //$res->assignOp = ' = &';
-        //return $res->toString();
-
-
         if ($toType->getType() instanceof Pointer) {
             $tmpName = 'tmp' . substr(md5($this->fromVarName), 0, 4);
             $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $tmpName);
@@ -85,6 +80,42 @@ GO;
             $res->assignOp = ' = &';
             return $res->toString();
         }
+    }
+
+    private function processSlices(Slice $toType, Slice $fromType)
+    {
+        $cast = new TypeCast($toType->getType(), $fromType->getType(), $this->toVarName . '[index]', $this->fromVarName . '[index]');
+        return <<<GO
+{$this->toVarName} = make({$this->toType->render()}, len({$this->fromVarName}))
+for index, val := range {$this->fromVarName} {
+{$this->indentLines($cast->toString())}
+}
+GO;
+    }
+
+    private function processMaps(Map $toType, Map $fromType)
+    {
+        if (TypeUtil::equals($toType->getKeyType(), $fromType->getKeyType())) {
+            $castValue = new TypeCast($toType->getValueType(), $fromType->getValueType(), $this->toVarName . '[key]', $this->fromVarName . '[key]');
+            return <<<GO
+{$this->toVarName} = make({$this->toType->render()}, len({$this->fromVarName}))
+for key, val := range {$this->fromVarName} {
+{$this->indentLines($castValue->toString())}
+}
+GO;
+        } else {
+            $castKey = new TypeCast($toType->getKeyType(), $fromType->getKeyType(), 'toKey', 'key');
+            $castKey->assignOp = ' := ';
+            $castValue = new TypeCast($toType->getValueType(), $fromType->getValueType(), $this->toVarName . '[toKey]', $this->fromVarName . '[key]');
+            return <<<GO
+{$this->toVarName} = make({$this->toType->render()}, len({$this->fromVarName}))
+for key, val := range {$this->fromVarName} {
+{$this->indentLines($castKey->toString())}
+{$this->indentLines($castValue->toString())}
+}
+GO;
+        }
+
 
     }
 
@@ -99,9 +130,12 @@ GO;
             return $this->processFromPointer($this->fromType);
         } elseif ($this->toType instanceof Pointer) {
             return $this->processToPointer($this->toType);
+        } elseif (($this->fromType instanceof Slice) && ($this->toType instanceof Slice)) {
+            return $this->processSlices($this->toType, $this->fromType);
+        } elseif (($this->toType instanceof Map) && ($this->fromType instanceof Map)) {
+            return $this->processMaps($this->fromType, $this->toType);
         }
 
-
-        return '';
+        throw new TypeCastException('Could not cast ' . $this->fromType->render() . ' to ' . $this->toType->render());
     }
 }
