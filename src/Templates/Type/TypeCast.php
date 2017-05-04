@@ -84,10 +84,18 @@ GO;
 
     private function processSlices(Slice $toType, Slice $fromType)
     {
-        $cast = new TypeCast($toType->getType(), $fromType->getType(), $this->toVarName . '[index]', $this->fromVarName . '[index]');
+        $postfix = substr(md5($this->fromVarName), 0, 4);
+        $indexName = 'index' . $postfix;
+        $valName = 'val' . $postfix;
+        $cast = new TypeCast(
+            $toType->getType(),
+            $fromType->getType(),
+            $this->toVarName . '['.$indexName.']',
+            $valName
+        );
         return <<<GO
 {$this->toVarName} = make({$this->toType->render()}, len({$this->fromVarName}))
-for index, val := range {$this->fromVarName} {
+for {$indexName}, {$valName} := range {$this->fromVarName} {
 {$this->indentLines($cast->toString())}
 }
 GO;
@@ -95,11 +103,20 @@ GO;
 
     private function processMaps(Map $toType, Map $fromType)
     {
+        $postfix = substr(md5($this->fromVarName), 0, 4);
+        $keyName = 'key' . $postfix;
+        $valName = 'val' . $postfix;
+
         if (TypeUtil::equals($toType->getKeyType(), $fromType->getKeyType())) {
-            $castValue = new TypeCast($toType->getValueType(), $fromType->getValueType(), $this->toVarName . '[key]', $this->fromVarName . '[key]');
+            $castValue = new TypeCast(
+                $toType->getValueType(),
+                $fromType->getValueType(),
+                $this->toVarName . '['.$keyName.']',
+                $valName
+            );
             return <<<GO
 {$this->toVarName} = make({$this->toType->render()}, len({$this->fromVarName}))
-for key, val := range {$this->fromVarName} {
+for {$keyName}, {$valName} := range {$this->fromVarName} {
 {$this->indentLines($castValue->toString())}
 }
 GO;
@@ -134,6 +151,12 @@ GO;
             return $this->processSlices($this->toType, $this->fromType);
         } elseif (($this->toType instanceof Map) && ($this->fromType instanceof Map)) {
             return $this->processMaps($this->fromType, $this->toType);
+        }
+
+        if (TypeUtil::isNumber($this->fromType) && TypeUtil::isNumber($this->toType)) {
+            return <<<GO
+{$this->toVarName} = {$this->toType->render()}({$this->fromVarName})
+GO;
         }
 
         throw new TypeCastException('Could not cast ' . $this->fromType->render() . ' to ' . $this->toType->render());

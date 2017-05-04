@@ -2,9 +2,7 @@
 
 namespace Swaggest\GoCodeBuilder\Templates\Type;
 
-use PhpLang\ScopeExit;
 use Swaggest\GoCodeBuilder\Import;
-use Swaggest\GoCodeBuilder\Templates\GoFile;
 
 class TypeUtil
 {
@@ -19,7 +17,7 @@ class TypeUtil
         }
 
         if ('map[' === substr($typeString, 0, 4)) {
-            list($key, $val) = explode(']', substr($typeString, 4));
+            list($key, $val) = explode(']', substr($typeString, 4), 2);
             return new Map(self::fromString($key), self::fromString($val));
         }
 
@@ -65,40 +63,39 @@ class TypeUtil
         return false;
     }
 
-    public static function castExpr(AnyType $to, AnyType $from, $fromVar, $toVarAssign)
+
+    public static function getBasicType(AnyType $type)
     {
-        if (self::equals($to, $from)) {
-            return $toVarAssign . $fromVar;
-        }
-        if ($from instanceof Pointer) {
-            if ($to instanceof Pointer) {
-                return self::castExpr($to->getType(), $from->getType(), $fromVar, $toVarAssign);
-            } else {
-                if ($from->getType() instanceof Pointer) {
-                    $toVarDeeper = 'tmp' . substr(md5($toVarAssign), 0, 4);
-                    $toVarDeeperAssign = $toVarDeeper . ' := *';
-                    $res = self::castExpr($to, $from->getType(), $fromVar, $toVarDeeperAssign);
-                    return <<<GO
-if {$fromVar} != nil {
-    {$res}
-    {$toVarAssign}{$toVarDeeper}
-}
-
-GO;
-                } else {
-                    $res = self::castExpr($to, $from->getType(), $fromVar, $toVarAssign . '*');
-
-                    return <<<GO
-if {$fromVar} != nil {
-    {$res}
-}
-
-GO;
-                }
-            }
+        if (!$type instanceof Type) {
+            return false;
         }
 
-        return '';
+        if ($type->getImport() !== null) {
+            return false;
+        }
+
+        return $type->getType();
     }
 
+    public static function isInt(AnyType $type)
+    {
+        if (!$basicType = self::getBasicType($type)) {
+            return false;
+        }
+        return in_array($basicType, array('int', 'int8', 'int16', 'int32', 'int64',
+            'uint', 'uint8', 'uint16', 'uint32', 'uint64'), true);
+    }
+
+    public static function isFloat(AnyType $type)
+    {
+        if (!$basicType = self::getBasicType($type)) {
+            return false;
+        }
+        return in_array($basicType, array('float32', 'float64'), true);
+    }
+
+    public static function isNumber(AnyType $type)
+    {
+        return self::isFloat($type) || self::isInt($type);
+    }
 }

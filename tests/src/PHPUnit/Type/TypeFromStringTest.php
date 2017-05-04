@@ -50,6 +50,13 @@ class TypeFromStringTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('nulltypes.NullString', $type->getType()->render());
     }
 
+    public function testMapSlice()
+    {
+        /** @var Slice $type */
+        $type = TypeUtil::fromString('map[string][][]string');
+        $this->assertSame('map[string][][]string', $type->render());
+    }
+
     public function tearDown()
     {
         GoFile::setCurrentGoFile(null);
