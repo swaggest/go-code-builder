@@ -98,4 +98,21 @@ class TypeUtil
     {
         return self::isFloat($type) || self::isInt($type);
     }
+
+    public static function isCastable(Type $to, Type $from)
+    {
+        if (self::isNumber($from) && self::isNumber($to)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function resolvePointer(AnyType $type) {
+        if ($type instanceof Pointer) {
+            return self::resolvePointer($type->getType());
+        } else {
+            return $type;
+        }
+    }
 }

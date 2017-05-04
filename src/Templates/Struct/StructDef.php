@@ -2,9 +2,11 @@
 
 namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
+use Swaggest\GoCodeBuilder\Import;
 use Swaggest\GoCodeBuilder\Templates\Func;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
+use Swaggest\GoCodeBuilder\Templates\Type\Type;
 
 class StructDef extends GoTemplate
 {
@@ -14,6 +16,9 @@ class StructDef extends GoTemplate
 
     /** @var FuncDef[] */
     private $funcs = array();
+
+    /** @var Import */
+    private $import;
 
     public function __construct($name, $comment = '')
     {
@@ -39,7 +44,23 @@ class StructDef extends GoTemplate
         return $this->name;
     }
 
+    /**
+     * @return Import
+     */
+    public function getImport()
+    {
+        return $this->import;
+    }
 
+    /**
+     * @param Import $import
+     * @return StructDef
+     */
+    public function setImport($import)
+    {
+        $this->import = $import;
+        return $this;
+    }
 
     /**
      * @return StructProperty[]
@@ -89,5 +110,12 @@ GO;
         return new StructFunctions($this);
     }
 
+    /**
+     * @return Type
+     */
+    public function getType()
+    {
+        return new Type($this->name, $this->import);
+    }
 
 }

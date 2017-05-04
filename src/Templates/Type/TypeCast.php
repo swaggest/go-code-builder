@@ -3,7 +3,6 @@
 namespace Swaggest\GoCodeBuilder\Templates\Type;
 
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
-use Swaggest\JsonSchema\Constraint\Type;
 
 class TypeCast extends GoTemplate
 {
@@ -66,6 +65,8 @@ GO;
 
     private function processToPointer(Pointer $toType)
     {
+        $toResolved = TypeUtil::resolvePointer($toType);
+
         if ($toType->getType() instanceof Pointer) {
             $tmpName = 'tmp' . substr(md5($this->fromVarName), 0, 4);
             $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $tmpName);
@@ -142,6 +143,24 @@ GO;
             return $this->toVarName . $this->assignOp . $this->fromVarName;
         }
 
+        if ($this->toType instanceof Pointer) {
+            $toResolved = TypeUtil::resolvePointer($this->toType);
+            $fromResolved = TypeUtil::resolvePointer($this->fromType);
+            if (!TypeUtil::equals($toResolved, $fromResolved)) {
+                if (TypeUtil::isCastable($toResolved, $fromResolved)) {
+                    $tmpName = 'tmp' . substr(md5($this->toVarName), 0, 4);
+                    $castBack = new TypeCast($toResolved, $this->fromType, $tmpName, $this->fromVarName);
+                    $castForth = new TypeCast($this->toType, $toResolved, $this->toVarName, $tmpName);
+
+                    return <<<GO
+var $tmpName {$toResolved->render()}
+{$castBack->toString()}
+{$castForth->toString()}
+GO;
+                }
+            }
+        }
+
 
         if ($this->fromType instanceof Pointer) {
             return $this->processFromPointer($this->fromType);
@@ -150,13 +169,24 @@ GO;
         } elseif (($this->fromType instanceof Slice) && ($this->toType instanceof Slice)) {
             return $this->processSlices($this->toType, $this->fromType);
         } elseif (($this->toType instanceof Map) && ($this->fromType instanceof Map)) {
-            return $this->processMaps($this->fromType, $this->toType);
+            return $this->processMaps($this->toType, $this->fromType);
         }
 
-        if (TypeUtil::isNumber($this->fromType) && TypeUtil::isNumber($this->toType)) {
-            return <<<GO
+
+        if (($this->fromType instanceof Type) && ($this->toType instanceof Type)) {
+            if (TypeUtil::isCastable($this->fromType, $this->toType)) {
+                if ($this->assignOp === ' = *') {
+                    return <<<GO
+{$this->toVarName} = {$this->toType->render()}(*{$this->fromVarName})
+GO;
+                } elseif ($this->assignOp === ' = &') {
+                    throw new TypeCastException('Could not compute');
+                } else {
+                    return <<<GO
 {$this->toVarName} = {$this->toType->render()}({$this->fromVarName})
 GO;
+                }
+            }
         }
 
         throw new TypeCastException('Could not cast ' . $this->fromType->render() . ' to ' . $this->toType->render());
