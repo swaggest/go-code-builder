@@ -25,7 +25,7 @@ class Import
             }
             return $this->alias . '.';
         } elseif ($this->defaultPackageName) {
-            return $this->defaultPackageName;
+            return $this->defaultPackageName . '.';
         } else {
             $path = explode('/', $this->name);
             $path = array_pop($path);

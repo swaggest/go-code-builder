@@ -31,7 +31,7 @@ class StructProperty extends GoTemplate
     }
 
     /**
-     * @return Type
+     * @return AnyType
      */
     public function getType()
     {
