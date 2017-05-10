@@ -30,4 +30,11 @@ class Slice extends GoTemplate implements AnyType
     {
         return $this->type;
     }
+
+    public function getTypeString()
+    {
+        return '[]' . $this->type->getTypeString();
+    }
+
+
 }

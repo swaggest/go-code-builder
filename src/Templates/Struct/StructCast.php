@@ -46,7 +46,7 @@ class StructCast
     {
         $mapTo = new FuncDef('MapTo');
         $mapTo->setSelf(new Argument('base', $this->baseStruct->getType()));
-        $mapTo->setResult((new Result())->add(null, $this->derivedStruct->getType()));
+        $mapTo->setResult((new Result())->add(null, new Pointer($this->derivedStruct->getType())));
         $baseProperties = $this->baseStruct->getProperties();
         $derivedProperties = $this->derivedStruct->getProperties();
 
@@ -67,7 +67,7 @@ GO
             $code->addSnippet($cast->render() . "\n");
         }
 
-        $code->addSnippet('return result');
+        $code->addSnippet('return &result');
 
         $mapTo->setBody($code);
 

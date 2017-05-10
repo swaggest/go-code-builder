@@ -20,6 +20,9 @@ class Code extends GoTemplate
 
     public function addSnippet($code, $prepend = false)
     {
+        if (null === $this->snippets) {
+            $this->snippets = array();
+        }
         if ($prepend) {
             array_unshift($this->snippets, $code);
         } else {

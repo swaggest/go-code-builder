@@ -69,4 +69,16 @@ class Type extends GoTemplate implements AnyType
         }
         return true;
     }
+
+    public function getTypeString()
+    {
+        $typeString = $this->type;
+        if ($this->import !== null) {
+            $typeString = $this->import->name . '.' . $typeString;
+            if ($this->import->defaultPackageName !== null) {
+                $typeString .= '::' . $this->import->defaultPackageName . '.' . $this->type;
+            }
+        }
+        return $typeString;
+    }
 }

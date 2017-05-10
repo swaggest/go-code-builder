@@ -91,7 +91,7 @@ GO;
         $cast = new TypeCast(
             $toType->getType(),
             $fromType->getType(),
-            $this->toVarName . '['.$indexName.']',
+            $this->toVarName . '[' . $indexName . ']',
             $valName
         );
         return <<<GO
@@ -112,7 +112,7 @@ GO;
             $castValue = new TypeCast(
                 $toType->getValueType(),
                 $fromType->getValueType(),
-                $this->toVarName . '['.$keyName.']',
+                $this->toVarName . '[' . $keyName . ']',
                 $valName
             );
             return <<<GO
@@ -189,6 +189,28 @@ GO;
             }
         }
 
-        throw new TypeCastException('Could not cast ' . $this->fromType->render() . ' to ' . $this->toType->render());
+        $fromTypeString = $this->fromType instanceof Type ? $this->fromType->getTypeString() : $this->fromType->render();
+        $toTypeString = $this->toType instanceof Type ? $this->toType->getTypeString() : $this->toType->render();
+
+        return $this->processSpecial($toTypeString, $fromTypeString);
+    }
+
+    private function processSpecial($toTypeString, $fromTypeString)
+    {
+        if ($fromTypeString === 'time.Time' && $toTypeString === 'string') {
+            return <<<GO
+{$this->toVarName}{$this->assignOp}{$this->fromVarName}.Format(time.RFC3339Nano)
+GO;
+        }
+
+        if ($toTypeString === 'time.Time' && $fromTypeString === 'string') {
+            return <<<GO
+{$this->toVarName}, _{$this->assignOp}time.Parse(time.RFC3339Nano, {$this->fromVarName})
+GO;
+
+        }
+
+        //return '//' . 'Could not cast ' . $fromTypeString . ' to ' . $toTypeString;
+        throw new TypeCastException('Could not cast ' . $fromTypeString . ' to ' . $toTypeString);
     }
 }

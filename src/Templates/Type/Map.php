@@ -47,4 +47,9 @@ class Map extends GoTemplate implements AnyType
     {
         return $this->valueType;
     }
+
+    public function getTypeString()
+    {
+        return 'map[' . $this->keyType->getTypeString() . ']' . $this->valueType->getTypeString();
+    }
 }
