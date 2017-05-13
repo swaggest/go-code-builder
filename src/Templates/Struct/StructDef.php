@@ -56,7 +56,7 @@ class StructDef extends GoTemplate
      * @param Import $import
      * @return StructDef
      */
-    public function setImport($import)
+    public function setImport(Import $import = null)
     {
         $this->import = $import;
         return $this;

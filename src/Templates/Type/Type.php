@@ -23,7 +23,7 @@ class Type extends GoTemplate implements AnyType
         $this->import = $import;
     }
 
-    public function getType()
+    public function getName()
     {
         return $this->type;
     }

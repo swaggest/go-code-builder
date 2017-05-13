@@ -9,6 +9,7 @@ use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\Func\Result;
 use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
+use Swaggest\GoCodeBuilder\TypeCast\Registry;
 
 class StructCast
 {
@@ -23,17 +24,25 @@ class StructCast
      */
     private $propNamesMap = array();
 
+    public $basePropertyName;
+
+    /** @var Registry */
+    private $typeRegistry;
+
     /**
      * StructCast constructor.
      * @param StructDef $baseStruct
      * @param StructDef $derivedStruct
      * @param \string[] $propNamesMap
+     * @param Registry $registry
      */
-    public function __construct(StructDef $baseStruct, StructDef $derivedStruct, $propNamesMap = array())
+    public function __construct(StructDef $baseStruct, StructDef $derivedStruct, $propNamesMap = array(),
+                                Registry $registry = null)
     {
         $this->baseStruct = $baseStruct;
         $this->derivedStruct = $derivedStruct;
         $this->propNamesMap = $propNamesMap;
+        $this->typeRegistry = $registry;
     }
 
     public function setPropMap($baseName, $derivedName)
@@ -56,12 +65,25 @@ result := {$this->derivedStruct->getType()->render()}{}
 GO
         );
 
+
+        $base = 'base.';
+        if ($this->basePropertyName) {
+            $code->addSnippet(<<<GO
+if base.{$this->basePropertyName} == nil {
+    return &result
+}
+GO
+            );
+            $base .= $this->basePropertyName . '.';
+        }
+
         foreach ($this->propNamesMap as $baseName => $derivedName) {
             $cast = new TypeCast(
                 $derivedProperties[$derivedName]->getType(),
                 $baseProperties[$baseName]->getType(),
                 'result.' . $derivedName,
-                'base.' . $baseName
+                $base . $baseName,
+                $this->typeRegistry
             );
 
             $code->addSnippet($cast->render() . "\n");
@@ -89,7 +111,8 @@ GO
                 $baseProperties[$baseName]->getType(),
                 $derivedProperties[$derivedName]->getType(),
                 'base.' . $baseName,
-                'derived.' . $derivedName
+                'derived.' . $derivedName,
+                $this->typeRegistry
             );
 
             $code->addSnippet($cast->render() . "\n");

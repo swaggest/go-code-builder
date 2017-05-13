@@ -74,7 +74,7 @@ class TypeUtil
             return false;
         }
 
-        return $type->getType();
+        return $type->getName();
     }
 
     public static function isInt(AnyType $type)
