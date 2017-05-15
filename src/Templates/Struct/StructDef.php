@@ -20,6 +20,12 @@ class StructDef extends GoTemplate
     /** @var Import */
     private $import;
 
+    /**
+     * StructDef constructor.
+     * @param $name
+     * @param string $comment
+     * @todo refactor to Type instead of $name
+     */
     public function __construct($name, $comment = '')
     {
         $this->name = $name;
@@ -59,6 +65,13 @@ class StructDef extends GoTemplate
     public function setImport(Import $import = null)
     {
         $this->import = $import;
+        return $this;
+    }
+
+    public function setType(Type $type)
+    {
+        $this->import = $type->getImport();
+        $this->name = $type->getName();
         return $this;
     }
 

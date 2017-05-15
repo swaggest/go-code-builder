@@ -99,7 +99,7 @@ class TypeUtil
         return self::isFloat($type) || self::isInt($type);
     }
 
-    public static function isCastable(Type $to, Type $from)
+    public static function isCastable(AnyType $to, AnyType $from)
     {
         if (self::isNumber($from) && self::isNumber($to)) {
             return true;

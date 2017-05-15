@@ -60,6 +60,7 @@ GO;
             } else {
                 $res = new TypeCast($this->toType, $fromType->getType(), $this->toVarName, $this->fromVarName, $this->typeRegistry);
                 $res->assignOp = ' = *';
+                $res = $res->render();
                 return <<<GO
 if $this->fromVarName != nil {
 {$this->indentLines($res)}
@@ -203,37 +204,6 @@ GO;
 
         $fromTypeString = $fromType instanceof Type ? $fromType->getTypeString() : $this->fromType->render();
         $toTypeString = $toType instanceof Type ? $toType->getTypeString() : $this->toType->render();
-
-        return $this->processSpecial($toTypeString, $fromTypeString);
-    }
-
-    private function processSpecial($toTypeString, $fromTypeString)
-    {
-        if ($fromTypeString === 'time.Time' && $toTypeString === 'string') {
-            return <<<GO
-{$this->toVarName}{$this->assignOp}{$this->fromVarName}.Format(time.RFC3339Nano)
-GO;
-        }
-
-        if ($toTypeString === 'time.Time' && $fromTypeString === 'string') {
-            return <<<GO
-{$this->toVarName}, _{$this->assignOp}time.Parse(time.RFC3339Nano, {$this->fromVarName})
-GO;
-        }
-
-
-        if ($fromTypeString === 'time.Time' && $toTypeString === 'int64') {
-            return <<<GO
-{$this->toVarName}{$this->assignOp}{$this->fromVarName}.Unix()
-GO;
-        }
-
-        if ($toTypeString === 'time.Time' && $fromTypeString === 'int64') {
-            return <<<GO
-{$this->toVarName}{$this->assignOp}time.Unix({$this->fromVarName}, 0)
-GO;
-        }
-
 
         if ($this->typeRegistry
             && $this->typeRegistry->canProcess($toTypeString, $fromTypeString)

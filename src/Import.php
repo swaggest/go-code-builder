@@ -5,7 +5,6 @@ namespace Swaggest\GoCodeBuilder;
 
 class Import
 {
-
     public function __construct($name, $alias = null, $defaultPackageName = null)
     {
         $this->name = $name;
@@ -16,6 +15,22 @@ class Import
     public $name;
     public $alias;
     public $defaultPackageName;
+
+    /**
+     * @return string
+     */
+    public function getPackage()
+    {
+        if ($this->defaultPackageName) {
+            return $this->defaultPackageName;
+        } else {
+            $path = explode('/', $this->name);
+            $path = array_pop($path);
+            $path = explode('.', $path);
+            $path = array_shift($path);
+            return $path;
+        }
+    }
 
     public function getReferencePrefix()
     {
