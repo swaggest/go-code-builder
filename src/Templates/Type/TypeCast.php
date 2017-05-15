@@ -115,6 +115,7 @@ GO;
         $postfix = substr(md5($this->fromVarName), 0, 4);
         $keyName = 'key' . $postfix;
         $valName = 'val' . $postfix;
+        $toKeyName = 'toKey' . $postfix;
 
         if (TypeUtil::equals($toType->getKeyType(), $fromType->getKeyType())) {
             $castValue = new TypeCast(
@@ -131,12 +132,25 @@ for {$keyName}, {$valName} := range {$this->fromVarName} {
 }
 GO;
         } else {
-            $castKey = new TypeCast($toType->getKeyType(), $fromType->getKeyType(), 'toKey', 'key', $this->typeRegistry);
+            $castKey = new TypeCast(
+                $toType->getKeyType(),
+                $fromType->getKeyType(),
+                $toKeyName,
+                $keyName,
+                $this->typeRegistry
+            );
             $castKey->assignOp = ' := ';
-            $castValue = new TypeCast($toType->getValueType(), $fromType->getValueType(), $this->toVarName . '[toKey]', $this->fromVarName . '[key]', $this->typeRegistry);
+            $castValue = new TypeCast(
+                $toType->getValueType(),
+                $fromType->getValueType(),
+                $this->toVarName . '[' . $toKeyName . ']',
+                $this->fromVarName . '[' . $keyName . ']',
+                $this->typeRegistry
+            );
             return <<<GO
 {$this->toVarName} = make({$this->toType->render()}, len({$this->fromVarName}))
-for key, val := range {$this->fromVarName} {
+for {$keyName} := range {$this->fromVarName} {
+	var {$toKeyName} {$toType->getKeyType()->render()}
 {$this->indentLines($castKey->toString())}
 {$this->indentLines($castValue->toString())}
 }

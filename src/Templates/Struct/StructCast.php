@@ -7,7 +7,6 @@ use Swaggest\GoCodeBuilder\Templates\Func\Argument;
 use Swaggest\GoCodeBuilder\Templates\Func\Arguments;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\Func\Result;
-use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
 use Swaggest\GoCodeBuilder\TypeCast\Registry;
 
@@ -23,8 +22,6 @@ class StructCast
      * @var string[] base to derived names map
      */
     private $propNamesMap = array();
-
-    public $basePropertyName;
 
     /** @var Registry */
     private $typeRegistry;
@@ -51,13 +48,13 @@ class StructCast
         return $this;
     }
 
+
     public function getMapTo()
     {
         $mapTo = new FuncDef('MapTo');
         $mapTo->setSelf(new Argument('base', $this->baseStruct->getType()));
-        $mapTo->setResult((new Result())->add(null, new Pointer($this->derivedStruct->getType())));
-        $baseProperties = $this->baseStruct->getProperties();
-        $derivedProperties = $this->derivedStruct->getProperties();
+        $mapTo->setResult((new Result())->add(null, $this->derivedStruct->getType()));
+
 
         $code = new Code(<<<GO
 result := {$this->derivedStruct->getType()->render()}{}
@@ -65,31 +62,24 @@ result := {$this->derivedStruct->getType()->render()}{}
 GO
         );
 
+        $baseProperties = $this->baseStruct->getProperties();
 
-        $base = 'base.';
-        if ($this->basePropertyName) {
-            $code->addSnippet(<<<GO
-if base.{$this->basePropertyName} == nil {
-    return &result
-}
-GO
-            );
-            $base .= $this->basePropertyName . '.';
-        }
+        $derivedProperties = $this->derivedStruct->getProperties();
+
 
         foreach ($this->propNamesMap as $baseName => $derivedName) {
             $cast = new TypeCast(
                 $derivedProperties[$derivedName]->getType(),
                 $baseProperties[$baseName]->getType(),
                 'result.' . $derivedName,
-                $base . $baseName,
+                'base.' . $baseName,
                 $this->typeRegistry
             );
 
             $code->addSnippet($cast->render() . "\n");
         }
 
-        $code->addSnippet('return &result');
+        $code->addSnippet('return result');
 
         $mapTo->setBody($code);
 
@@ -100,12 +90,14 @@ GO
     public function getLoadFrom()
     {
         $loadFrom = new FuncDef('LoadFrom');
-        $loadFrom->setSelf(new Argument('base', new Pointer($this->baseStruct->getType())));
+        $loadFrom->setSelf(new Argument('base', $this->baseStruct->getType()));
         $loadFrom->setArguments((new Arguments())->add('derived', $this->derivedStruct->getType()));
 
-        $baseProperties = $this->baseStruct->getProperties();
-        $derivedProperties = $this->derivedStruct->getProperties();
         $code = new Code();
+
+        $baseProperties = $this->baseStruct->getProperties();
+
+        $derivedProperties = $this->derivedStruct->getProperties();
         foreach ($this->propNamesMap as $baseName => $derivedName) {
             $cast = new TypeCast(
                 $baseProperties[$baseName]->getType(),
@@ -121,5 +113,21 @@ GO
         $loadFrom->setBody($code);
 
         return $loadFrom;
+    }
+
+    /**
+     * @return StructDef
+     */
+    public function getBaseStruct()
+    {
+        return $this->baseStruct;
+    }
+
+    /**
+     * @return StructDef
+     */
+    public function getDerivedStruct()
+    {
+        return $this->derivedStruct;
     }
 }
