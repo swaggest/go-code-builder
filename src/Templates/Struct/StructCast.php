@@ -2,15 +2,17 @@
 
 namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
+use Swaggest\CodeBuilder\PlaceholderString;
 use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\Func\Argument;
 use Swaggest\GoCodeBuilder\Templates\Func\Arguments;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\Func\Result;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
+use Swaggest\GoCodeBuilder\TypeCast\CastFunctions;
 use Swaggest\GoCodeBuilder\TypeCast\Registry;
 
-class StructCast
+class StructCast implements CastFunctions
 {
     /** @var StructDef */
     private $baseStruct;
@@ -55,12 +57,12 @@ class StructCast
         $mapTo->setSelf(new Argument('base', $this->baseStruct->getType()));
         $mapTo->setResult((new Result())->add(null, $this->derivedStruct->getType()));
 
-
-        $code = new Code(<<<GO
-result := {$this->derivedStruct->getType()->render()}{}
+        $code = new Code();
+        $code->addSnippet(new PlaceholderString(<<<GO
+result := :resultType{}
 
 GO
-        );
+            , array(':resultType' => $this->derivedStruct->getType())));
 
         $baseProperties = $this->baseStruct->getProperties();
 
@@ -76,7 +78,8 @@ GO
                 $this->typeRegistry
             );
 
-            $code->addSnippet($cast->render() . "\n");
+            $code->addSnippet($cast);
+            $code->addSnippet("\n");
         }
 
         $code->addSnippet('return result');
@@ -107,7 +110,8 @@ GO
                 $this->typeRegistry
             );
 
-            $code->addSnippet($cast->render() . "\n");
+            $code->addSnippet($cast);
+            $code->addSnippet("\n");
         }
 
         $loadFrom->setBody($code);
@@ -130,4 +134,22 @@ GO
     {
         return $this->derivedStruct;
     }
+
+    /**
+     * @return string
+     */
+    public function getBaseTypeString()
+    {
+        return $this->baseStruct->getType()->getTypeString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDerivedTypeString()
+    {
+        return $this->derivedStruct->getType()->getTypeString();
+    }
+
+
 }

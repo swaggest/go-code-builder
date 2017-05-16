@@ -19,10 +19,10 @@ class CastRegistry implements Registry
     /** @var StructCast[] */
     private $casts = array();
 
-    public function addStructCast(StructCast $cast)
+    public function addStructCast(CastFunctions $cast)
     {
-        $baseTypeString = $cast->getBaseStruct()->getType()->getTypeString();
-        $derivedTypeString = $cast->getDerivedStruct()->getType()->getTypeString();
+        $baseTypeString = $cast->getBaseTypeString();
+        $derivedTypeString = $cast->getDerivedTypeString();
 
         $this->castIndex[$baseTypeString][$derivedTypeString] = true;
         $this->castIndex[$derivedTypeString][$baseTypeString] = false;
@@ -61,25 +61,32 @@ class CastRegistry implements Registry
         $usedCastKey = $toTypeString . ':' . $fromTypeString;
 
 
+        if (empty($toTypeString)) {
+            //throw new TypeCastException('Empty dest type');
+        }
 
         if ($this->castIndex[$toTypeString][$fromTypeString]) {
+            $saved = 'saved LoadFrom ';
             if (!isset($this->usedCasts[$usedCastKey])) {
+                $saved .= $usedCastKey;
                 $this->usedCasts[$usedCastKey] = $cast->getLoadFrom();
             }
             if (' = &' === $assignOp) {
                 $toType = TypeUtil::fromString($toTypeString);
                 return <<<GO
-if {$toVarName} == nil {
+if {$toVarName} == nil { // $saved
     {$toVarName} = new({$toType->render()})
 }
 {$toVarName}.LoadFrom({$fromVarName})
 GO;
             }
             return <<<GO
-{$toVarName}.LoadFrom({$fromVarName})
+{$toVarName}.LoadFrom({$fromVarName}) // $saved
 GO;
         } else {
+            $saved = 'saved MapTo ';
             if (!isset($this->usedCasts[$usedCastKey])) {
+                $saved .= $usedCastKey;
                 $this->usedCasts[$usedCastKey] = $cast->getMapTo();
             }
             $tmpVar = 'tmp' . substr(md5($fromVarName), 0, 4);
@@ -105,7 +112,7 @@ GO;
 
 
             $code .= <<<GO
-{$toVarName}{$assignOp}{$fromVarName}.MapTo()
+{$toVarName}{$assignOp}{$fromVarName}.MapTo() // $saved
 GO;
 
         }
@@ -118,7 +125,7 @@ GO;
      */
     public function getUsedCastFuncs()
     {
-        return array_values($this->usedCasts);
+        return $this->usedCasts;
     }
 
 

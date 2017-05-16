@@ -4,6 +4,7 @@ namespace Swaggest\GoCodeBuilder\TypeCast;
 
 
 use Swaggest\GoCodeBuilder\Templates\Code;
+use Swaggest\GoCodeBuilder\Templates\GoFile;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCastException;
 
 class Time implements Registry
@@ -39,6 +40,8 @@ class Time implements Registry
         if (' = *' === $assignOp) {
             $assignOp = ' = ';
         }
+
+        GoFile::getCurrentGoFile()->getImports()->addByName('time');
 
         if ($fromTypeString === 'time.Time' && $toTypeString === 'string') {
             return <<<GO

@@ -51,7 +51,7 @@ class TypeCast extends GoTemplate
                 $res = new TypeCast($this->toType, $fromType->getType(), $this->toVarName, $tmpName, $this->typeRegistry);
                 $res->assignOp = ' = *';
                 return <<<GO
-if $this->fromVarName != nil {
+if $this->fromVarName != nil { // $this->toType <- $this->fromType
     $tmpName := *{$this->fromVarName}
 {$this->indentLines($res->toString())}
 }
@@ -156,8 +156,6 @@ for {$keyName} := range {$this->fromVarName} {
 }
 GO;
         }
-
-
     }
 
     protected function toString()

@@ -12,7 +12,7 @@ use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Type\Type;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
 
-class PropertyCast
+class PropertyCast implements CastFunctions
 {
     /** @var StructDef */
     private $baseStruct;
@@ -80,6 +80,22 @@ GO;
         $loadFrom->setBody(new Code($code));
         return $loadFrom;
 
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseTypeString()
+    {
+        return $this->baseStruct->getType()->getTypeString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDerivedTypeString()
+    {
+        return $this->derivedType->getTypeString();
     }
 
 
