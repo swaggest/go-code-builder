@@ -8,6 +8,7 @@ use Swaggest\GoCodeBuilder\Templates\Func\Argument;
 use Swaggest\GoCodeBuilder\Templates\Func\Arguments;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\Func\Result;
+use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
 use Swaggest\GoCodeBuilder\TypeCast\CastFunctions;
 use Swaggest\GoCodeBuilder\TypeCast\Registry;
@@ -93,7 +94,7 @@ GO
     public function getLoadFrom()
     {
         $loadFrom = new FuncDef('LoadFrom');
-        $loadFrom->setSelf(new Argument('base', $this->baseStruct->getType()));
+        $loadFrom->setSelf(new Argument('base', new Pointer($this->baseStruct->getType())));
         $loadFrom->setArguments((new Arguments())->add('derived', $this->derivedStruct->getType()));
 
         $code = new Code();

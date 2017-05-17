@@ -66,28 +66,24 @@ class CastRegistry implements Registry
         }
 
         if ($this->castIndex[$toTypeString][$fromTypeString]) {
-            $saved = 'saved LoadFrom ';
             if (!isset($this->usedCasts[$usedCastKey])) {
-                $saved .= $usedCastKey;
-                $this->usedCasts[$usedCastKey] = $cast->getLoadFrom();
+                $this->addUsedCastFunction($usedCastKey, $cast->getLoadFrom());
             }
             if (' = &' === $assignOp) {
                 $toType = TypeUtil::fromString($toTypeString);
                 return <<<GO
-if {$toVarName} == nil { // $saved
+if {$toVarName} == nil {
     {$toVarName} = new({$toType->render()})
 }
 {$toVarName}.LoadFrom({$fromVarName})
 GO;
             }
             return <<<GO
-{$toVarName}.LoadFrom({$fromVarName}) // $saved
+{$toVarName}.LoadFrom({$fromVarName})
 GO;
         } else {
-            $saved = 'saved MapTo ';
             if (!isset($this->usedCasts[$usedCastKey])) {
-                $saved .= $usedCastKey;
-                $this->usedCasts[$usedCastKey] = $cast->getMapTo();
+                $this->addUsedCastFunction($usedCastKey, $cast->getMapTo());
             }
             $tmpVar = 'tmp' . substr(md5($fromVarName), 0, 4);
             $code = '';
@@ -112,7 +108,7 @@ GO;
 
 
             $code .= <<<GO
-{$toVarName}{$assignOp}{$fromVarName}.MapTo() // $saved
+{$toVarName}{$assignOp}{$fromVarName}.MapTo() // $pDir
 GO;
 
         }
@@ -123,9 +119,17 @@ GO;
     /**
      * @return \Swaggest\GoCodeBuilder\Templates\Func\FuncDef[]
      */
-    public function getUsedCastFuncs()
+    public function resetUsedCastFuncs()
     {
-        return $this->usedCasts;
+        $result = $this->usedCasts;
+        $this->usedCasts = array();
+        return $result;
+    }
+
+
+    private function addUsedCastFunction($key, FuncDef $funcDef)
+    {
+        $this->usedCasts[$key] = $funcDef;
     }
 
 

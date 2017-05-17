@@ -42,31 +42,33 @@ class TypeCast extends GoTemplate
     private function processFromPointer(Pointer $fromType)
     {
         if ($this->toType instanceof Pointer) {
-            $this->fromType = $fromType->getType();
-            $this->toType = $this->toType->getType();
-            return $this->toString();
-        } else {
-            if ($fromType->getType() instanceof Pointer) {
-                $tmpName = 'tmp' . substr(md5($this->fromVarName), 0, 4);
-                $res = new TypeCast($this->toType, $fromType->getType(), $this->toVarName, $tmpName, $this->typeRegistry);
-                $res->assignOp = ' = *';
-                return <<<GO
+            if (TypeUtil::equals($this->toResolved, $this->fromResolved)) {
+                $this->fromType = $fromType->getType();
+                $this->toType = $this->toType->getType();
+                return $this->toString();
+            }
+        }
+
+        if ($fromType->getType() instanceof Pointer) {
+            $tmpName = 'tmp' . substr(md5($this->fromVarName), 0, 4);
+            $res = new TypeCast($this->toType, $fromType->getType(), $this->toVarName, $tmpName, $this->typeRegistry);
+            $res->assignOp = ' = *';
+            return <<<GO
 if $this->fromVarName != nil { // $this->toType <- $this->fromType
     $tmpName := *{$this->fromVarName}
 {$this->indentLines($res->toString())}
 }
 GO;
 
-            } else {
-                $res = new TypeCast($this->toType, $fromType->getType(), $this->toVarName, $this->fromVarName, $this->typeRegistry);
-                $res->assignOp = ' = *';
-                $res = $res->render();
-                return <<<GO
+        } else {
+            $res = new TypeCast($this->toType, $fromType->getType(), $this->toVarName, $this->fromVarName, $this->typeRegistry);
+            $res->assignOp = ' = *';
+            $res = $res->render();
+            return <<<GO
 if $this->fromVarName != nil {
 {$this->indentLines($res)}
 }
 GO;
-            }
         }
     }
 
@@ -158,6 +160,11 @@ GO;
         }
     }
 
+    /** @var AnyType */
+    private $toResolved;
+    /** @var AnyType */
+    private $fromResolved;
+
     protected function toString()
     {
         $toType = $this->toType;
@@ -167,18 +174,18 @@ GO;
             return $this->toVarName . $this->assignOp . $this->fromVarName;
         }
 
+        $this->toResolved = TypeUtil::resolvePointer($toType);
+        $this->fromResolved = TypeUtil::resolvePointer($fromType);
 
         if ($toType instanceof Pointer) {
-            $toResolved = TypeUtil::resolvePointer($toType);
-            $fromResolved = TypeUtil::resolvePointer($fromType);
-            if (!TypeUtil::equals($toResolved, $fromResolved)) {
-                if (TypeUtil::isCastable($toResolved, $fromResolved)) {
+            if (!TypeUtil::equals($this->toResolved, $this->fromResolved)) {
+                if (TypeUtil::isCastable($this->toResolved, $this->fromResolved)) {
                     $tmpName = 'tmp' . substr(md5($this->toVarName), 0, 4);
-                    $castBack = new TypeCast($toResolved, $fromType, $tmpName, $this->fromVarName, $this->typeRegistry);
-                    $castForth = new TypeCast($toType, $toResolved, $this->toVarName, $tmpName, $this->typeRegistry);
+                    $castBack = new TypeCast($this->toResolved, $fromType, $tmpName, $this->fromVarName, $this->typeRegistry);
+                    $castForth = new TypeCast($toType, $this->toResolved, $this->toVarName, $tmpName, $this->typeRegistry);
 
                     return <<<GO
-var $tmpName {$toResolved->render()}
+var $tmpName {$this->toResolved->render()}
 {$castBack->toString()}
 {$castForth->toString()}
 GO;
@@ -214,8 +221,8 @@ GO;
             }
         }
 
-        $fromTypeString = $fromType instanceof Type ? $fromType->getTypeString() : $this->fromType->render();
-        $toTypeString = $toType instanceof Type ? $toType->getTypeString() : $this->toType->render();
+        $fromTypeString = $fromType->getTypeString();
+        $toTypeString = $toType->getTypeString();
 
         if ($this->typeRegistry
             && $this->typeRegistry->canProcess($toTypeString, $fromTypeString)

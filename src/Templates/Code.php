@@ -19,8 +19,18 @@ class Code extends GoTemplate
         }
     }
 
-    public function addSnippet($code, $prepend = false)
+    private $uniqueKeys = array();
+
+    public function addSnippet($code, $prepend = false, $uniqueKey = null)
     {
+        if ($uniqueKey) {
+            if (isset($this->uniqueKeys[$uniqueKey])) {
+                return $this;
+            } else {
+                $this->uniqueKeys[$uniqueKey] = $uniqueKey;
+            }
+        }
+
         if (null === $this->snippets) {
             $this->snippets = array();
         }

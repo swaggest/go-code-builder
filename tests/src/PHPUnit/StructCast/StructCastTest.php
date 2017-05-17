@@ -124,7 +124,7 @@ GO
         //$fileCode->addSnippet($directCast->getMapTo());
         //$fileCode->addSnippet($directCast->getLoadFrom());
 
-        foreach ($castRegistry->getUsedCastFuncs() as $funcDef) {
+        foreach ($castRegistry->resetUsedCastFuncs() as $funcDef) {
             $fileCode->addSnippet($funcDef);
         }
 
