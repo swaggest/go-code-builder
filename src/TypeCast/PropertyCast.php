@@ -9,7 +9,7 @@ use Swaggest\GoCodeBuilder\Templates\Func\Arguments;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\Func\Result;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
-use Swaggest\GoCodeBuilder\Templates\Type\Type;
+use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
 
 class PropertyCast implements CastFunctions
@@ -19,7 +19,7 @@ class PropertyCast implements CastFunctions
 
     private $propertyName;
 
-    /** @var Type */
+    /** @var AnyType */
     private $derivedType;
 
     /** @var Registry */
@@ -29,10 +29,10 @@ class PropertyCast implements CastFunctions
      * PropertyCast constructor.
      * @param StructDef $baseStruct
      * @param $propertyName
-     * @param Type $derivedType
+     * @param AnyType $derivedType
      * @param Registry $typeRegistry
      */
-    public function __construct(StructDef $baseStruct, $propertyName, $derivedType, Registry $typeRegistry = null)
+    public function __construct(StructDef $baseStruct, $propertyName, AnyType $derivedType, Registry $typeRegistry = null)
     {
         $this->baseStruct = $baseStruct;
         $this->propertyName = $propertyName;
