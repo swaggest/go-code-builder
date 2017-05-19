@@ -11,6 +11,7 @@ use Swaggest\GoCodeBuilder\Templates\Func\Result;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
+use Swaggest\GoCodeBuilder\Templates\Type\TypeUtil;
 
 class PropertyCast implements CastFunctions
 {
@@ -36,7 +37,7 @@ class PropertyCast implements CastFunctions
     {
         $this->baseStruct = $baseStruct;
         $this->propertyName = $propertyName;
-        $this->derivedType = $derivedType;
+        $this->derivedType = TypeUtil::resolvePointer($derivedType);
         $this->typeRegistry = $typeRegistry;
     }
 
