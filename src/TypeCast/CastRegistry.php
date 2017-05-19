@@ -62,7 +62,7 @@ class CastRegistry implements Registry
 
 
         if (empty($toTypeString)) {
-            //throw new TypeCastException('Empty dest type');
+            throw new TypeCastException('Empty dest type');
         }
 
         if ($this->castIndex[$toTypeString][$fromTypeString]) {
@@ -108,7 +108,7 @@ GO;
 
 
             $code .= <<<GO
-{$toVarName}{$assignOp}{$fromVarName}.MapTo() // $pDir
+{$toVarName}{$assignOp}{$fromVarName}.MapTo()
 GO;
 
         }

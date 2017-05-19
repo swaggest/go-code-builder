@@ -74,8 +74,6 @@ GO;
 
     private function processToPointer(Pointer $toType)
     {
-        //$toResolved = TypeUtil::resolvePointer($toType);
-
         if ($toType->getType() instanceof Pointer) {
             $tmpName = 'tmp' . substr(md5($this->fromVarName), 0, 4);
             $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $tmpName, $this->typeRegistry);
@@ -86,9 +84,20 @@ $tmpName := &{$this->fromVarName}
 GO;
 
         } else {
-            $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $this->fromVarName, $this->typeRegistry);
-            $res->assignOp = ' = &';
-            return $res->toString();
+            if ($this->assignOp === ' = *') {
+                $tmpName = 'tmp' . substr(md5($this->fromType), 0, 4);
+                $tmpCast = <<<GO
+{$tmpName} := *$this->fromVarName
+
+GO;
+                $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $tmpName, $this->typeRegistry);
+                return $tmpCast . $res->toString();
+
+            } else {
+                $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $this->fromVarName, $this->typeRegistry);
+                $res->assignOp = ' = &';
+                return $res->toString();
+            }
         }
     }
 
