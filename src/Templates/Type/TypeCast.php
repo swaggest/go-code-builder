@@ -91,6 +91,7 @@ GO;
 
 GO;
                 $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $tmpName, $this->typeRegistry);
+                $res->assignOp = ' = &';
                 return $tmpCast . $res->toString();
 
             } else {
