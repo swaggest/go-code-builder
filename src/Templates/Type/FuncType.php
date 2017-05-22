@@ -2,6 +2,7 @@
 
 namespace Swaggest\GoCodeBuilder\Templates\Type;
 
+use Swaggest\GoCodeBuilder\Exception;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
@@ -18,6 +19,11 @@ class FuncType extends GoTemplate implements AnyType
     {
         // func({$data->iteratorResultGoType}, error) bool
         return 'func(' . $this->func->getArguments()->toTypesString() . ') ' . $this->func->getResult()->toTypesString();
+    }
+
+    public function getTypeString()
+    {
+        throw new Exception('TypeString rendering for func is not implemented');
     }
 
 

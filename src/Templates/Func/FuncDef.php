@@ -2,8 +2,6 @@
 
 namespace Swaggest\GoCodeBuilder\Templates\Func;
 
-
-use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
@@ -45,6 +43,14 @@ class FuncDef extends GoTemplate
     }
 
     /**
+     * @return Argument
+     */
+    public function getSelf()
+    {
+        return $this->self;
+    }
+
+    /**
      * @param string $name
      * @return FuncDef
      */
@@ -76,9 +82,10 @@ class FuncDef extends GoTemplate
     protected function toString()
     {
         if ($this->renderMode === self::RENDER_FUNC) {
+            $body = $this->body ? $this->body->render() : '';
             $result = <<<GO
 {$this->renderComment()}func {$this->renderSelf()}{$this->name}({$this->arguments}) {$this->result} {
-{$this->padLines("\t", (string)$this->body, false)}
+{$this->padLines("\t", $body, false)}
 }
 
 

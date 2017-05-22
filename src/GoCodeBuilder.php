@@ -41,6 +41,8 @@ GO;
 
     protected function toCamelCase($string, $lowerFirst = false)
     {
+        $string = preg_replace('/(\d+)/', '_$1_', $string);
+
         $result = implode('', array_map('ucfirst', explode('_', $string)));
         if (!$result) {
             return '';

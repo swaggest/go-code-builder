@@ -6,15 +6,15 @@ use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
 class Map extends GoTemplate implements AnyType
 {
-    /** @var Type */
+    /** @var AnyType */
     private $keyType;
-    /** @var Type */
+    /** @var AnyType */
     private $valueType;
 
     /**
      * Map constructor.
-     * @param Type $keyType
-     * @param Type $valueType
+     * @param AnyType $keyType
+     * @param AnyType $valueType
      */
     public function __construct(AnyType $keyType, AnyType $valueType)
     {
@@ -24,6 +24,32 @@ class Map extends GoTemplate implements AnyType
 
     protected function toString()
     {
-        return 'map[' . $this->keyType . ']' . $this->valueType;
+        return 'map[' . $this->keyType->render() . ']' . $this->valueType->render();
+    }
+
+    public function renderName()
+    {
+        return $this->toString();
+    }
+
+    /**
+     * @return AnyType
+     */
+    public function getKeyType()
+    {
+        return $this->keyType;
+    }
+
+    /**
+     * @return AnyType
+     */
+    public function getValueType()
+    {
+        return $this->valueType;
+    }
+
+    public function getTypeString()
+    {
+        return 'map[' . $this->keyType->getTypeString() . ']' . $this->valueType->getTypeString();
     }
 }

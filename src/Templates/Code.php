@@ -2,6 +2,7 @@
 
 namespace Swaggest\GoCodeBuilder\Templates;
 
+use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\CodeBuilder\ClosureString;
 
 class Code extends GoTemplate
@@ -18,8 +19,21 @@ class Code extends GoTemplate
         }
     }
 
-    public function addSnippet($code, $prepend = false)
+    private $uniqueKeys = array();
+
+    public function addSnippet($code, $prepend = false, $uniqueKey = null)
     {
+        if ($uniqueKey) {
+            if (isset($this->uniqueKeys[$uniqueKey])) {
+                return $this;
+            } else {
+                $this->uniqueKeys[$uniqueKey] = $uniqueKey;
+            }
+        }
+
+        if (null === $this->snippets) {
+            $this->snippets = array();
+        }
         if ($prepend) {
             array_unshift($this->snippets, $code);
         } else {
@@ -48,6 +62,8 @@ class Code extends GoTemplate
         }
         foreach ($this->snippets as $code) {
             if ($code instanceof ClosureString) {
+                $result .= $code->render();
+            } elseif ($code instanceof AbstractTemplate) {
                 $result .= $code->render();
             } else {
                 $result .= $code;

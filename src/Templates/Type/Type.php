@@ -12,6 +12,7 @@ use Swaggest\GoCodeBuilder\Templates\GoTemplate;
  */
 class Type extends GoTemplate implements AnyType
 {
+    /** @var string */
     private $type;
     /** @var Import */
     private $import;
@@ -22,7 +23,7 @@ class Type extends GoTemplate implements AnyType
         $this->import = $import;
     }
 
-    public function getType()
+    public function getName()
     {
         return $this->type;
     }
@@ -51,5 +52,33 @@ class Type extends GoTemplate implements AnyType
         return $prefix . $this->type;
     }
 
+    public function equals(Type $type) {
+        if ($type->type !== $this->type) {
+            return false;
+        }
+        if ($this->import !== null) {
+            if ($type->import === null) {
+                return false;
+            }
+            if ($type->import->name !== $this->import->name) {
+                return false;
+            }
+            return true;
+        } elseif ($type->import !== null) {
+            return false;
+        }
+        return true;
+    }
 
+    public function getTypeString()
+    {
+        $typeString = $this->type;
+        if ($this->import !== null) {
+            $typeString = $this->import->name . '.' . $typeString;
+            if ($this->import->defaultPackageName !== null) {
+                $typeString .= '::' . $this->import->defaultPackageName . '.' . $this->type;
+            }
+        }
+        return $typeString;
+    }
 }

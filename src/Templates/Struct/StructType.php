@@ -2,11 +2,10 @@
 
 namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
-
-use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\CodeBuilder\TableRenderer;
+use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
-class StructType extends AbstractTemplate
+class StructType extends GoTemplate
 {
     /** @var StructDef */
     private $struct;

@@ -3,6 +3,7 @@
 namespace Swaggest\GoCodeBuilder\Templates;
 
 use PhpLang\ScopeExit;
+use Swaggest\GoCodeBuilder\Exception;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
 class GoFile extends GoTemplate
@@ -16,6 +17,46 @@ class GoFile extends GoTemplate
     private $imports;
 
     private $skipImportComment = false;
+
+    /** @var GoFile */
+    private $transaction;
+
+
+    public function startTransaction()
+    {
+        if ($this->transaction !== null) {
+            throw new Exception('Transaction is already running');
+        }
+
+        $this->transaction = new GoFile($this->package, $this->importPath);
+    }
+
+    public function commitTransaction()
+    {
+        if ($this->transaction === null) {
+            throw new Exception('Not running a transaction');
+        }
+
+        foreach ($this->transaction->imports->imports as $import) {
+            $this->imports->add($import);
+        }
+        if ($this->transaction->code->snippets) {
+            foreach ($this->transaction->code->snippets as $item) {
+                $this->code->addSnippet($item);
+            }
+        }
+
+        $this->dropTransaction();
+    }
+
+    public function dropTransaction($ignoreMissing = true)
+    {
+        if (!$ignoreMissing && $this->transaction === null) {
+            throw new Exception('Not running a transaction');
+        }
+
+        $this->transaction = null;
+    }
 
     /**
      * @param boolean $skipImportComment
@@ -174,10 +215,14 @@ GO;
      * @param $currentGoFile
      * @return GoFile previous go file
      */
-    public static function setCurrentGoFile($currentGoFile)
+    public static function setCurrentGoFile(GoFile $currentGoFile = null)
     {
         $previous = self::$currentGoFile;
-        self::$currentGoFile = $currentGoFile;
+        if ($currentGoFile !== null && $currentGoFile->transaction !== null) {
+            self::$currentGoFile = $currentGoFile->transaction;
+        } else {
+            self::$currentGoFile = $currentGoFile;
+        }
         return $previous;
     }
 
