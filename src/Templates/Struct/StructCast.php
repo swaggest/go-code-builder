@@ -43,6 +43,21 @@ class StructCast implements CastFunctions
         $this->derivedStruct = $derivedStruct;
         $this->propNamesMap = $propNamesMap;
         $this->typeRegistry = $registry;
+
+        $baseProperties = $this->baseStruct->getProperties();
+        $derivedProperties = $this->derivedStruct->getProperties();
+
+        foreach ($this->propNamesMap as $baseName => $derivedName) {
+            $cast = new TypeCast(
+                $derivedProperties[$derivedName]->getType(),
+                $baseProperties[$baseName]->getType(),
+                'result.' . $derivedName,
+                'base.' . $baseName,
+                $this->typeRegistry
+            );
+            $cast->render();
+        }
+
     }
 
     public function setPropMap($baseName, $derivedName)
