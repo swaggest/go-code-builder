@@ -98,12 +98,11 @@ GO;
 GO;
                 $fromVarName = $tmpVar;
             } elseif ($pDir === '&') {
-                $assignOp = substr($assignOp, 0, -1);
                 $code = <<<GO
-{$tmpVar} := &{$fromVarName}
-
+{$tmpVar} := {$fromVarName}.MapTo()
+{$toVarName}{$assignOp}{$tmpVar}
 GO;
-                $fromVarName = $tmpVar;
+                return $code;
             }
 
 
