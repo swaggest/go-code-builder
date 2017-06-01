@@ -81,21 +81,26 @@ class FuncDef extends GoTemplate
 
     protected function toString()
     {
+        $result = (string)$this->result;
+        if ($result) {
+            $result = ' ' . $result;
+        }
+
         if ($this->renderMode === self::RENDER_FUNC) {
             $body = $this->body ? $this->body->render() : '';
-            $result = <<<GO
-{$this->renderComment()}func {$this->renderSelf()}{$this->name}({$this->arguments}) {$this->result} {
+            $code = <<<GO
+{$this->renderComment()}func {$this->renderSelf()}{$this->name}({$this->arguments}){$result} {
 {$this->padLines("\t", $body, false)}
 }
 
 
 GO;
         } else {
-            $result = <<<GO
-{$this->renderComment()}{$this->name}({$this->arguments}) {$this->result}
+            $code = <<<GO
+{$this->renderComment()}{$this->name}({$this->arguments}){$result}
 GO;
         }
-        return $result;
+        return $code;
     }
 
     private function renderSelf()
