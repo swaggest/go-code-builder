@@ -55,7 +55,7 @@ class TypeCast extends GoTemplate
             $res->assignOp = ' = *';
             return <<<GO
 if $this->fromVarName != nil { // $this->toType <- $this->fromType
-    $tmpName := *{$this->fromVarName}
+	$tmpName := *{$this->fromVarName}
 {$this->indentLines($res->toString())}
 }
 GO;

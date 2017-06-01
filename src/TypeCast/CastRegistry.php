@@ -73,7 +73,7 @@ class CastRegistry implements Registry
                 $toType = TypeUtil::fromString($toTypeString);
                 return <<<GO
 if {$toVarName} == nil {
-    {$toVarName} = new({$toType->render()})
+	{$toVarName} = new({$toType->render()})
 }
 {$toVarName}.LoadFrom({$fromVarName})
 GO;

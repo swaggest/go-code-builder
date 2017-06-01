@@ -181,15 +181,18 @@ class GoFile extends GoTemplate
             }
         }
 
+        $codeResult = rtrim($codeResult);
+
         $result = <<<GO
 {$this->renderComment()}package {$this->renderPackageName()}{$this->renderImportPath()}
 
 {$this->imports->render()}
 
 {$codeResult}
+
 GO;
 
-        return rtrim($result);
+        return $result;
     }
 
     private function renderImportPath()
