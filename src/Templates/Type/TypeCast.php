@@ -72,8 +72,14 @@ GO;
         }
     }
 
+    static $i = 0;
     private function processToPointer(Pointer $toType)
     {
+        self::$i++;
+        if (self::$i > 500) {
+            self::$i = 0;
+            return "// Failed in a mystery loop!";
+        }
         if ($toType->getType() instanceof Pointer) {
             $tmpName = 'tmp' . substr(md5($this->fromVarName), 0, 4);
             $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $tmpName, $this->typeRegistry);
@@ -97,7 +103,8 @@ GO;
             } else {
                 $res = new TypeCast($toType->getType(), $this->fromType, $this->toVarName, $this->fromVarName, $this->typeRegistry);
                 $res->assignOp = ' = &';
-                return $res->toString();
+                $r = $res->toString();
+                return $r;
             }
         }
     }
