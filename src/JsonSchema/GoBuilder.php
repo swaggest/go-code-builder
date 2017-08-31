@@ -2,17 +2,9 @@
 
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
+use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
-use Swaggest\PhpCodeBuilder\PhpAnyType;
-use Swaggest\PhpCodeBuilder\PhpClass;
-use Swaggest\PhpCodeBuilder\PhpClassProperty;
-use Swaggest\PhpCodeBuilder\PhpFlags;
-use Swaggest\PhpCodeBuilder\PhpFunction;
-use Swaggest\PhpCodeBuilder\PhpNamedVar;
-use Swaggest\PhpCodeBuilder\PhpCode;
-use Swaggest\PhpCodeBuilder\Property\Getter;
-use Swaggest\PhpCodeBuilder\Property\Setter;
 
 /**
  * @todo properly process $ref, $schema property names
@@ -34,7 +26,7 @@ class GoBuilder
     /**
      * @param JsonSchema $schema
      * @param string $path
-     * @return PhpAnyType
+     * @return AnyType
      */
     public function getType(JsonSchema $schema, $path = '#')
     {

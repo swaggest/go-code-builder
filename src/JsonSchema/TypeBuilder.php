@@ -3,12 +3,12 @@
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 
+use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\Slice;
 use Swaggest\JsonSchema\Constraint\Type;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
-use Swaggest\PhpCodeBuilder\PhpStdType;
-use Swaggest\PhpCodeBuilder\Types\ArrayOf;
-use Swaggest\PhpCodeBuilder\Types\OrType;
+use Swaggest\GoCodeBuilder\Templates\Type\Type as GoType;
 
 class TypeBuilder
 {
@@ -18,20 +18,20 @@ class TypeBuilder
     private $path;
     /** @var GoBuilder */
     private $goBuilder;
-    /** @var OrType */
+    /** @var AnyType[] */
     private $result;
 
     /**
      * TypeBuilder constructor.
      * @param Schema $schema
      * @param $path
-     * @param GoBuilder $goBuilder
+     * @param GoBuilder $phpBuilder
      */
-    public function __construct(JsonSchema $schema, $path, GoBuilder $goBuilder)
+    public function __construct(JsonSchema $schema, $path, GoBuilder $phpBuilder)
     {
         $this->schema = $schema;
         $this->path = $path;
-        $this->goBuilder = $goBuilder;
+        $this->goBuilder = $phpBuilder;
     }
 
     private function processLogicType()
@@ -47,7 +47,7 @@ class TypeBuilder
 
         if ($orSchemas !== null) {
             foreach ($orSchemas as $item) {
-                $this->result->add($this->goBuilder->getType($item, $this->path));
+                $this->result[] = $this->goBuilder->getType($item, $this->path);
             }
         }
     }
@@ -75,7 +75,7 @@ class TypeBuilder
             if ($index < $itemsLen) {
             } else {
                 if ($additionalItems instanceof Schema) {
-                    $this->result->add(new ArrayOf($this->goBuilder->getType($additionalItems, $this->path . '->' . $pathItems)));
+                    $this->result[] = new Slice($this->goBuilder->getType($additionalItems, $this->path . '->' . $pathItems));
                 }
             }
         }
@@ -85,15 +85,15 @@ class TypeBuilder
     {
         if ($this->schema->patternProperties !== null) {
             foreach ($this->schema->patternProperties as $pattern => $schema) {
-                $this->result->add(new ArrayOf($this->goBuilder->getType($schema, $this->path . '->' . $pattern)));
+                $this->result[] = new ArrayOf($this->goBuilder->getType($schema, $this->path . '->' . $pattern));
             }
         }
 
         if ($this->schema->additionalProperties instanceof Schema) {
-            $this->result->add(new ArrayOf($this->goBuilder->getType(
+            $this->result[] = new ArrayOf($this->goBuilder->getType(
                 $this->schema->additionalProperties,
                 $this->path . '->' . (string)Schema::names()->additionalProperties)
-            ));
+            );
         }
     }
 
@@ -101,26 +101,25 @@ class TypeBuilder
     {
         switch ($type) {
             case Type::INTEGER:
-                return PhpStdType::int();
+                return new GoType('int64');
 
             case Type::NUMBER:
-                return PhpStdType::float();
+                return new GoType('float64');
 
             case TYPE::BOOLEAN:
-                return PhpStdType::bool();
+                return new GoType('bool');
 
             case Type::STRING:
-                return PhpStdType::string();
+                return new GoType('string');
 
-            /*
             case Type::OBJECT:
-                return PhpStdType::object();*/
+                return new GoType('map[string]interface{}');
 
             case Type::ARR:
-                return PhpStdType::arr();
+                return new GoType('[]interface{}');
 
             case Type::NULL:
-                return PhpStdType::null();
+                return new GoType('interface{}');
 
             default:
                 return null;
@@ -131,22 +130,19 @@ class TypeBuilder
     {
         if ($schema->properties !== null) {
             $class = $this->goBuilder->getClass($schema, $path);
-            $this->result->add($class);
+            $this->result[] = $class;
         }
     }
 
     /**
-     * @return OrType
+     * @return AnyType
      */
     public function build()
     {
-        $schema = $this->schema;
-
-        $this->result = new OrType();
+        $this->result = array();
 
         if (null !== $path = $this->schema->getFromRef()) {
             $this->path = $this->schema->getFromRef();
-            //$this->result->add($this->phpBuilder->getType($this->schema->ref->getData(), $this->schema->ref->ref));
         }
 
 
@@ -157,13 +153,13 @@ class TypeBuilder
 
         if (is_array($this->schema->type)) {
             foreach ($this->schema->type as $type) {
-                $this->result->add($this->typeSwitch($type));
+                $this->result[] = $this->typeSwitch($type);
             }
         } elseif ($this->schema->type) {
-            $this->result->add($this->typeSwitch($this->schema->type));
+            $this->result[] = $this->typeSwitch($this->schema->type);
         }
 
-        return $this->result;
+        return $this->result[0];
 
     }
 }
