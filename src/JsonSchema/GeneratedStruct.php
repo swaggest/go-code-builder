@@ -2,13 +2,13 @@
 
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
+use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\JsonSchema\Schema;
-use Swaggest\PhpCodeBuilder\PhpClass;
 
-class GeneratedClass
+class GeneratedStruct
 {
-    /** @var PhpClass */
-    public $class;
+    /** @var StructDef */
+    public $structDef;
 
     /** @var Schema */
     public $schema;

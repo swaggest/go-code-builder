@@ -2,64 +2,38 @@
 
 namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
-use Swaggest\CodeBuilder\TableRenderer;
-use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
-class StructType extends GoTemplate
+use Swaggest\GoCodeBuilder\Templates\GoTemplate;
+use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\Type;
+
+class StructType extends GoTemplate implements AnyType
 {
     /** @var StructDef */
-    private $struct;
+    private $structDef;
 
     /**
      * StructType constructor.
-     * @param StructDef $struct
+     * @param StructDef $structDef
      */
-    public function __construct(StructDef $struct)
+    public function __construct(StructDef $structDef)
     {
-        $this->struct = $struct;
+        $this->structDef = $structDef;
+    }
+
+    private function getType()
+    {
+        return new Type($this->structDef->getName(), $this->structDef->getImport());
     }
 
     protected function toString()
     {
-        return <<<GO
-type {$this->struct->getName()} struct {
-{$this->renderProperties()}
-}
-
-
-GO;
+        return $this->getType()->toString();
     }
 
-    private function renderProperties()
+    public function getTypeString()
     {
-        $rows = array();
-        $properties = $this->struct->getProperties();
-        if (empty($properties)) {
-            return '';
-        }
-        foreach ($properties as $property) {
-            if (null === $property->getName()) {
-                $rows [] = array(
-                    '1' => $property->getType()->render(),
-                    '3' => $property->getTags()->render(),
-                    '4' => $property->getComment() ? '// ' . $property->getComment() : ''
-                );
-            } else {
-                $rows [] = array(
-                    '1' => $property->getName(),
-                    '2' => $property->getType()->render(),
-                    '3' => $property->getTags()->render(),
-                    '4' => $property->getComment() ? '// ' . $property->getComment() : ''
-                );
-                //$result .= "\t{$property->getName()}\t{$property->getType()->toString()}\t{$property->getTags()->toString()}\n";
-            }
-        }
-        $result = TableRenderer::create(new \ArrayIterator($rows))->setColDelimiter(' ')->__toString();
-        if ($result) {
-            $result = $this->padLines("\t", $this->trimLines(substr($result, 0, -1)), false);
-        }
-        return $result;
+        return $this->getType()->getTypeString();
     }
-
 
 }

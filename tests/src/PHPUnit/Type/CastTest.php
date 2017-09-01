@@ -55,8 +55,8 @@ GO;
     public function testDoubleDereference()
     {
         $expected = <<<GO
-if fromVar != nil {
-    tmp4c54 := *fromVar
+if fromVar != nil { // string <- **string
+	tmp4c54 := *fromVar
 	if tmp4c54 != nil {
 		toVar = *tmp4c54
 	}
@@ -74,10 +74,10 @@ GO;
     public function testTripleDereference()
     {
         $expected = <<<GO
-if fromVar != nil {
-    tmp4c54 := *fromVar
-	if tmp4c54 != nil {
-	    tmpe220 := *tmp4c54
+if fromVar != nil { // string <- ***string
+	tmp4c54 := *fromVar
+	if tmp4c54 != nil { // string <- **string
+		tmpe220 := *tmp4c54
 		if tmpe220 != nil {
 			toVar = *tmpe220
 		}
@@ -189,11 +189,12 @@ GO;
     {
         $expected = <<<GO
 toVar = make(map[string]*string, len(fromVar))
-for key, val := range fromVar {
-	if key != nil {
-		toKey = *key
+for key4c54 := range fromVar {
+	var toKey4c54 string
+	if key4c54 != nil {
+		toKey4c54 = *key4c54
 	}
-	toVar[toKey] = &fromVar[key]
+	toVar[toKey4c54] = &fromVar[key4c54]
 }
 GO;
 
@@ -229,10 +230,10 @@ GO;
     public function testCastNumberFromPointer()
     {
         $expected = <<<GO
-if fromVar != nil {
-    tmp4c54 := *fromVar
-	if tmp4c54 != nil {
-	    tmpe220 := *tmp4c54
+if fromVar != nil { // int64 <- ***float32
+	tmp4c54 := *fromVar
+	if tmp4c54 != nil { // int64 <- **float32
+		tmpe220 := *tmp4c54
 		if tmpe220 != nil {
 			toVar = int64(*tmpe220)
 		}
@@ -256,12 +257,12 @@ GO;
     {
         $expected = <<<GO
 var tmp4c6b int64
-if fromVar != nil {
-    tmp4c54 := *fromVar
-	if tmp4c54 != nil {
-	    tmpe220 := *tmp4c54
-		if tmpe220 != nil {
-		    tmp30c0 := *tmpe220
+if fromVar != nil { // int64 <- ****float32
+	tmp4c54 := *fromVar
+	if tmp4c54 != nil { // int64 <- ***float32
+		tmpe220 := *tmp4c54
+		if tmpe220 != nil { // int64 <- **float32
+			tmp30c0 := *tmpe220
 			if tmp30c0 != nil {
 				tmp4c6b = int64(*tmp30c0)
 			}
@@ -289,15 +290,16 @@ GO;
     {
         $expected = <<<GO
 toVar = make(map[int64][][]*string, len(fromVar))
-for key, val := range fromVar {
-	if key != nil {
-		toKey = int64(*key)
+for key4c54 := range fromVar {
+	var toKey4c54 int64
+	if key4c54 != nil {
+		toKey4c54 = int64(*key4c54)
 	}
-	toVar[toKey] = make([][]*string, len(fromVar[key]))
-	for index4ed4, val4ed4 := range fromVar[key] {
-		toVar[toKey][index4ed4] = make([]*string, len(val4ed4))
-		for index306a, val306a := range val4ed4 {
-			toVar[toKey][index4ed4][index306a] = &val306a
+	toVar[toKey4c54] = make([][]*string, len(fromVar[key4c54]))
+	for indexcbe5, valcbe5 := range fromVar[key4c54] {
+		toVar[toKey4c54][indexcbe5] = make([]*string, len(valcbe5))
+		for index39f3, val39f3 := range valcbe5 {
+			toVar[toKey4c54][indexcbe5][index39f3] = &val39f3
 		}
 	}
 }

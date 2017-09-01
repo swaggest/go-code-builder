@@ -2,26 +2,29 @@
 
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
+use Swaggest\GoCodeBuilder\GoCodeBuilder;
+use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
+use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
+use Swaggest\GoCodeBuilder\Templates\Struct\Tags;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\JsonSchema\JsonSchema;
-use Swaggest\JsonSchema\Schema;
 
 /**
  * @todo properly process $ref, $schema property names
  */
 class GoBuilder
 {
-    /** @var \SplObjectStorage|GeneratedClass[] */
+    /** @var \SplObjectStorage|GeneratedStruct[] */
     private $generatedClasses;
     private $untitledIndex = 0;
+    /** @var GoCodeBuilder */
+    public $codeBuilder;
 
     public function __construct()
     {
         $this->generatedClasses = new \SplObjectStorage();
+        $this->codeBuilder = new GoCodeBuilder();
     }
-
-    public $buildGetters = false;
-    public $buildSetters = false;
 
     /**
      * @param JsonSchema $schema
@@ -38,79 +41,51 @@ class GoBuilder
     public function getClass(JsonSchema $schema, $path)
     {
         if ($this->generatedClasses->contains($schema)) {
-            return $this->generatedClasses[$schema]->class;
+            return $this->generatedClasses[$schema]->structDef;
         } else {
-            return $this->makeClass($schema, $path)->class;
+            return $this->makeClass($schema, $path)->structDef;
         }
     }
 
-    private function makeClass(Schema $schema, $path)
+    private function makeClass(JsonSchema $schema, $path)
     {
         if (empty($path)) {
             throw new Exception('Empty path');
         }
-        $generatedClass = new GeneratedClass();
-        $generatedClass->schema = $schema;
+        $generatedStruct = new GeneratedStruct();
+        $generatedStruct->schema = $schema;
 
-        $class = new PhpClass();
-        $class->setName('Untitled' . ++$this->untitledIndex);
-        $class->setExtends(Palette::classStructureClass());
-
-
-        $setupProperties = new PhpFunction('setUpProperties');
-        $setupProperties
-            ->setVisibility(PhpFlags::VIS_PUBLIC)
-            ->setIsStatic(true);
-        $setupProperties
-            ->addArgument(new PhpNamedVar('properties', Palette::propertiesOrStaticClass()))
-            ->addArgument(new PhpNamedVar('ownerSchema', Palette::schemaClass()));
-
-        $body = new PhpCode();
-
-        $class->addMethod($setupProperties);
-
-        $generatedClass->class = $class;
-        $generatedClass->path = $path;
-
-        $this->generatedClasses->attach($schema, $generatedClass);
-
-        foreach ($schema->properties as $name => $property) {
-            $propertyName = PhpCode::makePhpName($name);
-
-            $schemaBuilder = new SchemaBuilder($property, '$properties->' . $propertyName, $path . '->' . $name, $this);
-            $phpProperty = new PhpClassProperty($propertyName, $this->getType($property, $path . '->' . $name));
-            if ($property->description) {
-                $phpProperty->setDescription($property->description);
-            }
-            $class->addProperty($phpProperty);
-            if ($this->buildGetters) {
-                $class->addMethod(new Getter($phpProperty));
-            }
-            if ($this->buildSetters) {
-                $class->addMethod(new Setter($phpProperty));
-            }
-            $body->addSnippet(
-                $schemaBuilder->build()
-            );
-            if ($propertyName != $name) {
-                $body->addSnippet('$ownerSchema->addPropertyMapping(' . var_export($name, 1) . ', self::names()->'
-                    . $propertyName . ");\n");
-            }
-
-            $class->addMethod(new Setter($phpProperty, true));
+        if ($path === '#') {
+            $structDef = new StructDef('Untitled' . ++$this->untitledIndex);
+        } else {
+            $structDef = new StructDef($this->codeBuilder->exportableName($path));
         }
 
-        $schemaBuilder = new SchemaBuilder($schema, '$ownerSchema', $path, $this);
-        $schemaBuilder->setSkipProperties(true);
-        $body->addSnippet($schemaBuilder->build());
+        $generatedStruct->structDef = $structDef;
+        $generatedStruct->path = $path;
 
-        $setupProperties->setBody($body);
+        $this->generatedClasses->attach($schema, $generatedStruct);
 
-        return $generatedClass;
+        if ($schema->properties !== null) {
+            foreach ($schema->properties as $name => $property) {
+                $fieldName = $this->codeBuilder->exportableName($name);
+                $goProperty = new StructProperty(
+                    $fieldName,
+                    $this->getType($property, $path . '->' . $name),
+                    (new Tags())->setTag('json', $name)
+                );
+                if ($property->description) {
+                    $goProperty->setComment($property->description);
+                }
+                $structDef->addProperty($goProperty);
+            }
+        }
+
+        return $generatedStruct;
     }
 
     /**
-     * @return GeneratedClass[]
+     * @return GeneratedStruct[]
      */
     public function getGeneratedClasses()
     {

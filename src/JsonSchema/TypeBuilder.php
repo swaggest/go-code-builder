@@ -3,7 +3,12 @@
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 
+use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
+use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
+use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\Map;
+use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\Slice;
 use Swaggest\JsonSchema\Constraint\Type;
 use Swaggest\JsonSchema\JsonSchema;
@@ -25,13 +30,13 @@ class TypeBuilder
      * TypeBuilder constructor.
      * @param Schema $schema
      * @param $path
-     * @param GoBuilder $phpBuilder
+     * @param GoBuilder $goBuilder
      */
-    public function __construct(JsonSchema $schema, $path, GoBuilder $phpBuilder)
+    public function __construct(JsonSchema $schema, $path, GoBuilder $goBuilder)
     {
         $this->schema = $schema;
         $this->path = $path;
-        $this->goBuilder = $phpBuilder;
+        $this->goBuilder = $goBuilder;
     }
 
     private function processLogicType()
@@ -47,7 +52,8 @@ class TypeBuilder
 
         if ($orSchemas !== null) {
             foreach ($orSchemas as $item) {
-                $this->result[] = $this->goBuilder->getType($item, $this->path);
+                $structProperty = new StructProperty(null, $this->goBuilder->getType($item, $this->path));
+                $this->makeResultStruct()->addProperty($structProperty);
             }
         }
     }
@@ -85,15 +91,28 @@ class TypeBuilder
     {
         if ($this->schema->patternProperties !== null) {
             foreach ($this->schema->patternProperties as $pattern => $schema) {
-                $this->result[] = new ArrayOf($this->goBuilder->getType($schema, $this->path . '->' . $pattern));
+                $structProperty = new StructProperty(
+                    $this->goBuilder->codeBuilder->privateName('patternProperties_' . $pattern),
+                    new Map(
+                        new GoType("string"),
+                        $this->goBuilder->getType($schema, $this->path . '->' . $pattern)
+                    )
+                );
+                $this->makeResultStruct()->addProperty($structProperty);
             }
         }
 
         if ($this->schema->additionalProperties instanceof Schema) {
-            $this->result[] = new ArrayOf($this->goBuilder->getType(
-                $this->schema->additionalProperties,
-                $this->path . '->' . (string)Schema::names()->additionalProperties)
+            $structProperty = new StructProperty(
+                $this->goBuilder->codeBuilder->privateName('additionalProperties'),
+                new Map(
+                    new GoType("string"),
+                    $this->goBuilder->getType(
+                        $this->schema->additionalProperties,
+                        $this->path . '->' . (string)Schema::names()->additionalProperties)
+                )
             );
+            $this->makeResultStruct()->addProperty($structProperty);
         }
     }
 
@@ -126,16 +145,34 @@ class TypeBuilder
         }
     }
 
-    private function processNamedClass(JsonSchema $schema, $path)
+    private function processNamedClass()
     {
-        if ($schema->properties !== null) {
-            $class = $this->goBuilder->getClass($schema, $path);
-            $this->result[] = $class;
+        if ($this->schema->properties !== null) {
+            $this->result[] = new Pointer($this->makeResultStruct()->getType());
         }
     }
 
+
+    private function makeResultStruct()
+    {
+        if ($this->resultStruct === null) {
+            $this->resultStruct = $this->goBuilder->getClass($this->schema, $this->path);
+            $this->resultStruct->setComment($this->path);
+        }
+        return $this->resultStruct;
+    }
+
+    /** @var FuncDef */
+    private $resultStructImportFunc;
+    /** @var FuncDef */
+    private $resultStructExportFunc;
+
+    /** @var StructDef */
+    private $resultStruct;
+
     /**
      * @return AnyType
+     * @throws Exception
      */
     public function build()
     {
@@ -146,19 +183,24 @@ class TypeBuilder
         }
 
 
-        $this->processNamedClass($this->schema, $this->path);
+        $this->processNamedClass();
         $this->processLogicType();
         $this->processArrayType();
         $this->processObjectType();
 
         if (is_array($this->schema->type)) {
-            foreach ($this->schema->type as $type) {
-                $this->result[] = $this->typeSwitch($type);
-            }
+            throw new Exception("Can not map multiple types in GO type");
         } elseif ($this->schema->type) {
             $this->result[] = $this->typeSwitch($this->schema->type);
         }
 
+
+        if ($this->resultStruct !== null) {
+            return new Pointer($this->resultStruct->getType());
+        }
+        if (empty($this->result)) {
+            return new \Swaggest\GoCodeBuilder\Templates\Type\Type('interface{}');
+        }
         return $this->result[0];
 
     }

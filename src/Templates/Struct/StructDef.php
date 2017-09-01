@@ -51,6 +51,16 @@ class StructDef extends GoTemplate
     }
 
     /**
+     * @param mixed $name
+     * @return StructDef
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
      * @return Import
      */
     public function getImport()
@@ -108,14 +118,14 @@ class StructDef extends GoTemplate
     protected function toString()
     {
         return <<<GO
-{$this->renderComment()}{$this->renderStruct()}{$this->renderFuncs()}
+{$this->renderComment()}{$this->renderFields()}{$this->renderFuncs()}
 GO;
 
     }
 
-    public function renderStruct()
+    public function renderFields()
     {
-        return new StructType($this);
+        return new StructFields($this);
     }
 
     public function renderFuncs()
@@ -124,11 +134,10 @@ GO;
     }
 
     /**
-     * @return Type
+     * @return StructType
      */
     public function getType()
     {
-        return new Type($this->name, $this->import);
+        return new StructType($this);
     }
-
 }

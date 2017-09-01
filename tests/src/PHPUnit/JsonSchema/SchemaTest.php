@@ -32,15 +32,36 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
         $index = 0;
 
         foreach ($builder->getGeneratedClasses() as $class) {
-            $class->class->setName('Beech' . ++$index);
+            $class->structDef->setName('Beech' . ++$index);
         }
 
+        $expectedStructs = <<<'GO'
+// #
+type Beech1 struct {
+	SampleInt    int64   `json:"sampleInt"`
+	SampleBool   bool    `json:"sampleBool"`
+	SampleString string  `json:"sampleString"`
+	SampleNumber float64 `json:"sampleNumber"`
+	SampleSelf   *Beech1 `json:"sampleSelf"`
+	Another      *Beech2 `json:"another"`
+}
+
+// #->another
+type Beech2 struct {
+	Hello bool   `json:"hello"`
+	World string `json:"world"`
+}
+
+
+GO;
+
+        $actualStructs = '';
         foreach ($builder->getGeneratedClasses() as $class) {
-            echo $class->class;
+            $actualStructs .= $class->structDef;
         }
 
-
-        var_dump($type->getTypeString());
+        $this->assertSame($expectedStructs, $actualStructs);
+        $this->assertSame('*Beech1', $type->getTypeString());
     }
 
 

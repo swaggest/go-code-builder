@@ -34,9 +34,11 @@ class StructTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(<<<GO
 // Sample is a sample structure
 type Sample struct {
-	PropOne	string	`json:"prop_one"`
-	PropTwo	int64	`schema:"prop_two" description:"The second property"`
+	PropOne string `json:"prop_one"`
+	PropTwo int64  `schema:"prop_two" description:"The second property"`
 }
+
+
 GO
             , $struct->render());
     }
@@ -65,9 +67,11 @@ GO
         $this->assertSame(<<<GO
 // Sample is a sample structure
 type Sample struct {
-	MyTypeOne	`json:"-"`
-	PropTwo	int64	`schema:"prop_two" description:"The second property"`
+	MyTypeOne `json:"-"`
+	PropTwo   `schema:"prop_two" description:"The second property"`  int64
 }
+
+
 GO
             , $struct->render());
     }
