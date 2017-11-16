@@ -32,9 +32,10 @@ import (
 	"fmt"
 )
 
-func Sample()  {
+func Sample() {
 	fmt.Println("Hello world")
 }
+
 GO
             , $goFile->render());
 

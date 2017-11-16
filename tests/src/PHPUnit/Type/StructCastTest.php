@@ -43,7 +43,7 @@ GO;
 
         $loadFrom = $cast->getLoadFrom();
         $expected = <<<GO
-func (base *Base) LoadFrom(derived Derived)  {
+func (base *Base) LoadFrom(derived Derived) {
 	var tmp4c90 int64
 	tmp4c90 = int64(derived.DUInt32)
 	base.BInt64 = &tmp4c90

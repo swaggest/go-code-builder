@@ -14,7 +14,7 @@ class FuncTest extends \PHPUnit_Framework_TestCase
         $func = new FuncDef('Sample');
         $func->setResult(
             (new Result())
-                ->add(null, new Pointer('MyType'))
+                ->add(null, new Pointer(new Type('MyType')))
                 ->add(null, new Type('error'))
         );
 

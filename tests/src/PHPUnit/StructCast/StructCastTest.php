@@ -40,7 +40,7 @@ GO
             , $cast->getMapTo()->render());
 
         $this->assertSame(<<<GO
-func (base Base) LoadFrom(derived Derived)  {
+func (base *Base) LoadFrom(derived Derived) {
 	if derived.ID != nil {
 		base.Id = int64(*derived.ID)
 	}
@@ -190,9 +190,9 @@ func (base VeryBase) MapTo() Derived {
 	return result
 }
 
-func (base VeryBase) LoadFrom(derived Derived)  {
+func (base *VeryBase) LoadFrom(derived Derived) {
 	if base.Inner == nil {
-	    base.Inner = new(Base)
+		base.Inner = new(Base)
 	}
 	base.Inner.LoadFrom(derived)
 }
@@ -229,21 +229,14 @@ func (base Base) MapTo() Derived {
 	return result
 }
 
-func (base BaseBody) LoadFrom(derived DerivedBody)  {
-	if derived.Name != nil {
-		base.Name = *derived.Name
-	}
-
-}
-
-func (base Base) LoadFrom(derived Derived)  {
+func (base *Base) LoadFrom(derived Derived) {
 	if derived.ID != nil {
 		base.Id = int64(*derived.ID)
 	}
 	base.Body = make([]*BaseBody, len(derived.Body))
 	for index0922, val0922 := range derived.Body {
 		if base.Body[index0922] == nil {
-		    base.Body[index0922] = new(BaseBody)
+			base.Body[index0922] = new(BaseBody)
 		}
 		base.Body[index0922].LoadFrom(val0922)
 	}
@@ -252,12 +245,13 @@ func (base Base) LoadFrom(derived Derived)  {
 		var toKeyf30f *string
 		toKeyf30f = &keyf30f
 		if base.BodyMap[toKeyf30f] == nil {
-		    base.BodyMap[toKeyf30f] = new(BaseBody)
+			base.BodyMap[toKeyf30f] = new(BaseBody)
 		}
 		base.BodyMap[toKeyf30f].LoadFrom(derived.BodyMap[keyf30f])
 	}
 
 }
+
 GO;
 
         $this->assertSame($expected, $file->render());
