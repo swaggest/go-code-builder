@@ -38,21 +38,39 @@ GO;
             return '';
         }
         foreach ($properties as $property) {
+            $commentLines = explode("\n", trim($property->getComment()));
+            $commentLine = count($commentLines) > 1 ? '' : $commentLines[0];
+            if ($commentLine) {
+                $commentLine = '// ' . $commentLine;
+            }
+
+            if (count($commentLines) > 1) {
+                $rows [] = array();
+                foreach ($commentLines as $line) {
+                    $rows [] = array(
+                        '1' => '',
+                        '2' => '',
+                        '3' => '',
+                        '4' => '// ' . $line,
+                    );
+                }
+            }
+
             if (null === $property->getName()) {
                 $rows [] = array(
                     '1' => $property->getType()->render(),
                     '3' => $property->getTags()->render(),
-                    '4' => $property->getComment() ? '// ' . $property->getComment() : ''
+                    '4' => $commentLine
                 );
             } else {
                 $rows [] = array(
                     '1' => $property->getName(),
                     '2' => $property->getType()->render(),
                     '3' => $property->getTags()->render(),
-                    '4' => $property->getComment() ? '// ' . $property->getComment() : ''
+                    '4' => $commentLine
                 );
-                //$result .= "\t{$property->getName()}\t{$property->getType()->toString()}\t{$property->getTags()->toString()}\n";
             }
+
         }
         $result = TableRenderer::create(new \ArrayIterator($rows))->setColDelimiter(' ')->__toString();
         if ($result) {
