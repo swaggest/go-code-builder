@@ -3,6 +3,7 @@
 namespace Swaggest\GoCodeBuilder;
 
 use Swaggest\CodeBuilder\CodeBuilder;
+use Swaggest\GoCodeBuilder\Style\Initialisms;
 
 class GoCodeBuilder extends CodeBuilder
 {
@@ -66,6 +67,7 @@ GO;
         } elseif (is_numeric($goName[0])) {
             $goName = 'Property' . $goName;
         }
+        $goName = Initialisms::process($goName);
         return $goName;
     }
 
@@ -81,6 +83,7 @@ GO;
         } elseif (is_numeric($goName[0])) {
             $goName = 'property' . $goName;
         }
+        $goName = Initialisms::process($goName);
         return $goName;
     }
 

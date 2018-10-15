@@ -2,7 +2,9 @@
   "name": "swaggest/go-code-builder",
   "type": "library",
   "description": "GO code generation library",
-  "keywords": ["library"],
+  "keywords": [
+    "library"
+  ],
   "homepage": "https://github.com/swaggest/go-code-builder",
   "license": "MIT",
   "authors": [
@@ -13,12 +15,13 @@
     }
   ],
   "require": {
-    "swaggest/code-builder": "^0.2.0|dev-master",
-    "php": ">=5.3.0"
+    "swaggest/code-builder": "^0.3.1|dev-master",
+    "php": ">=5.4.0",
+    "phplang/scope-exit": "^1.0",
+    "swaggest/json-schema": "^0.12.4"
   },
   "require-dev": {
-    "codeclimate/php-test-reporter": "0.1.2",
-    "phpunit/phpunit": "4.8.23"
+    "phpunit/phpunit": "4.8.36"
   },
   "autoload": {
     "psr-4": {
@@ -32,5 +35,10 @@
   },
   "scripts": {
     "test": "php -dxdebug.coverage_enable=1 ./vendor/bin/phpunit --coverage-text"
+  },
+  "config": {
+    "platform": {
+      "php": "5.5.38"
+    }
   }
 }

@@ -31,14 +31,13 @@ class GoBuilder
      * @param string $path
      * @return AnyType
      */
-    public function getType(JsonSchema $schema, $path = '#')
+    public function getType($schema, $path = '#')
     {
-        $typeBuilder = new TypeBuilder($schema, $path, $this);
-        return $typeBuilder->build();
+        return (new TypeBuilder($schema, $path, $this))->build();
     }
 
 
-    public function getClass(JsonSchema $schema, $path)
+    public function getClass($schema, $path)
     {
         if ($this->generatedClasses->contains($schema)) {
             return $this->generatedClasses[$schema]->structDef;
@@ -47,7 +46,7 @@ class GoBuilder
         }
     }
 
-    private function makeClass(JsonSchema $schema, $path)
+    private function makeClass($schema, $path)
     {
         if (empty($path)) {
             throw new Exception('Empty path');
@@ -69,9 +68,10 @@ class GoBuilder
         if ($schema->properties !== null) {
             foreach ($schema->properties as $name => $property) {
                 $fieldName = $this->codeBuilder->exportableName($name);
+                $goPropertyType = $this->getType($property, $path . '->' . $name);
                 $goProperty = new StructProperty(
                     $fieldName,
-                    $this->getType($property, $path . '->' . $name),
+                    $goPropertyType,
                     (new Tags())->setTag('json', $name)
                 );
                 if ($property->description) {

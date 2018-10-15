@@ -5,6 +5,7 @@ namespace Swaggest\GoCodeBuilder\Tests\PHPUnit\JsonSchema;
 
 use Swaggest\GoCodeBuilder\JsonSchema\GoBuilder;
 use Swaggest\JsonSchema\JsonSchema;
+use Swaggest\JsonSchema\Schema;
 
 class SwaggerSchemaGenerateTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,8 +13,8 @@ class SwaggerSchemaGenerateTest extends \PHPUnit_Framework_TestCase
     {
         //$this->markTestSkipped();
 
-        $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../../../json-schema/spec/swagger-schema.json'));
-        $schema = JsonSchema::import($schemaData);
+        $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../../vendor/swaggest/json-schema/spec/swagger-schema.json'));
+        $schema = Schema::import($schemaData);
 
 
         $builder = new GoBuilder();
@@ -53,7 +54,7 @@ type DefinitionsInfo struct {
 // #/definitions/contact
 type DefinitionsContact struct {
 	Name               string                 `json:"name"`  // The identifying name of the contact person/organization.
-	Url                string                 `json:"url"`   // The URL pointing to the contact information.
+	URL                string                 `json:"url"`   // The URL pointing to the contact information.
 	Email              string                 `json:"email"` // The email address of the contact person/organization.
 	patternPropertiesX map[string]interface{}
 }
@@ -61,7 +62,7 @@ type DefinitionsContact struct {
 // #/definitions/license
 type DefinitionsLicense struct {
 	Name               string                 `json:"name"` // The name of the license type. It's encouraged to use an OSI compatible license.
-	Url                string                 `json:"url"`  // The URL pointing to the license.
+	URL                string                 `json:"url"`  // The URL pointing to the license.
 	patternPropertiesX map[string]interface{}
 }
 
@@ -101,7 +102,7 @@ type DefinitionsOperation struct {
 	Summary            string                            `json:"summary"`      // A brief summary of the operation.
 	Description        string                            `json:"description"`  // A longer description of the operation, GitHub Flavored Markdown is allowed.
 	ExternalDocs       *DefinitionsExternalDocs          `json:"externalDocs"` // information about external documentation
-	OperationId        string                            `json:"operationId"`  // A unique identifier of the operation.
+	OperationID        string                            `json:"operationId"`  // A unique identifier of the operation.
 	Produces           *DefinitionsOperationProduces     `json:"produces"`     // A list of MIME types the API can produce.
 	Consumes           *DefinitionsOperationConsumes     `json:"consumes"`     // A list of MIME types the API can consume.
 	Parameters         []*DefinitionsParametersListItems `json:"parameters"`   // The parameters needed to send a valid API call.
@@ -115,7 +116,7 @@ type DefinitionsOperation struct {
 // #/definitions/externalDocs
 type DefinitionsExternalDocs struct {
 	Description        string                 `json:"description"`
-	Url                string                 `json:"url"`
+	URL                string                 `json:"url"`
 	patternPropertiesX map[string]interface{}
 }
 
@@ -152,30 +153,30 @@ type DefinitionsSchema struct {
 	Minimum              float64                                                           `json:"minimum"`
 	ExclusiveMinimum     bool                                                              `json:"exclusiveMinimum"`
 	MaxLength            int64                                                             `json:"maxLength"`
-	MinLength            *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
+	MinLength            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
 	Pattern              string                                                            `json:"pattern"`
 	MaxItems             int64                                                             `json:"maxItems"`
-	MinItems             *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
+	MinItems             *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
 	UniqueItems          bool                                                              `json:"uniqueItems"`
 	MaxProperties        int64                                                             `json:"maxProperties"`
-	MinProperties        *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minProperties"`
+	MinProperties        *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minProperties"`
 	Required             []string                                                          `json:"required"`
 	Enum                 []interface{}                                                     `json:"enum"`
 	patternPropertiesX   map[string]interface{}
 	AdditionalProperties *DefinitionsSchemaAdditionalProperties                            `json:"additionalProperties"`
-	Type                 *HttpJsonSchemaOrgDraft04SchemaPropertiesType                     `json:"type"`
+	Type                 *HTTPJSONSchemaOrgDraft04SchemaPropertiesType                     `json:"type"`
 	Items                *DefinitionsSchemaItems                                           `json:"items"`
 	AllOf                []*DefinitionsSchema                                              `json:"allOf"`
 	Properties           *DefinitionsSchemaProperties                                      `json:"properties"`
 	Discriminator        string                                                            `json:"discriminator"`
 	ReadOnly             bool                                                              `json:"readOnly"`
-	Xml                  *DefinitionsXml                                                   `json:"xml"`
+	XML                  *DefinitionsXML                                                   `json:"xml"`
 	ExternalDocs         *DefinitionsExternalDocs                                          `json:"externalDocs"`         // information about external documentation
 	Example              interface{}                                                       `json:"example"`
 }
 
 // http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0
-type HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 struct {
+type HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 struct {
 	interface{}
 }
 
@@ -185,7 +186,7 @@ type DefinitionsSchemaAdditionalProperties struct {
 }
 
 // http://json-schema.org/draft-04/schema#/properties/type
-type HttpJsonSchemaOrgDraft04SchemaPropertiesType struct {
+type HTTPJSONSchemaOrgDraft04SchemaPropertiesType struct {
 	[]interface{}
 }
 
@@ -200,7 +201,7 @@ type DefinitionsSchemaProperties struct {
 }
 
 // #/definitions/xml
-type DefinitionsXml struct {
+type DefinitionsXML struct {
 	Name               string                 `json:"name"`
 	Namespace          string                 `json:"namespace"`
 	Prefix             string                 `json:"prefix"`
@@ -230,10 +231,10 @@ type DefinitionsHeaderParameterSubSchema struct {
 	Minimum            float64                                                           `json:"minimum"`
 	ExclusiveMinimum   bool                                                              `json:"exclusiveMinimum"`
 	MaxLength          int64                                                             `json:"maxLength"`
-	MinLength          *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
+	MinLength          *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
 	Pattern            string                                                            `json:"pattern"`
 	MaxItems           int64                                                             `json:"maxItems"`
-	MinItems           *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
+	MinItems           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
 	UniqueItems        bool                                                              `json:"uniqueItems"`
 	Enum               []interface{}                                                     `json:"enum"`
 	MultipleOf         float64                                                           `json:"multipleOf"`
@@ -253,13 +254,23 @@ type DefinitionsPrimitivesItems struct {
 	Minimum            float64                                                           `json:"minimum"`
 	ExclusiveMinimum   bool                                                              `json:"exclusiveMinimum"`
 	MaxLength          int64                                                             `json:"maxLength"`
-	MinLength          *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
+	MinLength          *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
 	Pattern            string                                                            `json:"pattern"`
 	MaxItems           int64                                                             `json:"maxItems"`
-	MinItems           *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
+	MinItems           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
 	UniqueItems        bool                                                              `json:"uniqueItems"`
 	Enum               []interface{}                                                     `json:"enum"`
 	MultipleOf         float64                                                           `json:"multipleOf"`
+}
+
+// http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0
+type HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 struct {
+	interface{}
+}
+
+// http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0
+type HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 struct {
+	interface{}
 }
 
 // #/definitions/nonBodyParameter
@@ -284,10 +295,10 @@ type DefinitionsFormDataParameterSubSchema struct {
 	Minimum            float64                                                           `json:"minimum"`
 	ExclusiveMinimum   bool                                                              `json:"exclusiveMinimum"`
 	MaxLength          int64                                                             `json:"maxLength"`
-	MinLength          *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
+	MinLength          *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
 	Pattern            string                                                            `json:"pattern"`
 	MaxItems           int64                                                             `json:"maxItems"`
-	MinItems           *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
+	MinItems           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
 	UniqueItems        bool                                                              `json:"uniqueItems"`
 	Enum               []interface{}                                                     `json:"enum"`
 	MultipleOf         float64                                                           `json:"multipleOf"`
@@ -311,10 +322,10 @@ type DefinitionsQueryParameterSubSchema struct {
 	Minimum            float64                                                           `json:"minimum"`
 	ExclusiveMinimum   bool                                                              `json:"exclusiveMinimum"`
 	MaxLength          int64                                                             `json:"maxLength"`
-	MinLength          *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
+	MinLength          *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
 	Pattern            string                                                            `json:"pattern"`
 	MaxItems           int64                                                             `json:"maxItems"`
-	MinItems           *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
+	MinItems           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
 	UniqueItems        bool                                                              `json:"uniqueItems"`
 	Enum               []interface{}                                                     `json:"enum"`
 	MultipleOf         float64                                                           `json:"multipleOf"`
@@ -337,10 +348,10 @@ type DefinitionsPathParameterSubSchema struct {
 	Minimum            float64                                                           `json:"minimum"`
 	ExclusiveMinimum   bool                                                              `json:"exclusiveMinimum"`
 	MaxLength          int64                                                             `json:"maxLength"`
-	MinLength          *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
+	MinLength          *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
 	Pattern            string                                                            `json:"pattern"`
 	MaxItems           int64                                                             `json:"maxItems"`
-	MinItems           *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
+	MinItems           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
 	UniqueItems        bool                                                              `json:"uniqueItems"`
 	Enum               []interface{}                                                     `json:"enum"`
 	MultipleOf         float64                                                           `json:"multipleOf"`
@@ -349,11 +360,11 @@ type DefinitionsPathParameterSubSchema struct {
 
 // #/definitions/parametersList->items
 type DefinitionsParametersListItems struct {
-	*DefinitionsJsonReference
+	*DefinitionsJSONReference
 }
 
 // #/definitions/jsonReference
-type DefinitionsJsonReference struct {
+type DefinitionsJSONReference struct {
 	Ref string `json:"$ref"`
 }
 
@@ -397,10 +408,10 @@ type DefinitionsHeader struct {
 	Minimum            float64                                                           `json:"minimum"`
 	ExclusiveMinimum   bool                                                              `json:"exclusiveMinimum"`
 	MaxLength          int64                                                             `json:"maxLength"`
-	MinLength          *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
+	MinLength          *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength"`
 	Pattern            string                                                            `json:"pattern"`
 	MaxItems           int64                                                             `json:"maxItems"`
-	MinItems           *HttpJsonSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
+	MinItems           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems"`
 	UniqueItems        bool                                                              `json:"uniqueItems"`
 	Enum               []interface{}                                                     `json:"enum"`
 	MultipleOf         float64                                                           `json:"multipleOf"`
@@ -415,7 +426,7 @@ type DefinitionsHeaders struct {
 
 // #/definitions/responseValue
 type DefinitionsResponseValue struct {
-	*DefinitionsJsonReference
+	*DefinitionsJSONReference
 }
 
 // #/definitions/responses
@@ -457,7 +468,7 @@ type DefinitionsSecurityDefinitionsAdditionalProperties struct {
 }
 
 // #/definitions/apiKeySecurity
-type DefinitionsApiKeySecurity struct {
+type DefinitionsAPIKeySecurity struct {
 	Type               string                 `json:"type"`
 	Name               string                 `json:"name"`
 	In                 string                 `json:"in"`
@@ -470,7 +481,7 @@ type DefinitionsOauth2ImplicitSecurity struct {
 	Type               string                   `json:"type"`
 	Flow               string                   `json:"flow"`
 	Scopes             *DefinitionsOauth2Scopes `json:"scopes"`
-	AuthorizationUrl   string                   `json:"authorizationUrl"`
+	AuthorizationURL   string                   `json:"authorizationUrl"`
 	Description        string                   `json:"description"`
 	patternPropertiesX map[string]interface{}
 }
@@ -485,7 +496,7 @@ type DefinitionsOauth2PasswordSecurity struct {
 	Type               string                   `json:"type"`
 	Flow               string                   `json:"flow"`
 	Scopes             *DefinitionsOauth2Scopes `json:"scopes"`
-	TokenUrl           string                   `json:"tokenUrl"`
+	TokenURL           string                   `json:"tokenUrl"`
 	Description        string                   `json:"description"`
 	patternPropertiesX map[string]interface{}
 }
@@ -495,7 +506,7 @@ type DefinitionsOauth2ApplicationSecurity struct {
 	Type               string                   `json:"type"`
 	Flow               string                   `json:"flow"`
 	Scopes             *DefinitionsOauth2Scopes `json:"scopes"`
-	TokenUrl           string                   `json:"tokenUrl"`
+	TokenURL           string                   `json:"tokenUrl"`
 	Description        string                   `json:"description"`
 	patternPropertiesX map[string]interface{}
 }
@@ -505,8 +516,8 @@ type DefinitionsOauth2AccessCodeSecurity struct {
 	Type               string                   `json:"type"`
 	Flow               string                   `json:"flow"`
 	Scopes             *DefinitionsOauth2Scopes `json:"scopes"`
-	AuthorizationUrl   string                   `json:"authorizationUrl"`
-	TokenUrl           string                   `json:"tokenUrl"`
+	AuthorizationURL   string                   `json:"authorizationUrl"`
+	TokenURL           string                   `json:"tokenUrl"`
 	Description        string                   `json:"description"`
 	patternPropertiesX map[string]interface{}
 }

@@ -5,6 +5,7 @@ namespace Swaggest\GoCodeBuilder\Tests\PHPUnit\JsonSchema;
 
 use Swaggest\GoCodeBuilder\JsonSchema\GoBuilder;
 use Swaggest\JsonSchema\JsonSchema;
+use Swaggest\JsonSchema\Schema;
 
 class TypeBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,7 +31,7 @@ class TypeBuilderTest extends \PHPUnit_Framework_TestCase
 }
 JSON
         );
-        $schema = JsonSchema::import($schemaData);
+        $schema = Schema::import($schemaData);
         $goBuilder = new GoBuilder();
         $type = $goBuilder->getType($schema);
 

@@ -4,7 +4,7 @@ namespace Swaggest\GoCodeBuilder\Tests\PHPUnit\JsonSchema;
 
 
 use Swaggest\GoCodeBuilder\JsonSchema\GoBuilder;
-use Swaggest\JsonSchema\JsonSchema;
+use Swaggest\JsonSchema\Schema;
 
 class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,8 +12,8 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
     {
         //$this->markTestSkipped();
 
-        $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../../../json-schema/spec/json-schema.json'));
-        $schema = JsonSchema::import($schemaData);
+        $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../../vendor/swaggest/json-schema/spec/json-schema.json'));
+        $schema = Schema::import($schemaData);
 
 
         $builder = new GoBuilder();
@@ -21,7 +21,7 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         $expectedGen = <<<'GO'
 // #
 type Untitled1 struct {
-	Id                   string                              `json:"id"`
+	ID                   string                              `json:"id"`
 	Schema               string                              `json:"$schema"`
 	Title                string                              `json:"title"`
 	Description          string                              `json:"description"`
@@ -69,7 +69,7 @@ type AdditionalItems struct {
 
 // #
 type Untitled2 struct {
-	Id                   string                              `json:"id"`
+	ID                   string                              `json:"id"`
 	Schema               string                              `json:"$schema"`
 	Title                string                              `json:"title"`
 	Description          string                              `json:"description"`

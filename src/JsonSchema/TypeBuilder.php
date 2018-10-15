@@ -148,7 +148,7 @@ class TypeBuilder
     private function processNamedClass()
     {
         if ($this->schema->properties !== null) {
-            $this->result[] = new Pointer($this->makeResultStruct()->getType());
+            $this->result[] = $this->makeResultStruct()->getType();
         }
     }
 
@@ -179,9 +179,8 @@ class TypeBuilder
         $this->result = array();
 
         if (null !== $path = $this->schema->getFromRef()) {
-            $this->path = $this->schema->getFromRef();
+            $this->path = $path;
         }
-
 
         $this->processNamedClass();
         $this->processLogicType();
@@ -189,19 +188,26 @@ class TypeBuilder
         $this->processObjectType();
 
         if (is_array($this->schema->type)) {
-            throw new Exception("Can not map multiple types in GO type");
+            throw new Exception('Can not map multiple types in GO type');
         } elseif ($this->schema->type) {
             $this->result[] = $this->typeSwitch($this->schema->type);
         }
 
-
         if ($this->resultStruct !== null) {
             return new Pointer($this->resultStruct->getType());
         }
+
         if (empty($this->result)) {
             return new \Swaggest\GoCodeBuilder\Templates\Type\Type('interface{}');
+        } else {
+            if (1 === count($this->result)) {
+                return $this->result[0];
+            } else {
+                return $this->result[0];
+            }
         }
-        return $this->result[0];
 
+
+        return new \Swaggest\GoCodeBuilder\Templates\Type\Type('interface{}');
     }
 }
