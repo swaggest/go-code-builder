@@ -32,5 +32,24 @@ abstract class GoTemplate extends AbstractTemplate
         }
     }
 
+    public function padLines($with, $text, $skipFirst = true, $forcePad = false)
+    {
+        $lines = explode("\n", $text);
+        foreach ($lines as $index => $line) {
+            if ($skipFirst && !$index) {
+                continue;
+            }
+            if ($line || $forcePad) {
+                $l = $with . $line;
+                if (trim($l) === '') {
+                    $l = '';
+                }
+                $lines[$index] = $l;
+            }
+        }
+        return implode("\n", $lines);
+
+    }
+
 
 }

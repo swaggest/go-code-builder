@@ -1,0 +1,170 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "properties.json",
+  "type": "object",
+  "definitions": {
+    "amqpType": {
+      "type": "string",
+      "enum": [
+        "bit",
+        "octet",
+        "short",
+        "long",
+        "longlong",
+        "shortstr",
+        "longstr",
+        "timestamp"
+      ]
+    },
+    "property": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/propertySimple"
+        },
+        {
+          "$ref": "#/definitions/propertyTable"
+        }
+      ]
+    },
+    "propertySimple": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/amqpType"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "propertyTable": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "table"
+        },
+        "value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/property"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "propertyShortStr": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "shortstr"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "propertyOctet": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "octet"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "propertyTimestamp": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "timestamp"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "headers": {
+      "$ref": "#/definitions/propertyTable",
+      "description": "message header field table"
+    },
+    "content-type": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "MIME content type"
+    },
+    "content-encoding": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "MIME content encoding"
+    },
+    "delivery-mode": {
+      "$ref": "#/definitions/propertyOctet",
+      "description": "non-persistent (1) or persistent (2)"
+    },
+    "priority": {
+      "$ref": "#/definitions/propertyOctet",
+      "description": "message priority, 0 to 9"
+    },
+    "correlation-id": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "application correlation identifier"
+    },
+    "reply-to": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "address to reply to"
+    },
+    "expiration": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "message expiration specification"
+    },
+    "message-id": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "application message identifier"
+    },
+    "timestamp": {
+      "$ref": "#/definitions/propertyTimestamp",
+      "description": "message timestamp"
+    },
+    "type": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "message type name"
+    },
+    "user-id": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "creating user id"
+    },
+    "app-id": {
+      "$ref": "#/definitions/propertyShortStr",
+      "description": "creating application id"
+    }
+  },
+  "additionalProperties": {
+    "$ref": "#/definitions/property"
+  }
+}

@@ -37,5 +37,17 @@ class Pointer extends GoTemplate implements AnyType
         return '*' . $this->type->getTypeString();
     }
 
+    /**
+     * @param AnyType $type
+     * @return AnyType
+     */
+    public static function tryDereferenceOnce(AnyType $type)
+    {
+        if ($type instanceof Pointer) {
+            return $type->getType();
+        }
+        return $type;
+    }
+
 
 }

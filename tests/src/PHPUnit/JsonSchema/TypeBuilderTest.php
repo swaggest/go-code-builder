@@ -37,21 +37,47 @@ JSON
 
         $this->assertSame('*Untitled1', $type->getTypeString());
         $expectedGen = <<<'GO'
-// #
-type Untitled1 struct {
-	*DefinitionsHeader
+// DefinitionsHeader structure is generated from #/definitions/header
+type DefinitionsHeader struct {
+	Maximum float64 `json:"maximum,omitempty"`
 }
 
-// #/definitions/header
-type DefinitionsHeader struct {
-	Maximum float64 `json:"maximum"`
+// Untitled1 structure is generated from #
+type Untitled1 struct {
+	DefinitionsHeader *DefinitionsHeader `json:"-"`
+}
+
+// UnmarshalJSON decodes JSON
+func (i *Untitled1) UnmarshalJSON(data []byte) error {
+	
+	mayUnmarshal := []interface{}{&i.DefinitionsHeader}
+	err := unmarshalUnion(
+		nil,
+		mayUnmarshal,
+		nil,
+		nil,
+		data,
+	)
+	if mayUnmarshal[0] == nil {
+	    i.DefinitionsHeader = nil
+	}
+
+	
+	return err
+}
+		
+// MarshalJSON encodes JSON
+func (i Untitled1) MarshalJSON() ([]byte, error) {
+	type p Untitled1
+
+	return marshalUnion(p(i), i.DefinitionsHeader)
 }
 
 
 GO;
 
         $actualGen = '';
-        foreach ($goBuilder->getGeneratedClasses() as $struct) {
+        foreach ($goBuilder->getGeneratedStructs() as $struct) {
             $actualGen .= $struct->structDef;
         }
         $this->assertSame($expectedGen, $actualGen);

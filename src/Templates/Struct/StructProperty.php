@@ -4,7 +4,6 @@ namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
-use Swaggest\GoCodeBuilder\Templates\Type\Type;
 
 class StructProperty extends GoTemplate
 {

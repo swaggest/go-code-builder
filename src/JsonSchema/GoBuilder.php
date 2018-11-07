@@ -3,55 +3,105 @@
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 use Swaggest\GoCodeBuilder\GoCodeBuilder;
+use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Struct\Tags;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\JsonSchema\JsonSchema;
+use Swaggest\JsonSchema\Schema;
 
-/**
- * @todo properly process $ref, $schema property names
- */
 class GoBuilder
 {
-    /** @var \SplObjectStorage|GeneratedStruct[] */
-    private $generatedClasses;
+    private $code;
+
+    /** @var GeneratedStruct[] */
+    private $generatedStructs;
+
+    /** @var \SplObjectStorage */
+    private $generatedStructsBySchema;
+
     private $untitledIndex = 0;
     /** @var GoCodeBuilder */
     public $codeBuilder;
+    public $requiresMarshalMapHelper = false;
+
+    /** @var GoBuilderStructHook */
+    public $structPreparedHook;
+
+    /** @var GoBuilderStructHook */
+    public $structCreatedHook;
+
 
     public function __construct()
     {
-        $this->generatedClasses = new \SplObjectStorage();
+        $this->code = new Code();
+        $this->generatedStructs = [];
+        $this->generatedStructsBySchema = new \SplObjectStorage();
         $this->codeBuilder = new GoCodeBuilder();
+    }
+
+    public function getCode()
+    {
+        return $this->code;
     }
 
     /**
      * @param JsonSchema $schema
      * @param string $path
      * @return AnyType
+     * @throws Exception
      */
     public function getType($schema, $path = '#')
     {
         return (new TypeBuilder($schema, $path, $this))->build();
     }
 
-
+    /**
+     * @param $schema
+     * @param $path
+     * @return StructDef
+     * @throws Exception
+     */
     public function getClass($schema, $path)
     {
-        if ($this->generatedClasses->contains($schema)) {
-            return $this->generatedClasses[$schema]->structDef;
-        } else {
-            return $this->makeClass($schema, $path)->structDef;
-        }
+        return $this->getGeneratedStruct($schema, $path)->structDef;
     }
 
-    private function makeClass($schema, $path)
+    /**
+     * @param $schema
+     * @param $path
+     * @return mixed|GeneratedStruct
+     * @throws Exception
+     */
+    public function getGeneratedStruct($schema, $path)
+    {
+        if (isset($this->generatedStructs[$path])) {
+            return $this->generatedStructs[$path];
+        }
+
+        if ($this->generatedStructsBySchema->contains($schema)) {
+            return $this->generatedStructsBySchema[$schema];
+        }
+
+        return $this->makeStruct($schema, $path);
+    }
+
+
+    /**
+     * @param Schema $schema
+     * @param $path
+     * @return GeneratedStruct
+     * @throws Exception
+     */
+    private function makeStruct(Schema $schema, $path)
     {
         if (empty($path)) {
             throw new Exception('Empty path');
         }
         $generatedStruct = new GeneratedStruct();
+        $this->generatedStructs[$path] = $generatedStruct;
+        $this->generatedStructsBySchema->attach($schema, $generatedStruct);
         $generatedStruct->schema = $schema;
 
         if ($path === '#') {
@@ -60,10 +110,23 @@ class GoBuilder
             $structDef = new StructDef($this->codeBuilder->exportableName($path));
         }
 
+        if ($this->structCreatedHook !== null) {
+            $this->structCreatedHook->process($structDef, $path, $schema);
+        }
+
+        $comment = $structDef->getName() . ' structure is generated from ' . $path;
+        if ($schema->title) {
+            $comment .= "\n" . $schema->title;
+        }
+        if ($schema->description) {
+            $comment .= "\n" . $schema->description;
+        }
+        $structDef->setComment($comment);
+
+
         $generatedStruct->structDef = $structDef;
         $generatedStruct->path = $path;
-
-        $this->generatedClasses->attach($schema, $generatedStruct);
+        $generatedStruct->marshalJson = new MarshalJson($this, $structDef);
 
         if ($schema->properties !== null) {
             foreach ($schema->properties as $name => $property) {
@@ -72,13 +135,27 @@ class GoBuilder
                 $goProperty = new StructProperty(
                     $fieldName,
                     $goPropertyType,
-                    (new Tags())->setTag('json', $name)
+                    (new Tags())->setTag('json', $name . ',omitempty')
                 );
+                $comment = '';
+                if ($property->title) {
+                    $comment = $property->title . "\n";
+                }
                 if ($property->description) {
-                    $goProperty->setComment($property->description);
+                    $comment .= $property->description;
+                }
+                if ($comment !== '') {
+                    $goProperty->setComment($comment);
                 }
                 $structDef->addProperty($goProperty);
+                $generatedStruct->marshalJson->addNamedProperty($name);
             }
+        }
+
+        $structDef->getCode()->addSnippet($generatedStruct->marshalJson);
+
+        if ($this->structPreparedHook !== null) {
+            $this->structPreparedHook->process($structDef, $path, $schema);
         }
 
         return $generatedStruct;
@@ -87,13 +164,18 @@ class GoBuilder
     /**
      * @return GeneratedStruct[]
      */
-    public function getGeneratedClasses()
+    public function getGeneratedStructs()
     {
-        $result = array();
-        foreach ($this->generatedClasses as $schema) {
-            $result[] = $this->generatedClasses[$schema];
+        return $this->generatedStructs;
+    }
+
+    public function pathToName($path)
+    {
+        if (0 === strpos($path, '#/definitions/')) {
+            return substr($path, strlen('#/definitions/'));
         }
-        return $result;
+
+        return $path;
     }
 
 }

@@ -21,6 +21,11 @@ class StructType extends GoTemplate implements AnyType
         $this->structDef = $structDef;
     }
 
+    public function getName()
+    {
+        return $this->structDef->getName();
+    }
+
     private function getType()
     {
         return new Type($this->structDef->getName(), $this->structDef->getImport());

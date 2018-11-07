@@ -29,39 +29,33 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
         $builder = new GoBuilder();
         $type = $builder->getType($schema);
 
-        $index = 0;
-
-        foreach ($builder->getGeneratedClasses() as $class) {
-            $class->structDef->setName('Beech' . ++$index);
-        }
-
         $expectedStructs = <<<'GO'
-// #
-type Beech1 struct {
-	SampleInt    int64   `json:"sampleInt"`
-	SampleBool   bool    `json:"sampleBool"`
-	SampleString string  `json:"sampleString"`
-	SampleNumber float64 `json:"sampleNumber"`
-	SampleSelf   *Beech1 `json:"sampleSelf"`
-	Another      *Beech2 `json:"another"`
+// Untitled1 structure is generated from #
+type Untitled1 struct {
+	SampleInt    int64      `json:"sampleInt,omitempty"`
+	SampleBool   bool       `json:"sampleBool,omitempty"`
+	SampleString string     `json:"sampleString,omitempty"`
+	SampleNumber float64    `json:"sampleNumber,omitempty"`
+	SampleSelf   *Untitled1 `json:"sampleSelf,omitempty"`
+	Another      *Another   `json:"another,omitempty"`
 }
 
-// #->another
-type Beech2 struct {
-	Hello bool   `json:"hello"`
-	World string `json:"world"`
+// Another structure is generated from #->another
+type Another struct {
+	Hello bool   `json:"hello,omitempty"`
+	World string `json:"world,omitempty"`
 }
 
 
 GO;
 
         $actualStructs = '';
-        foreach ($builder->getGeneratedClasses() as $class) {
+        foreach ($builder->getGeneratedStructs() as $class) {
             $actualStructs .= $class->structDef;
         }
 
         $this->assertSame($expectedStructs, $actualStructs);
-        $this->assertSame('*Beech1', $type->getTypeString());
+        $this->assertSame('*Untitled1', $type->getTypeString());
     }
 
 
