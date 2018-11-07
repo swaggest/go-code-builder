@@ -3,6 +3,7 @@
 namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
 use Swaggest\GoCodeBuilder\Import;
+use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\Func;
 use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
@@ -17,6 +18,9 @@ class StructDef extends GoTemplate
     /** @var FuncDef[] */
     private $funcs = array();
 
+    /** @var Code */
+    private $code;
+
     /** @var Import */
     private $import;
 
@@ -30,6 +34,7 @@ class StructDef extends GoTemplate
     {
         $this->name = $name;
         $this->comment = $comment;
+        $this->code = new Code();
     }
 
     public function addProperty(StructProperty $property, $prepend = false)
@@ -104,6 +109,11 @@ class StructDef extends GoTemplate
         return $this->funcs;
     }
 
+    public function getCode()
+    {
+        return $this->code;
+    }
+
 
     public function addFunc(FuncDef $func, $prepend = false)
     {
@@ -118,7 +128,7 @@ class StructDef extends GoTemplate
     protected function toString()
     {
         return <<<GO
-{$this->renderComment()}{$this->renderFields()}{$this->renderFuncs()}
+{$this->renderComment()}{$this->renderFields()}{$this->renderFuncs()}{$this->code}
 GO;
 
     }

@@ -15,4 +15,7 @@ class GeneratedStruct
 
     /** @var string */
     public $path;
+
+    /** @var MarshalJson */
+    public $marshalJson;
 }

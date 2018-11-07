@@ -15,6 +15,7 @@
     }
   ],
   "require": {
+    "ext-json": "*",
     "swaggest/code-builder": "^0.3.1|dev-master",
     "php": ">=5.4.0",
     "phplang/scope-exit": "^1.0",

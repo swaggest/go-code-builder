@@ -19,182 +19,249 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         $builder = new GoBuilder();
         $builder->getType($schema);
         $expectedGen = <<<'GO'
-// #
+// Untitled1 structure is generated from #
+// Core schema meta-schema
 type Untitled1 struct {
-	ID                   string                              `json:"id"`
-	Schema               string                              `json:"$schema"`
-	Title                string                              `json:"title"`
-	Description          string                              `json:"description"`
-	Default              interface{}                         `json:"default"`
-	MultipleOf           float64                             `json:"multipleOf"`
-	Maximum              float64                             `json:"maximum"`
-	ExclusiveMaximum     bool                                `json:"exclusiveMaximum"`
-	Minimum              float64                             `json:"minimum"`
-	ExclusiveMinimum     bool                                `json:"exclusiveMinimum"`
-	MaxLength            int64                               `json:"maxLength"`
-	MinLength            *DefinitionsPositiveIntegerDefault0 `json:"minLength"`
-	Pattern              string                              `json:"pattern"`
-	AdditionalItems      *AdditionalItems                    `json:"additionalItems"`
-	Items                *Items                              `json:"items"`
-	MaxItems             int64                               `json:"maxItems"`
-	MinItems             *DefinitionsPositiveIntegerDefault0 `json:"minItems"`
-	UniqueItems          bool                                `json:"uniqueItems"`
-	MaxProperties        int64                               `json:"maxProperties"`
-	MinProperties        *DefinitionsPositiveIntegerDefault0 `json:"minProperties"`
-	Required             []string                            `json:"required"`
-	AdditionalProperties *AdditionalProperties               `json:"additionalProperties"`
-	Definitions          *Definitions                        `json:"definitions"`
-	Properties           *Properties                         `json:"properties"`
-	PatternProperties    *PatternProperties                  `json:"patternProperties"`
-	Dependencies         *Dependencies                       `json:"dependencies"`
-	Enum                 []interface{}                       `json:"enum"`
-	Type                 *Type                               `json:"type"`
-	Format               string                              `json:"format"`
-	Ref                  string                              `json:"$ref"`
-	AllOf                []*Untitled2                        `json:"allOf"`
-	AnyOf                []*Untitled2                        `json:"anyOf"`
-	OneOf                []*Untitled2                        `json:"oneOf"`
-	Not                  *Untitled2                          `json:"not"`                  // Core schema meta-schema
+	ID                   string                                      `json:"id,omitempty"`
+	Schema               string                                      `json:"$schema,omitempty"`
+	Title                string                                      `json:"title,omitempty"`
+	Description          string                                      `json:"description,omitempty"`
+	Default              interface{}                                 `json:"default,omitempty"`
+	MultipleOf           float64                                     `json:"multipleOf,omitempty"`
+	Maximum              float64                                     `json:"maximum,omitempty"`
+	ExclusiveMaximum     bool                                        `json:"exclusiveMaximum,omitempty"`
+	Minimum              float64                                     `json:"minimum,omitempty"`
+	ExclusiveMinimum     bool                                        `json:"exclusiveMinimum,omitempty"`
+	MaxLength            int64                                       `json:"maxLength,omitempty"`
+	MinLength            *DefinitionsPositiveIntegerDefault0         `json:"minLength,omitempty"`
+	Pattern              string                                      `json:"pattern,omitempty"`
+	AdditionalItems      *AdditionalItems                            `json:"additionalItems,omitempty"`
+	Items                *Items                                      `json:"items,omitempty"`
+	MaxItems             int64                                       `json:"maxItems,omitempty"`
+	MinItems             *DefinitionsPositiveIntegerDefault0         `json:"minItems,omitempty"`
+	UniqueItems          bool                                        `json:"uniqueItems,omitempty"`
+	MaxProperties        int64                                       `json:"maxProperties,omitempty"`
+	MinProperties        *DefinitionsPositiveIntegerDefault0         `json:"minProperties,omitempty"`
+	Required             []string                                    `json:"required,omitempty"`
+	AdditionalProperties *AdditionalProperties                       `json:"additionalProperties,omitempty"`
+	Definitions          map[string]Untitled1                        `json:"definitions,omitempty"`
+	Properties           map[string]Untitled1                        `json:"properties,omitempty"`
+	PatternProperties    map[string]Untitled1                        `json:"patternProperties,omitempty"`
+	Dependencies         map[string]DependenciesAdditionalProperties `json:"dependencies,omitempty"`
+	Enum                 []interface{}                               `json:"enum,omitempty"`
+	Type                 *Type                                       `json:"type,omitempty"`
+	Format               string                                      `json:"format,omitempty"`
+	Ref                  string                                      `json:"$ref,omitempty"`
+	AllOf                []Untitled1                                 `json:"allOf,omitempty"`
+	AnyOf                []Untitled1                                 `json:"anyOf,omitempty"`
+	OneOf                []Untitled1                                 `json:"oneOf,omitempty"`
+	Not                  *Untitled1                                  `json:"not,omitempty"`                  // Core schema meta-schema
 }
 
-// #/definitions/positiveIntegerDefault0
+// DefinitionsPositiveIntegerDefault0 structure is generated from #/definitions/positiveIntegerDefault0
 type DefinitionsPositiveIntegerDefault0 struct {
-	interface{}
+	Int64 *int64 `json:"-"`
 }
 
-// #->additionalItems
+// UnmarshalJSON decodes JSON
+func (i *DefinitionsPositiveIntegerDefault0) UnmarshalJSON(data []byte) error {
+	
+	
+	err := unmarshalUnion(
+		[]interface{}{&i.Int64},
+		nil,
+		nil,
+		nil,
+		data,
+	)
+	
+	
+	return err
+}
+		
+// MarshalJSON encodes JSON
+func (i DefinitionsPositiveIntegerDefault0) MarshalJSON() ([]byte, error) {
+	type p DefinitionsPositiveIntegerDefault0
+
+	return marshalUnion(p(i), i.Int64)
+}
+
+// AdditionalItems structure is generated from #->additionalItems
 type AdditionalItems struct {
-	*Untitled2
+	Bool      *bool      `json:"-"`
+	Untitled1 *Untitled1 `json:"-"`
 }
 
-// #
-type Untitled2 struct {
-	ID                   string                              `json:"id"`
-	Schema               string                              `json:"$schema"`
-	Title                string                              `json:"title"`
-	Description          string                              `json:"description"`
-	Default              interface{}                         `json:"default"`
-	MultipleOf           float64                             `json:"multipleOf"`
-	Maximum              float64                             `json:"maximum"`
-	ExclusiveMaximum     bool                                `json:"exclusiveMaximum"`
-	Minimum              float64                             `json:"minimum"`
-	ExclusiveMinimum     bool                                `json:"exclusiveMinimum"`
-	MaxLength            int64                               `json:"maxLength"`
-	MinLength            *DefinitionsPositiveIntegerDefault0 `json:"minLength"`
-	Pattern              string                              `json:"pattern"`
-	AdditionalItems      *AdditionalItems                    `json:"additionalItems"`
-	Items                *Items                              `json:"items"`
-	MaxItems             int64                               `json:"maxItems"`
-	MinItems             *DefinitionsPositiveIntegerDefault0 `json:"minItems"`
-	UniqueItems          bool                                `json:"uniqueItems"`
-	MaxProperties        int64                               `json:"maxProperties"`
-	MinProperties        *DefinitionsPositiveIntegerDefault0 `json:"minProperties"`
-	Required             []string                            `json:"required"`
-	AdditionalProperties *AdditionalProperties               `json:"additionalProperties"`
-	Definitions          *Definitions                        `json:"definitions"`
-	Properties           *Properties                         `json:"properties"`
-	PatternProperties    *PatternProperties                  `json:"patternProperties"`
-	Dependencies         *Dependencies                       `json:"dependencies"`
-	Enum                 []interface{}                       `json:"enum"`
-	Type                 *Type                               `json:"type"`
-	Format               string                              `json:"format"`
-	Ref                  string                              `json:"$ref"`
-	AllOf                []*Untitled2                        `json:"allOf"`
-	AnyOf                []*Untitled2                        `json:"anyOf"`
-	OneOf                []*Untitled2                        `json:"oneOf"`
-	Not                  *Untitled2                          `json:"not"`                  // Core schema meta-schema
+// UnmarshalJSON decodes JSON
+func (i *AdditionalItems) UnmarshalJSON(data []byte) error {
+	
+	mayUnmarshal := []interface{}{&i.Bool, &i.Untitled1}
+	err := unmarshalUnion(
+		nil,
+		mayUnmarshal,
+		nil,
+		nil,
+		data,
+	)
+	if mayUnmarshal[0] == nil {
+	    i.Bool = nil
+	}
+	if mayUnmarshal[1] == nil {
+	    i.Untitled1 = nil
+	}
+
+	
+	return err
+}
+		
+// MarshalJSON encodes JSON
+func (i AdditionalItems) MarshalJSON() ([]byte, error) {
+	type p AdditionalItems
+
+	return marshalUnion(p(i), i.Bool, i.Untitled1)
 }
 
-// #->additionalItems
-type AdditionalItems struct {
-	*Untitled2
-}
-
-// #->items
+// Items structure is generated from #->items
 type Items struct {
-	[]*Untitled2
+	Untitled1 *Untitled1  `json:"-"`
+	AnyOf1    []Untitled1 `json:"-"`
 }
 
-// #->additionalProperties
+// UnmarshalJSON decodes JSON
+func (i *Items) UnmarshalJSON(data []byte) error {
+	
+	mayUnmarshal := []interface{}{&i.Untitled1, &i.AnyOf1}
+	err := unmarshalUnion(
+		nil,
+		mayUnmarshal,
+		nil,
+		nil,
+		data,
+	)
+	if mayUnmarshal[0] == nil {
+	    i.Untitled1 = nil
+	}
+	if mayUnmarshal[1] == nil {
+	    i.AnyOf1 = nil
+	}
+
+	
+	return err
+}
+		
+// MarshalJSON encodes JSON
+func (i Items) MarshalJSON() ([]byte, error) {
+	type p Items
+
+	return marshalUnion(p(i), i.Untitled1, i.AnyOf1)
+}
+
+// AdditionalProperties structure is generated from #->additionalProperties
 type AdditionalProperties struct {
-	*Untitled2
+	Bool      *bool      `json:"-"`
+	Untitled1 *Untitled1 `json:"-"`
 }
 
-// #->definitions
-type Definitions struct {
-	additionalProperties map[string]*Untitled2
+// UnmarshalJSON decodes JSON
+func (i *AdditionalProperties) UnmarshalJSON(data []byte) error {
+	
+	mayUnmarshal := []interface{}{&i.Bool, &i.Untitled1}
+	err := unmarshalUnion(
+		nil,
+		mayUnmarshal,
+		nil,
+		nil,
+		data,
+	)
+	if mayUnmarshal[0] == nil {
+	    i.Bool = nil
+	}
+	if mayUnmarshal[1] == nil {
+	    i.Untitled1 = nil
+	}
+
+	
+	return err
+}
+		
+// MarshalJSON encodes JSON
+func (i AdditionalProperties) MarshalJSON() ([]byte, error) {
+	type p AdditionalProperties
+
+	return marshalUnion(p(i), i.Bool, i.Untitled1)
 }
 
-// #->properties
-type Properties struct {
-	additionalProperties map[string]*Untitled2
-}
-
-// #->patternProperties
-type PatternProperties struct {
-	additionalProperties map[string]*Untitled2
-}
-
-// #->dependencies->additionalProperties
+// DependenciesAdditionalProperties structure is generated from #->dependencies->additionalProperties
 type DependenciesAdditionalProperties struct {
-	[]string
+	Untitled1 *Untitled1 `json:"-"`
+	AnyOf1    []string   `json:"-"`
 }
 
-// #->dependencies
-type Dependencies struct {
-	additionalProperties map[string]*DependenciesAdditionalProperties
+// UnmarshalJSON decodes JSON
+func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
+	
+	mayUnmarshal := []interface{}{&i.Untitled1, &i.AnyOf1}
+	err := unmarshalUnion(
+		nil,
+		mayUnmarshal,
+		nil,
+		nil,
+		data,
+	)
+	if mayUnmarshal[0] == nil {
+	    i.Untitled1 = nil
+	}
+	if mayUnmarshal[1] == nil {
+	    i.AnyOf1 = nil
+	}
+
+	
+	return err
+}
+		
+// MarshalJSON encodes JSON
+func (i DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
+	type p DependenciesAdditionalProperties
+
+	return marshalUnion(p(i), i.Untitled1, i.AnyOf1)
 }
 
-// #->type
+// Type structure is generated from #->type
 type Type struct {
-	[]interface{}
+	AnyOf1 []interface{} `json:"-"`
 }
 
-// #->items
-type Items struct {
-	[]*Untitled2
-}
+// UnmarshalJSON decodes JSON
+func (i *Type) UnmarshalJSON(data []byte) error {
+	
+	mayUnmarshal := []interface{}{&i.AnyOf1}
+	err := unmarshalUnion(
+		nil,
+		mayUnmarshal,
+		nil,
+		nil,
+		data,
+	)
+	if mayUnmarshal[0] == nil {
+	    i.AnyOf1 = nil
+	}
 
-// #->additionalProperties
-type AdditionalProperties struct {
-	*Untitled2
+	
+	return err
 }
+		
+// MarshalJSON encodes JSON
+func (i Type) MarshalJSON() ([]byte, error) {
+	type p Type
 
-// #->definitions
-type Definitions struct {
-	additionalProperties map[string]*Untitled2
-}
-
-// #->properties
-type Properties struct {
-	additionalProperties map[string]*Untitled2
-}
-
-// #->patternProperties
-type PatternProperties struct {
-	additionalProperties map[string]*Untitled2
-}
-
-// #->dependencies->additionalProperties
-type DependenciesAdditionalProperties struct {
-	[]string
-}
-
-// #->dependencies
-type Dependencies struct {
-	additionalProperties map[string]*DependenciesAdditionalProperties
-}
-
-// #->type
-type Type struct {
-	[]interface{}
+	return marshalUnion(p(i), i.AnyOf1)
 }
 
 
 GO;
 
         $actualGen = '';
-        foreach ($builder->getGeneratedClasses() as $generatedStruct) {
+        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
             $actualGen .= $generatedStruct->structDef;
         }
 
