@@ -6,6 +6,10 @@ use Swaggest\GoCodeBuilder\Templates\Code;
 
 class MarshalMapHelper
 {
+    public static function makeMarshal() {
+
+    }
+
     public static function make()
     {
         $code = new Code();
@@ -17,7 +21,13 @@ class MarshalMapHelper
 
         $code->addSnippet(
             <<<'GO'
-func unmarshalUnion(mustUnmarshal []interface{}, mayUnmarshal []interface{}, ignoreKeys []string, regexMaps map[string]interface{}, j []byte) error {
+func unmarshalUnion(
+	mustUnmarshal []interface{},
+	mayUnmarshal []interface{},
+	ignoreKeys []string,
+	regexMaps map[string]interface{},
+	j []byte,
+) error {
 	for _, item := range mustUnmarshal {
 		// unmarshal to struct
 		err := json.Unmarshal(j, item)
@@ -53,7 +63,7 @@ func unmarshalUnion(mustUnmarshal []interface{}, mayUnmarshal []interface{}, ign
 
 	// preparing regexp matchers
 	var reg = make(map[string]*regexp.Regexp, len(regexMaps))
-	for regex, _ := range regexMaps {
+	for regex := range regexMaps {
 		if regex != "" {
 			reg[regex], err = regexp.Compile(regex)
 			if err != nil {
@@ -70,7 +80,7 @@ func unmarshalUnion(mustUnmarshal []interface{}, mayUnmarshal []interface{}, ign
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
 
 		for regex, exp := range reg {
-			if exp.Match([]byte(key)) {
+			if exp.MatchString(key) {
 				matched = true
 				var subMap []byte
 				if subMap, ok = subMapsRaw[regex]; !ok {
@@ -105,7 +115,7 @@ func unmarshalUnion(mustUnmarshal []interface{}, mayUnmarshal []interface{}, ign
 		}
 	}
 
-	for regex, _ := range regexMaps {
+	for regex := range regexMaps {
 		if subMap, ok := subMapsRaw[regex]; !ok {
 			continue
 		} else {

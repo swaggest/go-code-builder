@@ -13,6 +13,9 @@ class StructProperty extends GoTemplate
 
     public function __construct($name, AnyType $type, Tags $tags = null)
     {
+        if ($name === null) {
+            echo 'a';
+        }
         $this->name = $name;
         $this->type = $type;
         if ($tags === null) {

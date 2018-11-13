@@ -35,10 +35,15 @@ abstract class GoTemplate extends AbstractTemplate
     public function padLines($with, $text, $skipFirst = true, $forcePad = false)
     {
         $lines = explode("\n", $text);
+        $prevLine = '';
         foreach ($lines as $index => $line) {
             if ($skipFirst && !$index) {
                 continue;
             }
+            if ('' === trim($line) && $prevLine === '') {
+                continue;
+            }
+            $prevLine = $line;
             if ($line || $forcePad) {
                 $l = $with . $line;
                 if (trim($l) === '') {
@@ -49,6 +54,26 @@ abstract class GoTemplate extends AbstractTemplate
         }
         return implode("\n", $lines);
 
+    }
+
+    public function trim($s)
+    {
+        return trim($s);
+    }
+
+    public function escapeValue($value)
+    {
+        if (is_string($value)) {
+            if (strpos($value, '"') === false && strpos($value, '\\') === false) {
+                $value = '"' . addslashes($value) . '"';
+            } elseif (strpos($value, '`')) {
+                $value = '"' . addslashes($value) . '"';
+            } else {
+                $value = '`' . $value . '`';
+            }
+        }
+
+        return $value;
     }
 
 

@@ -69,15 +69,23 @@ class TypeBuilder
                 $name = $this->goBuilder->codeBuilder->exportableName($betterName);
             }
 
+            $resultStruct = $this->makeResultStruct();
+
+            if ($this->goBuilder->options->trimParentFromPropertyNames) {
+                if (strpos($name, $resultStruct->getName()) === 0) {
+                    $name = substr($name, strlen($resultStruct->getName()));
+                }
+            }
+
             if (!$itemType instanceof Map && !$itemType instanceof Slice) {
                 if ($itemType->getTypeString() === 'interface{}') {
                     continue;
                 }
                 $itemType = new Pointer($itemType);
             }
+
             $structProperty = new StructProperty($name, $itemType);
             $structProperty->getTags()->setTag('json', '-');
-            $resultStruct = $this->makeResultStruct();
             $resultStruct->addProperty($structProperty);
             $generatedStruct = $this->getGeneratedStruct();
             $generatedStruct->marshalJson->addSomeOf($kind, $name);
@@ -224,9 +232,15 @@ class TypeBuilder
                 $baseType = new GoType('bool');
             }
 
+            if ($this->goBuilder->options->hideConstProperties) {
+                return $baseType;
+            }
+
             $typeConstBlock = new TypeConstBlock($type, $baseType);
 
+
             $this->goBuilder->getCode()->addSnippet(<<<GO
+// $typeName is a constant type
 type $typeName {$baseType->getName()}
 
 
@@ -239,7 +253,7 @@ GO
             );
 
             $this->goBuilder->getCode()->addSnippet($typeConstBlock);
-            $this->goBuilder->getCode()->addSnippet(new MarshalEnum($type, $baseType, $typeConstBlock->getValues()));
+            $this->goBuilder->getCode()->addSnippet(new MarshalEnum($type, $baseType, $typeConstBlock->getValues(), $this->goBuilder));
             return $type;
         }
         return null;
@@ -248,6 +262,10 @@ GO
     private function processEnum(GoType $baseType)
     {
         if ($this->schema->enum !== null) {
+            if ($this->goBuilder->options->hideConstProperties && count($this->schema->enum) === 1) {
+                return $baseType;
+            }
+
             $path = $this->goBuilder->pathToName($this->path);
             $typeName = $this->goBuilder->codeBuilder->exportableName($path);
             $type = new GoType($typeName);
@@ -255,6 +273,7 @@ GO
             $typeConstBlock = new TypeConstBlock($type, $baseType);
 
             $this->goBuilder->getCode()->addSnippet(<<<GO
+// $typeName is a constant type
 type $typeName {$baseType->getName()}
 
 
@@ -267,7 +286,7 @@ GO
             }
 
             $this->goBuilder->getCode()->addSnippet($typeConstBlock);
-            $this->goBuilder->getCode()->addSnippet(new MarshalEnum($type, $baseType, $typeConstBlock->getValues()));
+            $this->goBuilder->getCode()->addSnippet(new MarshalEnum($type, $baseType, $typeConstBlock->getValues(), $this->goBuilder));
 
             return $type;
         }
