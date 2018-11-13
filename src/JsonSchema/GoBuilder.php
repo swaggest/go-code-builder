@@ -15,6 +15,9 @@ class GoBuilder
 {
     private $code;
 
+    /** @var Options */
+    public $options;
+
     /** @var GeneratedStruct[] */
     private $generatedStructs;
 
@@ -32,10 +35,16 @@ class GoBuilder
     /** @var GoBuilderStructHook */
     public $structCreatedHook;
 
+    /** @var MarshalUnion */
+    public $marshalUnion;
+
+    /** @var UnmarshalUnion */
+    public $unmarshalUnion;
 
     public function __construct()
     {
         $this->code = new Code();
+        $this->options = new Options();
         $this->generatedStructs = [];
         $this->generatedStructsBySchema = new \SplObjectStorage();
         $this->codeBuilder = new GoCodeBuilder();
@@ -122,15 +131,22 @@ class GoBuilder
             $comment .= "\n" . $schema->description;
         }
         $structDef->setComment($comment);
-
+        $marshalJson = new MarshalJson($this, $structDef);
 
         $generatedStruct->structDef = $structDef;
         $generatedStruct->path = $path;
-        $generatedStruct->marshalJson = new MarshalJson($this, $structDef);
+        $generatedStruct->marshalJson = $marshalJson;
 
         if ($schema->properties !== null) {
             foreach ($schema->properties as $name => $property) {
                 $fieldName = $this->codeBuilder->exportableName($name);
+
+                if ($this->options->trimParentFromPropertyNames) {
+                    if (strpos($fieldName, $structDef->getName()) === 0) {
+                        $fieldName = substr($fieldName, strlen($structDef->getName()));
+                    }
+                }
+
                 $goPropertyType = $this->getType($property, $path . '->' . $name);
                 $goProperty = new StructProperty(
                     $fieldName,
@@ -147,12 +163,29 @@ class GoBuilder
                 if ($comment !== '') {
                     $goProperty->setComment($comment);
                 }
+                if ($this->options->hideConstProperties) {
+                    $enum = [];
+
+                    if ($property->enum !== null) {
+                        $enum = $property->enum;
+                    }
+
+                    if ($property->const !== null) {
+                        $enum = [$property->const];
+                    }
+
+                    if (count($enum) === 1) {
+                        $marshalJson->constValues[$name] = $enum[0];
+                        continue;
+                    }
+                }
+
                 $structDef->addProperty($goProperty);
-                $generatedStruct->marshalJson->addNamedProperty($name);
+                $marshalJson->addNamedProperty($name);
             }
         }
 
-        $structDef->getCode()->addSnippet($generatedStruct->marshalJson);
+        $structDef->getCode()->addSnippet($marshalJson);
 
         if ($this->structPreparedHook !== null) {
             $this->structPreparedHook->process($structDef, $path, $schema);

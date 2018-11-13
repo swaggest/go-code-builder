@@ -45,7 +45,7 @@ class TypeConstBlock extends GoTemplate
             if (!is_scalar($value)) {
                 continue;
             }
-            $value = self::prepareValue($value);
+            $value = $this->escapeValue($value);
 
             if (isset($this->comments[$name])) {
                 $result .= "\t//" . $name . ' ' . $this->comments[$name] . "\n";
@@ -69,16 +69,4 @@ class TypeConstBlock extends GoTemplate
         return $this->values;
     }
 
-    public static function prepareValue($value)
-    {
-        if (is_string($value)) {
-            if (strpos($value, '`')) {
-                $value = '"' . addslashes($value) . '"';
-            } else {
-                $value = '`' . $value . '`';
-            }
-        }
-
-        return $value;
-    }
 }

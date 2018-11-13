@@ -37,19 +37,15 @@ JSON
 
         $this->assertSame('*Untitled1', $type->getTypeString());
         $expectedGen = <<<'GO'
-// DefinitionsHeader structure is generated from #/definitions/header
-type DefinitionsHeader struct {
-	Maximum float64 `json:"maximum,omitempty"`
-}
-
 // Untitled1 structure is generated from #
 type Untitled1 struct {
 	DefinitionsHeader *DefinitionsHeader `json:"-"`
 }
 
+type marshalUntitled1 Untitled1
+
 // UnmarshalJSON decodes JSON
 func (i *Untitled1) UnmarshalJSON(data []byte) error {
-	
 	mayUnmarshal := []interface{}{&i.DefinitionsHeader}
 	err := unmarshalUnion(
 		nil,
@@ -59,18 +55,20 @@ func (i *Untitled1) UnmarshalJSON(data []byte) error {
 		data,
 	)
 	if mayUnmarshal[0] == nil {
-	    i.DefinitionsHeader = nil
+		i.DefinitionsHeader = nil
 	}
 
-	
 	return err
 }
-		
+
 // MarshalJSON encodes JSON
 func (i Untitled1) MarshalJSON() ([]byte, error) {
-	type p Untitled1
+	return marshalUnion(marshalUntitled1(i), i.DefinitionsHeader)
+}
 
-	return marshalUnion(p(i), i.DefinitionsHeader)
+// DefinitionsHeader structure is generated from #/definitions/header
+type DefinitionsHeader struct {
+	Maximum float64 `json:"maximum,omitempty"`
 }
 
 

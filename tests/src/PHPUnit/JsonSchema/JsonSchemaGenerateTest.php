@@ -63,10 +63,11 @@ type DefinitionsPositiveIntegerDefault0 struct {
 	Int64 *int64 `json:"-"`
 }
 
+type marshalDefinitionsPositiveIntegerDefault0 DefinitionsPositiveIntegerDefault0
+
 // UnmarshalJSON decodes JSON
 func (i *DefinitionsPositiveIntegerDefault0) UnmarshalJSON(data []byte) error {
-	
-	
+
 	err := unmarshalUnion(
 		[]interface{}{&i.Int64},
 		nil,
@@ -74,16 +75,13 @@ func (i *DefinitionsPositiveIntegerDefault0) UnmarshalJSON(data []byte) error {
 		nil,
 		data,
 	)
-	
-	
+
 	return err
 }
-		
+
 // MarshalJSON encodes JSON
 func (i DefinitionsPositiveIntegerDefault0) MarshalJSON() ([]byte, error) {
-	type p DefinitionsPositiveIntegerDefault0
-
-	return marshalUnion(p(i), i.Int64)
+	return marshalUnion(marshalDefinitionsPositiveIntegerDefault0(i), i.Int64)
 }
 
 // AdditionalItems structure is generated from #->additionalItems
@@ -92,9 +90,10 @@ type AdditionalItems struct {
 	Untitled1 *Untitled1 `json:"-"`
 }
 
+type marshalAdditionalItems AdditionalItems
+
 // UnmarshalJSON decodes JSON
 func (i *AdditionalItems) UnmarshalJSON(data []byte) error {
-	
 	mayUnmarshal := []interface{}{&i.Bool, &i.Untitled1}
 	err := unmarshalUnion(
 		nil,
@@ -104,21 +103,18 @@ func (i *AdditionalItems) UnmarshalJSON(data []byte) error {
 		data,
 	)
 	if mayUnmarshal[0] == nil {
-	    i.Bool = nil
+		i.Bool = nil
 	}
 	if mayUnmarshal[1] == nil {
-	    i.Untitled1 = nil
+		i.Untitled1 = nil
 	}
 
-	
 	return err
 }
-		
+
 // MarshalJSON encodes JSON
 func (i AdditionalItems) MarshalJSON() ([]byte, error) {
-	type p AdditionalItems
-
-	return marshalUnion(p(i), i.Bool, i.Untitled1)
+	return marshalUnion(marshalAdditionalItems(i), i.Bool, i.Untitled1)
 }
 
 // Items structure is generated from #->items
@@ -127,9 +123,10 @@ type Items struct {
 	AnyOf1    []Untitled1 `json:"-"`
 }
 
+type marshalItems Items
+
 // UnmarshalJSON decodes JSON
 func (i *Items) UnmarshalJSON(data []byte) error {
-	
 	mayUnmarshal := []interface{}{&i.Untitled1, &i.AnyOf1}
 	err := unmarshalUnion(
 		nil,
@@ -139,21 +136,18 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 		data,
 	)
 	if mayUnmarshal[0] == nil {
-	    i.Untitled1 = nil
+		i.Untitled1 = nil
 	}
 	if mayUnmarshal[1] == nil {
-	    i.AnyOf1 = nil
+		i.AnyOf1 = nil
 	}
 
-	
 	return err
 }
-		
+
 // MarshalJSON encodes JSON
 func (i Items) MarshalJSON() ([]byte, error) {
-	type p Items
-
-	return marshalUnion(p(i), i.Untitled1, i.AnyOf1)
+	return marshalUnion(marshalItems(i), i.Untitled1, i.AnyOf1)
 }
 
 // AdditionalProperties structure is generated from #->additionalProperties
@@ -162,9 +156,10 @@ type AdditionalProperties struct {
 	Untitled1 *Untitled1 `json:"-"`
 }
 
+type marshalAdditionalProperties AdditionalProperties
+
 // UnmarshalJSON decodes JSON
 func (i *AdditionalProperties) UnmarshalJSON(data []byte) error {
-	
 	mayUnmarshal := []interface{}{&i.Bool, &i.Untitled1}
 	err := unmarshalUnion(
 		nil,
@@ -174,21 +169,18 @@ func (i *AdditionalProperties) UnmarshalJSON(data []byte) error {
 		data,
 	)
 	if mayUnmarshal[0] == nil {
-	    i.Bool = nil
+		i.Bool = nil
 	}
 	if mayUnmarshal[1] == nil {
-	    i.Untitled1 = nil
+		i.Untitled1 = nil
 	}
 
-	
 	return err
 }
-		
+
 // MarshalJSON encodes JSON
 func (i AdditionalProperties) MarshalJSON() ([]byte, error) {
-	type p AdditionalProperties
-
-	return marshalUnion(p(i), i.Bool, i.Untitled1)
+	return marshalUnion(marshalAdditionalProperties(i), i.Bool, i.Untitled1)
 }
 
 // DependenciesAdditionalProperties structure is generated from #->dependencies->additionalProperties
@@ -197,9 +189,10 @@ type DependenciesAdditionalProperties struct {
 	AnyOf1    []string   `json:"-"`
 }
 
+type marshalDependenciesAdditionalProperties DependenciesAdditionalProperties
+
 // UnmarshalJSON decodes JSON
 func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
-	
 	mayUnmarshal := []interface{}{&i.Untitled1, &i.AnyOf1}
 	err := unmarshalUnion(
 		nil,
@@ -209,21 +202,18 @@ func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 		data,
 	)
 	if mayUnmarshal[0] == nil {
-	    i.Untitled1 = nil
+		i.Untitled1 = nil
 	}
 	if mayUnmarshal[1] == nil {
-	    i.AnyOf1 = nil
+		i.AnyOf1 = nil
 	}
 
-	
 	return err
 }
-		
+
 // MarshalJSON encodes JSON
 func (i DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	type p DependenciesAdditionalProperties
-
-	return marshalUnion(p(i), i.Untitled1, i.AnyOf1)
+	return marshalUnion(marshalDependenciesAdditionalProperties(i), i.Untitled1, i.AnyOf1)
 }
 
 // Type structure is generated from #->type
@@ -231,9 +221,10 @@ type Type struct {
 	AnyOf1 []interface{} `json:"-"`
 }
 
+type marshalType Type
+
 // UnmarshalJSON decodes JSON
 func (i *Type) UnmarshalJSON(data []byte) error {
-	
 	mayUnmarshal := []interface{}{&i.AnyOf1}
 	err := unmarshalUnion(
 		nil,
@@ -243,18 +234,15 @@ func (i *Type) UnmarshalJSON(data []byte) error {
 		data,
 	)
 	if mayUnmarshal[0] == nil {
-	    i.AnyOf1 = nil
+		i.AnyOf1 = nil
 	}
 
-	
 	return err
 }
-		
+
 // MarshalJSON encodes JSON
 func (i Type) MarshalJSON() ([]byte, error) {
-	type p Type
-
-	return marshalUnion(p(i), i.AnyOf1)
+	return marshalUnion(marshalType(i), i.AnyOf1)
 }
 
 

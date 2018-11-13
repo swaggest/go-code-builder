@@ -24,49 +24,132 @@ class MarshalEnum extends GoTemplate
      */
     private $enum;
 
+    /**
+     * @var GoBuilder
+     */
+    private $builder;
 
     /**
      * MarshalEnum constructor.
      * @param Type $type
      * @param array $enum
      */
-    public function __construct(Type $type, Type $base, array $enum)
+    public function __construct(Type $type, Type $base, array $enum, GoBuilder $builder)
     {
         $this->type = $type;
         $this->enum = $enum;
         $this->base = $base;
+        $this->builder = $builder;
     }
 
+
+    private function renderConstMarshal()
+    {
+        if ($this->builder->options->skipMarshal) {
+            return '';
+        }
+
+        return <<<GO
+// MarshalJSON encodes JSON
+func (i :type) MarshalJSON() ([]byte, error) {
+	{$this->padLines("\t", $this->renderIfCheck('i', 'return nil, errors.New("unexpected value")'))}
+	return json.Marshal(:base(i))
+}
+
+
+GO;
+    }
+
+    private function renderConstUnmarshal()
+    {
+        if ($this->builder->options->skipUnmarshal) {
+            return '';
+        }
+
+        return <<<GO
+// UnmarshalJSON decodes JSON
+func (i *:type) UnmarshalJSON(data []byte) error {
+	var ii :base
+	err := json.Unmarshal(data, &ii)
+	if err != nil {
+		return err
+	}
+	v := :type(ii)
+	{$this->padLines("\t", $this->renderIfCheck('v', 'return errors.New("unexpected value")'))}
+	*i = v
+	return nil
+}
+		
+
+GO;
+
+    }
+
+    private function constToString()
+    {
+        $result = <<<GO
+{$this->padLines('', $this->renderConstMarshal() . $this->renderConstUnmarshal())}
+GO;
+
+        return new PlaceholderString($result, [
+            ':type' => $this->type,
+            ':base' => $this->base,
+        ]);
+
+    }
+
+    private function renderMarshal()
+    {
+        if ($this->builder->options->skipMarshal) {
+            return '';
+        }
+
+        return <<<GO
+// MarshalJSON encodes JSON
+func (i :type) MarshalJSON() ([]byte, error) {
+	{$this->padLines("\t", $this->renderIfCheck('i', 'return nil, errors.New("unexpected value")'))}
+	return json.Marshal(:base(i))
+}
+
+
+GO;
+
+    }
+
+
+    private function renderUnmarshal()
+    {
+        if ($this->builder->options->skipUnmarshal) {
+            return '';
+        }
+
+		return <<<GO
+// UnmarshalJSON decodes JSON
+func (i *:type) UnmarshalJSON(data []byte) error {
+	var ii :base
+	err := json.Unmarshal(data, &ii)
+	if err != nil {
+		return err
+	}
+	v := :type(ii)
+	{$this->padLines("\t", $this->renderIfCheck('v', 'return errors.New("unexpected value")'))}
+	*i = v
+	return nil
+}
+
+
+GO;
+
+    }
 
     protected function toString()
     {
+        if (count($this->enum) === 1) {
+            return $this->constToString();
+        }
+
         $result = <<<GO
-// UnmarshalJSON decodes JSON
-func (i *:type) UnmarshalJSON(data []byte) error {
-    var ii :base
-    err := json.Unmarshal(data, &ii)
-    if err != nil {
-        return err
-    }
-    v := :type(ii)
-    for {
-    {$this->padLines("\t", $this->renderChecks('v'))}
-        return errors.New("unexpected value")
-    }
-    *i = v
-	return nil
-}
-        
-// MarshalJSON encodes JSON
-func (i :type) MarshalJSON() ([]byte, error) {
-    for {
-    {$this->padLines("\t", $this->renderChecks())}
-        return nil, errors.New("unexpected value")
-    }
-    return json.Marshal(:base(i))
-}
-
-
+{$this->padLines('', $this->renderMarshal() . $this->renderUnmarshal())}
 GO;
 
         return new PlaceholderString($result, [
@@ -75,44 +158,23 @@ GO;
         ]);
     }
 
-    private function renderChecks($var = 'i')
+    private function renderIfCheck($var, $return)
     {
+        if (empty($this->enum)) {
+            return '';
+        }
         $checks = '';
         foreach ($this->enum as $name => $value) {
-            $checks .= <<<GO
-    if $var == $name {
-        break
-    }
-
-GO;
+            $checks .= "case $name:\n";
         }
-        return $checks;
-    }
-
-    private function renderEnumMarshal()
-    {
-
         return <<<GO
-for {
-{$this->renderChecks()}
-    return nil, errors.New("unexpected value")
+switch $var {
+$checks
+default:
+	$return
 }
 
 GO;
-
-    }
-
-    private function renderEnumUnmarshal()
-    {
-
-        return <<<GO
-for {
-{$this->renderChecks('v')}
-    return errors.New("unexpected value")
-}
-
-GO;
-
     }
 
 }

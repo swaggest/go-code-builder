@@ -4,11 +4,11 @@ namespace Swaggest\GoCodeBuilder\Style;
 
 class Initialisms
 {
-    public static function process($goName)
+    public $values;
+
+    public function __construct()
     {
-        static $initialisms = null;
-        if (null === $initialisms) {
-            $initialisms = json_decode('{
+        $this->values = json_decode('{
     "API":   true,
     "ASCII": true,
     "CPU":   true,
@@ -42,8 +42,10 @@ class Initialisms
     
     "FK": true
 }', true);
-        }
+    }
 
+    public function process($goName)
+    {
         $words = preg_split('/(?=[A-Z])/', $goName);
         foreach ($words as &$word) {
             if ($word === strtolower($word)) { // skip lowercase words
@@ -51,7 +53,7 @@ class Initialisms
             }
 
             $uppercase = strtoupper($word);
-            if (isset($initialisms[$uppercase])) {
+            if (isset($this->values[$uppercase])) {
                 $word = $uppercase;
             }
         }

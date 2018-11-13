@@ -16,6 +16,9 @@ class MarshalJson extends GoTemplate
     private $patternProperties;
     private $someOf;
 
+    /** @var array */
+    public $constValues;
+
     public function __construct(GoBuilder $builder, StructDef $type)
     {
         $this->type = $type;
@@ -55,10 +58,19 @@ class MarshalJson extends GoTemplate
     {
         $propertyNames = 'nil';
         if ($this->propertyNames !== null) {
-            $propertyNames = '[]string{"' . implode('", "', $this->propertyNames) . '"}';
+            $propertyNames = <<<GO
+[]string{
+	"{$this->padLines("\t", implode("\",\n\"", $this->propertyNames))}",
+}
+GO;
+
+
         }
 
-        if ($this->patternProperties === null && $this->additionalPropertiesEnabled === null && $this->someOf === null) {
+        if ($this->patternProperties === null
+            && $this->additionalPropertiesEnabled === null
+            && $this->someOf === null
+            && $this->constValues === null) {
             return '';
         }
 
@@ -69,13 +81,13 @@ class MarshalJson extends GoTemplate
             $patternProperties = 'map[string]interface{}{' . "\n";
             if ($this->patternProperties !== null) {
                 foreach ($this->patternProperties as $regex => $patternPropertiesName) {
-                    $patternProperties .= "\t`$regex`: &{$this->receiver()}.$patternPropertiesName,\n";
+                    $patternProperties .= "\t{$this->escapeValue($regex)}: &{$this->receiver()}.$patternPropertiesName,\n";
                     $maps .= ', i.' . $patternPropertiesName;
                 }
             }
 
             if ($this->additionalPropertiesEnabled) {
-                $patternProperties .= "\t``: &{$this->receiver()}.AdditionalProperties,\n";
+                $patternProperties .= "\t\"\": &{$this->receiver()}.AdditionalProperties,\n";
 
                 $maps .= ', i.AdditionalProperties';
             }
@@ -85,7 +97,9 @@ class MarshalJson extends GoTemplate
             $patternProperties = $this->padLines("\t\t", $patternProperties);
         }
 
-        if ($patternProperties === 'nil' && $this->someOf === null) {
+        if ($patternProperties === 'nil'
+            && $this->someOf === null
+            && $this->constValues === null) {
             return '';
         }
 
@@ -97,40 +111,108 @@ class MarshalJson extends GoTemplate
             }
         }
 
+        if ($this->constValues !== null) {
+            $maps .= ', ptr:type';
+        }
+
 
         $result = <<<GO
-// UnmarshalJSON decodes JSON
-func (i *:type) UnmarshalJSON(data []byte) error {
-	{$this->padLines("\t", $this->renderMainStructStart())}
-	{$this->padLines("\t", $this->renderMayUnmarshalHead())}
-	err := unmarshalUnion(
-		{$this->renderMustUnmarshal()},
-		{$this->renderMayUnmarshal()},
-		$propertyNames,
-		$patternProperties,
-		data,
-	)
-	{$this->padLines("\t", $this->renderMayUnmarshalTail())}
-	{$this->padLines("\t", $this->renderMainStructEnd())}
-	return err
-}
-		
-// MarshalJSON encodes JSON
-func (i :type) MarshalJSON() ([]byte, error) {
-	type p :type
+type marshal:type :type
 
-	return marshalUnion(p(i)$maps)
-}
-
+{$this->padLines('',
+            $this->renderUnmarshal($propertyNames, $patternProperties)
+            . $this->renderMarshal($maps))}
 
 GO;
-        $this->builder->getCode()->addSnippet(MarshalMapHelper::make(), false, 'marshal_map_helper');
+        if (!$this->builder->options->skipMarshal) {
+            if (null === $this->builder->marshalUnion) {
+                $this->builder->marshalUnion = new MarshalUnion();
+                $this->builder->getCode()->addSnippet($this->builder->marshalUnion, false, 'marshal_union');
+            }
+        }
+        if (!$this->builder->options->skipUnmarshal) {
+            if (null === $this->builder->unmarshalUnion) {
+                $this->builder->unmarshalUnion = new UnmarshalUnion();
+                $this->builder->getCode()->addSnippet($this->builder->unmarshalUnion, false, 'unmarshal_union');
+            }
+            if ($this->patternProperties !== null) {
+                $this->builder->unmarshalUnion->withRegex = true;
+            }
+        }
 
         return new PlaceholderString($result, [
             ':type' => $this->type->getType(),
         ]);
     }
 
+    private function renderConstRawMessage()
+    {
+        if ($this->constValues !== null) {
+            $result = <<<GO
+var (
+	// const:type is unconditionally added to JSON
+	const:type = json.RawMessage([]byte({$this->escapeValue(json_encode($this->constValues))}))
+	ptr:type = &const:type
+)
+
+
+GO;
+
+            return new PlaceholderString($result, [
+                ':type' => $this->type->getType(),
+            ]);
+
+        }
+        return '';
+    }
+
+
+    private function renderUnmarshal($propertyNames, $patternProperties)
+    {
+        if ($this->builder->options->skipUnmarshal) {
+            return '';
+        }
+
+        return <<<GO
+// UnmarshalJSON decodes JSON
+func (i *:type) UnmarshalJSON(data []byte) error {
+	{$this->padLines("\t",
+            $this->renderMainStructStart()
+            . $this->renderMayUnmarshalHead()
+        )}
+	err := unmarshalUnion(
+		{$this->renderMustUnmarshal()},
+		{$this->renderMayUnmarshal()},
+		{$this->padLines("\t\t", $propertyNames)},
+		$patternProperties,
+		data,
+	)
+	{$this->padLines("\t", $this->renderMayUnmarshalTail()
+            . $this->renderMainStructEnd())}
+	return err
+}
+
+
+GO;
+
+    }
+
+    private function renderMarshal($maps)
+    {
+        if ($this->builder->options->skipMarshal) {
+            return '';
+        }
+
+        return <<<GO
+{$this->renderConstRawMessage()}// MarshalJSON encodes JSON
+func (i :type) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshal:type(i)$maps)
+}
+
+GO;
+
+
+    }
 
     private function renderMustUnmarshal()
     {
@@ -155,14 +237,29 @@ GO;
 
     private function renderMayUnmarshalTail()
     {
+        $result = '';
+        if ($this->constValues !== null) {
+            foreach ($this->constValues as $name => $value) {
+                $result .= <<<GO
+if v, ok := constValues[{$this->escapeValue($name)}];!ok || string(v) != {$this->escapeValue(json_encode($value))} {
+    return errors.New({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected)')})
+}
+
+GO;
+
+            }
+        }
+
         $items = $this->mayUnmarshalItems();
         if ($items) {
-            $result = '';
             foreach ($items as $i => $item) {
                 $item = ltrim($item, '&');
+                if ($item === 'constValues') {
+                    continue;
+                }
                 $result .= <<<GO
 if mayUnmarshal[$i] == nil {
-    $item = nil
+	$item = nil
 }
 
 GO;
@@ -170,7 +267,7 @@ GO;
             }
             return $result;
         }
-        return '';
+        return $result;
     }
 
     private function renderMayUnmarshalHead()
@@ -178,9 +275,18 @@ GO;
         $items = $this->mayUnmarshalItems();
         if ($items) {
             $itemsString = implode(', ', $items);
-            return <<<GO
+            $result = '';
+            if ($this->constValues !== null) {
+                $result .= <<<'GO'
+constValues := make(map[string]json.RawMessage)
+
+GO;
+
+            }
+            $result .= <<<GO
 mayUnmarshal := []interface{}{{$itemsString}}
 GO;
+            return $result;
 
         }
         return '';
@@ -199,8 +305,12 @@ GO;
                 }
             }
         }
+        if ($this->constValues !== null) {
+            $items [] = "&constValues";
+        }
         return $items;
     }
+
 
     private function renderMayUnmarshal()
     {
@@ -218,9 +328,7 @@ GO;
     {
         if ($this->propertyNames !== null) {
             return <<<'GO'
-type p :type
-
-ii := p(*i)
+ii := marshal:type(*i)
 
 GO;
 
@@ -232,12 +340,12 @@ GO;
     private function renderMainStructEnd()
     {
         if ($this->propertyNames !== null) {
+            // todo error is checked after constants, fix
             return <<<'GO'
 if err != nil {
 	return err
 }
 *i = :type(ii)
-
 GO;
 
         }

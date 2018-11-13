@@ -7,7 +7,11 @@ use Swaggest\GoCodeBuilder\Style\Initialisms;
 
 class GoCodeBuilder extends CodeBuilder
 {
-    const TRACE_STORAGE_NAME = 'go-code-builder';
+    public function __construct()
+    {
+        parent::__construct();
+        $this->initialisms = new Initialisms();
+    }
 
     public $goFiles = array();
     public $headComment = <<<GO
@@ -25,6 +29,11 @@ GO;
 
 
     public $versionComment;
+
+    /**
+     * @var Initialisms
+     */
+    public $initialisms;
 
 
     public function storeToDisk($srcPath)
@@ -67,7 +76,7 @@ GO;
         } elseif (is_numeric($goName[0])) {
             $goName = 'Property' . $goName;
         }
-        $goName = Initialisms::process($goName);
+        $goName = $this->initialisms->process($goName);
         return $goName;
     }
 
@@ -83,7 +92,7 @@ GO;
         } elseif (is_numeric($goName[0])) {
             $goName = 'property' . $goName;
         }
-        $goName = Initialisms::process($goName);
+        $goName = $this->initialisms->process($goName);
         return $goName;
     }
 
