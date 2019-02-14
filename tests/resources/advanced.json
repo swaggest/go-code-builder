@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "properties.json",
+  "$id": "props.json",
   "type": "object",
   "definitions": {
-    "amqpType": {
+    "stringedType": {
       "type": "string",
       "enum": [
         "bit",
@@ -19,18 +19,18 @@
     "property": {
       "oneOf": [
         {
-          "$ref": "#/definitions/propertySimple"
+          "$ref": "#/definitions/scalar"
         },
         {
-          "$ref": "#/definitions/propertyTable"
+          "$ref": "#/definitions/table"
         }
       ]
     },
-    "propertySimple": {
+    "scalar": {
       "type": "object",
       "properties": {
         "type": {
-          "$ref": "#/definitions/amqpType"
+          "$ref": "#/definitions/stringedType"
         },
         "value": {
           "type": "string"
@@ -42,7 +42,7 @@
       ],
       "additionalProperties": false
     },
-    "propertyTable": {
+    "table": {
       "type": "object",
       "properties": {
         "type": {
@@ -61,7 +61,7 @@
       ],
       "additionalProperties": false
     },
-    "propertyShortStr": {
+    "shortStr": {
       "type": "object",
       "properties": {
         "type": {
@@ -93,7 +93,7 @@
       ],
       "additionalProperties": false
     },
-    "propertyTimestamp": {
+    "timestamp": {
       "type": "object",
       "properties": {
         "type": {
@@ -112,15 +112,15 @@
   },
   "properties": {
     "headers": {
-      "$ref": "#/definitions/propertyTable",
+      "$ref": "#/definitions/table",
       "description": "message header field table"
     },
     "content-type": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "MIME content type"
     },
     "content-encoding": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "MIME content encoding"
     },
     "delivery-mode": {
@@ -132,35 +132,35 @@
       "description": "message priority, 0 to 9"
     },
     "correlation-id": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "application correlation identifier"
     },
     "reply-to": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "address to reply to"
     },
     "expiration": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "message expiration specification"
     },
     "message-id": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "application message identifier"
     },
     "timestamp": {
-      "$ref": "#/definitions/propertyTimestamp",
+      "$ref": "#/definitions/timestamp",
       "description": "message timestamp"
     },
     "type": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "message type name"
     },
     "user-id": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "creating user id"
     },
     "app-id": {
-      "$ref": "#/definitions/propertyShortStr",
+      "$ref": "#/definitions/shortStr",
       "description": "creating application id"
     }
   },

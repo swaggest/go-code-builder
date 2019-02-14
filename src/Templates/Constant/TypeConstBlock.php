@@ -11,18 +11,14 @@ class TypeConstBlock extends GoTemplate
     /** @var Type */
     private $type;
 
-    /** @var Type */
-    private $base;
-
     /** @var array */
     private $values;
 
     private $comments;
 
-    public function __construct(Type $type, Type $base)
+    public function __construct(Type $type)
     {
         $this->type = $type;
-        $this->base = $base;
     }
 
     public function addValue($name, $value, $comment = null)

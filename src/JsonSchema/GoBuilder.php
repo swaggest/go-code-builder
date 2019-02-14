@@ -63,12 +63,12 @@ class GoBuilder
      */
     public function getType($schema, $path = '#')
     {
-        return (new TypeBuilder($schema, $path, $this))->build();
+        return (new TypeBuilder(self::unboolSchema($schema), $path, $this))->build();
     }
 
     /**
-     * @param $schema
-     * @param $path
+     * @param Schema $schema
+     * @param string $path
      * @return StructDef
      * @throws Exception
      */
@@ -78,8 +78,8 @@ class GoBuilder
     }
 
     /**
-     * @param $schema
-     * @param $path
+     * @param Schema $schema
+     * @param string $path
      * @return mixed|GeneratedStruct
      * @throws Exception
      */
@@ -99,7 +99,7 @@ class GoBuilder
 
     /**
      * @param Schema $schema
-     * @param $path
+     * @param string $path
      * @return GeneratedStruct
      * @throws Exception
      */
@@ -154,6 +154,8 @@ class GoBuilder
                     (new Tags())->setTag('json', $name . ',omitempty')
                 );
                 $comment = '';
+                $property = self::unboolSchema($property);
+
                 if ($property->title) {
                     $comment = $property->title . "\n";
                 }
@@ -211,4 +213,29 @@ class GoBuilder
         return $path;
     }
 
+    /**
+     * Resolves boolean schema into Schema instance
+     *
+     * @param mixed $schema
+     * @return mixed|Schema
+     */
+    private static function unboolSchema($schema)
+    {
+        static $trueSchema;
+        static $falseSchema;
+
+        if (null === $trueSchema) {
+            $trueSchema = new Schema();
+            $falseSchema = new Schema();
+            $falseSchema->not = $trueSchema;
+        }
+
+        if ($schema === true) {
+            return $trueSchema;
+        } elseif ($schema === false) {
+            return $falseSchema;
+        } else {
+            return $schema;
+        }
+    }
 }

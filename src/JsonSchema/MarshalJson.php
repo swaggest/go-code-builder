@@ -112,7 +112,7 @@ GO;
         }
 
         if ($this->constValues !== null) {
-            $maps .= ', ptr:type';
+            $maps .= ', const:type';
         }
 
 
@@ -151,8 +151,7 @@ GO;
             $result = <<<GO
 var (
 	// const:type is unconditionally added to JSON
-	const:type = json.RawMessage([]byte({$this->escapeValue(json_encode($this->constValues))}))
-	ptr:type = &const:type
+	const:type = json.RawMessage({$this->escapeValue(json_encode($this->constValues))})
 )
 
 

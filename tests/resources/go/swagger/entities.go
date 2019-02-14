@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-// Properties structure is generated from #
+// SwaggerSchema structure is generated from #
 // A JSON Schema for Swagger 2.0 API.
-type Properties struct {
+type SwaggerSchema struct {
 	Info                *Info                                              `json:"info,omitempty"`                // General information about the API.
 	Host                string                                             `json:"host,omitempty"`                // The host (name or ip) of the API. Example: 'swagger.io'
 	BasePath            string                                             `json:"basePath,omitempty"`            // The base path to the API. Example: '/api'.
@@ -27,11 +27,11 @@ type Properties struct {
 	MapOfAnythingValues map[string]interface{}                             `json:"-"`                             // Key must match pattern: ^x-
 }
 
-type marshalProperties Properties
+type marshalSwaggerSchema SwaggerSchema
 
 // UnmarshalJSON decodes JSON
-func (i *Properties) UnmarshalJSON(data []byte) error {
-	ii := marshalProperties(*i)
+func (i *SwaggerSchema) UnmarshalJSON(data []byte) error {
+	ii := marshalSwaggerSchema(*i)
 	constValues := make(map[string]json.RawMessage)
 	mayUnmarshal := []interface{}{&constValues}
 	err := unmarshalUnion(
@@ -64,19 +64,18 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	*i = Properties(ii)
+	*i = SwaggerSchema(ii)
 	return err
 }
 
 var (
-	// constProperties is unconditionally added to JSON
-	constProperties = json.RawMessage([]byte(`{"swagger":"2.0"}`))
-	ptrProperties = &constProperties
+	// constSwaggerSchema is unconditionally added to JSON
+	constSwaggerSchema = json.RawMessage(`{"swagger":"2.0"}`)
 )
 
 // MarshalJSON encodes JSON
-func (i Properties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalProperties(i), i.MapOfAnythingValues, ptrProperties)
+func (i SwaggerSchema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalSwaggerSchema(i), i.MapOfAnythingValues, constSwaggerSchema)
 }
 
 // Info structure is generated from #/definitions/info
@@ -529,13 +528,12 @@ func (i *BodyParameter) UnmarshalJSON(data []byte) error {
 
 var (
 	// constBodyParameter is unconditionally added to JSON
-	constBodyParameter = json.RawMessage([]byte(`{"in":"body"}`))
-	ptrBodyParameter = &constBodyParameter
+	constBodyParameter = json.RawMessage(`{"in":"body"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i BodyParameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalBodyParameter(i), i.MapOfAnythingValues, ptrBodyParameter)
+	return marshalUnion(marshalBodyParameter(i), i.MapOfAnythingValues, constBodyParameter)
 }
 
 // Schema structure is generated from #/definitions/schema
@@ -903,13 +901,12 @@ func (i *HeaderParameterSubSchema) UnmarshalJSON(data []byte) error {
 
 var (
 	// constHeaderParameterSubSchema is unconditionally added to JSON
-	constHeaderParameterSubSchema = json.RawMessage([]byte(`{"in":"header"}`))
-	ptrHeaderParameterSubSchema = &constHeaderParameterSubSchema
+	constHeaderParameterSubSchema = json.RawMessage(`{"in":"header"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i HeaderParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHeaderParameterSubSchema(i), i.MapOfAnythingValues, ptrHeaderParameterSubSchema)
+	return marshalUnion(marshalHeaderParameterSubSchema(i), i.MapOfAnythingValues, constHeaderParameterSubSchema)
 }
 
 // PrimitivesItems structure is generated from #/definitions/primitivesItems
@@ -1096,13 +1093,12 @@ func (i *FormDataParameterSubSchema) UnmarshalJSON(data []byte) error {
 
 var (
 	// constFormDataParameterSubSchema is unconditionally added to JSON
-	constFormDataParameterSubSchema = json.RawMessage([]byte(`{"in":"formData"}`))
-	ptrFormDataParameterSubSchema = &constFormDataParameterSubSchema
+	constFormDataParameterSubSchema = json.RawMessage(`{"in":"formData"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i FormDataParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalFormDataParameterSubSchema(i), i.MapOfAnythingValues, ptrFormDataParameterSubSchema)
+	return marshalUnion(marshalFormDataParameterSubSchema(i), i.MapOfAnythingValues, constFormDataParameterSubSchema)
 }
 
 // QueryParameterSubSchema structure is generated from #/definitions/queryParameterSubSchema
@@ -1181,13 +1177,12 @@ func (i *QueryParameterSubSchema) UnmarshalJSON(data []byte) error {
 
 var (
 	// constQueryParameterSubSchema is unconditionally added to JSON
-	constQueryParameterSubSchema = json.RawMessage([]byte(`{"in":"query"}`))
-	ptrQueryParameterSubSchema = &constQueryParameterSubSchema
+	constQueryParameterSubSchema = json.RawMessage(`{"in":"query"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i QueryParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalQueryParameterSubSchema(i), i.MapOfAnythingValues, ptrQueryParameterSubSchema)
+	return marshalUnion(marshalQueryParameterSubSchema(i), i.MapOfAnythingValues, constQueryParameterSubSchema)
 }
 
 // PathParameterSubSchema structure is generated from #/definitions/pathParameterSubSchema
@@ -1265,13 +1260,12 @@ func (i *PathParameterSubSchema) UnmarshalJSON(data []byte) error {
 
 var (
 	// constPathParameterSubSchema is unconditionally added to JSON
-	constPathParameterSubSchema = json.RawMessage([]byte(`{"required":true,"in":"path"}`))
-	ptrPathParameterSubSchema = &constPathParameterSubSchema
+	constPathParameterSubSchema = json.RawMessage(`{"required":true,"in":"path"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i PathParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPathParameterSubSchema(i), i.MapOfAnythingValues, ptrPathParameterSubSchema)
+	return marshalUnion(marshalPathParameterSubSchema(i), i.MapOfAnythingValues, constPathParameterSubSchema)
 }
 
 // ParametersListItems structure is generated from #/definitions/parametersList->items
@@ -1437,13 +1431,12 @@ func (i *FileSchema) UnmarshalJSON(data []byte) error {
 
 var (
 	// constFileSchema is unconditionally added to JSON
-	constFileSchema = json.RawMessage([]byte(`{"type":"file"}`))
-	ptrFileSchema = &constFileSchema
+	constFileSchema = json.RawMessage(`{"type":"file"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i FileSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalFileSchema(i), i.MapOfAnythingValues, ptrFileSchema)
+	return marshalUnion(marshalFileSchema(i), i.MapOfAnythingValues, constFileSchema)
 }
 
 // Header structure is generated from #/definitions/header
@@ -1615,13 +1608,12 @@ func (i *BasicAuthenticationSecurity) UnmarshalJSON(data []byte) error {
 
 var (
 	// constBasicAuthenticationSecurity is unconditionally added to JSON
-	constBasicAuthenticationSecurity = json.RawMessage([]byte(`{"type":"basic"}`))
-	ptrBasicAuthenticationSecurity = &constBasicAuthenticationSecurity
+	constBasicAuthenticationSecurity = json.RawMessage(`{"type":"basic"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i BasicAuthenticationSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalBasicAuthenticationSecurity(i), i.MapOfAnythingValues, ptrBasicAuthenticationSecurity)
+	return marshalUnion(marshalBasicAuthenticationSecurity(i), i.MapOfAnythingValues, constBasicAuthenticationSecurity)
 }
 
 // SecurityDefinitionsAdditionalProperties structure is generated from #/definitions/securityDefinitions->additionalProperties
@@ -1713,13 +1705,12 @@ func (i *APIKeySecurity) UnmarshalJSON(data []byte) error {
 
 var (
 	// constAPIKeySecurity is unconditionally added to JSON
-	constAPIKeySecurity = json.RawMessage([]byte(`{"type":"apiKey"}`))
-	ptrAPIKeySecurity = &constAPIKeySecurity
+	constAPIKeySecurity = json.RawMessage(`{"type":"apiKey"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i APIKeySecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAPIKeySecurity(i), i.MapOfAnythingValues, ptrAPIKeySecurity)
+	return marshalUnion(marshalAPIKeySecurity(i), i.MapOfAnythingValues, constAPIKeySecurity)
 }
 
 // Oauth2ImplicitSecurity structure is generated from #/definitions/oauth2ImplicitSecurity
@@ -1765,13 +1756,12 @@ func (i *Oauth2ImplicitSecurity) UnmarshalJSON(data []byte) error {
 
 var (
 	// constOauth2ImplicitSecurity is unconditionally added to JSON
-	constOauth2ImplicitSecurity = json.RawMessage([]byte(`{"type":"oauth2","flow":"implicit"}`))
-	ptrOauth2ImplicitSecurity = &constOauth2ImplicitSecurity
+	constOauth2ImplicitSecurity = json.RawMessage(`{"type":"oauth2","flow":"implicit"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i Oauth2ImplicitSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2ImplicitSecurity(i), i.MapOfAnythingValues, ptrOauth2ImplicitSecurity)
+	return marshalUnion(marshalOauth2ImplicitSecurity(i), i.MapOfAnythingValues, constOauth2ImplicitSecurity)
 }
 
 // Oauth2PasswordSecurity structure is generated from #/definitions/oauth2PasswordSecurity
@@ -1817,13 +1807,12 @@ func (i *Oauth2PasswordSecurity) UnmarshalJSON(data []byte) error {
 
 var (
 	// constOauth2PasswordSecurity is unconditionally added to JSON
-	constOauth2PasswordSecurity = json.RawMessage([]byte(`{"type":"oauth2","flow":"password"}`))
-	ptrOauth2PasswordSecurity = &constOauth2PasswordSecurity
+	constOauth2PasswordSecurity = json.RawMessage(`{"type":"oauth2","flow":"password"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i Oauth2PasswordSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2PasswordSecurity(i), i.MapOfAnythingValues, ptrOauth2PasswordSecurity)
+	return marshalUnion(marshalOauth2PasswordSecurity(i), i.MapOfAnythingValues, constOauth2PasswordSecurity)
 }
 
 // Oauth2ApplicationSecurity structure is generated from #/definitions/oauth2ApplicationSecurity
@@ -1869,13 +1858,12 @@ func (i *Oauth2ApplicationSecurity) UnmarshalJSON(data []byte) error {
 
 var (
 	// constOauth2ApplicationSecurity is unconditionally added to JSON
-	constOauth2ApplicationSecurity = json.RawMessage([]byte(`{"type":"oauth2","flow":"application"}`))
-	ptrOauth2ApplicationSecurity = &constOauth2ApplicationSecurity
+	constOauth2ApplicationSecurity = json.RawMessage(`{"type":"oauth2","flow":"application"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i Oauth2ApplicationSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2ApplicationSecurity(i), i.MapOfAnythingValues, ptrOauth2ApplicationSecurity)
+	return marshalUnion(marshalOauth2ApplicationSecurity(i), i.MapOfAnythingValues, constOauth2ApplicationSecurity)
 }
 
 // Oauth2AccessCodeSecurity structure is generated from #/definitions/oauth2AccessCodeSecurity
@@ -1923,13 +1911,12 @@ func (i *Oauth2AccessCodeSecurity) UnmarshalJSON(data []byte) error {
 
 var (
 	// constOauth2AccessCodeSecurity is unconditionally added to JSON
-	constOauth2AccessCodeSecurity = json.RawMessage([]byte(`{"type":"oauth2","flow":"accessCode"}`))
-	ptrOauth2AccessCodeSecurity = &constOauth2AccessCodeSecurity
+	constOauth2AccessCodeSecurity = json.RawMessage(`{"type":"oauth2","flow":"accessCode"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i Oauth2AccessCodeSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2AccessCodeSecurity(i), i.MapOfAnythingValues, ptrOauth2AccessCodeSecurity)
+	return marshalUnion(marshalOauth2AccessCodeSecurity(i), i.MapOfAnythingValues, constOauth2AccessCodeSecurity)
 }
 
 // Tag structure is generated from #/definitions/tag
@@ -2715,10 +2702,8 @@ func (i *APIKeySecurityIn) UnmarshalJSON(data []byte) error {
 func marshalUnion(maps ...interface{}) ([]byte, error) {
 	result := make([]byte, 1, 100)
 	result[0] = '{'
+	isObject := true
 	for _, m := range maps {
-		if m == nil {
-			continue
-		}
 		j, err := json.Marshal(m)
 		if err != nil {
 			return nil, err
@@ -2730,16 +2715,25 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 			continue
 		}
 		if j[0] != '{' {
+			if len(result) == 1 && (isObject || bytes.Equal(result, j)) {
+				result = j
+				isObject = false
+				continue
+			}
 			return nil, errors.New("failed to union map: object expected, " + string(j) + " received")
 		}
 
+		if !isObject {
+			return nil, errors.New("failed to union " + string(result) + " and " + string(j))
+		}
+
 		if len(result) > 1 {
-			result = append(result[:len(result)-1], ',')
+			result[len(result)-1] = ','
 		}
 		result = append(result, j[1:]...)
 	}
 	// closing empty result
-	if len(result) == 1 {
+	if isObject && len(result) == 1 {
 		result = append(result, '}')
 	}
 
