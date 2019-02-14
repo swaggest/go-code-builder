@@ -24,11 +24,12 @@ class Import
         if ($this->defaultPackageName) {
             return $this->defaultPackageName;
         } else {
-            $path = explode('/', $this->name);
-            $path = array_pop($path);
-            $path = explode('.', $path);
-            $path = array_shift($path);
-            return $path;
+            $pathItems = explode('/', $this->name);
+            /** @var string $path */
+            $path = array_pop($pathItems);
+            $pathItems = explode('.', $path);
+            $path = array_shift($pathItems);
+            return (string)$path;
         }
     }
 
@@ -42,10 +43,11 @@ class Import
         } elseif ($this->defaultPackageName) {
             return $this->defaultPackageName . '.';
         } else {
-            $path = explode('/', $this->name);
-            $path = array_pop($path);
-            $path = explode('.', $path);
-            $path = array_shift($path);
+            $pathItems = explode('/', $this->name);
+            /** @var string $path */
+            $path = array_pop($pathItems);
+            $pathItems = explode('.', $path);
+            $path = array_shift($pathItems);
             return $path . '.';
         }
     }

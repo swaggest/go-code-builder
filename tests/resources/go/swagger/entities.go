@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-// Properties structure is generated from #
+// SwaggerSchema structure is generated from #
 // A JSON Schema for Swagger 2.0 API.
-type Properties struct {
+type SwaggerSchema struct {
 	Info                *Info                                              `json:"info,omitempty"`                // General information about the API.
 	Host                string                                             `json:"host,omitempty"`                // The host (name or ip) of the API. Example: 'swagger.io'
 	BasePath            string                                             `json:"basePath,omitempty"`            // The base path to the API. Example: '/api'.
@@ -27,11 +27,11 @@ type Properties struct {
 	MapOfAnythingValues map[string]interface{}                             `json:"-"`                             // Key must match pattern: ^x-
 }
 
-type marshalProperties Properties
+type marshalSwaggerSchema SwaggerSchema
 
 // UnmarshalJSON decodes JSON
-func (i *Properties) UnmarshalJSON(data []byte) error {
-	ii := marshalProperties(*i)
+func (i *SwaggerSchema) UnmarshalJSON(data []byte) error {
+	ii := marshalSwaggerSchema(*i)
 	constValues := make(map[string]json.RawMessage)
 	mayUnmarshal := []interface{}{&constValues}
 	err := unmarshalUnion(
@@ -64,18 +64,18 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	*i = Properties(ii)
+	*i = SwaggerSchema(ii)
 	return err
 }
 
 var (
-	// constProperties is unconditionally added to JSON
-	constProperties = json.RawMessage(`{"swagger":"2.0"}`)
+	// constSwaggerSchema is unconditionally added to JSON
+	constSwaggerSchema = json.RawMessage(`{"swagger":"2.0"}`)
 )
 
 // MarshalJSON encodes JSON
-func (i Properties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalProperties(i), i.MapOfAnythingValues, constProperties)
+func (i SwaggerSchema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalSwaggerSchema(i), i.MapOfAnythingValues, constSwaggerSchema)
 }
 
 // Info structure is generated from #/definitions/info

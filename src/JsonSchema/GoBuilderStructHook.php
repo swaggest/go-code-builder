@@ -9,7 +9,7 @@ interface GoBuilderStructHook
 {
     /**
      * @param StructDef $structDef
-     * @param $path
+     * @param string $path
      * @param Schema $schema
      * @return null
      */

@@ -49,9 +49,17 @@ GO;
     }
 
 
+    /**
+     * @param string $string
+     * @param bool $lowerFirst
+     * @return string
+     */
     protected function toCamelCase($string, $lowerFirst = false)
     {
         $string = preg_replace('/(\d+)/', '_$1_', $string);
+        if ($string === null) {
+            return '';
+        }
 
         $result = implode('', array_map('ucfirst', explode('_', $string)));
         if (!$result) {
@@ -66,6 +74,7 @@ GO;
 
     public function exportableName($name)
     {
+        /** @var string $goName */
         $goName = preg_replace("/([^a-zA-Z0-9_]+)/", "_", $name);
         $goName = $this->toCamelCase($goName, false);
         if ($goName === 'String') {
@@ -82,6 +91,7 @@ GO;
 
     public function privateName($name)
     {
+        /** @var string $goName */
         $goName = preg_replace("/([^a-zA-Z0-9_]+)/", "_", $name);
         $goName = $this->toCamelCase($goName, true);
         if ($goName === 'type') {

@@ -33,10 +33,10 @@ class TypeBuilder
     /**
      * TypeBuilder constructor.
      * @param Schema $schema
-     * @param $path
+     * @param string $path
      * @param GoBuilder $goBuilder
      */
-    public function __construct(JsonSchema $schema, $path, GoBuilder $goBuilder)
+    public function __construct(Schema $schema, $path, GoBuilder $goBuilder)
     {
         $this->schema = $schema;
         $this->path = $path;

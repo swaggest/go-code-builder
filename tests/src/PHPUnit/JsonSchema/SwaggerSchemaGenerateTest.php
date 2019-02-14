@@ -20,7 +20,7 @@ class SwaggerSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         $builder = new GoBuilder();
         $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
             if ('#' === $path) {
-                $structDef->setName('Properties');
+                $structDef->setName('SwaggerSchema');
             } elseif (0 === strpos($path, '#/definitions/')) {
                 $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
                 $structDef->setName($name);

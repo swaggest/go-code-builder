@@ -67,8 +67,8 @@ class GoBuilder
     }
 
     /**
-     * @param $schema
-     * @param $path
+     * @param Schema $schema
+     * @param string $path
      * @return StructDef
      * @throws Exception
      */
@@ -78,8 +78,8 @@ class GoBuilder
     }
 
     /**
-     * @param $schema
-     * @param $path
+     * @param Schema $schema
+     * @param string $path
      * @return mixed|GeneratedStruct
      * @throws Exception
      */
@@ -99,7 +99,7 @@ class GoBuilder
 
     /**
      * @param Schema $schema
-     * @param $path
+     * @param string $path
      * @return GeneratedStruct
      * @throws Exception
      */

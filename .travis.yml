@@ -2,6 +2,7 @@ language: php
 php:
 - nightly
 - hhvm
+- 7.3
 - 7.2
 - 7.1
 - 7.0
@@ -20,7 +21,7 @@ cache:
 # execute any number of scripts before the test run, custom env's are available as variables
 before_script:
 - composer install --dev --no-interaction --prefer-dist
-#- if [[ $(phpenv version-name) =~ 7.2 ]] ; then test -f $HOME/.composer/cache/phpstan.phar || wget https://github.com/phpstan/phpstan/releases/download/0.10.5/phpstan.phar -O $HOME/.composer/cache/phpstan.phar; fi
+#- if [[ $(phpenv version-name) =~ 7.2 ]] ; then test -f $HOME/.composer/cache/phpstan.phar || wget https://github.com/phpstan/phpstan/releases/download/0.11.2/phpstan.phar -O $HOME/.composer/cache/phpstan.phar; fi
 
 matrix:
   allow_failures:

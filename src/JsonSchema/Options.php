@@ -2,7 +2,6 @@
 
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
-
 use Swaggest\JsonSchema\Constraint\Properties;
 use Swaggest\JsonSchema\Schema;
 use Swaggest\JsonSchema\Structure\ClassStructure;
@@ -44,7 +43,7 @@ class Options extends ClassStructure
     public $skipMarshal = false;
 
     /**
-     * @param Properties|static $properties
+     * @param static $properties
      * @param Schema $ownerSchema
      */
     public static function setUpProperties($properties, Schema $ownerSchema)
