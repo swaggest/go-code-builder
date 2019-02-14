@@ -261,13 +261,12 @@ type marshalStreamFramingOneOf0 StreamFramingOneOf0
 
 var (
 	// constStreamFramingOneOf0 is unconditionally added to JSON
-	constStreamFramingOneOf0 = json.RawMessage([]byte(`{"type":"chunked"}`))
-	ptrStreamFramingOneOf0 = &constStreamFramingOneOf0
+	constStreamFramingOneOf0 = json.RawMessage(`{"type":"chunked"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i StreamFramingOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalStreamFramingOneOf0(i), ptrStreamFramingOneOf0)
+	return marshalUnion(marshalStreamFramingOneOf0(i), constStreamFramingOneOf0)
 }
 
 // StreamFraming structure is generated from #/definitions/stream->framing
@@ -294,13 +293,12 @@ type marshalStreamFramingOneOf1 StreamFramingOneOf1
 
 var (
 	// constStreamFramingOneOf1 is unconditionally added to JSON
-	constStreamFramingOneOf1 = json.RawMessage([]byte(`{"type":"sse","delimiter":"\\n\\n"}`))
-	ptrStreamFramingOneOf1 = &constStreamFramingOneOf1
+	constStreamFramingOneOf1 = json.RawMessage(`{"type":"sse","delimiter":"\\n\\n"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i StreamFramingOneOf1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalStreamFramingOneOf1(i), ptrStreamFramingOneOf1)
+	return marshalUnion(marshalStreamFramingOneOf1(i), constStreamFramingOneOf1)
 }
 
 // Events structure is generated from #/definitions/events
@@ -355,13 +353,12 @@ type marshalUserPassword UserPassword
 
 var (
 	// constUserPassword is unconditionally added to JSON
-	constUserPassword = json.RawMessage([]byte(`{"type":"userPassword"}`))
-	ptrUserPassword = &constUserPassword
+	constUserPassword = json.RawMessage(`{"type":"userPassword"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i UserPassword) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalUserPassword(i), i.MapOfAnythingValues, ptrUserPassword)
+	return marshalUnion(marshalUserPassword(i), i.MapOfAnythingValues, constUserPassword)
 }
 
 // SecurityScheme structure is generated from #/definitions/SecurityScheme
@@ -392,13 +389,12 @@ type marshalAPIKey APIKey
 
 var (
 	// constAPIKey is unconditionally added to JSON
-	constAPIKey = json.RawMessage([]byte(`{"type":"apiKey"}`))
-	ptrAPIKey = &constAPIKey
+	constAPIKey = json.RawMessage(`{"type":"apiKey"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i APIKey) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAPIKey(i), i.MapOfAnythingValues, ptrAPIKey)
+	return marshalUnion(marshalAPIKey(i), i.MapOfAnythingValues, constAPIKey)
 }
 
 // X509 structure is generated from #/definitions/X509
@@ -411,13 +407,12 @@ type marshalX509 X509
 
 var (
 	// constX509 is unconditionally added to JSON
-	constX509 = json.RawMessage([]byte(`{"type":"X509"}`))
-	ptrX509 = &constX509
+	constX509 = json.RawMessage(`{"type":"X509"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i X509) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalX509(i), i.MapOfAnythingValues, ptrX509)
+	return marshalUnion(marshalX509(i), i.MapOfAnythingValues, constX509)
 }
 
 // SymmetricEncryption structure is generated from #/definitions/symmetricEncryption
@@ -430,13 +425,12 @@ type marshalSymmetricEncryption SymmetricEncryption
 
 var (
 	// constSymmetricEncryption is unconditionally added to JSON
-	constSymmetricEncryption = json.RawMessage([]byte(`{"type":"symmetricEncryption"}`))
-	ptrSymmetricEncryption = &constSymmetricEncryption
+	constSymmetricEncryption = json.RawMessage(`{"type":"symmetricEncryption"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i SymmetricEncryption) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSymmetricEncryption(i), i.MapOfAnythingValues, ptrSymmetricEncryption)
+	return marshalUnion(marshalSymmetricEncryption(i), i.MapOfAnythingValues, constSymmetricEncryption)
 }
 
 // AsymmetricEncryption structure is generated from #/definitions/asymmetricEncryption
@@ -449,13 +443,12 @@ type marshalAsymmetricEncryption AsymmetricEncryption
 
 var (
 	// constAsymmetricEncryption is unconditionally added to JSON
-	constAsymmetricEncryption = json.RawMessage([]byte(`{"type":"asymmetricEncryption"}`))
-	ptrAsymmetricEncryption = &constAsymmetricEncryption
+	constAsymmetricEncryption = json.RawMessage(`{"type":"asymmetricEncryption"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i AsymmetricEncryption) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAsymmetricEncryption(i), i.MapOfAnythingValues, ptrAsymmetricEncryption)
+	return marshalUnion(marshalAsymmetricEncryption(i), i.MapOfAnythingValues, constAsymmetricEncryption)
 }
 
 // NonBearerHTTPSecurityScheme structure is generated from #/definitions/NonBearerHTTPSecurityScheme
@@ -469,13 +462,12 @@ type marshalNonBearerHTTPSecurityScheme NonBearerHTTPSecurityScheme
 
 var (
 	// constNonBearerHTTPSecurityScheme is unconditionally added to JSON
-	constNonBearerHTTPSecurityScheme = json.RawMessage([]byte(`{"type":"http"}`))
-	ptrNonBearerHTTPSecurityScheme = &constNonBearerHTTPSecurityScheme
+	constNonBearerHTTPSecurityScheme = json.RawMessage(`{"type":"http"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i NonBearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalNonBearerHTTPSecurityScheme(i), i.MapOfAnythingValues, ptrNonBearerHTTPSecurityScheme)
+	return marshalUnion(marshalNonBearerHTTPSecurityScheme(i), i.MapOfAnythingValues, constNonBearerHTTPSecurityScheme)
 }
 
 // HTTPSecurityScheme structure is generated from #/definitions/HTTPSecurityScheme
@@ -503,13 +495,12 @@ type marshalBearerHTTPSecurityScheme BearerHTTPSecurityScheme
 
 var (
 	// constBearerHTTPSecurityScheme is unconditionally added to JSON
-	constBearerHTTPSecurityScheme = json.RawMessage([]byte(`{"scheme":"bearer","type":"http"}`))
-	ptrBearerHTTPSecurityScheme = &constBearerHTTPSecurityScheme
+	constBearerHTTPSecurityScheme = json.RawMessage(`{"scheme":"bearer","type":"http"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i BearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalBearerHTTPSecurityScheme(i), i.MapOfAnythingValues, ptrBearerHTTPSecurityScheme)
+	return marshalUnion(marshalBearerHTTPSecurityScheme(i), i.MapOfAnythingValues, constBearerHTTPSecurityScheme)
 }
 
 // APIKeyHTTPSecurityScheme structure is generated from #/definitions/APIKeyHTTPSecurityScheme
@@ -524,13 +515,12 @@ type marshalAPIKeyHTTPSecurityScheme APIKeyHTTPSecurityScheme
 
 var (
 	// constAPIKeyHTTPSecurityScheme is unconditionally added to JSON
-	constAPIKeyHTTPSecurityScheme = json.RawMessage([]byte(`{"type":"httpApiKey"}`))
-	ptrAPIKeyHTTPSecurityScheme = &constAPIKeyHTTPSecurityScheme
+	constAPIKeyHTTPSecurityScheme = json.RawMessage(`{"type":"httpApiKey"}`)
 )
 
 // MarshalJSON encodes JSON
 func (i APIKeyHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAPIKeyHTTPSecurityScheme(i), i.MapOfAnythingValues, ptrAPIKeyHTTPSecurityScheme)
+	return marshalUnion(marshalAPIKeyHTTPSecurityScheme(i), i.MapOfAnythingValues, constAPIKeyHTTPSecurityScheme)
 }
 
 // ComponentsSecuritySchemes structure is generated from #/definitions/components->securitySchemes
@@ -686,10 +676,8 @@ func (i APIKeyHTTPSecuritySchemeIn) MarshalJSON() ([]byte, error) {
 func marshalUnion(maps ...interface{}) ([]byte, error) {
 	result := make([]byte, 1, 100)
 	result[0] = '{'
+	isObject := true
 	for _, m := range maps {
-		if m == nil {
-			continue
-		}
 		j, err := json.Marshal(m)
 		if err != nil {
 			return nil, err
@@ -701,16 +689,25 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 			continue
 		}
 		if j[0] != '{' {
+			if len(result) == 1 && (isObject || bytes.Equal(result, j)) {
+				result = j
+				isObject = false
+				continue
+			}
 			return nil, errors.New("failed to union map: object expected, " + string(j) + " received")
 		}
 
+		if !isObject {
+			return nil, errors.New("failed to union " + string(result) + " and " + string(j))
+		}
+
 		if len(result) > 1 {
-			result = append(result[:len(result)-1], ',')
+			result[len(result)-1] = ','
 		}
 		result = append(result, j[1:]...)
 	}
 	// closing empty result
-	if len(result) == 1 {
+	if isObject && len(result) == 1 {
 		result = append(result, '}')
 	}
 

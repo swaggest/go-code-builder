@@ -132,9 +132,6 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 	result := make([]byte, 1, 100)
 	result[0] = '{'
 	for _, m := range maps {
-		if m == nil {
-			continue
-		}
 		j, err := json.Marshal(m)
 		if err != nil {
 			return nil, err
@@ -150,7 +147,7 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		}
 
 		if len(result) > 1 {
-			result = append(result[:len(result)-1], ',')
+			result[len(result)-1] = ','
 		}
 		result = append(result, j[1:]...)
 	}

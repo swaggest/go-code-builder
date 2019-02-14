@@ -26,6 +26,12 @@ class Options extends ClassStructure
     public $hideConstProperties = true;
 
     /**
+     * Use integer types based on minimum/maximum
+     * @var bool
+     */
+    public $optimizeIntegers = true;
+
+    /**
      * Skip Unmarshal generation
      * @var bool
      */

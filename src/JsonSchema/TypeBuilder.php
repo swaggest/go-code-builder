@@ -3,8 +3,8 @@
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 
+use Swaggest\GoCodeBuilder\Import;
 use Swaggest\GoCodeBuilder\Templates\Constant\TypeConstBlock;
-use Swaggest\GoCodeBuilder\Templates\Func\FuncDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructType;
@@ -13,6 +13,7 @@ use Swaggest\GoCodeBuilder\Templates\Type\Map;
 use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\Slice;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeUtil;
+use Swaggest\JsonSchema\Constraint\Format;
 use Swaggest\JsonSchema\Constraint\Type;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
@@ -94,6 +95,10 @@ class TypeBuilder
 
     private function processLogicType()
     {
+        if (in_array($this->schema->type, [JsonSchema::STRING, JsonSchema::INTEGER, JsonSchema::NUMBER, JsonSchema::BOOLEAN], true)) {
+            // Skip logical keywords if scalar type provided
+            return;
+        }
         if ($this->schema->allOf !== null) {
             $this->processOr($this->schema->allOf, 'allOf');
         } elseif ($this->schema->anyOf !== null) {
@@ -178,10 +183,36 @@ class TypeBuilder
         }
     }
 
-    private function typeSwitch($type)
+    private function typeSwitch($type, $minimum = null, $maximum = null, $format = null)
     {
         switch ($type) {
             case Type::INTEGER:
+                if ($this->goBuilder->options->optimizeIntegers && $minimum !== null && $maximum !== null) {
+                    if ($minimum >= 0 && $maximum <= 255) {
+                        return new GoType('uint8');
+                    }
+                    if ($minimum >= 0 && $maximum <= 65535) {
+                        return new GoType('uint16');
+                    }
+                    if ($minimum >= 0 && $maximum <= 4294967295) {
+                        return new GoType('uint32');
+                    }
+                    if ($minimum >= 0) {
+                        return new GoType('uint64');
+                    }
+
+                    if ($minimum >= -128 && $maximum <= 127) {
+                        return new GoType('int8');
+                    }
+
+                    if ($minimum >= -32768 && $maximum <= 32767) {
+                        return new GoType('int16');
+                    }
+
+                    if ($minimum >= -2147483648 && $maximum <= 2147483647) {
+                        return new GoType('int32');
+                    }
+                }
                 return new GoType('int64');
 
             case Type::NUMBER:
@@ -191,6 +222,9 @@ class TypeBuilder
                 return new GoType('bool');
 
             case Type::STRING:
+                if ($format === Format::DATE_TIME) {
+                    return new Pointer(new GoType('Time', new Import('time')));
+                }
                 return new GoType('string');
 
             case Type::OBJECT:
@@ -236,7 +270,7 @@ class TypeBuilder
                 return $baseType;
             }
 
-            $typeConstBlock = new TypeConstBlock($type, $baseType);
+            $typeConstBlock = new TypeConstBlock($type);
 
 
             $this->goBuilder->getCode()->addSnippet(<<<GO
@@ -259,10 +293,32 @@ GO
         return null;
     }
 
-    private function processEnum(GoType $baseType)
+    private function processEnum(AnyType $baseType)
     {
-        if ($this->schema->enum !== null) {
-            if ($this->goBuilder->options->hideConstProperties && count($this->schema->enum) === 1) {
+        $oneOfEnum = true;
+        $enum = null;
+        /** @var Schema[] $enumSchemas */
+        $enumSchemas = null;
+        if ($this->schema->oneOf !== null) {
+            foreach ($this->schema->oneOf as $schema) {
+                if ($schema->const !== null) {
+                    $enum[] = $schema->const;
+                    $enumSchemas[] = $schema;
+                } else {
+                    $oneOfEnum = false;
+                }
+            }
+        } else {
+            $oneOfEnum = false;
+        }
+
+        if (!$oneOfEnum) {
+            $enum = $this->schema->enum;
+            $enumSchemas = null;
+        }
+
+        if ($enum !== null) {
+            if ($this->goBuilder->options->hideConstProperties && count($enum) === 1) {
                 return $baseType;
             }
 
@@ -270,7 +326,7 @@ GO
             $typeName = $this->goBuilder->codeBuilder->exportableName($path);
             $type = new GoType($typeName);
 
-            $typeConstBlock = new TypeConstBlock($type, $baseType);
+            $typeConstBlock = new TypeConstBlock($type);
 
             $this->goBuilder->getCode()->addSnippet(<<<GO
 // $typeName is a constant type
@@ -281,8 +337,19 @@ GO
             );
 
 
-            foreach ($this->schema->enum as $item) {
-                $typeConstBlock->addValue($this->goBuilder->codeBuilder->exportableName($path . '_' . $item), $item);
+            foreach ($enum as $index => $item) {
+                $itemName = $this->goBuilder->codeBuilder->exportableName($path . '_' . $item);
+                $comment = null;
+                if (isset($enumSchemas[$index])) {
+                    $schema = $enumSchemas[$index];
+                    if (isset($schema->title)) {
+                        $itemName = $this->goBuilder->codeBuilder->exportableName($path . '_' . $schema->title);
+                    }
+                    if (isset($schema->description)) {
+                        $comment = $schema->description;
+                    }
+                }
+                $typeConstBlock->addValue($itemName, $item, $comment);
             }
 
             $this->goBuilder->getCode()->addSnippet($typeConstBlock);
@@ -307,11 +374,6 @@ GO
         }
         return $this->resultStruct;
     }
-
-    /** @var FuncDef */
-    private $resultStructImportFunc;
-    /** @var FuncDef */
-    private $resultStructExportFunc;
 
     /** @var StructDef */
     private $resultStruct;
@@ -338,9 +400,15 @@ GO
         $this->processObjectType();
 
         if (is_array($this->schema->type)) {
-            throw new Exception('Can not map multiple types in GO type');
+            $or = [];
+            foreach ($this->schema->type as $type) {
+                $schema = clone $this->schema;
+                $schema->type = $type;
+                $or [] = $schema;
+            }
+            $this->processOr($or, 'type');
         } elseif ($this->schema->type) {
-            $type = $this->typeSwitch($this->schema->type);
+            $type = $this->typeSwitch($this->schema->type, $this->schema->minimum, $this->schema->maximum, $this->schema->format);
             if (($type !== null)) { // todo properly process const = null
                 $type = $this->processEnum($type);
             }
