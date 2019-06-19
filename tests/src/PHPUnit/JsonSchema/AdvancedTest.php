@@ -31,6 +31,7 @@ class AdvancedTest extends \PHPUnit_Framework_TestCase
         $builder->getType($schema);
 
         $goFile = new GoFile('entities');
+        $goFile->setComment('Package entities contains generated structures.');
         foreach ($builder->getGeneratedStructs() as $generatedStruct) {
             $goFile->getCode()->addSnippet($generatedStruct->structDef);
         }
