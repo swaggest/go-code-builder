@@ -150,7 +150,7 @@ GO;
         if ($this->constValues !== null) {
             $result = <<<GO
 var (
-	// const:type is unconditionally added to JSON
+	// const:type is unconditionally added to JSON.
 	const:type = json.RawMessage({$this->escapeValue(json_encode($this->constValues))})
 )
 
@@ -173,7 +173,7 @@ GO;
         }
 
         return <<<GO
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
 	{$this->padLines("\t",
             $this->renderMainStructStart()
@@ -203,7 +203,7 @@ GO;
         }
 
         return <<<GO
-{$this->renderConstRawMessage()}// MarshalJSON encodes JSON
+{$this->renderConstRawMessage()}// MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshal:type(i)$maps)
 }

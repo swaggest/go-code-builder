@@ -7,8 +7,9 @@ import (
 	"strings"
 )
 
-// Schema structure is generated from #
-// Core schema meta-schema
+// Schema structure is generated from "#".
+//
+// Core schema meta-schema.
 type Schema struct {
 	ID                   string                                      `json:"$id,omitempty"`
 	*Schema                                     `json:"-"`
@@ -61,7 +62,7 @@ type Schema struct {
 
 type marshalSchema Schema
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *Schema) UnmarshalJSON(data []byte) error {
 	ii := marshalSchema(*i)
 	mayUnmarshal := []interface{}{&ii., &ii.Type0, &ii.Type1}
@@ -134,19 +135,19 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i Schema) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalSchema(i), i., i.Type0, i.Type1)
 }
 
-// NonNegativeIntegerDefault0 structure is generated from #/definitions/nonNegativeIntegerDefault0
+// NonNegativeIntegerDefault0 structure is generated from "#/definitions/nonNegativeIntegerDefault0".
 type NonNegativeIntegerDefault0 struct {
 	Int64 *int64 `json:"-"`
 }
 
 type marshalNonNegativeIntegerDefault0 NonNegativeIntegerDefault0
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *NonNegativeIntegerDefault0) UnmarshalJSON(data []byte) error {
 
 	err := unmarshalUnion(
@@ -160,12 +161,12 @@ func (i *NonNegativeIntegerDefault0) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i NonNegativeIntegerDefault0) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalNonNegativeIntegerDefault0(i), i.Int64)
 }
 
-// Items structure is generated from #->items
+// Items structure is generated from "#->items".
 type Items struct {
 	Schema *Schema  `json:"-"`
 	AnyOf1 []Schema `json:"-"`
@@ -173,7 +174,7 @@ type Items struct {
 
 type marshalItems Items
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *Items) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Schema, &i.AnyOf1}
 	err := unmarshalUnion(
@@ -193,12 +194,12 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i Items) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalItems(i), i.Schema, i.AnyOf1)
 }
 
-// DependenciesAdditionalProperties structure is generated from #->dependencies->additionalProperties
+// DependenciesAdditionalProperties structure is generated from "#->dependencies->additionalProperties".
 type DependenciesAdditionalProperties struct {
 	Schema *Schema  `json:"-"`
 	AnyOf1 []string `json:"-"`
@@ -206,7 +207,7 @@ type DependenciesAdditionalProperties struct {
 
 type marshalDependenciesAdditionalProperties DependenciesAdditionalProperties
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Schema, &i.AnyOf1}
 	err := unmarshalUnion(
@@ -226,19 +227,19 @@ func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalDependenciesAdditionalProperties(i), i.Schema, i.AnyOf1)
 }
 
-// Type structure is generated from #->type
+// Type structure is generated from "#->type".
 type Type struct {
 	AnyOf1 []interface{} `json:"-"`
 }
 
 type marshalType Type
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *Type) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.AnyOf1}
 	err := unmarshalUnion(
@@ -255,13 +256,14 @@ func (i *Type) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i Type) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalType(i), i.AnyOf1)
 }
 
-// Type0 structure is generated from #/type/0
-// Core schema meta-schema
+// Type0 structure is generated from "#/type/0".
+//
+// Core schema meta-schema.
 type Type0 struct {
 	ID                   string                                      `json:"$id,omitempty"`
 	Schema               string                                      `json:"$schema,omitempty"`
@@ -310,8 +312,9 @@ type Type0 struct {
 	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema
 }
 
-// Type1 structure is generated from #/type/1
-// Core schema meta-schema
+// Type1 structure is generated from "#/type/1".
+//
+// Core schema meta-schema.
 type Type1 struct {
 	ID                   string                                      `json:"$id,omitempty"`
 	Schema               string                                      `json:"$schema,omitempty"`
@@ -393,7 +396,7 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		}
 		result = append(result, j[1:]...)
 	}
-	// closing empty result
+	// Close empty result.
 	if isObject && len(result) == 1 {
 		result = append(result, '}')
 	}

@@ -26,7 +26,7 @@ abstract class GoTemplate extends AbstractTemplate
     protected function renderComment()
     {
         if ($this->comment) {
-            return rtrim($this->padLines('// ', $this->comment, false)) . "\n";
+            return rtrim($this->padLines('// ', $this->comment, false, true)) . "\n";
         } else {
             return '';
         }
@@ -49,7 +49,7 @@ abstract class GoTemplate extends AbstractTemplate
                 if (trim($l) === '') {
                     $l = '';
                 }
-                $lines[$index] = $l;
+                $lines[$index] = rtrim($l);
             }
         }
         return implode("\n", $lines);

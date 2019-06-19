@@ -6,10 +6,6 @@ use Swaggest\GoCodeBuilder\Templates\Code;
 
 class MarshalMapHelper
 {
-    public static function makeMarshal() {
-
-    }
-
     public static function make()
     {
         $code = new Code();
@@ -29,7 +25,7 @@ func unmarshalUnion(
 	j []byte,
 ) error {
 	for _, item := range mustUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(j, item)
 		if err != nil {
 			return err
@@ -37,43 +33,43 @@ func unmarshalUnion(
 	}
 
 	for i, item := range mayUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(j, item)
 		if err != nil {
 			mayUnmarshal[i] = nil
 		}
 	}
 
-	// unmarshal to a generic map
+	// Unmarshal to a generic map.
 	var m map[string]*json.RawMessage
 	err := json.Unmarshal(j, &m)
 	if err != nil {
 		return err
 	}
 
-	// removing ignored keys (defined in struct)
+	// Remove ignored keys (defined in struct).
 	for _, i := range ignoreKeys {
 		delete(m, i)
 	}
 
-	// returning early on empty map
+	// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}
 
-	// preparing regexp matchers
+	// Prepare regexp matchers.
 	var reg = make(map[string]*regexp.Regexp, len(regexMaps))
 	for regex := range regexMaps {
 		if regex != "" {
 			reg[regex], err = regexp.Compile(regex)
 			if err != nil {
-				return err //todo use errors.Wrap
+				return err
 			}
 		}
 	}
 
 	subMapsRaw := make(map[string][]byte, len(regexMaps))
-	// iterating map and feeding subMaps
+	// Iterate map and feeding subMaps.
 	for key, val := range m {
 		matched := false
 		var ok bool
@@ -98,7 +94,7 @@ func unmarshalUnion(
 			}
 		}
 
-		// empty regex for additionalProperties
+		// Empty regex for additionalProperties.
 		if !matched {
 			var subMap []byte
 			if subMap, ok = subMapsRaw[""]; !ok {

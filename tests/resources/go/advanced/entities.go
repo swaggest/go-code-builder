@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Properties structure is generated from #
+// Properties structure is generated from "#".
 type Properties struct {
 	Headers              *Table              `json:"headers,omitempty"`
 	ContentType          *ShortStr           `json:"content-type,omitempty"`
@@ -27,7 +27,7 @@ type Properties struct {
 
 type marshalProperties Properties
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *Properties) UnmarshalJSON(data []byte) error {
 	ii := marshalProperties(*i)
 
@@ -61,19 +61,19 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i Properties) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalProperties(i), i.AdditionalProperties)
 }
 
-// Table structure is generated from #/definitions/table
+// Table structure is generated from "#/definitions/table".
 type Table struct {
 	Value map[string]Property `json:"value,omitempty"`
 }
 
 type marshalTable Table
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *Table) UnmarshalJSON(data []byte) error {
 	ii := marshalTable(*i)
 	constValues := make(map[string]json.RawMessage)
@@ -98,22 +98,22 @@ func (i *Table) UnmarshalJSON(data []byte) error {
 }
 
 var (
-	// constTable is unconditionally added to JSON
+	// constTable is unconditionally added to JSON.
 	constTable = json.RawMessage(`{"type":"table"}`)
 )
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i Table) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalTable(i), constTable)
 }
 
-// Scalar structure is generated from #/definitions/scalar
+// Scalar structure is generated from "#/definitions/scalar".
 type Scalar struct {
 	Type  StringedType `json:"type,omitempty"`
 	Value string       `json:"value,omitempty"`
 }
 
-// Property structure is generated from #/definitions/property
+// Property structure is generated from "#/definitions/property".
 type Property struct {
 	Scalar *Scalar `json:"-"`
 	Table  *Table  `json:"-"`
@@ -121,7 +121,7 @@ type Property struct {
 
 type marshalProperty Property
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *Property) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Scalar, &i.Table}
 	err := unmarshalUnion(
@@ -141,19 +141,19 @@ func (i *Property) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i Property) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalProperty(i), i.Scalar, i.Table)
 }
 
-// ShortStr structure is generated from #/definitions/shortStr
+// ShortStr structure is generated from "#/definitions/shortStr".
 type ShortStr struct {
 	Value string `json:"value,omitempty"`
 }
 
 type marshalShortStr ShortStr
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *ShortStr) UnmarshalJSON(data []byte) error {
 	ii := marshalShortStr(*i)
 	constValues := make(map[string]json.RawMessage)
@@ -178,23 +178,23 @@ func (i *ShortStr) UnmarshalJSON(data []byte) error {
 }
 
 var (
-	// constShortStr is unconditionally added to JSON
+	// constShortStr is unconditionally added to JSON.
 	constShortStr = json.RawMessage(`{"type":"shortstr"}`)
 )
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i ShortStr) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalShortStr(i), constShortStr)
 }
 
-// PropertyOctet structure is generated from #/definitions/propertyOctet
+// PropertyOctet structure is generated from "#/definitions/propertyOctet".
 type PropertyOctet struct {
 	Value string `json:"value,omitempty"`
 }
 
 type marshalPropertyOctet PropertyOctet
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *PropertyOctet) UnmarshalJSON(data []byte) error {
 	ii := marshalPropertyOctet(*i)
 	constValues := make(map[string]json.RawMessage)
@@ -219,23 +219,23 @@ func (i *PropertyOctet) UnmarshalJSON(data []byte) error {
 }
 
 var (
-	// constPropertyOctet is unconditionally added to JSON
+	// constPropertyOctet is unconditionally added to JSON.
 	constPropertyOctet = json.RawMessage(`{"type":"octet"}`)
 )
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i PropertyOctet) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalPropertyOctet(i), constPropertyOctet)
 }
 
-// Timestamp structure is generated from #/definitions/timestamp
+// Timestamp structure is generated from "#/definitions/timestamp".
 type Timestamp struct {
 	Value string `json:"value,omitempty"`
 }
 
 type marshalTimestamp Timestamp
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *Timestamp) UnmarshalJSON(data []byte) error {
 	ii := marshalTimestamp(*i)
 	constValues := make(map[string]json.RawMessage)
@@ -260,11 +260,11 @@ func (i *Timestamp) UnmarshalJSON(data []byte) error {
 }
 
 var (
-	// constTimestamp is unconditionally added to JSON
+	// constTimestamp is unconditionally added to JSON.
 	constTimestamp = json.RawMessage(`{"type":"timestamp"}`)
 )
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i Timestamp) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalTimestamp(i), constTimestamp)
 }
@@ -284,7 +284,7 @@ const (
 	StringedTypeTimestamp = StringedType("timestamp")
 )
 
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i StringedType) MarshalJSON() ([]byte, error) {
 	switch i {
 	case StringedTypeBit:
@@ -303,7 +303,7 @@ func (i StringedType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(string(i))
 }
 
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *StringedType) UnmarshalJSON(data []byte) error {
 	var ii string
 	err := json.Unmarshal(data, &ii)
@@ -362,7 +362,7 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		}
 		result = append(result, j[1:]...)
 	}
-	// closing empty result
+	// Close empty result.
 	if isObject && len(result) == 1 {
 		result = append(result, '}')
 	}

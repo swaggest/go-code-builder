@@ -50,7 +50,7 @@ class MarshalEnum extends GoTemplate
         }
 
         return <<<GO
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
 	{$this->padLines("\t", $this->renderIfCheck('i', 'return nil, errors.New("unexpected value")'))}
 	return json.Marshal(:base(i))
@@ -67,7 +67,7 @@ GO;
         }
 
         return <<<GO
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
 	var ii :base
 	err := json.Unmarshal(data, &ii)
@@ -105,7 +105,7 @@ GO;
         }
 
         return <<<GO
-// MarshalJSON encodes JSON
+// MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
 	{$this->padLines("\t", $this->renderIfCheck('i', 'return nil, errors.New("unexpected value")'))}
 	return json.Marshal(:base(i))
@@ -124,7 +124,7 @@ GO;
         }
 
 		return <<<GO
-// UnmarshalJSON decodes JSON
+// UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
 	var ii :base
 	err := json.Unmarshal(data, &ii)

@@ -52,7 +52,7 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		}
 		result = append(result, j[1:]...)
 	}
-	// closing empty result
+	// Close empty result.
 	if isObject && len(result) == 1 {
 		result = append(result, '}')
 	}

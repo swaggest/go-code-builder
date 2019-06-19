@@ -30,7 +30,7 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
         $type = $builder->getType($schema);
 
         $expectedStructs = <<<'GO'
-// Untitled1 structure is generated from #
+// Untitled1 structure is generated from "#".
 type Untitled1 struct {
 	SampleInt    int64      `json:"sampleInt,omitempty"`
 	SampleBool   bool       `json:"sampleBool,omitempty"`
@@ -40,7 +40,7 @@ type Untitled1 struct {
 	Another      *Another   `json:"another,omitempty"`
 }
 
-// Another structure is generated from #->another
+// Another structure is generated from "#->another".
 type Another struct {
 	Hello bool   `json:"hello,omitempty"`
 	World string `json:"world,omitempty"`

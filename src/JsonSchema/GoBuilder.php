@@ -123,12 +123,12 @@ class GoBuilder
             $this->structCreatedHook->process($structDef, $path, $schema);
         }
 
-        $comment = $structDef->getName() . ' structure is generated from ' . $path;
+        $comment = $structDef->getName() . ' structure is generated from "' . $path . '".';
         if ($schema->title) {
-            $comment .= "\n" . $schema->title;
+            $comment .= "\n\n" . rtrim($schema->title, '.') . '.';
         }
         if ($schema->description) {
-            $comment .= "\n" . $schema->description;
+            $comment .= "\n\n" . rtrim($schema->description, '.') . '.';
         }
         $structDef->setComment($comment);
         $marshalJson = new MarshalJson($this, $structDef);
