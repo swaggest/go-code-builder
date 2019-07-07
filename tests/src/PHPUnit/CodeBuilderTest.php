@@ -11,6 +11,7 @@ class CodeBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $codeBuilder = new GoCodeBuilder();
         $this->assertSame('B2B', $codeBuilder->exportableName('b2b'));
+        $this->assertSame('Schema', $codeBuilder->exportableName('$schema'));
     }
 
 }

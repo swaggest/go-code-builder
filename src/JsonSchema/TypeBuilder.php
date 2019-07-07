@@ -73,7 +73,7 @@ class TypeBuilder
             $resultStruct = $this->makeResultStruct();
 
             if ($this->goBuilder->options->trimParentFromPropertyNames) {
-                if (strpos($name, $resultStruct->getName()) === 0) {
+                if (strpos($name, $resultStruct->getName()) === 0 && $name !== $resultStruct->getName()) {
                     $name = substr($name, strlen($resultStruct->getName()));
                 }
             }
@@ -274,7 +274,7 @@ class TypeBuilder
 
 
             $this->goBuilder->getCode()->addSnippet(<<<GO
-// $typeName is a constant type
+// $typeName is a constant type.
 type $typeName {$baseType->getName()}
 
 
@@ -322,14 +322,19 @@ GO
                 return $baseType;
             }
 
+            if (isset($this->goBuilder->pathTypesDefined[$this->path])) {
+                return $this->goBuilder->pathTypesDefined[$this->path];
+            }
             $path = $this->goBuilder->pathToName($this->path);
+
             $typeName = $this->goBuilder->codeBuilder->exportableName($path);
             $type = new GoType($typeName);
+            $this->goBuilder->pathTypesDefined[$this->path] = $type;
 
             $typeConstBlock = new TypeConstBlock($type);
 
             $this->goBuilder->getCode()->addSnippet(<<<GO
-// $typeName is a constant type
+// $typeName is an enum type.
 type $typeName {$baseType->getName()}
 
 

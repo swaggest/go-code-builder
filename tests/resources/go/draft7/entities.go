@@ -3,10 +3,9 @@
 package entities
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
-	"regexp"
-	"strings"
 )
 
 // Schema structure is generated from "#".
@@ -14,7 +13,7 @@ import (
 // Core schema meta-schema.
 type Schema struct {
 	ID                   string                                      `json:"$id,omitempty"`
-	*Schema                                     `json:"-"`
+	Schema               *Schema                                     `json:"-"`
 	Ref                  string                                      `json:"$ref,omitempty"`
 	Comment              string                                      `json:"$comment,omitempty"`
 	Title                string                                      `json:"title,omitempty"`
@@ -67,62 +66,14 @@ type marshalSchema Schema
 // UnmarshalJSON decodes JSON.
 func (i *Schema) UnmarshalJSON(data []byte) error {
 	ii := marshalSchema(*i)
-	mayUnmarshal := []interface{}{&ii., &ii.Type0, &ii.Type1}
-	err := unmarshalUnion(
-		[]interface{}{&ii},
-		mayUnmarshal,
-		[]string{
-			"$id",
-			"$schema",
-			"$ref",
-			"$comment",
-			"title",
-			"description",
-			"default",
-			"readOnly",
-			"examples",
-			"multipleOf",
-			"maximum",
-			"exclusiveMaximum",
-			"minimum",
-			"exclusiveMinimum",
-			"maxLength",
-			"minLength",
-			"pattern",
-			"additionalItems",
-			"items",
-			"maxItems",
-			"minItems",
-			"uniqueItems",
-			"contains",
-			"maxProperties",
-			"minProperties",
-			"required",
-			"additionalProperties",
-			"definitions",
-			"properties",
-			"patternProperties",
-			"dependencies",
-			"propertyNames",
-			"const",
-			"enum",
-			"type",
-			"format",
-			"contentMediaType",
-			"contentEncoding",
-			"if",
-			"then",
-			"else",
-			"allOf",
-			"anyOf",
-			"oneOf",
-			"not",
-		},
-		nil,
-		data,
-	)
+	mayUnmarshal := []interface{}{&ii.Schema, &ii.Type0, &ii.Type1}
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
 	if mayUnmarshal[0] == nil {
-		ii. = nil
+		ii.Schema = nil
 	}
 	if mayUnmarshal[1] == nil {
 		ii.Type0 = nil
@@ -139,7 +90,7 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Schema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchema(i), i., i.Type0, i.Type1)
+	return marshalUnion(marshalSchema(i), i.Schema, i.Type0, i.Type1)
 }
 
 // NonNegativeIntegerDefault0 structure is generated from "#/definitions/nonNegativeIntegerDefault0".
@@ -152,13 +103,10 @@ type marshalNonNegativeIntegerDefault0 NonNegativeIntegerDefault0
 // UnmarshalJSON decodes JSON.
 func (i *NonNegativeIntegerDefault0) UnmarshalJSON(data []byte) error {
 
-	err := unmarshalUnion(
-		[]interface{}{&i.Int64},
-		nil,
-		nil,
-		nil,
-		data,
-	)
+	err := unionMap{
+		mustUnmarshal: []interface{}{&i.Int64},
+		jsonData: data,
+	}.unmarshal()
 
 	return err
 }
@@ -179,13 +127,10 @@ type marshalItems Items
 // UnmarshalJSON decodes JSON.
 func (i *Items) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Schema, &i.AnyOf1}
-	err := unmarshalUnion(
-		nil,
-		mayUnmarshal,
-		nil,
-		nil,
-		data,
-	)
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
 	if mayUnmarshal[0] == nil {
 		i.Schema = nil
 	}
@@ -212,13 +157,10 @@ type marshalDependenciesAdditionalProperties DependenciesAdditionalProperties
 // UnmarshalJSON decodes JSON.
 func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Schema, &i.AnyOf1}
-	err := unmarshalUnion(
-		nil,
-		mayUnmarshal,
-		nil,
-		nil,
-		data,
-	)
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
 	if mayUnmarshal[0] == nil {
 		i.Schema = nil
 	}
@@ -244,13 +186,10 @@ type marshalType Type
 // UnmarshalJSON decodes JSON.
 func (i *Type) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.AnyOf1}
-	err := unmarshalUnion(
-		nil,
-		mayUnmarshal,
-		nil,
-		nil,
-		data,
-	)
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
 	if mayUnmarshal[0] == nil {
 		i.AnyOf1 = nil
 	}
@@ -405,109 +344,27 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 
 	return result, nil
 }
-func unmarshalUnion(
-	mustUnmarshal []interface{},
-	mayUnmarshal []interface{},
-	ignoreKeys []string,
-	regexMaps map[string]interface{},
-	j []byte,
-) error {
-	for _, item := range mustUnmarshal {
+type unionMap struct {
+	mustUnmarshal []interface{}
+	mayUnmarshal  []interface{}
+	jsonData      []byte
+}
+
+func (u unionMap) unmarshal() error {
+	for _, item := range u.mustUnmarshal {
 		// unmarshal to struct
-		err := json.Unmarshal(j, item)
+		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}
-
-	for i, item := range mayUnmarshal {
+	for i, item := range u.mayUnmarshal {
 		// unmarshal to struct
-		err := json.Unmarshal(j, item)
+		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
-			mayUnmarshal[i] = nil
+			u.mayUnmarshal[i] = nil
 		}
 	}
 
-	// unmarshal to a generic map
-	var m map[string]*json.RawMessage
-	err := json.Unmarshal(j, &m)
-	if err != nil {
-		return err
-	}
-
-	// removing ignored keys (defined in struct)
-	for _, i := range ignoreKeys {
-		delete(m, i)
-	}
-
-	// returning early on empty map
-	if len(m) == 0 {
-		return nil
-	}
-
-	// preparing regexp matchers
-	var reg = make(map[string]*regexp.Regexp, len(regexMaps))
-	for regex := range regexMaps {
-		if regex != "" {
-			reg[regex], err = regexp.Compile(regex)
-			if err != nil {
-				return err //todo use errors.Wrap
-			}
-		}
-	}
-
-	subMapsRaw := make(map[string][]byte, len(regexMaps))
-	// iterating map and feeding subMaps
-	for key, val := range m {
-		matched := false
-		var ok bool
-		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
-
-		for regex, exp := range reg {
-			if exp.MatchString(key) {
-				matched = true
-				var subMap []byte
-				if subMap, ok = subMapsRaw[regex]; !ok {
-					subMap = make([]byte, 1, 100)
-					subMap[0] = '{'
-				} else {
-					subMap = append(subMap[:len(subMap)-1], ',')
-				}
-
-				subMap = append(subMap, []byte(keyEscaped)...)
-				subMap = append(subMap, []byte(*val)...)
-				subMap = append(subMap, '}')
-
-				subMapsRaw[regex] = subMap
-			}
-		}
-
-		// empty regex for additionalProperties
-		if !matched {
-			var subMap []byte
-			if subMap, ok = subMapsRaw[""]; !ok {
-				subMap = make([]byte, 1, 100)
-				subMap[0] = '{'
-			} else {
-				subMap = append(subMap[:len(subMap)-1], ',')
-			}
-			subMap = append(subMap, []byte(keyEscaped)...)
-			subMap = append(subMap, []byte(*val)...)
-			subMap = append(subMap, '}')
-
-			subMapsRaw[""] = subMap
-		}
-	}
-
-	for regex := range regexMaps {
-		if subMap, ok := subMapsRaw[regex]; !ok {
-			continue
-		} else {
-			err = json.Unmarshal(subMap, regexMaps[regex])
-			if err != nil {
-				return err
-			}
-		}
-	}
 	return nil
 }

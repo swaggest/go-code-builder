@@ -8,6 +8,7 @@ use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Struct\Tags;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\Type;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
 
@@ -35,11 +36,17 @@ class GoBuilder
     /** @var GoBuilderStructHook */
     public $structCreatedHook;
 
+    /** @var GoBuilderPathToNameHook */
+    public $pathToNameHook;
+
     /** @var MarshalUnion */
     public $marshalUnion;
 
     /** @var UnmarshalUnion */
     public $unmarshalUnion;
+
+    /** @var Type[] */
+    public $pathTypesDefined = [];
 
     public function __construct()
     {
@@ -48,6 +55,7 @@ class GoBuilder
         $this->generatedStructs = [];
         $this->generatedStructsBySchema = new \SplObjectStorage();
         $this->codeBuilder = new GoCodeBuilder();
+        $this->pathToNameHook = new StripPrefixPathToNameHook();
     }
 
     public function getCode()
@@ -116,7 +124,7 @@ class GoBuilder
         if ($path === '#') {
             $structDef = new StructDef('Untitled' . ++$this->untitledIndex);
         } else {
-            $structDef = new StructDef($this->codeBuilder->exportableName($path));
+            $structDef = new StructDef($this->codeBuilder->exportableName($this->pathToName($path)));
         }
 
         if ($this->structCreatedHook !== null) {
@@ -142,7 +150,7 @@ class GoBuilder
                 $fieldName = $this->codeBuilder->exportableName($name);
 
                 if ($this->options->trimParentFromPropertyNames) {
-                    if (strpos($fieldName, $structDef->getName()) === 0) {
+                    if (strpos($fieldName, $structDef->getName()) === 0 && $fieldName !== $structDef->getName() ) {
                         $fieldName = substr($fieldName, strlen($structDef->getName()));
                     }
                 }
@@ -206,10 +214,9 @@ class GoBuilder
 
     public function pathToName($path)
     {
-        if (0 === strpos($path, '#/definitions/')) {
-            return substr($path, strlen('#/definitions/'));
+        if (null !== $this->pathToNameHook) {
+            return $this->pathToNameHook->pathToName($path);
         }
-
         return $path;
     }
 

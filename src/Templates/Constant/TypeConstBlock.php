@@ -52,7 +52,7 @@ class TypeConstBlock extends GoTemplate
             return '';
         }
         $result =
-            '// :type values enumeration' . "\n" .
+            '// :type values enumeration.' . "\n" .
             'const (' . "\n" . $result . ')' . "\n\n";
 
         return new PlaceholderString($result, [

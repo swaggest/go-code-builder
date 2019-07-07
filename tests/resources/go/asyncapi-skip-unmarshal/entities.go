@@ -3,8 +3,10 @@
 package entities
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 // AsyncAPI structure is generated from "#".
@@ -548,10 +550,10 @@ func (i ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalComponentsSecuritySchemes(i), i.MapOfComponentsSecuritySchemesAZAZ09Values)
 }
 
-// Asyncapi is a constant type
+// Asyncapi is an enum type.
 type Asyncapi string
 
-// Asyncapi values enumeration
+// Asyncapi values enumeration.
 const (
 	Asyncapi100 = Asyncapi("1.0.0")
 	Asyncapi110 = Asyncapi("1.1.0")
@@ -566,16 +568,16 @@ func (i Asyncapi) MarshalJSON() ([]byte, error) {
 	case Asyncapi120:
 
 	default:
-		return nil, errors.New("unexpected value")
+		return nil, fmt.Errorf("unexpected Asyncapi value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
-// ServerScheme is a constant type
+// ServerScheme is an enum type.
 type ServerScheme string
 
-// ServerScheme values enumeration
+// ServerScheme values enumeration.
 const (
 	ServerSchemeKafka = ServerScheme("kafka")
 	ServerSchemeKafkaSecure = ServerScheme("kafka-secure")
@@ -612,16 +614,16 @@ func (i ServerScheme) MarshalJSON() ([]byte, error) {
 	case ServerSchemeHTTPS:
 
 	default:
-		return nil, errors.New("unexpected value")
+		return nil, fmt.Errorf("unexpected ServerScheme value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
-// StreamFramingOneOf0Delimiter is a constant type
+// StreamFramingOneOf0Delimiter is an enum type.
 type StreamFramingOneOf0Delimiter string
 
-// StreamFramingOneOf0Delimiter values enumeration
+// StreamFramingOneOf0Delimiter values enumeration.
 const (
 	StreamFramingOneOf0DelimiterRN = StreamFramingOneOf0Delimiter(`\r\n`)
 	StreamFramingOneOf0DelimiterN = StreamFramingOneOf0Delimiter(`\n`)
@@ -634,16 +636,16 @@ func (i StreamFramingOneOf0Delimiter) MarshalJSON() ([]byte, error) {
 	case StreamFramingOneOf0DelimiterN:
 
 	default:
-		return nil, errors.New("unexpected value")
+		return nil, fmt.Errorf("unexpected StreamFramingOneOf0Delimiter value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
-// APIKeyIn is a constant type
+// APIKeyIn is an enum type.
 type APIKeyIn string
 
-// APIKeyIn values enumeration
+// APIKeyIn values enumeration.
 const (
 	APIKeyInUser = APIKeyIn("user")
 	APIKeyInPassword = APIKeyIn("password")
@@ -656,16 +658,16 @@ func (i APIKeyIn) MarshalJSON() ([]byte, error) {
 	case APIKeyInPassword:
 
 	default:
-		return nil, errors.New("unexpected value")
+		return nil, fmt.Errorf("unexpected APIKeyIn value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
-// APIKeyHTTPSecuritySchemeIn is a constant type
+// APIKeyHTTPSecuritySchemeIn is an enum type.
 type APIKeyHTTPSecuritySchemeIn string
 
-// APIKeyHTTPSecuritySchemeIn values enumeration
+// APIKeyHTTPSecuritySchemeIn values enumeration.
 const (
 	APIKeyHTTPSecuritySchemeInHeader = APIKeyHTTPSecuritySchemeIn("header")
 	APIKeyHTTPSecuritySchemeInQuery = APIKeyHTTPSecuritySchemeIn("query")
@@ -680,7 +682,7 @@ func (i APIKeyHTTPSecuritySchemeIn) MarshalJSON() ([]byte, error) {
 	case APIKeyHTTPSecuritySchemeInCookie:
 
 	default:
-		return nil, errors.New("unexpected value")
+		return nil, fmt.Errorf("unexpected APIKeyHTTPSecuritySchemeIn value: %v", i)
 	}
 
 	return json.Marshal(string(i))

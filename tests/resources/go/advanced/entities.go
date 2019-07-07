@@ -4,28 +4,31 @@
 package entities
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 )
 
 // Properties structure is generated from "#".
 type Properties struct {
-	Headers              *Table              `json:"headers,omitempty"`
-	ContentType          *ShortStr           `json:"content-type,omitempty"`
-	ContentEncoding      *ShortStr           `json:"content-encoding,omitempty"`
-	DeliveryMode         *PropertyOctet      `json:"delivery-mode,omitempty"`
-	Priority             *PropertyOctet      `json:"priority,omitempty"`
-	CorrelationID        *ShortStr           `json:"correlation-id,omitempty"`
-	ReplyTo              *ShortStr           `json:"reply-to,omitempty"`
-	Expiration           *ShortStr           `json:"expiration,omitempty"`
-	MessageID            *ShortStr           `json:"message-id,omitempty"`
-	Timestamp            *Timestamp          `json:"timestamp,omitempty"`
-	Type                 *ShortStr           `json:"type,omitempty"`
-	UserID               *ShortStr           `json:"user-id,omitempty"`
-	AppID                *ShortStr           `json:"app-id,omitempty"`
-	AdditionalProperties map[string]Property `json:"-"`
+	Headers              *Table                 `json:"headers,omitempty"`
+	ContentType          *ShortStr              `json:"content-type,omitempty"`
+	ContentEncoding      *ShortStr              `json:"content-encoding,omitempty"`
+	DeliveryMode         *PropertyOctet         `json:"delivery-mode,omitempty"`
+	Priority             *PropertyOctet         `json:"priority,omitempty"`
+	CorrelationID        *ShortStr              `json:"correlation-id,omitempty"`
+	ReplyTo              *ShortStr              `json:"reply-to,omitempty"`
+	Expiration           *ShortStr              `json:"expiration,omitempty"`
+	MessageID            *ShortStr              `json:"message-id,omitempty"`
+	Timestamp            *Timestamp             `json:"timestamp,omitempty"`
+	Type                 *ShortStr              `json:"type,omitempty"`
+	UserID               *ShortStr              `json:"user-id,omitempty"`
+	AppID                *ShortStr              `json:"app-id,omitempty"`
+	MapOfAnythingValues  map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
+	AdditionalProperties map[string]Property    `json:"-"`
 }
 
 type marshalProperties Properties
@@ -34,10 +37,9 @@ type marshalProperties Properties
 func (i *Properties) UnmarshalJSON(data []byte) error {
 	ii := marshalProperties(*i)
 
-	err := unmarshalUnion(
-		[]interface{}{&ii},
-		nil,
-		[]string{
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
 			"headers",
 			"content-type",
 			"content-encoding",
@@ -52,11 +54,12 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 			"user-id",
 			"app-id",
 		},
-		map[string]interface{}{
-			"": &ii.AdditionalProperties,
+		patternProperties: map[*regexp.Regexp]interface{}{
+			regexX: &ii.MapOfAnythingValues, // ^x-
 		},
-		data,
-	)
+		additionalProperties: &ii.AdditionalProperties,
+		jsonData: data,
+	}.unmarshal()
 	if err != nil {
 		return err
 	}
@@ -66,7 +69,7 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Properties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalProperties(i), i.AdditionalProperties)
+	return marshalUnion(marshalProperties(i), i.MapOfAnythingValues, i.AdditionalProperties)
 }
 
 // Table structure is generated from "#/definitions/table".
@@ -81,17 +84,13 @@ func (i *Table) UnmarshalJSON(data []byte) error {
 	ii := marshalTable(*i)
 	constValues := make(map[string]json.RawMessage)
 	mayUnmarshal := []interface{}{&constValues}
-	err := unmarshalUnion(
-		[]interface{}{&ii},
-		mayUnmarshal,
-		[]string{
-			"value",
-		},
-		nil,
-		data,
-	)
-	if v, ok := constValues["type"];!ok || string(v) != `"table"` {
-	    return errors.New(`bad or missing const value for "type" ("table" expected)`)
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if v, ok := constValues["type"]; !ok || string(v) != `"table"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("table" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -127,13 +126,10 @@ type marshalProperty Property
 // UnmarshalJSON decodes JSON.
 func (i *Property) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Scalar, &i.Table}
-	err := unmarshalUnion(
-		nil,
-		mayUnmarshal,
-		nil,
-		nil,
-		data,
-	)
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
 	if mayUnmarshal[0] == nil {
 		i.Scalar = nil
 	}
@@ -161,17 +157,13 @@ func (i *ShortStr) UnmarshalJSON(data []byte) error {
 	ii := marshalShortStr(*i)
 	constValues := make(map[string]json.RawMessage)
 	mayUnmarshal := []interface{}{&constValues}
-	err := unmarshalUnion(
-		[]interface{}{&ii},
-		mayUnmarshal,
-		[]string{
-			"value",
-		},
-		nil,
-		data,
-	)
-	if v, ok := constValues["type"];!ok || string(v) != `"shortstr"` {
-	    return errors.New(`bad or missing const value for "type" ("shortstr" expected)`)
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if v, ok := constValues["type"]; !ok || string(v) != `"shortstr"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("shortstr" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -202,17 +194,13 @@ func (i *PropertyOctet) UnmarshalJSON(data []byte) error {
 	ii := marshalPropertyOctet(*i)
 	constValues := make(map[string]json.RawMessage)
 	mayUnmarshal := []interface{}{&constValues}
-	err := unmarshalUnion(
-		[]interface{}{&ii},
-		mayUnmarshal,
-		[]string{
-			"value",
-		},
-		nil,
-		data,
-	)
-	if v, ok := constValues["type"];!ok || string(v) != `"octet"` {
-	    return errors.New(`bad or missing const value for "type" ("octet" expected)`)
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if v, ok := constValues["type"]; !ok || string(v) != `"octet"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("octet" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -243,17 +231,13 @@ func (i *Timestamp) UnmarshalJSON(data []byte) error {
 	ii := marshalTimestamp(*i)
 	constValues := make(map[string]json.RawMessage)
 	mayUnmarshal := []interface{}{&constValues}
-	err := unmarshalUnion(
-		[]interface{}{&ii},
-		mayUnmarshal,
-		[]string{
-			"value",
-		},
-		nil,
-		data,
-	)
-	if v, ok := constValues["type"];!ok || string(v) != `"timestamp"` {
-	    return errors.New(`bad or missing const value for "type" ("timestamp" expected)`)
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if v, ok := constValues["type"]; !ok || string(v) != `"timestamp"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("timestamp" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -272,10 +256,10 @@ func (i Timestamp) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalTimestamp(i), constTimestamp)
 }
 
-// StringedType is a constant type
+// StringedType is an enum type.
 type StringedType string
 
-// StringedType values enumeration
+// StringedType values enumeration.
 const (
 	StringedTypeBit = StringedType("bit")
 	StringedTypeOctet = StringedType("octet")
@@ -300,7 +284,7 @@ func (i StringedType) MarshalJSON() ([]byte, error) {
 	case StringedTypeTimestamp:
 
 	default:
-		return nil, errors.New("unexpected value")
+		return nil, fmt.Errorf("unexpected StringedType value: %v", i)
 	}
 
 	return json.Marshal(string(i))
@@ -325,7 +309,7 @@ func (i *StringedType) UnmarshalJSON(data []byte) error {
 	case StringedTypeTimestamp:
 
 	default:
-		return errors.New("unexpected value")
+		return fmt.Errorf("unexpected StringedType value: %v", v)
 	}
 
 	*i = v
@@ -372,69 +356,105 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 
 	return result, nil
 }
-func unmarshalUnion(
-	mustUnmarshal []interface{},
-	mayUnmarshal []interface{},
-	ignoreKeys []string,
-	regexMaps map[string]interface{},
-	j []byte,
-) error {
-	for _, item := range mustUnmarshal {
+// Regular expressions for pattern properties.
+var (
+	regexX = regexp.MustCompile("^x-")
+)
+
+type unionMap struct {
+	mustUnmarshal        []interface{}
+	mayUnmarshal         []interface{}
+	ignoreKeys           []string
+	patternProperties    map[*regexp.Regexp]interface{}
+	additionalProperties interface{}
+	jsonData             []byte
+}
+
+func (u unionMap) unmarshal() error {
+	for _, item := range u.mustUnmarshal {
 		// unmarshal to struct
-		err := json.Unmarshal(j, item)
+		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}
-
-	for i, item := range mayUnmarshal {
+	for i, item := range u.mayUnmarshal {
 		// unmarshal to struct
-		err := json.Unmarshal(j, item)
+		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
-			mayUnmarshal[i] = nil
+			u.mayUnmarshal[i] = nil
 		}
 	}
 
+	if len(u.patternProperties) == 0 && u.additionalProperties == nil {
+		return nil
+	}
 	// unmarshal to a generic map
 	var m map[string]*json.RawMessage
-	err := json.Unmarshal(j, &m)
+	err := json.Unmarshal(u.jsonData, &m)
 	if err != nil {
 		return err
 	}
-
 	// removing ignored keys (defined in struct)
-	for _, i := range ignoreKeys {
+	for _, i := range u.ignoreKeys {
 		delete(m, i)
 	}
-
 	// returning early on empty map
 	if len(m) == 0 {
 		return nil
 	}
-
-	// preparing regexp matchers
-	var reg = make(map[string]*regexp.Regexp, len(regexMaps))
-	for regex := range regexMaps {
-		if regex != "" {
-			reg[regex], err = regexp.Compile(regex)
-			if err != nil {
-				return err //todo use errors.Wrap
-			}
+	if len(u.patternProperties) != 0 {
+		err = u.unmarshalPatternProperties(m)
+		if err != nil {
+			return err
 		}
 	}
+	// Returning early on empty map.
+	if len(m) == 0 {
+		return nil
+	}
+	if u.additionalProperties != nil {
+		return u.unmarshalAdditionalProperties(m)
+	}
+	return nil
+}
+func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) error {
+	var err error
+	subMap := make([]byte, 1, 100)
+	subMap[0] = '{'
 
-	subMapsRaw := make(map[string][]byte, len(regexMaps))
-	// iterating map and feeding subMaps
+	// Iterating map and filling additional properties.
+	for key, val := range m {
+		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+		if len(subMap) != 1 {
+			subMap = append(subMap[:len(subMap)-1], ',')
+		}
+		subMap = append(subMap, []byte(keyEscaped)...)
+		subMap = append(subMap, []byte(*val)...)
+		subMap = append(subMap, '}')
+	}
+
+	if len(subMap) > 1 {
+		err = json.Unmarshal(subMap, u.additionalProperties)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) error {
+	patternMapsRaw := make(map[*regexp.Regexp][]byte, len(u.patternProperties))
+	// Iterating map and filling pattern properties sub maps.
 	for key, val := range m {
 		matched := false
 		var ok bool
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
 
-		for regex, exp := range reg {
-			if exp.MatchString(key) {
+		for regex := range u.patternProperties {
+			if regex.MatchString(key) {
 				matched = true
 				var subMap []byte
-				if subMap, ok = subMapsRaw[regex]; !ok {
+				if subMap, ok = patternMapsRaw[regex]; !ok {
 					subMap = make([]byte, 1, 100)
 					subMap[0] = '{'
 				} else {
@@ -445,32 +465,21 @@ func unmarshalUnion(
 				subMap = append(subMap, []byte(*val)...)
 				subMap = append(subMap, '}')
 
-				subMapsRaw[regex] = subMap
+				patternMapsRaw[regex] = subMap
 			}
 		}
 
-		// empty regex for additionalProperties
-		if !matched {
-			var subMap []byte
-			if subMap, ok = subMapsRaw[""]; !ok {
-				subMap = make([]byte, 1, 100)
-				subMap[0] = '{'
-			} else {
-				subMap = append(subMap[:len(subMap)-1], ',')
-			}
-			subMap = append(subMap, []byte(keyEscaped)...)
-			subMap = append(subMap, []byte(*val)...)
-			subMap = append(subMap, '}')
-
-			subMapsRaw[""] = subMap
+		// Remove from properties map if matched to at least one regex.
+		if matched {
+			delete(m, key)
 		}
 	}
 
-	for regex := range regexMaps {
-		if subMap, ok := subMapsRaw[regex]; !ok {
+	for regex := range u.patternProperties {
+		if subMap, ok := patternMapsRaw[regex]; !ok {
 			continue
 		} else {
-			err = json.Unmarshal(subMap, regexMaps[regex])
+			err := json.Unmarshal(subMap, u.patternProperties[regex])
 			if err != nil {
 				return err
 			}
