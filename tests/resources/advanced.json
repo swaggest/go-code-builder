@@ -166,5 +166,8 @@
   },
   "additionalProperties": {
     "$ref": "#/definitions/property"
+  },
+  "patternProperties": {
+    "^x-": {}
   }
 }

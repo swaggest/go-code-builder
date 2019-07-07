@@ -56,6 +56,23 @@ abstract class GoTemplate extends AbstractTemplate
 
     }
 
+    public function stripEmptyLines($text)
+    {
+        $lines = explode("\n", $text);
+        $prevLine = '';
+        foreach ($lines as $index => $line) {
+            if ('' === trim($line) && trim($prevLine) === '') {
+                unset($lines[$index]);
+                continue;
+            }
+            $prevLine = $line;
+            if (trim($line) === '') {
+                $lines[$index] = '';
+            }
+        }
+        return implode("\n", $lines);
+    }
+
     public function trim($s)
     {
         return trim($s);
@@ -74,6 +91,11 @@ abstract class GoTemplate extends AbstractTemplate
         }
 
         return $value;
+    }
+
+    public function ifThenElse($condition, $then, $else = '')
+    {
+        return $condition ? $then : $else;
     }
 
 

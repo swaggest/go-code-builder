@@ -33,18 +33,11 @@ func (i *Book) UnmarshalJSON(data []byte) error {
 	ii := marshalBook(*i)
 	constValues := make(map[string]json.RawMessage)
 	mayUnmarshal := []interface{}{&constValues}
-	err := unmarshalUnion(
-		[]interface{}{&ii},
-		mayUnmarshal,
-		[]string{
-			"amount",
-			"entity_id",
-			"strategy",
-			"type",
-		},
-		nil,
-		data,
-	)
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
 	if v, ok := constValues["entity_type"]; !ok || string(v) != `"book"` {
 		return fmt.Errorf(`bad or missing const value for "entity_type" ("book" expected, %v received)`, v)
 	}
@@ -192,44 +185,26 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 
 	return result, nil
 }
-func unmarshalUnion(
-	mustUnmarshal []interface{},
-	mayUnmarshal []interface{},
-	ignoreKeys []string,
-	_ map[string]interface{}, // unused regexMaps
-	j []byte,
-) error {
-	for _, item := range mustUnmarshal {
+type unionMap struct {
+	mustUnmarshal []interface{}
+	mayUnmarshal  []interface{}
+	jsonData      []byte
+}
+
+func (u unionMap) unmarshal() error {
+	for _, item := range u.mustUnmarshal {
 		// unmarshal to struct
-		err := json.Unmarshal(j, item)
+		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}
-
-	for i, item := range mayUnmarshal {
+	for i, item := range u.mayUnmarshal {
 		// unmarshal to struct
-		err := json.Unmarshal(j, item)
+		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
-			mayUnmarshal[i] = nil
+			u.mayUnmarshal[i] = nil
 		}
-	}
-
-	// unmarshal to a generic map
-	var m map[string]*json.RawMessage
-	err := json.Unmarshal(j, &m)
-	if err != nil {
-		return err
-	}
-
-	// removing ignored keys (defined in struct)
-	for _, i := range ignoreKeys {
-		delete(m, i)
-	}
-
-	// returning early on empty map
-	if len(m) == 0 {
-		return nil
 	}
 
 	return nil

@@ -14,6 +14,7 @@ class MarshalUnion extends GoTemplate
     {
         $code = new Code();
         $code->imports()
+            ->addByName('bytes')
             ->addByName('encoding/json')
             ->addByName('errors');
 

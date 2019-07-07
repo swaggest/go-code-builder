@@ -8,6 +8,7 @@ use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Struct\Tags;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\Type;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
 
@@ -43,6 +44,9 @@ class GoBuilder
 
     /** @var UnmarshalUnion */
     public $unmarshalUnion;
+
+    /** @var Type[] */
+    public $pathTypesDefined = [];
 
     public function __construct()
     {

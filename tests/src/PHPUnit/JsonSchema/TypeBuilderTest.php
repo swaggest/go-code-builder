@@ -39,23 +39,20 @@ JSON
         $expectedGen = <<<'GO'
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
-	DefinitionsHeader *DefinitionsHeader `json:"-"`
+	Header *Header `json:"-"`
 }
 
 type marshalUntitled1 Untitled1
 
 // UnmarshalJSON decodes JSON.
 func (i *Untitled1) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.DefinitionsHeader}
-	err := unmarshalUnion(
-		nil,
-		mayUnmarshal,
-		nil,
-		nil,
-		data,
-	)
+	mayUnmarshal := []interface{}{&i.Header}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
 	if mayUnmarshal[0] == nil {
-		i.DefinitionsHeader = nil
+		i.Header = nil
 	}
 
 	return err
@@ -63,11 +60,11 @@ func (i *Untitled1) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Untitled1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalUntitled1(i), i.DefinitionsHeader)
+	return marshalUnion(marshalUntitled1(i), i.Header)
 }
 
-// DefinitionsHeader structure is generated from "#/definitions/header".
-type DefinitionsHeader struct {
+// Header structure is generated from "#/definitions/header".
+type Header struct {
 	Maximum float64 `json:"maximum,omitempty"`
 }
 

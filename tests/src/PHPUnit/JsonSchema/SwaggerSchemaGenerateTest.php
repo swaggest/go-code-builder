@@ -36,9 +36,8 @@ class SwaggerSchemaGenerateTest extends \PHPUnit_Framework_TestCase
 
 
         $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/swagger/entities.go');
-
+        file_put_contents(__DIR__ . '/../../../resources/go/swagger/entities.go', $goFile->render());
         $this->assertSame($expectedGen, $goFile->render());
-
     }
 
 }

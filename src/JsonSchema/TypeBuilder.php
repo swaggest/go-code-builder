@@ -322,9 +322,14 @@ GO
                 return $baseType;
             }
 
+            if (isset($this->goBuilder->pathTypesDefined[$this->path])) {
+                return $this->goBuilder->pathTypesDefined[$this->path];
+            }
             $path = $this->goBuilder->pathToName($this->path);
+
             $typeName = $this->goBuilder->codeBuilder->exportableName($path);
             $type = new GoType($typeName);
+            $this->goBuilder->pathTypesDefined[$this->path] = $type;
 
             $typeConstBlock = new TypeConstBlock($type);
 
