@@ -4,6 +4,7 @@ namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 
 use Swaggest\CodeBuilder\PlaceholderString;
+use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 
@@ -16,6 +17,8 @@ class MarshalJson extends GoTemplate
     private $patternProperties;
     private $someOf;
 
+    private $code;
+
     /** @var array */
     public $constValues;
 
@@ -23,6 +26,7 @@ class MarshalJson extends GoTemplate
     {
         $this->type = $type;
         $this->builder = $builder;
+        $this->code = new Code();
     }
 
     public function enableAdditionalProperties()
@@ -115,7 +119,6 @@ GO;
             $maps .= ', const:type';
         }
 
-
         $result = <<<GO
 type marshal:type :type
 
@@ -140,9 +143,11 @@ GO;
             }
         }
 
-        return new PlaceholderString($result, [
+        $this->code->addSnippet(new PlaceholderString($result, [
             ':type' => $this->type->getType(),
-        ]);
+        ]));
+
+        return $this->code;
     }
 
     private function renderConstRawMessage()
@@ -238,10 +243,11 @@ GO;
     {
         $result = '';
         if ($this->constValues !== null) {
+            $this->code->imports()->addByName('fmt');
             foreach ($this->constValues as $name => $value) {
                 $result .= <<<GO
-if v, ok := constValues[{$this->escapeValue($name)}];!ok || string(v) != {$this->escapeValue(json_encode($value))} {
-    return errors.New({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected)')})
+if v, ok := constValues[{$this->escapeValue($name)}]; !ok || string(v) != {$this->escapeValue(json_encode($value))} {
+	return fmt.Errorf({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected, %v received)')}, v)
 }
 
 GO;

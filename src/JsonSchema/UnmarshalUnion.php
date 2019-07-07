@@ -12,23 +12,25 @@ class UnmarshalUnion extends GoTemplate
 
     protected function toString()
     {
-        // todo remove regexp if there are no patternProps, $withRegex should be already populated
-
         $code = new Code();
         $code->imports()
             ->addByName('encoding/json')
-            ->addByName('regexp')
-            ->addByName('strings')
+            ->addByName('bytes')
             ->addByName('errors');
 
+        if ($this->withRegex) {
+            $code->imports()
+                ->addByName('regexp')
+                ->addByName('strings');
+        }
+
         $code->addSnippet(
-            <<<'GO'
+            <<<GO
 func unmarshalUnion(
 	mustUnmarshal []interface{},
 	mayUnmarshal []interface{},
 	ignoreKeys []string,
-	regexMaps map[string]interface{},
-	j []byte,
+{$this->renderRegexMapsArg()}	j []byte,
 ) error {
 	for _, item := range mustUnmarshal {
 		// unmarshal to struct
@@ -62,14 +64,44 @@ func unmarshalUnion(
 	if len(m) == 0 {
 		return nil
 	}
+{$this->renderRegexMapsLoop()}
+	return nil
+}
 
+GO
+
+        );
+        return $code;
+
+    }
+
+    private function renderRegexMapsArg()
+    {
+        if (!$this->withRegex) {
+            return <<<'GO'
+	_ map[string]interface{}, // unused regexMaps
+
+GO;
+        }
+        return <<<'GO'
+	regexMaps map[string]interface{},
+
+GO;
+    }
+
+    private function renderRegexMapsLoop()
+    {
+        if (!$this->withRegex) {
+            return '';
+        }
+        return <<<'GO'
 	// preparing regexp matchers
 	var reg = make(map[string]*regexp.Regexp, len(regexMaps))
 	for regex := range regexMaps {
 		if regex != "" {
 			reg[regex], err = regexp.Compile(regex)
 			if err != nil {
-				return err //todo use errors.Wrap
+				return err
 			}
 		}
 	}
@@ -127,13 +159,7 @@ func unmarshalUnion(
 			}
 		}
 	}
-	return nil
-}
 
-GO
-
-        );
-        return $code;
-
+GO;
     }
 }

@@ -274,7 +274,7 @@ class TypeBuilder
 
 
             $this->goBuilder->getCode()->addSnippet(<<<GO
-// $typeName is a constant type
+// $typeName is a constant type.
 type $typeName {$baseType->getName()}
 
 
@@ -329,7 +329,7 @@ GO
             $typeConstBlock = new TypeConstBlock($type);
 
             $this->goBuilder->getCode()->addSnippet(<<<GO
-// $typeName is a constant type
+// $typeName is an enum type.
 type $typeName {$baseType->getName()}
 
 

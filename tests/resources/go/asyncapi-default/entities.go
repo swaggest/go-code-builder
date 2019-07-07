@@ -3,6 +3,7 @@
 package entities
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"regexp"
@@ -13,14 +14,14 @@ import (
 //
 // AsyncAPI 1.2.0 schema.
 type AsyncAPI struct {
-	Asyncapi            Asyncapi               `json:"asyncapi,omitempty"`     // The AsyncAPI specification version of this document.
-	Info                *Info                  `json:"info,omitempty"`         // General information about the API.
-	BaseTopic           string                 `json:"baseTopic,omitempty"`    // The base topic to the API. Example: 'hitch'.
+	Asyncapi            Asyncapi               `json:"asyncapi,omitempty"`  // The AsyncAPI specification version of this document.
+	Info                *Info                  `json:"info,omitempty"`      // General information about the API.
+	BaseTopic           string                 `json:"baseTopic,omitempty"` // The base topic to the API. Example: 'hitch'.
 	Servers             []Server               `json:"servers,omitempty"`
-	Topics              *Topics                `json:"topics,omitempty"`       // Relative paths to the individual topics. They must be relative to the 'baseTopic'.
-	Stream              *Stream                `json:"stream,omitempty"`       // Stream Object
-	Events              *Events                `json:"events,omitempty"`       // Events Object
-	Components          *Components            `json:"components,omitempty"`   // An object to hold a set of reusable objects for different aspects of the AsyncAPI Specification.
+	Topics              *Topics                `json:"topics,omitempty"`     // Relative paths to the individual topics. They must be relative to the 'baseTopic'.
+	Stream              *Stream                `json:"stream,omitempty"`     // Stream Object
+	Events              *Events                `json:"events,omitempty"`     // Events Object
+	Components          *Components            `json:"components,omitempty"` // An object to hold a set of reusable objects for different aspects of the AsyncAPI Specification.
 	Tags                []Tag                  `json:"tags,omitempty"`
 	Security            []map[string][]string  `json:"security,omitempty"`
 	ExternalDocs        *ExternalDocs          `json:"externalDocs,omitempty"` // information about external documentation
@@ -76,7 +77,7 @@ type Info struct {
 	TermsOfService      string                 `json:"termsOfService,omitempty"` // A URL to the Terms of Service for the API. MUST be in the format of a URL.
 	Contact             *Contact               `json:"contact,omitempty"`        // Contact information for the owners of the API.
 	License             *License               `json:"license,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                        // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalInfo Info
@@ -197,10 +198,10 @@ func (i License) MarshalJSON() ([]byte, error) {
 type Server struct {
 	URL                 string                    `json:"url,omitempty"`
 	Description         string                    `json:"description,omitempty"`
-	Scheme              ServerScheme              `json:"scheme,omitempty"`        // The transfer protocol.
+	Scheme              ServerScheme              `json:"scheme,omitempty"` // The transfer protocol.
 	SchemeVersion       string                    `json:"schemeVersion,omitempty"`
 	Variables           map[string]ServerVariable `json:"variables,omitempty"`
-	MapOfAnythingValues map[string]interface{}    `json:"-"`                       // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{}    `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalServer Server
@@ -243,7 +244,7 @@ type ServerVariable struct {
 	Enum                []string               `json:"enum,omitempty"`
 	Default             string                 `json:"default,omitempty"`
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalServerVariable ServerVariable
@@ -295,7 +296,7 @@ func (i *Topics) UnmarshalJSON(data []byte) error {
 		nil,
 		nil,
 		map[string]interface{}{
-			"^x-": &i.MapOfAnythingValues,
+			"^x-":   &i.MapOfAnythingValues,
 			"^[^.]": &i.MapOfTopicItemValues,
 		},
 		data,
@@ -316,7 +317,7 @@ type TopicItem struct {
 	Publish             *Operation             `json:"publish,omitempty"`
 	Subscribe           *Operation             `json:"subscribe,omitempty"`
 	Deprecated          bool                   `json:"deprecated,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                    // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalTopicItem TopicItem
@@ -358,7 +359,7 @@ type Parameter struct {
 	Name                string                 `json:"name,omitempty"`        // The name of the parameter.
 	Schema              map[string]interface{} `json:"schema,omitempty"`      // A deterministic version of a JSON Schema object.
 	Ref                 string                 `json:"$ref,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalParameter Parameter
@@ -396,15 +397,15 @@ func (i Parameter) MarshalJSON() ([]byte, error) {
 // Message structure is generated from "#/definitions/message".
 type Message struct {
 	Ref                 string                 `json:"$ref,omitempty"`
-	Headers             map[string]interface{} `json:"headers,omitempty"`      // A deterministic version of a JSON Schema object.
-	Payload             map[string]interface{} `json:"payload,omitempty"`      // A deterministic version of a JSON Schema object.
+	Headers             map[string]interface{} `json:"headers,omitempty"` // A deterministic version of a JSON Schema object.
+	Payload             map[string]interface{} `json:"payload,omitempty"` // A deterministic version of a JSON Schema object.
 	Tags                []Tag                  `json:"tags,omitempty"`
 	Summary             string                 `json:"summary,omitempty"`      // A brief summary of the message.
 	Description         string                 `json:"description,omitempty"`  // A longer description of the message. CommonMark is allowed.
 	ExternalDocs        *ExternalDocs          `json:"externalDocs,omitempty"` // information about external documentation
 	Deprecated          bool                   `json:"deprecated,omitempty"`
 	Example             interface{}            `json:"example,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                      // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalMessage Message
@@ -489,7 +490,7 @@ func (i Tag) MarshalJSON() ([]byte, error) {
 type ExternalDocs struct {
 	Description         string                 `json:"description,omitempty"`
 	URL                 string                 `json:"url,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalExternalDocs ExternalDocs
@@ -558,7 +559,7 @@ func (i Operation) MarshalJSON() ([]byte, error) {
 // OperationOneOf1 structure is generated from "#/definitions/operation/oneOf/1".
 type OperationOneOf1 struct {
 	OneOf               []Message              `json:"oneOf,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`               // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalOperationOneOf1 OperationOneOf1
@@ -652,8 +653,8 @@ func (i *StreamFramingOneOf0) UnmarshalJSON(data []byte) error {
 		nil,
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"chunked"` {
-	    return errors.New(`bad or missing const value for "type" ("chunked" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"chunked"` {
+		return errors.New(`bad or missing const value for "type" ("chunked" expected)`)
 	}
 	if err != nil {
 		return err
@@ -712,7 +713,6 @@ func (i StreamFraming) MarshalJSON() ([]byte, error) {
 
 // StreamFramingOneOf1 structure is generated from "#/definitions/stream->framing/oneOf/1".
 type StreamFramingOneOf1 struct {
-
 }
 
 type marshalStreamFramingOneOf1 StreamFramingOneOf1
@@ -728,11 +728,11 @@ func (i *StreamFramingOneOf1) UnmarshalJSON(data []byte) error {
 		nil,
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"sse"` {
-	    return errors.New(`bad or missing const value for "type" ("sse" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"sse"` {
+		return errors.New(`bad or missing const value for "type" ("sse" expected)`)
 	}
-	if v, ok := constValues["delimiter"];!ok || string(v) != `"\\n\\n"` {
-	    return errors.New(`bad or missing const value for "delimiter" ("\\n\\n" expected)`)
+	if v, ok := constValues["delimiter"]; !ok || string(v) != `"\\n\\n"` {
+		return errors.New(`bad or missing const value for "delimiter" ("\\n\\n" expected)`)
 	}
 
 	return err
@@ -791,10 +791,10 @@ func (i Events) MarshalJSON() ([]byte, error) {
 //
 // An object to hold a set of reusable objects for different aspects of the AsyncAPI Specification.
 type Components struct {
-	Schemas         map[string]map[string]interface{} `json:"schemas,omitempty"`         // JSON objects describing schemas the API uses.
-	Messages        map[string]Message                `json:"messages,omitempty"`        // JSON objects describing the messages being consumed and produced by the API.
+	Schemas         map[string]map[string]interface{} `json:"schemas,omitempty"`  // JSON objects describing schemas the API uses.
+	Messages        map[string]Message                `json:"messages,omitempty"` // JSON objects describing the messages being consumed and produced by the API.
 	SecuritySchemes *ComponentsSecuritySchemes        `json:"securitySchemes,omitempty"`
-	Parameters      map[string]Parameter              `json:"parameters,omitempty"`      // JSON objects describing re-usable topic parameters.
+	Parameters      map[string]Parameter              `json:"parameters,omitempty"` // JSON objects describing re-usable topic parameters.
 }
 
 // Reference structure is generated from "#/definitions/Reference".
@@ -838,7 +838,7 @@ func (i ComponentsSecuritySchemesAZAZ09) MarshalJSON() ([]byte, error) {
 // UserPassword structure is generated from "#/definitions/userPassword".
 type UserPassword struct {
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalUserPassword UserPassword
@@ -859,8 +859,8 @@ func (i *UserPassword) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"userPassword"` {
-	    return errors.New(`bad or missing const value for "type" ("userPassword" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"userPassword"` {
+		return errors.New(`bad or missing const value for "type" ("userPassword" expected)`)
 	}
 	if err != nil {
 		return err
@@ -932,7 +932,7 @@ func (i SecurityScheme) MarshalJSON() ([]byte, error) {
 type APIKey struct {
 	In                  APIKeyIn               `json:"in,omitempty"`
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalAPIKey APIKey
@@ -954,8 +954,8 @@ func (i *APIKey) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"apiKey"` {
-	    return errors.New(`bad or missing const value for "type" ("apiKey" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"apiKey"` {
+		return errors.New(`bad or missing const value for "type" ("apiKey" expected)`)
 	}
 	if err != nil {
 		return err
@@ -977,7 +977,7 @@ func (i APIKey) MarshalJSON() ([]byte, error) {
 // X509 structure is generated from "#/definitions/X509".
 type X509 struct {
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalX509 X509
@@ -998,8 +998,8 @@ func (i *X509) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"X509"` {
-	    return errors.New(`bad or missing const value for "type" ("X509" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"X509"` {
+		return errors.New(`bad or missing const value for "type" ("X509" expected)`)
 	}
 	if err != nil {
 		return err
@@ -1021,7 +1021,7 @@ func (i X509) MarshalJSON() ([]byte, error) {
 // SymmetricEncryption structure is generated from "#/definitions/symmetricEncryption".
 type SymmetricEncryption struct {
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalSymmetricEncryption SymmetricEncryption
@@ -1042,8 +1042,8 @@ func (i *SymmetricEncryption) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"symmetricEncryption"` {
-	    return errors.New(`bad or missing const value for "type" ("symmetricEncryption" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"symmetricEncryption"` {
+		return errors.New(`bad or missing const value for "type" ("symmetricEncryption" expected)`)
 	}
 	if err != nil {
 		return err
@@ -1065,7 +1065,7 @@ func (i SymmetricEncryption) MarshalJSON() ([]byte, error) {
 // AsymmetricEncryption structure is generated from "#/definitions/asymmetricEncryption".
 type AsymmetricEncryption struct {
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalAsymmetricEncryption AsymmetricEncryption
@@ -1086,8 +1086,8 @@ func (i *AsymmetricEncryption) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"asymmetricEncryption"` {
-	    return errors.New(`bad or missing const value for "type" ("asymmetricEncryption" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"asymmetricEncryption"` {
+		return errors.New(`bad or missing const value for "type" ("asymmetricEncryption" expected)`)
 	}
 	if err != nil {
 		return err
@@ -1110,7 +1110,7 @@ func (i AsymmetricEncryption) MarshalJSON() ([]byte, error) {
 type NonBearerHTTPSecurityScheme struct {
 	Scheme              string                 `json:"scheme,omitempty"`
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalNonBearerHTTPSecurityScheme NonBearerHTTPSecurityScheme
@@ -1132,8 +1132,8 @@ func (i *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"http"` {
-	    return errors.New(`bad or missing const value for "type" ("http" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"http"` {
+		return errors.New(`bad or missing const value for "type" ("http" expected)`)
 	}
 	if err != nil {
 		return err
@@ -1193,7 +1193,7 @@ func (i HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
 type BearerHTTPSecurityScheme struct {
 	BearerFormat        string                 `json:"bearerFormat,omitempty"`
 	Description         string                 `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{} `json:"-"`                      // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{} `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalBearerHTTPSecurityScheme BearerHTTPSecurityScheme
@@ -1215,11 +1215,11 @@ func (i *BearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["scheme"];!ok || string(v) != `"bearer"` {
-	    return errors.New(`bad or missing const value for "scheme" ("bearer" expected)`)
+	if v, ok := constValues["scheme"]; !ok || string(v) != `"bearer"` {
+		return errors.New(`bad or missing const value for "scheme" ("bearer" expected)`)
 	}
-	if v, ok := constValues["type"];!ok || string(v) != `"http"` {
-	    return errors.New(`bad or missing const value for "type" ("http" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"http"` {
+		return errors.New(`bad or missing const value for "type" ("http" expected)`)
 	}
 	if err != nil {
 		return err
@@ -1243,7 +1243,7 @@ type APIKeyHTTPSecurityScheme struct {
 	Name                string                     `json:"name,omitempty"`
 	In                  APIKeyHTTPSecuritySchemeIn `json:"in,omitempty"`
 	Description         string                     `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{}     `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnythingValues map[string]interface{}     `json:"-"` // Key must match pattern: ^x-
 }
 
 type marshalAPIKeyHTTPSecurityScheme APIKeyHTTPSecurityScheme
@@ -1266,8 +1266,8 @@ func (i *APIKeyHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		},
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"httpApiKey"` {
-	    return errors.New(`bad or missing const value for "type" ("httpApiKey" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"httpApiKey"` {
+		return errors.New(`bad or missing const value for "type" ("httpApiKey" expected)`)
 	}
 	if err != nil {
 		return err
@@ -1364,20 +1364,20 @@ type ServerScheme string
 
 // ServerScheme values enumeration
 const (
-	ServerSchemeKafka = ServerScheme("kafka")
+	ServerSchemeKafka       = ServerScheme("kafka")
 	ServerSchemeKafkaSecure = ServerScheme("kafka-secure")
-	ServerSchemeAmqp = ServerScheme("amqp")
-	ServerSchemeAmqps = ServerScheme("amqps")
-	ServerSchemeMqtt = ServerScheme("mqtt")
-	ServerSchemeMqtts = ServerScheme("mqtts")
-	ServerSchemeSecureMqtt = ServerScheme("secure-mqtt")
-	ServerSchemeWs = ServerScheme("ws")
-	ServerSchemeWss = ServerScheme("wss")
-	ServerSchemeStomp = ServerScheme("stomp")
-	ServerSchemeStomps = ServerScheme("stomps")
-	ServerSchemeJms = ServerScheme("jms")
-	ServerSchemeHTTP = ServerScheme("http")
-	ServerSchemeHTTPS = ServerScheme("https")
+	ServerSchemeAmqp        = ServerScheme("amqp")
+	ServerSchemeAmqps       = ServerScheme("amqps")
+	ServerSchemeMqtt        = ServerScheme("mqtt")
+	ServerSchemeMqtts       = ServerScheme("mqtts")
+	ServerSchemeSecureMqtt  = ServerScheme("secure-mqtt")
+	ServerSchemeWs          = ServerScheme("ws")
+	ServerSchemeWss         = ServerScheme("wss")
+	ServerSchemeStomp       = ServerScheme("stomp")
+	ServerSchemeStomps      = ServerScheme("stomps")
+	ServerSchemeJms         = ServerScheme("jms")
+	ServerSchemeHTTP        = ServerScheme("http")
+	ServerSchemeHTTPS       = ServerScheme("https")
 )
 
 // MarshalJSON encodes JSON.
@@ -1443,7 +1443,7 @@ type StreamFramingOneOf0Delimiter string
 // StreamFramingOneOf0Delimiter values enumeration
 const (
 	StreamFramingOneOf0DelimiterRN = StreamFramingOneOf0Delimiter(`\r\n`)
-	StreamFramingOneOf0DelimiterN = StreamFramingOneOf0Delimiter(`\n`)
+	StreamFramingOneOf0DelimiterN  = StreamFramingOneOf0Delimiter(`\n`)
 )
 
 // MarshalJSON encodes JSON.
@@ -1484,7 +1484,7 @@ type APIKeyIn string
 
 // APIKeyIn values enumeration
 const (
-	APIKeyInUser = APIKeyIn("user")
+	APIKeyInUser     = APIKeyIn("user")
 	APIKeyInPassword = APIKeyIn("password")
 )
 
@@ -1527,7 +1527,7 @@ type APIKeyHTTPSecuritySchemeIn string
 // APIKeyHTTPSecuritySchemeIn values enumeration
 const (
 	APIKeyHTTPSecuritySchemeInHeader = APIKeyHTTPSecuritySchemeIn("header")
-	APIKeyHTTPSecuritySchemeInQuery = APIKeyHTTPSecuritySchemeIn("query")
+	APIKeyHTTPSecuritySchemeInQuery  = APIKeyHTTPSecuritySchemeIn("query")
 	APIKeyHTTPSecuritySchemeInCookie = APIKeyHTTPSecuritySchemeIn("cookie")
 )
 
@@ -1610,7 +1610,8 @@ func unmarshalUnion(
 	mustUnmarshal []interface{},
 	mayUnmarshal []interface{},
 	ignoreKeys []string,
-	regexMaps map[string]interface{},
+	patternProperties map[string]interface{},
+	additionalProperties interface{},
 	j []byte,
 ) error {
 	for _, item := range mustUnmarshal {
@@ -1647,18 +1648,16 @@ func unmarshalUnion(
 	}
 
 	// preparing regexp matchers
-	var reg = make(map[string]*regexp.Regexp, len(regexMaps))
-	for regex := range regexMaps {
-		if regex != "" {
-			reg[regex], err = regexp.Compile(regex)
-			if err != nil {
-				return err //todo use errors.Wrap
-			}
+	var reg = make(map[string]*regexp.Regexp, len(patternProperties))
+	for regex := range patternProperties {
+		reg[regex], err = regexp.Compile(regex)
+		if err != nil {
+			return err
 		}
 	}
 
-	subMapsRaw := make(map[string][]byte, len(regexMaps))
-	// iterating map and feeding subMaps
+	patternMapsRaw := make(map[string][]byte, len(patternProperties))
+	// Iterating map and filling pattern properties sub maps.
 	for key, val := range m {
 		matched := false
 		var ok bool
@@ -1668,7 +1667,7 @@ func unmarshalUnion(
 			if exp.MatchString(key) {
 				matched = true
 				var subMap []byte
-				if subMap, ok = subMapsRaw[regex]; !ok {
+				if subMap, ok = patternMapsRaw[regex]; !ok {
 					subMap = make([]byte, 1, 100)
 					subMap[0] = '{'
 				} else {
@@ -1679,36 +1678,52 @@ func unmarshalUnion(
 				subMap = append(subMap, []byte(*val)...)
 				subMap = append(subMap, '}')
 
-				subMapsRaw[regex] = subMap
+				patternMapsRaw[regex] = subMap
 			}
 		}
 
-		// empty regex for additionalProperties
-		if !matched {
-			var subMap []byte
-			if subMap, ok = subMapsRaw[""]; !ok {
-				subMap = make([]byte, 1, 100)
-				subMap[0] = '{'
-			} else {
-				subMap = append(subMap[:len(subMap)-1], ',')
-			}
-			subMap = append(subMap, []byte(keyEscaped)...)
-			subMap = append(subMap, []byte(*val)...)
-			subMap = append(subMap, '}')
-
-			subMapsRaw[""] = subMap
+		// Remove from properties map if matched to at least one regex.
+		if matched {
+			delete(m, key)
 		}
 	}
 
-	for regex := range regexMaps {
-		if subMap, ok := subMapsRaw[regex]; !ok {
+	for regex := range patternProperties {
+		if subMap, ok := patternMapsRaw[regex]; !ok {
 			continue
 		} else {
-			err = json.Unmarshal(subMap, regexMaps[regex])
+			err = json.Unmarshal(subMap, patternProperties[regex])
 			if err != nil {
 				return err
 			}
 		}
 	}
+
+	// Returning early on empty map.
+	if len(m) == 0 {
+		return nil
+	}
+
+	if additionalProperties != nil {
+		subMap := make([]byte, 1, 100)
+		subMap[0] = '{'
+
+		// Iterating map and filling additional properties.
+		for key, val := range m {
+			keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+			subMap = append(subMap[:len(subMap)-1], ',')
+			subMap = append(subMap, []byte(keyEscaped)...)
+			subMap = append(subMap, []byte(*val)...)
+			subMap = append(subMap, '}')
+		}
+
+		if len(subMap) > 1 {
+			err = json.Unmarshal(subMap, additionalProperties)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }

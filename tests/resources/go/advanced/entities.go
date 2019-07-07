@@ -4,10 +4,10 @@
 package entities
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
-	"regexp"
-	"strings"
+	"fmt"
 )
 
 // Properties structure is generated from "#".
@@ -90,8 +90,8 @@ func (i *Table) UnmarshalJSON(data []byte) error {
 		nil,
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"table"` {
-	    return errors.New(`bad or missing const value for "type" ("table" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"table"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("table" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -170,8 +170,8 @@ func (i *ShortStr) UnmarshalJSON(data []byte) error {
 		nil,
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"shortstr"` {
-	    return errors.New(`bad or missing const value for "type" ("shortstr" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"shortstr"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("shortstr" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -211,8 +211,8 @@ func (i *PropertyOctet) UnmarshalJSON(data []byte) error {
 		nil,
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"octet"` {
-	    return errors.New(`bad or missing const value for "type" ("octet" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"octet"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("octet" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -252,8 +252,8 @@ func (i *Timestamp) UnmarshalJSON(data []byte) error {
 		nil,
 		data,
 	)
-	if v, ok := constValues["type"];!ok || string(v) != `"timestamp"` {
-	    return errors.New(`bad or missing const value for "type" ("timestamp" expected)`)
+	if v, ok := constValues["type"]; !ok || string(v) != `"timestamp"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("timestamp" expected, %v received)`, v)
 	}
 	if err != nil {
 		return err
@@ -272,10 +272,10 @@ func (i Timestamp) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalTimestamp(i), constTimestamp)
 }
 
-// StringedType is a constant type
+// StringedType is an enum type.
 type StringedType string
 
-// StringedType values enumeration
+// StringedType values enumeration.
 const (
 	StringedTypeBit = StringedType("bit")
 	StringedTypeOctet = StringedType("octet")
@@ -300,7 +300,7 @@ func (i StringedType) MarshalJSON() ([]byte, error) {
 	case StringedTypeTimestamp:
 
 	default:
-		return nil, errors.New("unexpected value")
+		return nil, fmt.Errorf("unexpected StringedType value: %v", i)
 	}
 
 	return json.Marshal(string(i))
@@ -325,7 +325,7 @@ func (i *StringedType) UnmarshalJSON(data []byte) error {
 	case StringedTypeTimestamp:
 
 	default:
-		return errors.New("unexpected value")
+		return fmt.Errorf("unexpected StringedType value: %v", v)
 	}
 
 	*i = v
@@ -376,7 +376,8 @@ func unmarshalUnion(
 	mustUnmarshal []interface{},
 	mayUnmarshal []interface{},
 	ignoreKeys []string,
-	regexMaps map[string]interface{},
+	_ map[string]interface{}, // unused regexMaps
+
 	j []byte,
 ) error {
 	for _, item := range mustUnmarshal {
@@ -412,69 +413,5 @@ func unmarshalUnion(
 		return nil
 	}
 
-	// preparing regexp matchers
-	var reg = make(map[string]*regexp.Regexp, len(regexMaps))
-	for regex := range regexMaps {
-		if regex != "" {
-			reg[regex], err = regexp.Compile(regex)
-			if err != nil {
-				return err //todo use errors.Wrap
-			}
-		}
-	}
-
-	subMapsRaw := make(map[string][]byte, len(regexMaps))
-	// iterating map and feeding subMaps
-	for key, val := range m {
-		matched := false
-		var ok bool
-		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
-
-		for regex, exp := range reg {
-			if exp.MatchString(key) {
-				matched = true
-				var subMap []byte
-				if subMap, ok = subMapsRaw[regex]; !ok {
-					subMap = make([]byte, 1, 100)
-					subMap[0] = '{'
-				} else {
-					subMap = append(subMap[:len(subMap)-1], ',')
-				}
-
-				subMap = append(subMap, []byte(keyEscaped)...)
-				subMap = append(subMap, []byte(*val)...)
-				subMap = append(subMap, '}')
-
-				subMapsRaw[regex] = subMap
-			}
-		}
-
-		// empty regex for additionalProperties
-		if !matched {
-			var subMap []byte
-			if subMap, ok = subMapsRaw[""]; !ok {
-				subMap = make([]byte, 1, 100)
-				subMap[0] = '{'
-			} else {
-				subMap = append(subMap[:len(subMap)-1], ',')
-			}
-			subMap = append(subMap, []byte(keyEscaped)...)
-			subMap = append(subMap, []byte(*val)...)
-			subMap = append(subMap, '}')
-
-			subMapsRaw[""] = subMap
-		}
-	}
-
-	for regex := range regexMaps {
-		if subMap, ok := subMapsRaw[regex]; !ok {
-			continue
-		} else {
-			err = json.Unmarshal(subMap, regexMaps[regex])
-			if err != nil {
-				return err
-			}
-		}
-	}
 	return nil
 }
