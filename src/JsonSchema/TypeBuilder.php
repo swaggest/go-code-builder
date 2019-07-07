@@ -73,7 +73,7 @@ class TypeBuilder
             $resultStruct = $this->makeResultStruct();
 
             if ($this->goBuilder->options->trimParentFromPropertyNames) {
-                if (strpos($name, $resultStruct->getName()) === 0) {
+                if (strpos($name, $resultStruct->getName()) === 0 && $name !== $resultStruct->getName()) {
                     $name = substr($name, strlen($resultStruct->getName()));
                 }
             }

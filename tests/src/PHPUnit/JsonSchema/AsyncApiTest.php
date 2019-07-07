@@ -71,7 +71,7 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         $goFile->getCode()->addSnippet($builder->getCode());
 
 
-        file_put_contents(__DIR__ . '/../../../resources/go/temp/entities.go', $goFile->render());
+//        file_put_contents(__DIR__ . '/../../../resources/go/temp/entities.go', $goFile->render());
         $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/asyncapi-default/entities.go');
 
         $this->assertSame($expectedGen, $goFile->render());

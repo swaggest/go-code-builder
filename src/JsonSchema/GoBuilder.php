@@ -150,7 +150,7 @@ class GoBuilder
                 $fieldName = $this->codeBuilder->exportableName($name);
 
                 if ($this->options->trimParentFromPropertyNames) {
-                    if (strpos($fieldName, $structDef->getName()) === 0) {
+                    if (strpos($fieldName, $structDef->getName()) === 0 && $fieldName !== $structDef->getName() ) {
                         $fieldName = substr($fieldName, strlen($structDef->getName()));
                     }
                 }

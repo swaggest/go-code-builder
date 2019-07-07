@@ -4,7 +4,6 @@ package entities
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"

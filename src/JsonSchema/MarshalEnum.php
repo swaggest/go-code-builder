@@ -4,6 +4,7 @@ namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 
 use Swaggest\CodeBuilder\PlaceholderString;
+use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 use Swaggest\GoCodeBuilder\Templates\Type\Type;
 
@@ -91,11 +92,12 @@ GO;
 {$this->padLines('', $this->renderConstMarshal() . $this->renderConstUnmarshal())}
 GO;
 
-        return new PlaceholderString($result, [
+        $code = new Code(new PlaceholderString($result, [
             ':type' => $this->type,
             ':base' => $this->base,
-        ]);
-
+        ]));
+        $code->imports()->addByName('fmt');
+        return $code;
     }
 
     private function renderMarshal()
@@ -152,10 +154,12 @@ GO;
 {$this->padLines('', $this->renderMarshal() . $this->renderUnmarshal())}
 GO;
 
-        return new PlaceholderString($result, [
+        $code = new Code(new PlaceholderString($result, [
             ':type' => $this->type,
             ':base' => $this->base,
-        ]);
+        ]));
+        $code->imports()->addByName('fmt');
+        return $code;
     }
 
     private function renderIfCheck($var, $return)

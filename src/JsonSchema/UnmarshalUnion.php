@@ -43,8 +43,7 @@ class UnmarshalUnion extends GoTemplate
     {
         $code = new Code();
         $code->imports()
-            ->addByName('encoding/json')
-            ->addByName('errors');
+            ->addByName('encoding/json');
 
         if ($this->withAdditionalProperties) {
             $code->imports()

@@ -13,7 +13,7 @@ import (
 // Core schema meta-schema.
 type Schema struct {
 	ID                   string                                      `json:"$id,omitempty"`
-	*Schema                                     `json:"-"`
+	Schema               *Schema                                     `json:"-"`
 	Ref                  string                                      `json:"$ref,omitempty"`
 	Comment              string                                      `json:"$comment,omitempty"`
 	Title                string                                      `json:"title,omitempty"`
@@ -66,14 +66,14 @@ type marshalSchema Schema
 // UnmarshalJSON decodes JSON.
 func (i *Schema) UnmarshalJSON(data []byte) error {
 	ii := marshalSchema(*i)
-	mayUnmarshal := []interface{}{&ii., &ii.Type0, &ii.Type1}
+	mayUnmarshal := []interface{}{&ii.Schema, &ii.Type0, &ii.Type1}
 	err := unionMap{
 		mustUnmarshal: []interface{}{&ii},
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
 	if mayUnmarshal[0] == nil {
-		ii. = nil
+		ii.Schema = nil
 	}
 	if mayUnmarshal[1] == nil {
 		ii.Type0 = nil
@@ -90,7 +90,7 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Schema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchema(i), i., i.Type0, i.Type1)
+	return marshalUnion(marshalSchema(i), i.Schema, i.Type0, i.Type1)
 }
 
 // NonNegativeIntegerDefault0 structure is generated from "#/definitions/nonNegativeIntegerDefault0".
