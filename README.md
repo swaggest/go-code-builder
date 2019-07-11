@@ -44,4 +44,4 @@ $goFile->getCode()->addSnippet($builder->getCode());
 
 ## CLI tool
 
-You can use [json-cli](https://github.com/swaggest/json-cli#gengo) to generate Go structures from commad line.
+You can use [json-cli](https://github.com/swaggest/json-cli#gengo) to generate Go structures from command line.
