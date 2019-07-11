@@ -19,8 +19,8 @@ type SwaggerSchema struct {
 	Host                string                                             `json:"host,omitempty"`                // The host (name or ip) of the API. Example: 'swagger.io'
 	BasePath            string                                             `json:"basePath,omitempty"`            // The base path to the API. Example: '/api'.
 	Schemes             []SchemesListItems                                 `json:"schemes,omitempty"`             // The transfer protocol of the API.
-	Consumes            *Consumes                                          `json:"consumes,omitempty"`            // A list of MIME types accepted by the API.
-	Produces            *Produces                                          `json:"produces,omitempty"`            // A list of MIME types the API can produce.
+	Consumes            []string                                           `json:"consumes,omitempty"`            // A list of MIME types accepted by the API.
+	Produces            []string                                           `json:"produces,omitempty"`            // A list of MIME types the API can produce.
 	Paths               *Paths                                             `json:"paths,omitempty"`               // Relative paths to the individual endpoints. They must be relative to the 'basePath'.
 	Definitions         map[string]Schema                                  `json:"definitions,omitempty"`         // One or more JSON objects describing the schemas being consumed and produced by the API.
 	Parameters          map[string]Parameter                               `json:"parameters,omitempty"`          // One or more JSON representations for parameters
@@ -205,56 +205,6 @@ func (i License) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalLicense(i), i.MapOfAnythingValues)
 }
 
-// Consumes structure is generated from "#->consumes".
-//
-// A list of MIME types accepted by the API.
-type Consumes struct {
-	AllOf0 []string `json:"-"`
-}
-
-type marshalConsumes Consumes
-
-// UnmarshalJSON decodes JSON.
-func (i *Consumes) UnmarshalJSON(data []byte) error {
-
-	err := unionMap{
-		mustUnmarshal: []interface{}{&i.AllOf0},
-		jsonData: data,
-	}.unmarshal()
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i Consumes) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalConsumes(i), i.AllOf0)
-}
-
-// Produces structure is generated from "#->produces".
-//
-// A list of MIME types the API can produce.
-type Produces struct {
-	AllOf0 []string `json:"-"`
-}
-
-type marshalProduces Produces
-
-// UnmarshalJSON decodes JSON.
-func (i *Produces) UnmarshalJSON(data []byte) error {
-
-	err := unionMap{
-		mustUnmarshal: []interface{}{&i.AllOf0},
-		jsonData: data,
-	}.unmarshal()
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i Produces) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalProduces(i), i.AllOf0)
-}
-
 // Paths structure is generated from "#/definitions/paths".
 //
 // Relative paths to the individual endpoints. They must be relative to the 'basePath'.
@@ -341,8 +291,8 @@ type Operation struct {
 	Description         string                 `json:"description,omitempty"`  // A longer description of the operation, GitHub Flavored Markdown is allowed.
 	ExternalDocs        *ExternalDocs          `json:"externalDocs,omitempty"` // information about external documentation
 	ID                  string                 `json:"operationId,omitempty"`  // A unique identifier of the operation.
-	Produces            *OperationProduces     `json:"produces,omitempty"`     // A list of MIME types the API can produce.
-	Consumes            *OperationConsumes     `json:"consumes,omitempty"`     // A list of MIME types the API can consume.
+	Produces            []string               `json:"produces,omitempty"`     // A list of MIME types the API can produce.
+	Consumes            []string               `json:"consumes,omitempty"`     // A list of MIME types the API can consume.
 	Parameters          []ParametersListItems  `json:"parameters,omitempty"`   // The parameters needed to send a valid API call.
 	Responses           *Responses             `json:"responses,omitempty"`    // Response objects names can either be any valid HTTP status code or 'default'.
 	Schemes             []SchemesListItems     `json:"schemes,omitempty"`      // The transfer protocol of the API.
@@ -428,56 +378,6 @@ func (i ExternalDocs) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalExternalDocs(i), i.MapOfAnythingValues)
 }
 
-// OperationProduces structure is generated from "#/definitions/operation->produces".
-//
-// A list of MIME types the API can produce.
-type OperationProduces struct {
-	AllOf0 []string `json:"-"`
-}
-
-type marshalOperationProduces OperationProduces
-
-// UnmarshalJSON decodes JSON.
-func (i *OperationProduces) UnmarshalJSON(data []byte) error {
-
-	err := unionMap{
-		mustUnmarshal: []interface{}{&i.AllOf0},
-		jsonData: data,
-	}.unmarshal()
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i OperationProduces) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOperationProduces(i), i.AllOf0)
-}
-
-// OperationConsumes structure is generated from "#/definitions/operation->consumes".
-//
-// A list of MIME types the API can consume.
-type OperationConsumes struct {
-	AllOf0 []string `json:"-"`
-}
-
-type marshalOperationConsumes OperationConsumes
-
-// UnmarshalJSON decodes JSON.
-func (i *OperationConsumes) UnmarshalJSON(data []byte) error {
-
-	err := unionMap{
-		mustUnmarshal: []interface{}{&i.AllOf0},
-		jsonData: data,
-	}.unmarshal()
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i OperationConsumes) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOperationConsumes(i), i.AllOf0)
-}
-
 // BodyParameter structure is generated from "#/definitions/bodyParameter".
 type BodyParameter struct {
 	Description         string                 `json:"description,omitempty"` // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
@@ -532,37 +432,37 @@ func (i BodyParameter) MarshalJSON() ([]byte, error) {
 //
 // A deterministic version of a JSON Schema object.
 type Schema struct {
-	Ref                  string                                                            `json:"$ref,omitempty"`
-	Format               string                                                            `json:"format,omitempty"`
-	Title                string                                                            `json:"title,omitempty"`
-	Description          string                                                            `json:"description,omitempty"`
-	Default              interface{}                                                       `json:"default,omitempty"`
-	MultipleOf           float64                                                           `json:"multipleOf,omitempty"`
-	Maximum              float64                                                           `json:"maximum,omitempty"`
-	ExclusiveMaximum     bool                                                              `json:"exclusiveMaximum,omitempty"`
-	Minimum              float64                                                           `json:"minimum,omitempty"`
-	ExclusiveMinimum     bool                                                              `json:"exclusiveMinimum,omitempty"`
-	MaxLength            int64                                                             `json:"maxLength,omitempty"`
-	MinLength            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength,omitempty"`
-	Pattern              string                                                            `json:"pattern,omitempty"`
-	MaxItems             int64                                                             `json:"maxItems,omitempty"`
-	MinItems             *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems,omitempty"`
-	UniqueItems          bool                                                              `json:"uniqueItems,omitempty"`
-	MaxProperties        int64                                                             `json:"maxProperties,omitempty"`
-	MinProperties        *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minProperties,omitempty"`
-	Required             []string                                                          `json:"required,omitempty"`
-	Enum                 []interface{}                                                     `json:"enum,omitempty"`
-	MapOfAnythingValues  map[string]interface{}                                            `json:"-"`                              // Key must match pattern: ^x-
-	AdditionalProperties *SchemaAdditionalProperties                                       `json:"additionalProperties,omitempty"`
-	Type                 *HTTPJSONSchemaOrgDraft04SchemaPropertiesType                     `json:"type,omitempty"`
-	Items                *SchemaItems                                                      `json:"items,omitempty"`
-	AllOf                []Schema                                                          `json:"allOf,omitempty"`
-	Properties           map[string]Schema                                                 `json:"properties,omitempty"`
-	Discriminator        string                                                            `json:"discriminator,omitempty"`
-	ReadOnly             bool                                                              `json:"readOnly,omitempty"`
-	XML                  *XML                                                              `json:"xml,omitempty"`
-	ExternalDocs         *ExternalDocs                                                     `json:"externalDocs,omitempty"`         // information about external documentation
-	Example              interface{}                                                       `json:"example,omitempty"`
+	Ref                  string                                        `json:"$ref,omitempty"`
+	Format               string                                        `json:"format,omitempty"`
+	Title                string                                        `json:"title,omitempty"`
+	Description          string                                        `json:"description,omitempty"`
+	Default              interface{}                                   `json:"default,omitempty"`
+	MultipleOf           float64                                       `json:"multipleOf,omitempty"`
+	Maximum              float64                                       `json:"maximum,omitempty"`
+	ExclusiveMaximum     bool                                          `json:"exclusiveMaximum,omitempty"`
+	Minimum              float64                                       `json:"minimum,omitempty"`
+	ExclusiveMinimum     bool                                          `json:"exclusiveMinimum,omitempty"`
+	MaxLength            int64                                         `json:"maxLength,omitempty"`
+	MinLength            int64                                         `json:"minLength,omitempty"`
+	Pattern              string                                        `json:"pattern,omitempty"`
+	MaxItems             int64                                         `json:"maxItems,omitempty"`
+	MinItems             int64                                         `json:"minItems,omitempty"`
+	UniqueItems          bool                                          `json:"uniqueItems,omitempty"`
+	MaxProperties        int64                                         `json:"maxProperties,omitempty"`
+	MinProperties        int64                                         `json:"minProperties,omitempty"`
+	Required             []string                                      `json:"required,omitempty"`
+	Enum                 []interface{}                                 `json:"enum,omitempty"`
+	MapOfAnythingValues  map[string]interface{}                        `json:"-"`                              // Key must match pattern: ^x-
+	AdditionalProperties *SchemaAdditionalProperties                   `json:"additionalProperties,omitempty"`
+	Type                 *HTTPJSONSchemaOrgDraft04SchemaPropertiesType `json:"type,omitempty"`
+	Items                *SchemaItems                                  `json:"items,omitempty"`
+	AllOf                []Schema                                      `json:"allOf,omitempty"`
+	Properties           map[string]Schema                             `json:"properties,omitempty"`
+	Discriminator        string                                        `json:"discriminator,omitempty"`
+	ReadOnly             bool                                          `json:"readOnly,omitempty"`
+	XML                  *XML                                          `json:"xml,omitempty"`
+	ExternalDocs         *ExternalDocs                                 `json:"externalDocs,omitempty"`         // information about external documentation
+	Example              interface{}                                   `json:"example,omitempty"`
 }
 
 type marshalSchema Schema
@@ -622,29 +522,6 @@ func (i Schema) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalSchema(i), i.MapOfAnythingValues)
 }
 
-// HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 structure is generated from "http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0".
-type HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 struct {
-	Int64 *int64 `json:"-"`
-}
-
-type marshalHTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0
-
-// UnmarshalJSON decodes JSON.
-func (i *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0) UnmarshalJSON(data []byte) error {
-
-	err := unionMap{
-		mustUnmarshal: []interface{}{&i.Int64},
-		jsonData: data,
-	}.unmarshal()
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0(i), i.Int64)
-}
-
 // SchemaAdditionalProperties structure is generated from "#/definitions/schema->additionalProperties".
 type SchemaAdditionalProperties struct {
 	Schema *Schema `json:"-"`
@@ -677,19 +554,23 @@ func (i SchemaAdditionalProperties) MarshalJSON() ([]byte, error) {
 
 // HTTPJSONSchemaOrgDraft04SchemaPropertiesType structure is generated from "http://json-schema.org/draft-04/schema#/properties/type".
 type HTTPJSONSchemaOrgDraft04SchemaPropertiesType struct {
-	AnyOf1 []interface{} `json:"-"`
+	SimpleTypes *SimpleTypes  `json:"-"`
+	AnyOf1      []SimpleTypes `json:"-"`
 }
 
 type marshalHTTPJSONSchemaOrgDraft04SchemaPropertiesType HTTPJSONSchemaOrgDraft04SchemaPropertiesType
 
 // UnmarshalJSON decodes JSON.
 func (i *HTTPJSONSchemaOrgDraft04SchemaPropertiesType) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.AnyOf1}
+	mayUnmarshal := []interface{}{&i.SimpleTypes, &i.AnyOf1}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
 	if mayUnmarshal[0] == nil {
+		i.SimpleTypes = nil
+	}
+	if mayUnmarshal[1] == nil {
 		i.AnyOf1 = nil
 	}
 
@@ -698,7 +579,7 @@ func (i *HTTPJSONSchemaOrgDraft04SchemaPropertiesType) UnmarshalJSON(data []byte
 
 // MarshalJSON encodes JSON.
 func (i HTTPJSONSchemaOrgDraft04SchemaPropertiesType) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHTTPJSONSchemaOrgDraft04SchemaPropertiesType(i), i.AnyOf1)
+	return marshalUnion(marshalHTTPJSONSchemaOrgDraft04SchemaPropertiesType(i), i.SimpleTypes, i.AnyOf1)
 }
 
 // SchemaItems structure is generated from "#/definitions/schema->items".
@@ -773,59 +654,29 @@ func (i XML) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalXML(i), i.MapOfAnythingValues)
 }
 
-// Parameter structure is generated from "#/definitions/parameter".
-type Parameter struct {
-	BodyParameter    *BodyParameter    `json:"-"`
-	NonBodyParameter *NonBodyParameter `json:"-"`
-}
-
-type marshalParameter Parameter
-
-// UnmarshalJSON decodes JSON.
-func (i *Parameter) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.BodyParameter, &i.NonBodyParameter}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.BodyParameter = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.NonBodyParameter = nil
-	}
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i Parameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameter(i), i.BodyParameter, i.NonBodyParameter)
-}
-
 // HeaderParameterSubSchema structure is generated from "#/definitions/headerParameterSubSchema".
 type HeaderParameterSubSchema struct {
-	Required            bool                                                              `json:"required,omitempty"`         // Determines whether or not this parameter is required or optional.
-	Description         string                                                            `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
-	Name                string                                                            `json:"name,omitempty"`             // The name of the parameter.
-	Type                HeaderParameterSubSchemaType                                      `json:"type,omitempty"`
-	Format              string                                                            `json:"format,omitempty"`
-	Items               *PrimitivesItems                                                  `json:"items,omitempty"`
-	CollectionFormat    CollectionFormat                                                  `json:"collectionFormat,omitempty"`
-	Default             interface{}                                                       `json:"default,omitempty"`
-	Maximum             float64                                                           `json:"maximum,omitempty"`
-	ExclusiveMaximum    bool                                                              `json:"exclusiveMaximum,omitempty"`
-	Minimum             float64                                                           `json:"minimum,omitempty"`
-	ExclusiveMinimum    bool                                                              `json:"exclusiveMinimum,omitempty"`
-	MaxLength           int64                                                             `json:"maxLength,omitempty"`
-	MinLength           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength,omitempty"`
-	Pattern             string                                                            `json:"pattern,omitempty"`
-	MaxItems            int64                                                             `json:"maxItems,omitempty"`
-	MinItems            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems,omitempty"`
-	UniqueItems         bool                                                              `json:"uniqueItems,omitempty"`
-	Enum                []interface{}                                                     `json:"enum,omitempty"`
-	MultipleOf          float64                                                           `json:"multipleOf,omitempty"`
-	MapOfAnythingValues map[string]interface{}                                            `json:"-"`                          // Key must match pattern: ^x-
+	Required            bool                         `json:"required,omitempty"`         // Determines whether or not this parameter is required or optional.
+	Description         string                       `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
+	Name                string                       `json:"name,omitempty"`             // The name of the parameter.
+	Type                HeaderParameterSubSchemaType `json:"type,omitempty"`
+	Format              string                       `json:"format,omitempty"`
+	Items               *PrimitivesItems             `json:"items,omitempty"`
+	CollectionFormat    CollectionFormat             `json:"collectionFormat,omitempty"`
+	Default             interface{}                  `json:"default,omitempty"`
+	Maximum             float64                      `json:"maximum,omitempty"`
+	ExclusiveMaximum    bool                         `json:"exclusiveMaximum,omitempty"`
+	Minimum             float64                      `json:"minimum,omitempty"`
+	ExclusiveMinimum    bool                         `json:"exclusiveMinimum,omitempty"`
+	MaxLength           int64                        `json:"maxLength,omitempty"`
+	MinLength           int64                        `json:"minLength,omitempty"`
+	Pattern             string                       `json:"pattern,omitempty"`
+	MaxItems            int64                        `json:"maxItems,omitempty"`
+	MinItems            int64                        `json:"minItems,omitempty"`
+	UniqueItems         bool                         `json:"uniqueItems,omitempty"`
+	Enum                []interface{}                `json:"enum,omitempty"`
+	MultipleOf          float64                      `json:"multipleOf,omitempty"`
+	MapOfAnythingValues map[string]interface{}       `json:"-"`                          // Key must match pattern: ^x-
 }
 
 type marshalHeaderParameterSubSchema HeaderParameterSubSchema
@@ -887,24 +738,24 @@ func (i HeaderParameterSubSchema) MarshalJSON() ([]byte, error) {
 
 // PrimitivesItems structure is generated from "#/definitions/primitivesItems".
 type PrimitivesItems struct {
-	Type                PrimitivesItemsType                                               `json:"type,omitempty"`
-	Format              string                                                            `json:"format,omitempty"`
-	MapOfAnythingValues map[string]interface{}                                            `json:"-"`                          // Key must match pattern: ^x-
-	Items               *PrimitivesItems                                                  `json:"items,omitempty"`
-	CollectionFormat    CollectionFormat                                                  `json:"collectionFormat,omitempty"`
-	Default             interface{}                                                       `json:"default,omitempty"`
-	Maximum             float64                                                           `json:"maximum,omitempty"`
-	ExclusiveMaximum    bool                                                              `json:"exclusiveMaximum,omitempty"`
-	Minimum             float64                                                           `json:"minimum,omitempty"`
-	ExclusiveMinimum    bool                                                              `json:"exclusiveMinimum,omitempty"`
-	MaxLength           int64                                                             `json:"maxLength,omitempty"`
-	MinLength           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength,omitempty"`
-	Pattern             string                                                            `json:"pattern,omitempty"`
-	MaxItems            int64                                                             `json:"maxItems,omitempty"`
-	MinItems            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems,omitempty"`
-	UniqueItems         bool                                                              `json:"uniqueItems,omitempty"`
-	Enum                []interface{}                                                     `json:"enum,omitempty"`
-	MultipleOf          float64                                                           `json:"multipleOf,omitempty"`
+	Type                PrimitivesItemsType    `json:"type,omitempty"`
+	Format              string                 `json:"format,omitempty"`
+	MapOfAnythingValues map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
+	Items               *PrimitivesItems       `json:"items,omitempty"`
+	CollectionFormat    CollectionFormat       `json:"collectionFormat,omitempty"`
+	Default             interface{}            `json:"default,omitempty"`
+	Maximum             float64                `json:"maximum,omitempty"`
+	ExclusiveMaximum    bool                   `json:"exclusiveMaximum,omitempty"`
+	Minimum             float64                `json:"minimum,omitempty"`
+	ExclusiveMinimum    bool                   `json:"exclusiveMinimum,omitempty"`
+	MaxLength           int64                  `json:"maxLength,omitempty"`
+	MinLength           int64                  `json:"minLength,omitempty"`
+	Pattern             string                 `json:"pattern,omitempty"`
+	MaxItems            int64                  `json:"maxItems,omitempty"`
+	MinItems            int64                  `json:"minItems,omitempty"`
+	UniqueItems         bool                   `json:"uniqueItems,omitempty"`
+	Enum                []interface{}          `json:"enum,omitempty"`
+	MultipleOf          float64                `json:"multipleOf,omitempty"`
 }
 
 type marshalPrimitivesItems PrimitivesItems
@@ -951,68 +802,30 @@ func (i PrimitivesItems) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalPrimitivesItems(i), i.MapOfAnythingValues)
 }
 
-// NonBodyParameter structure is generated from "#/definitions/nonBodyParameter".
-type NonBodyParameter struct {
-	HeaderParameterSubSchema   *HeaderParameterSubSchema   `json:"-"`
-	FormDataParameterSubSchema *FormDataParameterSubSchema `json:"-"`
-	QueryParameterSubSchema    *QueryParameterSubSchema    `json:"-"`
-	PathParameterSubSchema     *PathParameterSubSchema     `json:"-"`
-}
-
-type marshalNonBodyParameter NonBodyParameter
-
-// UnmarshalJSON decodes JSON.
-func (i *NonBodyParameter) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.HeaderParameterSubSchema, &i.FormDataParameterSubSchema, &i.QueryParameterSubSchema, &i.PathParameterSubSchema}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.HeaderParameterSubSchema = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.FormDataParameterSubSchema = nil
-	}
-	if mayUnmarshal[2] == nil {
-		i.QueryParameterSubSchema = nil
-	}
-	if mayUnmarshal[3] == nil {
-		i.PathParameterSubSchema = nil
-	}
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i NonBodyParameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalNonBodyParameter(i), i.HeaderParameterSubSchema, i.FormDataParameterSubSchema, i.QueryParameterSubSchema, i.PathParameterSubSchema)
-}
-
 // FormDataParameterSubSchema structure is generated from "#/definitions/formDataParameterSubSchema".
 type FormDataParameterSubSchema struct {
-	Required            bool                                                              `json:"required,omitempty"`         // Determines whether or not this parameter is required or optional.
-	Description         string                                                            `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
-	Name                string                                                            `json:"name,omitempty"`             // The name of the parameter.
-	AllowEmptyValue     bool                                                              `json:"allowEmptyValue,omitempty"`  // allows sending a parameter by name only or with an empty value.
-	Type                FormDataParameterSubSchemaType                                    `json:"type,omitempty"`
-	Format              string                                                            `json:"format,omitempty"`
-	Items               *PrimitivesItems                                                  `json:"items,omitempty"`
-	CollectionFormat    CollectionFormatWithMulti                                         `json:"collectionFormat,omitempty"`
-	Default             interface{}                                                       `json:"default,omitempty"`
-	Maximum             float64                                                           `json:"maximum,omitempty"`
-	ExclusiveMaximum    bool                                                              `json:"exclusiveMaximum,omitempty"`
-	Minimum             float64                                                           `json:"minimum,omitempty"`
-	ExclusiveMinimum    bool                                                              `json:"exclusiveMinimum,omitempty"`
-	MaxLength           int64                                                             `json:"maxLength,omitempty"`
-	MinLength           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength,omitempty"`
-	Pattern             string                                                            `json:"pattern,omitempty"`
-	MaxItems            int64                                                             `json:"maxItems,omitempty"`
-	MinItems            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems,omitempty"`
-	UniqueItems         bool                                                              `json:"uniqueItems,omitempty"`
-	Enum                []interface{}                                                     `json:"enum,omitempty"`
-	MultipleOf          float64                                                           `json:"multipleOf,omitempty"`
-	MapOfAnythingValues map[string]interface{}                                            `json:"-"`                          // Key must match pattern: ^x-
+	Required            bool                           `json:"required,omitempty"`         // Determines whether or not this parameter is required or optional.
+	Description         string                         `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
+	Name                string                         `json:"name,omitempty"`             // The name of the parameter.
+	AllowEmptyValue     bool                           `json:"allowEmptyValue,omitempty"`  // allows sending a parameter by name only or with an empty value.
+	Type                FormDataParameterSubSchemaType `json:"type,omitempty"`
+	Format              string                         `json:"format,omitempty"`
+	Items               *PrimitivesItems               `json:"items,omitempty"`
+	CollectionFormat    CollectionFormatWithMulti      `json:"collectionFormat,omitempty"`
+	Default             interface{}                    `json:"default,omitempty"`
+	Maximum             float64                        `json:"maximum,omitempty"`
+	ExclusiveMaximum    bool                           `json:"exclusiveMaximum,omitempty"`
+	Minimum             float64                        `json:"minimum,omitempty"`
+	ExclusiveMinimum    bool                           `json:"exclusiveMinimum,omitempty"`
+	MaxLength           int64                          `json:"maxLength,omitempty"`
+	MinLength           int64                          `json:"minLength,omitempty"`
+	Pattern             string                         `json:"pattern,omitempty"`
+	MaxItems            int64                          `json:"maxItems,omitempty"`
+	MinItems            int64                          `json:"minItems,omitempty"`
+	UniqueItems         bool                           `json:"uniqueItems,omitempty"`
+	Enum                []interface{}                  `json:"enum,omitempty"`
+	MultipleOf          float64                        `json:"multipleOf,omitempty"`
+	MapOfAnythingValues map[string]interface{}         `json:"-"`                          // Key must match pattern: ^x-
 }
 
 type marshalFormDataParameterSubSchema FormDataParameterSubSchema
@@ -1075,28 +888,28 @@ func (i FormDataParameterSubSchema) MarshalJSON() ([]byte, error) {
 
 // QueryParameterSubSchema structure is generated from "#/definitions/queryParameterSubSchema".
 type QueryParameterSubSchema struct {
-	Required            bool                                                              `json:"required,omitempty"`         // Determines whether or not this parameter is required or optional.
-	Description         string                                                            `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
-	Name                string                                                            `json:"name,omitempty"`             // The name of the parameter.
-	AllowEmptyValue     bool                                                              `json:"allowEmptyValue,omitempty"`  // allows sending a parameter by name only or with an empty value.
-	Type                QueryParameterSubSchemaType                                       `json:"type,omitempty"`
-	Format              string                                                            `json:"format,omitempty"`
-	Items               *PrimitivesItems                                                  `json:"items,omitempty"`
-	CollectionFormat    CollectionFormatWithMulti                                         `json:"collectionFormat,omitempty"`
-	Default             interface{}                                                       `json:"default,omitempty"`
-	Maximum             float64                                                           `json:"maximum,omitempty"`
-	ExclusiveMaximum    bool                                                              `json:"exclusiveMaximum,omitempty"`
-	Minimum             float64                                                           `json:"minimum,omitempty"`
-	ExclusiveMinimum    bool                                                              `json:"exclusiveMinimum,omitempty"`
-	MaxLength           int64                                                             `json:"maxLength,omitempty"`
-	MinLength           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength,omitempty"`
-	Pattern             string                                                            `json:"pattern,omitempty"`
-	MaxItems            int64                                                             `json:"maxItems,omitempty"`
-	MinItems            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems,omitempty"`
-	UniqueItems         bool                                                              `json:"uniqueItems,omitempty"`
-	Enum                []interface{}                                                     `json:"enum,omitempty"`
-	MultipleOf          float64                                                           `json:"multipleOf,omitempty"`
-	MapOfAnythingValues map[string]interface{}                                            `json:"-"`                          // Key must match pattern: ^x-
+	Required            bool                        `json:"required,omitempty"`         // Determines whether or not this parameter is required or optional.
+	Description         string                      `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
+	Name                string                      `json:"name,omitempty"`             // The name of the parameter.
+	AllowEmptyValue     bool                        `json:"allowEmptyValue,omitempty"`  // allows sending a parameter by name only or with an empty value.
+	Type                QueryParameterSubSchemaType `json:"type,omitempty"`
+	Format              string                      `json:"format,omitempty"`
+	Items               *PrimitivesItems            `json:"items,omitempty"`
+	CollectionFormat    CollectionFormatWithMulti   `json:"collectionFormat,omitempty"`
+	Default             interface{}                 `json:"default,omitempty"`
+	Maximum             float64                     `json:"maximum,omitempty"`
+	ExclusiveMaximum    bool                        `json:"exclusiveMaximum,omitempty"`
+	Minimum             float64                     `json:"minimum,omitempty"`
+	ExclusiveMinimum    bool                        `json:"exclusiveMinimum,omitempty"`
+	MaxLength           int64                       `json:"maxLength,omitempty"`
+	MinLength           int64                       `json:"minLength,omitempty"`
+	Pattern             string                      `json:"pattern,omitempty"`
+	MaxItems            int64                       `json:"maxItems,omitempty"`
+	MinItems            int64                       `json:"minItems,omitempty"`
+	UniqueItems         bool                        `json:"uniqueItems,omitempty"`
+	Enum                []interface{}               `json:"enum,omitempty"`
+	MultipleOf          float64                     `json:"multipleOf,omitempty"`
+	MapOfAnythingValues map[string]interface{}      `json:"-"`                          // Key must match pattern: ^x-
 }
 
 type marshalQueryParameterSubSchema QueryParameterSubSchema
@@ -1159,26 +972,26 @@ func (i QueryParameterSubSchema) MarshalJSON() ([]byte, error) {
 
 // PathParameterSubSchema structure is generated from "#/definitions/pathParameterSubSchema".
 type PathParameterSubSchema struct {
-	Description         string                                                            `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
-	Name                string                                                            `json:"name,omitempty"`             // The name of the parameter.
-	Type                PathParameterSubSchemaType                                        `json:"type,omitempty"`
-	Format              string                                                            `json:"format,omitempty"`
-	Items               *PrimitivesItems                                                  `json:"items,omitempty"`
-	CollectionFormat    CollectionFormat                                                  `json:"collectionFormat,omitempty"`
-	Default             interface{}                                                       `json:"default,omitempty"`
-	Maximum             float64                                                           `json:"maximum,omitempty"`
-	ExclusiveMaximum    bool                                                              `json:"exclusiveMaximum,omitempty"`
-	Minimum             float64                                                           `json:"minimum,omitempty"`
-	ExclusiveMinimum    bool                                                              `json:"exclusiveMinimum,omitempty"`
-	MaxLength           int64                                                             `json:"maxLength,omitempty"`
-	MinLength           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength,omitempty"`
-	Pattern             string                                                            `json:"pattern,omitempty"`
-	MaxItems            int64                                                             `json:"maxItems,omitempty"`
-	MinItems            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems,omitempty"`
-	UniqueItems         bool                                                              `json:"uniqueItems,omitempty"`
-	Enum                []interface{}                                                     `json:"enum,omitempty"`
-	MultipleOf          float64                                                           `json:"multipleOf,omitempty"`
-	MapOfAnythingValues map[string]interface{}                                            `json:"-"`                          // Key must match pattern: ^x-
+	Description         string                     `json:"description,omitempty"`      // A brief description of the parameter. This could contain examples of use.  GitHub Flavored Markdown is allowed.
+	Name                string                     `json:"name,omitempty"`             // The name of the parameter.
+	Type                PathParameterSubSchemaType `json:"type,omitempty"`
+	Format              string                     `json:"format,omitempty"`
+	Items               *PrimitivesItems           `json:"items,omitempty"`
+	CollectionFormat    CollectionFormat           `json:"collectionFormat,omitempty"`
+	Default             interface{}                `json:"default,omitempty"`
+	Maximum             float64                    `json:"maximum,omitempty"`
+	ExclusiveMaximum    bool                       `json:"exclusiveMaximum,omitempty"`
+	Minimum             float64                    `json:"minimum,omitempty"`
+	ExclusiveMinimum    bool                       `json:"exclusiveMinimum,omitempty"`
+	MaxLength           int64                      `json:"maxLength,omitempty"`
+	MinLength           int64                      `json:"minLength,omitempty"`
+	Pattern             string                     `json:"pattern,omitempty"`
+	MaxItems            int64                      `json:"maxItems,omitempty"`
+	MinItems            int64                      `json:"minItems,omitempty"`
+	UniqueItems         bool                       `json:"uniqueItems,omitempty"`
+	Enum                []interface{}              `json:"enum,omitempty"`
+	MultipleOf          float64                    `json:"multipleOf,omitempty"`
+	MapOfAnythingValues map[string]interface{}     `json:"-"`                          // Key must match pattern: ^x-
 }
 
 type marshalPathParameterSubSchema PathParameterSubSchema
@@ -1240,6 +1053,79 @@ func (i PathParameterSubSchema) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalPathParameterSubSchema(i), i.MapOfAnythingValues, constPathParameterSubSchema)
 }
 
+// NonBodyParameter structure is generated from "#/definitions/nonBodyParameter".
+type NonBodyParameter struct {
+	HeaderParameterSubSchema   *HeaderParameterSubSchema   `json:"-"`
+	FormDataParameterSubSchema *FormDataParameterSubSchema `json:"-"`
+	QueryParameterSubSchema    *QueryParameterSubSchema    `json:"-"`
+	PathParameterSubSchema     *PathParameterSubSchema     `json:"-"`
+}
+
+type marshalNonBodyParameter NonBodyParameter
+
+// UnmarshalJSON decodes JSON.
+func (i *NonBodyParameter) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.HeaderParameterSubSchema, &i.FormDataParameterSubSchema, &i.QueryParameterSubSchema, &i.PathParameterSubSchema}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.HeaderParameterSubSchema = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.FormDataParameterSubSchema = nil
+	}
+	if mayUnmarshal[2] == nil {
+		i.QueryParameterSubSchema = nil
+	}
+	if mayUnmarshal[3] == nil {
+		i.PathParameterSubSchema = nil
+	}
+
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i NonBodyParameter) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalNonBodyParameter(i), i.HeaderParameterSubSchema, i.FormDataParameterSubSchema, i.QueryParameterSubSchema, i.PathParameterSubSchema)
+}
+
+// Parameter structure is generated from "#/definitions/parameter".
+type Parameter struct {
+	BodyParameter    *BodyParameter    `json:"-"`
+	NonBodyParameter *NonBodyParameter `json:"-"`
+}
+
+type marshalParameter Parameter
+
+// UnmarshalJSON decodes JSON.
+func (i *Parameter) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.BodyParameter, &i.NonBodyParameter}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.BodyParameter = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.NonBodyParameter = nil
+	}
+
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i Parameter) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalParameter(i), i.BodyParameter, i.NonBodyParameter)
+}
+
+// JSONReference structure is generated from "#/definitions/jsonReference".
+type JSONReference struct {
+	Ref string `json:"$ref,omitempty"`
+}
+
 // ParametersListItems structure is generated from "#/definitions/parametersList->items".
 type ParametersListItems struct {
 	Parameter     *Parameter     `json:"-"`
@@ -1268,11 +1154,6 @@ func (i *ParametersListItems) UnmarshalJSON(data []byte) error {
 // MarshalJSON encodes JSON.
 func (i ParametersListItems) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalParametersListItems(i), i.Parameter, i.JSONReference)
-}
-
-// JSONReference structure is generated from "#/definitions/jsonReference".
-type JSONReference struct {
-	Ref string `json:"$ref,omitempty"`
 }
 
 // Response structure is generated from "#/definitions/response".
@@ -1313,36 +1194,6 @@ func (i *Response) UnmarshalJSON(data []byte) error {
 // MarshalJSON encodes JSON.
 func (i Response) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalResponse(i), i.MapOfAnythingValues)
-}
-
-// ResponseSchema structure is generated from "#/definitions/response->schema".
-type ResponseSchema struct {
-	Schema     *Schema     `json:"-"`
-	FileSchema *FileSchema `json:"-"`
-}
-
-type marshalResponseSchema ResponseSchema
-
-// UnmarshalJSON decodes JSON.
-func (i *ResponseSchema) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Schema, &i.FileSchema}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.Schema = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.FileSchema = nil
-	}
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i ResponseSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponseSchema(i), i.Schema, i.FileSchema)
 }
 
 // FileSchema structure is generated from "#/definitions/fileSchema".
@@ -1405,27 +1256,57 @@ func (i FileSchema) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalFileSchema(i), i.MapOfAnythingValues, constFileSchema)
 }
 
+// ResponseSchema structure is generated from "#/definitions/response->schema".
+type ResponseSchema struct {
+	Schema     *Schema     `json:"-"`
+	FileSchema *FileSchema `json:"-"`
+}
+
+type marshalResponseSchema ResponseSchema
+
+// UnmarshalJSON decodes JSON.
+func (i *ResponseSchema) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.Schema, &i.FileSchema}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.Schema = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.FileSchema = nil
+	}
+
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i ResponseSchema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalResponseSchema(i), i.Schema, i.FileSchema)
+}
+
 // Header structure is generated from "#/definitions/header".
 type Header struct {
-	Type                HeaderType                                                        `json:"type,omitempty"`
-	Format              string                                                            `json:"format,omitempty"`
-	Items               *PrimitivesItems                                                  `json:"items,omitempty"`
-	CollectionFormat    CollectionFormat                                                  `json:"collectionFormat,omitempty"`
-	Default             interface{}                                                       `json:"default,omitempty"`
-	Maximum             float64                                                           `json:"maximum,omitempty"`
-	ExclusiveMaximum    bool                                                              `json:"exclusiveMaximum,omitempty"`
-	Minimum             float64                                                           `json:"minimum,omitempty"`
-	ExclusiveMinimum    bool                                                              `json:"exclusiveMinimum,omitempty"`
-	MaxLength           int64                                                             `json:"maxLength,omitempty"`
-	MinLength           *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minLength,omitempty"`
-	Pattern             string                                                            `json:"pattern,omitempty"`
-	MaxItems            int64                                                             `json:"maxItems,omitempty"`
-	MinItems            *HTTPJSONSchemaOrgDraft04SchemaDefinitionsPositiveIntegerDefault0 `json:"minItems,omitempty"`
-	UniqueItems         bool                                                              `json:"uniqueItems,omitempty"`
-	Enum                []interface{}                                                     `json:"enum,omitempty"`
-	MultipleOf          float64                                                           `json:"multipleOf,omitempty"`
-	Description         string                                                            `json:"description,omitempty"`
-	MapOfAnythingValues map[string]interface{}                                            `json:"-"`                          // Key must match pattern: ^x-
+	Type                HeaderType             `json:"type,omitempty"`
+	Format              string                 `json:"format,omitempty"`
+	Items               *PrimitivesItems       `json:"items,omitempty"`
+	CollectionFormat    CollectionFormat       `json:"collectionFormat,omitempty"`
+	Default             interface{}            `json:"default,omitempty"`
+	Maximum             float64                `json:"maximum,omitempty"`
+	ExclusiveMaximum    bool                   `json:"exclusiveMaximum,omitempty"`
+	Minimum             float64                `json:"minimum,omitempty"`
+	ExclusiveMinimum    bool                   `json:"exclusiveMinimum,omitempty"`
+	MaxLength           int64                  `json:"maxLength,omitempty"`
+	MinLength           int64                  `json:"minLength,omitempty"`
+	Pattern             string                 `json:"pattern,omitempty"`
+	MaxItems            int64                  `json:"maxItems,omitempty"`
+	MinItems            int64                  `json:"minItems,omitempty"`
+	UniqueItems         bool                   `json:"uniqueItems,omitempty"`
+	Enum                []interface{}          `json:"enum,omitempty"`
+	MultipleOf          float64                `json:"multipleOf,omitempty"`
+	Description         string                 `json:"description,omitempty"`
+	MapOfAnythingValues map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
 }
 
 type marshalHeader Header
@@ -1574,52 +1455,6 @@ var (
 // MarshalJSON encodes JSON.
 func (i BasicAuthenticationSecurity) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalBasicAuthenticationSecurity(i), i.MapOfAnythingValues, constBasicAuthenticationSecurity)
-}
-
-// SecurityDefinitionsAdditionalProperties structure is generated from "#/definitions/securityDefinitions->additionalProperties".
-type SecurityDefinitionsAdditionalProperties struct {
-	BasicAuthenticationSecurity *BasicAuthenticationSecurity `json:"-"`
-	APIKeySecurity              *APIKeySecurity              `json:"-"`
-	Oauth2ImplicitSecurity      *Oauth2ImplicitSecurity      `json:"-"`
-	Oauth2PasswordSecurity      *Oauth2PasswordSecurity      `json:"-"`
-	Oauth2ApplicationSecurity   *Oauth2ApplicationSecurity   `json:"-"`
-	Oauth2AccessCodeSecurity    *Oauth2AccessCodeSecurity    `json:"-"`
-}
-
-type marshalSecurityDefinitionsAdditionalProperties SecurityDefinitionsAdditionalProperties
-
-// UnmarshalJSON decodes JSON.
-func (i *SecurityDefinitionsAdditionalProperties) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.BasicAuthenticationSecurity, &i.APIKeySecurity, &i.Oauth2ImplicitSecurity, &i.Oauth2PasswordSecurity, &i.Oauth2ApplicationSecurity, &i.Oauth2AccessCodeSecurity}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.BasicAuthenticationSecurity = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.APIKeySecurity = nil
-	}
-	if mayUnmarshal[2] == nil {
-		i.Oauth2ImplicitSecurity = nil
-	}
-	if mayUnmarshal[3] == nil {
-		i.Oauth2PasswordSecurity = nil
-	}
-	if mayUnmarshal[4] == nil {
-		i.Oauth2ApplicationSecurity = nil
-	}
-	if mayUnmarshal[5] == nil {
-		i.Oauth2AccessCodeSecurity = nil
-	}
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i SecurityDefinitionsAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSecurityDefinitionsAdditionalProperties(i), i.BasicAuthenticationSecurity, i.APIKeySecurity, i.Oauth2ImplicitSecurity, i.Oauth2PasswordSecurity, i.Oauth2ApplicationSecurity, i.Oauth2AccessCodeSecurity)
 }
 
 // APIKeySecurity structure is generated from "#/definitions/apiKeySecurity".
@@ -1876,6 +1711,52 @@ func (i Oauth2AccessCodeSecurity) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalOauth2AccessCodeSecurity(i), i.MapOfAnythingValues, constOauth2AccessCodeSecurity)
 }
 
+// SecurityDefinitionsAdditionalProperties structure is generated from "#/definitions/securityDefinitions->additionalProperties".
+type SecurityDefinitionsAdditionalProperties struct {
+	BasicAuthenticationSecurity *BasicAuthenticationSecurity `json:"-"`
+	APIKeySecurity              *APIKeySecurity              `json:"-"`
+	Oauth2ImplicitSecurity      *Oauth2ImplicitSecurity      `json:"-"`
+	Oauth2PasswordSecurity      *Oauth2PasswordSecurity      `json:"-"`
+	Oauth2ApplicationSecurity   *Oauth2ApplicationSecurity   `json:"-"`
+	Oauth2AccessCodeSecurity    *Oauth2AccessCodeSecurity    `json:"-"`
+}
+
+type marshalSecurityDefinitionsAdditionalProperties SecurityDefinitionsAdditionalProperties
+
+// UnmarshalJSON decodes JSON.
+func (i *SecurityDefinitionsAdditionalProperties) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.BasicAuthenticationSecurity, &i.APIKeySecurity, &i.Oauth2ImplicitSecurity, &i.Oauth2PasswordSecurity, &i.Oauth2ApplicationSecurity, &i.Oauth2AccessCodeSecurity}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.BasicAuthenticationSecurity = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.APIKeySecurity = nil
+	}
+	if mayUnmarshal[2] == nil {
+		i.Oauth2ImplicitSecurity = nil
+	}
+	if mayUnmarshal[3] == nil {
+		i.Oauth2PasswordSecurity = nil
+	}
+	if mayUnmarshal[4] == nil {
+		i.Oauth2ApplicationSecurity = nil
+	}
+	if mayUnmarshal[5] == nil {
+		i.Oauth2AccessCodeSecurity = nil
+	}
+
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i SecurityDefinitionsAdditionalProperties) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalSecurityDefinitionsAdditionalProperties(i), i.BasicAuthenticationSecurity, i.APIKeySecurity, i.Oauth2ImplicitSecurity, i.Oauth2PasswordSecurity, i.Oauth2ApplicationSecurity, i.Oauth2AccessCodeSecurity)
+}
+
 // Tag structure is generated from "#/definitions/tag".
 type Tag struct {
 	Name                string                 `json:"name,omitempty"`
@@ -1956,6 +1837,63 @@ func (i *SchemesListItems) UnmarshalJSON(data []byte) error {
 
 	default:
 		return fmt.Errorf("unexpected SchemesListItems value: %v", v)
+	}
+
+	*i = v
+	return nil
+}
+
+// SimpleTypes is an enum type.
+type SimpleTypes string
+
+// SimpleTypes values enumeration.
+const (
+	SimpleTypesArray = SimpleTypes("array")
+	SimpleTypesBoolean = SimpleTypes("boolean")
+	SimpleTypesInteger = SimpleTypes("integer")
+	SimpleTypesNull = SimpleTypes("null")
+	SimpleTypesNumber = SimpleTypes("number")
+	SimpleTypesObject = SimpleTypes("object")
+	SimpleTypesString = SimpleTypes("string")
+)
+
+// MarshalJSON encodes JSON.
+func (i SimpleTypes) MarshalJSON() ([]byte, error) {
+	switch i {
+	case SimpleTypesArray:
+	case SimpleTypesBoolean:
+	case SimpleTypesInteger:
+	case SimpleTypesNull:
+	case SimpleTypesNumber:
+	case SimpleTypesObject:
+	case SimpleTypesString:
+
+	default:
+		return nil, fmt.Errorf("unexpected SimpleTypes value: %v", i)
+	}
+
+	return json.Marshal(string(i))
+}
+
+// UnmarshalJSON decodes JSON.
+func (i *SimpleTypes) UnmarshalJSON(data []byte) error {
+	var ii string
+	err := json.Unmarshal(data, &ii)
+	if err != nil {
+		return err
+	}
+	v := SimpleTypes(ii)
+	switch v {
+	case SimpleTypesArray:
+	case SimpleTypesBoolean:
+	case SimpleTypesInteger:
+	case SimpleTypesNull:
+	case SimpleTypesNumber:
+	case SimpleTypesObject:
+	case SimpleTypesString:
+
+	default:
+		return fmt.Errorf("unexpected SimpleTypes value: %v", v)
 	}
 
 	*i = v

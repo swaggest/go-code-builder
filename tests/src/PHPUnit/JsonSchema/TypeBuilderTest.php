@@ -35,34 +35,8 @@ JSON
         $goBuilder = new GoBuilder();
         $type = $goBuilder->getType($schema);
 
-        $this->assertSame('*Untitled1', $type->getTypeString());
+        $this->assertSame('Header', $type->getTypeString());
         $expectedGen = <<<'GO'
-// Untitled1 structure is generated from "#".
-type Untitled1 struct {
-	Header *Header `json:"-"`
-}
-
-type marshalUntitled1 Untitled1
-
-// UnmarshalJSON decodes JSON.
-func (i *Untitled1) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Header}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.Header = nil
-	}
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i Untitled1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalUntitled1(i), i.Header)
-}
-
 // Header structure is generated from "#/definitions/header".
 type Header struct {
 	Maximum float64 `json:"maximum,omitempty"`

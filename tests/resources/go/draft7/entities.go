@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 // Schema structure is generated from "#".
@@ -27,16 +28,16 @@ type Schema struct {
 	Minimum              float64                                     `json:"minimum,omitempty"`
 	ExclusiveMinimum     float64                                     `json:"exclusiveMinimum,omitempty"`
 	MaxLength            int64                                       `json:"maxLength,omitempty"`
-	MinLength            *NonNegativeIntegerDefault0                 `json:"minLength,omitempty"`
+	MinLength            int64                                       `json:"minLength,omitempty"`
 	Pattern              string                                      `json:"pattern,omitempty"`
 	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
 	Items                *Items                                      `json:"items,omitempty"`
 	MaxItems             int64                                       `json:"maxItems,omitempty"`
-	MinItems             *NonNegativeIntegerDefault0                 `json:"minItems,omitempty"`
+	MinItems             int64                                       `json:"minItems,omitempty"`
 	UniqueItems          bool                                        `json:"uniqueItems,omitempty"`
 	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema
 	MaxProperties        int64                                       `json:"maxProperties,omitempty"`
-	MinProperties        *NonNegativeIntegerDefault0                 `json:"minProperties,omitempty"`
+	MinProperties        int64                                       `json:"minProperties,omitempty"`
 	Required             []string                                    `json:"required,omitempty"`
 	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema
 	Definitions          map[string]Schema                           `json:"definitions,omitempty"`
@@ -91,29 +92,6 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 // MarshalJSON encodes JSON.
 func (i Schema) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalSchema(i), i.Schema, i.Type0, i.Type1)
-}
-
-// NonNegativeIntegerDefault0 structure is generated from "#/definitions/nonNegativeIntegerDefault0".
-type NonNegativeIntegerDefault0 struct {
-	Int64 *int64 `json:"-"`
-}
-
-type marshalNonNegativeIntegerDefault0 NonNegativeIntegerDefault0
-
-// UnmarshalJSON decodes JSON.
-func (i *NonNegativeIntegerDefault0) UnmarshalJSON(data []byte) error {
-
-	err := unionMap{
-		mustUnmarshal: []interface{}{&i.Int64},
-		jsonData: data,
-	}.unmarshal()
-
-	return err
-}
-
-// MarshalJSON encodes JSON.
-func (i NonNegativeIntegerDefault0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalNonNegativeIntegerDefault0(i), i.Int64)
 }
 
 // Items structure is generated from "#->items".
@@ -178,19 +156,23 @@ func (i DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
 
 // Type structure is generated from "#->type".
 type Type struct {
-	AnyOf1 []interface{} `json:"-"`
+	SimpleTypes *SimpleTypes  `json:"-"`
+	AnyOf1      []SimpleTypes `json:"-"`
 }
 
 type marshalType Type
 
 // UnmarshalJSON decodes JSON.
 func (i *Type) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.AnyOf1}
+	mayUnmarshal := []interface{}{&i.SimpleTypes, &i.AnyOf1}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
 	if mayUnmarshal[0] == nil {
+		i.SimpleTypes = nil
+	}
+	if mayUnmarshal[1] == nil {
 		i.AnyOf1 = nil
 	}
 
@@ -199,7 +181,7 @@ func (i *Type) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Type) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalType(i), i.AnyOf1)
+	return marshalUnion(marshalType(i), i.SimpleTypes, i.AnyOf1)
 }
 
 // Type0 structure is generated from "#/type/0".
@@ -221,16 +203,16 @@ type Type0 struct {
 	Minimum              float64                                     `json:"minimum,omitempty"`
 	ExclusiveMinimum     float64                                     `json:"exclusiveMinimum,omitempty"`
 	MaxLength            int64                                       `json:"maxLength,omitempty"`
-	MinLength            *NonNegativeIntegerDefault0                 `json:"minLength,omitempty"`
+	MinLength            int64                                       `json:"minLength,omitempty"`
 	Pattern              string                                      `json:"pattern,omitempty"`
 	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
 	Items                *Items                                      `json:"items,omitempty"`
 	MaxItems             int64                                       `json:"maxItems,omitempty"`
-	MinItems             *NonNegativeIntegerDefault0                 `json:"minItems,omitempty"`
+	MinItems             int64                                       `json:"minItems,omitempty"`
 	UniqueItems          bool                                        `json:"uniqueItems,omitempty"`
 	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema
 	MaxProperties        int64                                       `json:"maxProperties,omitempty"`
-	MinProperties        *NonNegativeIntegerDefault0                 `json:"minProperties,omitempty"`
+	MinProperties        int64                                       `json:"minProperties,omitempty"`
 	Required             []string                                    `json:"required,omitempty"`
 	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema
 	Definitions          map[string]Schema                           `json:"definitions,omitempty"`
@@ -272,16 +254,16 @@ type Type1 struct {
 	Minimum              float64                                     `json:"minimum,omitempty"`
 	ExclusiveMinimum     float64                                     `json:"exclusiveMinimum,omitempty"`
 	MaxLength            int64                                       `json:"maxLength,omitempty"`
-	MinLength            *NonNegativeIntegerDefault0                 `json:"minLength,omitempty"`
+	MinLength            int64                                       `json:"minLength,omitempty"`
 	Pattern              string                                      `json:"pattern,omitempty"`
 	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
 	Items                *Items                                      `json:"items,omitempty"`
 	MaxItems             int64                                       `json:"maxItems,omitempty"`
-	MinItems             *NonNegativeIntegerDefault0                 `json:"minItems,omitempty"`
+	MinItems             int64                                       `json:"minItems,omitempty"`
 	UniqueItems          bool                                        `json:"uniqueItems,omitempty"`
 	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema
 	MaxProperties        int64                                       `json:"maxProperties,omitempty"`
-	MinProperties        *NonNegativeIntegerDefault0                 `json:"minProperties,omitempty"`
+	MinProperties        int64                                       `json:"minProperties,omitempty"`
 	Required             []string                                    `json:"required,omitempty"`
 	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema
 	Definitions          map[string]Schema                           `json:"definitions,omitempty"`
@@ -302,6 +284,63 @@ type Type1 struct {
 	AnyOf                []Schema                                    `json:"anyOf,omitempty"`
 	OneOf                []Schema                                    `json:"oneOf,omitempty"`
 	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema
+}
+
+// SimpleTypes is an enum type.
+type SimpleTypes string
+
+// SimpleTypes values enumeration.
+const (
+	SimpleTypesArray = SimpleTypes("array")
+	SimpleTypesBoolean = SimpleTypes("boolean")
+	SimpleTypesInteger = SimpleTypes("integer")
+	SimpleTypesNull = SimpleTypes("null")
+	SimpleTypesNumber = SimpleTypes("number")
+	SimpleTypesObject = SimpleTypes("object")
+	SimpleTypesString = SimpleTypes("string")
+)
+
+// MarshalJSON encodes JSON.
+func (i SimpleTypes) MarshalJSON() ([]byte, error) {
+	switch i {
+	case SimpleTypesArray:
+	case SimpleTypesBoolean:
+	case SimpleTypesInteger:
+	case SimpleTypesNull:
+	case SimpleTypesNumber:
+	case SimpleTypesObject:
+	case SimpleTypesString:
+
+	default:
+		return nil, fmt.Errorf("unexpected SimpleTypes value: %v", i)
+	}
+
+	return json.Marshal(string(i))
+}
+
+// UnmarshalJSON decodes JSON.
+func (i *SimpleTypes) UnmarshalJSON(data []byte) error {
+	var ii string
+	err := json.Unmarshal(data, &ii)
+	if err != nil {
+		return err
+	}
+	v := SimpleTypes(ii)
+	switch v {
+	case SimpleTypesArray:
+	case SimpleTypesBoolean:
+	case SimpleTypesInteger:
+	case SimpleTypesNull:
+	case SimpleTypesNumber:
+	case SimpleTypesObject:
+	case SimpleTypesString:
+
+	default:
+		return fmt.Errorf("unexpected SimpleTypes value: %v", v)
+	}
+
+	*i = v
+	return nil
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {

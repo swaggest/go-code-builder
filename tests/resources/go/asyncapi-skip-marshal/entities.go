@@ -460,32 +460,6 @@ func (i *ExternalDocs) UnmarshalJSON(data []byte) error {
 }
 
 
-// Operation structure is generated from "#/definitions/operation".
-type Operation struct {
-	Message *Message         `json:"-"`
-	OneOf1  *OperationOneOf1 `json:"-"`
-}
-
-type marshalOperation Operation
-
-// UnmarshalJSON decodes JSON.
-func (i *Operation) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Message, &i.OneOf1}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.Message = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.OneOf1 = nil
-	}
-
-	return err
-}
-
-
 // OperationOneOf1 structure is generated from "#/definitions/operation/oneOf/1".
 type OperationOneOf1 struct {
 	OneOf               []Message              `json:"oneOf,omitempty"`
@@ -512,6 +486,32 @@ func (i *OperationOneOf1) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*i = OperationOneOf1(ii)
+	return err
+}
+
+
+// Operation structure is generated from "#/definitions/operation".
+type Operation struct {
+	Message *Message         `json:"-"`
+	OneOf1  *OperationOneOf1 `json:"-"`
+}
+
+type marshalOperation Operation
+
+// UnmarshalJSON decodes JSON.
+func (i *Operation) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.Message, &i.OneOf1}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.Message = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.OneOf1 = nil
+	}
+
 	return err
 }
 
@@ -580,6 +580,32 @@ func (i *StreamFramingOneOf0) UnmarshalJSON(data []byte) error {
 }
 
 
+// StreamFramingOneOf1 structure is generated from "#/definitions/stream->framing/oneOf/1".
+type StreamFramingOneOf1 struct {
+
+}
+
+type marshalStreamFramingOneOf1 StreamFramingOneOf1
+
+// UnmarshalJSON decodes JSON.
+func (i *StreamFramingOneOf1) UnmarshalJSON(data []byte) error {
+	constValues := make(map[string]json.RawMessage)
+	mayUnmarshal := []interface{}{&constValues}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if v, ok := constValues["type"]; !ok || string(v) != `"sse"` {
+		return fmt.Errorf(`bad or missing const value for "type" ("sse" expected, %v received)`, v)
+	}
+	if v, ok := constValues["delimiter"]; !ok || string(v) != `"\\n\\n"` {
+		return fmt.Errorf(`bad or missing const value for "delimiter" ("\\n\\n" expected, %v received)`, v)
+	}
+
+	return err
+}
+
+
 // StreamFraming structure is generated from "#/definitions/stream->framing".
 //
 // Stream Framing Object.
@@ -606,32 +632,6 @@ func (i *StreamFraming) UnmarshalJSON(data []byte) error {
 	}
 	if mayUnmarshal[1] == nil {
 		i.OneOf1 = nil
-	}
-
-	return err
-}
-
-
-// StreamFramingOneOf1 structure is generated from "#/definitions/stream->framing/oneOf/1".
-type StreamFramingOneOf1 struct {
-
-}
-
-type marshalStreamFramingOneOf1 StreamFramingOneOf1
-
-// UnmarshalJSON decodes JSON.
-func (i *StreamFramingOneOf1) UnmarshalJSON(data []byte) error {
-	constValues := make(map[string]json.RawMessage)
-	mayUnmarshal := []interface{}{&constValues}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if v, ok := constValues["type"]; !ok || string(v) != `"sse"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("sse" expected, %v received)`, v)
-	}
-	if v, ok := constValues["delimiter"]; !ok || string(v) != `"\\n\\n"` {
-		return fmt.Errorf(`bad or missing const value for "delimiter" ("\\n\\n" expected, %v received)`, v)
 	}
 
 	return err
@@ -687,32 +687,6 @@ type Reference struct {
 	Ref string `json:"$ref,omitempty"`
 }
 
-// ComponentsSecuritySchemesAZAZ09 structure is generated from "#/definitions/components->securitySchemes->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsSecuritySchemesAZAZ09 struct {
-	Reference      *Reference      `json:"-"`
-	SecurityScheme *SecurityScheme `json:"-"`
-}
-
-type marshalComponentsSecuritySchemesAZAZ09 ComponentsSecuritySchemesAZAZ09
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsSecuritySchemesAZAZ09) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Reference, &i.SecurityScheme}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.Reference = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.SecurityScheme = nil
-	}
-
-	return err
-}
-
-
 // UserPassword structure is generated from "#/definitions/userPassword".
 type UserPassword struct {
 	Description         string                 `json:"description,omitempty"`
@@ -744,48 +718,6 @@ func (i *UserPassword) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*i = UserPassword(ii)
-	return err
-}
-
-
-// SecurityScheme structure is generated from "#/definitions/SecurityScheme".
-type SecurityScheme struct {
-	UserPassword         *UserPassword         `json:"-"`
-	APIKey               *APIKey               `json:"-"`
-	X509                 *X509                 `json:"-"`
-	SymmetricEncryption  *SymmetricEncryption  `json:"-"`
-	AsymmetricEncryption *AsymmetricEncryption `json:"-"`
-	HTTPSecurityScheme   *HTTPSecurityScheme   `json:"-"`
-}
-
-type marshalSecurityScheme SecurityScheme
-
-// UnmarshalJSON decodes JSON.
-func (i *SecurityScheme) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.UserPassword, &i.APIKey, &i.X509, &i.SymmetricEncryption, &i.AsymmetricEncryption, &i.HTTPSecurityScheme}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.UserPassword = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.APIKey = nil
-	}
-	if mayUnmarshal[2] == nil {
-		i.X509 = nil
-	}
-	if mayUnmarshal[3] == nil {
-		i.SymmetricEncryption = nil
-	}
-	if mayUnmarshal[4] == nil {
-		i.AsymmetricEncryption = nil
-	}
-	if mayUnmarshal[5] == nil {
-		i.HTTPSecurityScheme = nil
-	}
-
 	return err
 }
 
@@ -969,36 +901,6 @@ func (i *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 }
 
 
-// HTTPSecurityScheme structure is generated from "#/definitions/HTTPSecurityScheme".
-type HTTPSecurityScheme struct {
-	NonBearerHTTPSecurityScheme *NonBearerHTTPSecurityScheme `json:"-"`
-	BearerHTTPSecurityScheme    *BearerHTTPSecurityScheme    `json:"-"`
-	APIKeyHTTPSecurityScheme    *APIKeyHTTPSecurityScheme    `json:"-"`
-}
-
-type marshalHTTPSecurityScheme HTTPSecurityScheme
-
-// UnmarshalJSON decodes JSON.
-func (i *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.NonBearerHTTPSecurityScheme, &i.BearerHTTPSecurityScheme, &i.APIKeyHTTPSecurityScheme}
-	err := unionMap{
-		mayUnmarshal: mayUnmarshal,
-		jsonData: data,
-	}.unmarshal()
-	if mayUnmarshal[0] == nil {
-		i.NonBearerHTTPSecurityScheme = nil
-	}
-	if mayUnmarshal[1] == nil {
-		i.BearerHTTPSecurityScheme = nil
-	}
-	if mayUnmarshal[2] == nil {
-		i.APIKeyHTTPSecurityScheme = nil
-	}
-
-	return err
-}
-
-
 // BearerHTTPSecurityScheme structure is generated from "#/definitions/BearerHTTPSecurityScheme".
 type BearerHTTPSecurityScheme struct {
 	BearerFormat        string                 `json:"bearerFormat,omitempty"`
@@ -1074,6 +976,104 @@ func (i *APIKeyHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*i = APIKeyHTTPSecurityScheme(ii)
+	return err
+}
+
+
+// HTTPSecurityScheme structure is generated from "#/definitions/HTTPSecurityScheme".
+type HTTPSecurityScheme struct {
+	NonBearerHTTPSecurityScheme *NonBearerHTTPSecurityScheme `json:"-"`
+	BearerHTTPSecurityScheme    *BearerHTTPSecurityScheme    `json:"-"`
+	APIKeyHTTPSecurityScheme    *APIKeyHTTPSecurityScheme    `json:"-"`
+}
+
+type marshalHTTPSecurityScheme HTTPSecurityScheme
+
+// UnmarshalJSON decodes JSON.
+func (i *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.NonBearerHTTPSecurityScheme, &i.BearerHTTPSecurityScheme, &i.APIKeyHTTPSecurityScheme}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.NonBearerHTTPSecurityScheme = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.BearerHTTPSecurityScheme = nil
+	}
+	if mayUnmarshal[2] == nil {
+		i.APIKeyHTTPSecurityScheme = nil
+	}
+
+	return err
+}
+
+
+// SecurityScheme structure is generated from "#/definitions/SecurityScheme".
+type SecurityScheme struct {
+	UserPassword         *UserPassword         `json:"-"`
+	APIKey               *APIKey               `json:"-"`
+	X509                 *X509                 `json:"-"`
+	SymmetricEncryption  *SymmetricEncryption  `json:"-"`
+	AsymmetricEncryption *AsymmetricEncryption `json:"-"`
+	HTTPSecurityScheme   *HTTPSecurityScheme   `json:"-"`
+}
+
+type marshalSecurityScheme SecurityScheme
+
+// UnmarshalJSON decodes JSON.
+func (i *SecurityScheme) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.UserPassword, &i.APIKey, &i.X509, &i.SymmetricEncryption, &i.AsymmetricEncryption, &i.HTTPSecurityScheme}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.UserPassword = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.APIKey = nil
+	}
+	if mayUnmarshal[2] == nil {
+		i.X509 = nil
+	}
+	if mayUnmarshal[3] == nil {
+		i.SymmetricEncryption = nil
+	}
+	if mayUnmarshal[4] == nil {
+		i.AsymmetricEncryption = nil
+	}
+	if mayUnmarshal[5] == nil {
+		i.HTTPSecurityScheme = nil
+	}
+
+	return err
+}
+
+
+// ComponentsSecuritySchemesAZAZ09 structure is generated from "#/definitions/components->securitySchemes->^[a-zA-Z0-9\.\-_]+$".
+type ComponentsSecuritySchemesAZAZ09 struct {
+	Reference      *Reference      `json:"-"`
+	SecurityScheme *SecurityScheme `json:"-"`
+}
+
+type marshalComponentsSecuritySchemesAZAZ09 ComponentsSecuritySchemesAZAZ09
+
+// UnmarshalJSON decodes JSON.
+func (i *ComponentsSecuritySchemesAZAZ09) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.Reference, &i.SecurityScheme}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.Reference = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.SecurityScheme = nil
+	}
+
 	return err
 }
 
