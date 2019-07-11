@@ -30,6 +30,9 @@ class TypeBuilder
     /** @var AnyType[] */
     private $result;
 
+    /** @var null|string|[]string JSON Schema type */
+    private $type;
+
     /**
      * TypeBuilder constructor.
      * @param Schema $schema
@@ -63,6 +66,19 @@ class TypeBuilder
 
     private function processOr($orSchemas, $kind)
     {
+        $types = [];
+        foreach ($orSchemas as $i => $item) {
+            $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($item, $this->path . '/' . $kind . '/' . $i));
+            if ($itemType->getTypeString() === 'interface{}') {
+                continue;
+            }
+            $types [] = $itemType;
+        }
+        if (count($types) == 1) {
+            $this->result[] = $types[0];
+            return;
+        }
+
         foreach ($orSchemas as $i => $item) {
             $name = $this->goBuilder->codeBuilder->exportableName($kind . '/' . $i);
             $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($item, $this->path . '/' . $kind . '/' . $i));
@@ -293,6 +309,58 @@ GO
         return null;
     }
 
+
+    private function typeFromValue($val)
+    {
+        if (is_string($val)) {
+            return "string";
+        } elseif (is_int($val)) {
+            return "integer";
+        } elseif (is_bool($val)) {
+            return "boolean";
+        } elseif (is_numeric($val)) {
+            return "number";
+        }
+        return null;
+    }
+
+    private function inferTypeFromEnumConst()
+    {
+        // Return early if the type is already defined.
+        if ($this->type !== null) {
+            return;
+        }
+
+        // Null type means no override.
+        $type = null;
+
+        // Check const.
+        if (property_exists($this->schema, Schema::CONST_PROPERTY)) {
+            $type = $this->typeFromValue($this->schema->const);
+            if ($type !== null) {
+                $this->type = $type;
+                return;
+            }
+        }
+
+        // Iterate enum to find if its values share same scalar type.
+        if ($this->schema->enum !== null) {
+            foreach ($this->schema->enum as $enumItem) {
+                $itemType = $this->typeFromValue($enumItem);
+                if ($type !== null && $type !== $itemType) {
+                    // Break on types mismatch between items.
+                    return;
+                }
+                $type = $itemType;
+            }
+        }
+
+        // Apply the type found in enum iteration.
+        if ($type !== null) {
+            $this->type = $type;
+        }
+    }
+
     private function processEnum(AnyType $baseType)
     {
         $oneOfEnum = true;
@@ -399,21 +467,24 @@ GO
             $this->path = $path;
         }
 
+        $this->type = $this->schema->type;
+        $this->inferTypeFromEnumConst();
+
         $this->processNamedClass();
         $this->processLogicType();
         $this->processArrayType();
         $this->processObjectType();
 
-        if (is_array($this->schema->type)) {
+        if (is_array($this->type)) {
             $or = [];
-            foreach ($this->schema->type as $type) {
+            foreach ($this->type as $type) {
                 $schema = clone $this->schema;
                 $schema->type = $type;
                 $or [] = $schema;
             }
             $this->processOr($or, 'type');
-        } elseif ($this->schema->type) {
-            $type = $this->typeSwitch($this->schema->type, $this->schema->minimum, $this->schema->maximum, $this->schema->format);
+        } elseif ($this->type) {
+            $type = $this->typeSwitch($this->type, $this->schema->minimum, $this->schema->maximum, $this->schema->format);
             if (($type !== null)) { // todo properly process const = null
                 $type = $this->processEnum($type);
             }
