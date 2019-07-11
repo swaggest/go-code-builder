@@ -75,7 +75,7 @@ package entities
 
 
 
-GO;;
+GO;
 
         $this->assertSame($expectedGen, $goFile->render());
 
