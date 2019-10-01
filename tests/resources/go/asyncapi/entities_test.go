@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/swaggest/assertjson"
 )
 
 func TestInfo_MarshalJSON(t *testing.T) {
@@ -17,7 +19,7 @@ func TestInfo_MarshalJSON(t *testing.T) {
 	}
 
 	res, err := json.Marshal(i)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, `{"version":"v1","x-one":1,"x-two":"two"}`, string(res))
 }
 
@@ -27,7 +29,7 @@ func TestInfo_MarshalJSON_Nil(t *testing.T) {
 	}
 
 	res, err := json.Marshal(i)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, `{"version":"v1"}`, string(res))
 }
 
@@ -199,9 +201,9 @@ func TestAsyncAPI_MarshalJSON(t *testing.T) {
 }`
 
 	var a AsyncAPI
-	assert.NoError(t, json.Unmarshal([]byte(data), &a))
+	require.NoError(t, json.Unmarshal([]byte(data), &a))
 
-	marshaled, err := json.MarshalIndent(a, "", " ")
-	assert.NoError(t, err)
-	assert.Equal(t, data, string(marshaled))
+	marshaled, err := json.Marshal(a)
+	require.NoError(t, err)
+	assertjson.Equal(t, []byte(data), marshaled)
 }

@@ -1060,7 +1060,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Header) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHeader(i), i.MapOfAnythingValues, constHeader)
+	return marshalUnion(constHeader, marshalHeader(i), i.MapOfAnythingValues)
 }
 
 // HeaderSchema structure is generated from "#/definitions/Header->schema".
@@ -1199,7 +1199,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i ParameterLocationOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameterLocationOneOf0(i), constParameterLocationOneOf0)
+	return marshalUnion(constParameterLocationOneOf0, marshalParameterLocationOneOf0(i))
 }
 
 // ParameterLocationOneOf1 structure is generated from "#/definitions/ParameterLocation/oneOf/1".
@@ -1238,7 +1238,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i ParameterLocationOneOf1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameterLocationOneOf1(i), constParameterLocationOneOf1)
+	return marshalUnion(constParameterLocationOneOf1, marshalParameterLocationOneOf1(i))
 }
 
 // ParameterLocationOneOf2 structure is generated from "#/definitions/ParameterLocation/oneOf/2".
@@ -1275,7 +1275,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i ParameterLocationOneOf2) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameterLocationOneOf2(i), constParameterLocationOneOf2)
+	return marshalUnion(constParameterLocationOneOf2, marshalParameterLocationOneOf2(i))
 }
 
 // ParameterLocationOneOf3 structure is generated from "#/definitions/ParameterLocation/oneOf/3".
@@ -1312,7 +1312,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i ParameterLocationOneOf3) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameterLocationOneOf3(i), constParameterLocationOneOf3)
+	return marshalUnion(constParameterLocationOneOf3, marshalParameterLocationOneOf3(i))
 }
 
 // ParameterLocation structure is generated from "#/definitions/ParameterLocation".
@@ -2288,7 +2288,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i APIKeySecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAPIKeySecurityScheme(i), i.MapOfAnythingValues, constAPIKeySecurityScheme)
+	return marshalUnion(constAPIKeySecurityScheme, marshalAPIKeySecurityScheme(i), i.MapOfAnythingValues)
 }
 
 // HTTPSecurityScheme structure is generated from "#/definitions/HTTPSecurityScheme".
@@ -2344,7 +2344,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHTTPSecurityScheme(i), i.MapOfAnythingValues, i.OneOf0, i.OneOf1, constHTTPSecurityScheme)
+	return marshalUnion(constHTTPSecurityScheme, marshalHTTPSecurityScheme(i), i.MapOfAnythingValues, i.OneOf0, i.OneOf1)
 }
 
 // HTTPSecuritySchemeOneOf0 structure is generated from "#/definitions/HTTPSecurityScheme/oneOf/0".
@@ -2378,7 +2378,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i HTTPSecuritySchemeOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHTTPSecuritySchemeOneOf0(i), constHTTPSecuritySchemeOneOf0)
+	return marshalUnion(constHTTPSecuritySchemeOneOf0, marshalHTTPSecuritySchemeOneOf0(i))
 }
 
 // HTTPSecuritySchemeOneOf1 structure is generated from "#/definitions/HTTPSecurityScheme/oneOf/1".
@@ -2431,7 +2431,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i OAuth2SecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOAuth2SecurityScheme(i), i.MapOfAnythingValues, constOAuth2SecurityScheme)
+	return marshalUnion(constOAuth2SecurityScheme, marshalOAuth2SecurityScheme(i), i.MapOfAnythingValues)
 }
 
 // OAuthFlows structure is generated from "#/definitions/OAuthFlows".
@@ -2671,7 +2671,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i OpenIDConnectSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOpenIDConnectSecurityScheme(i), i.MapOfAnythingValues, constOpenIDConnectSecurityScheme)
+	return marshalUnion(constOpenIDConnectSecurityScheme, marshalOpenIDConnectSecurityScheme(i), i.MapOfAnythingValues)
 }
 
 // SecurityScheme structure is generated from "#/definitions/SecurityScheme".

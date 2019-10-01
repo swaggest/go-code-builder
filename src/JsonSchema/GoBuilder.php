@@ -11,6 +11,7 @@ use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\GoCodeBuilder\Templates\Type\Type;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
+use Swaggest\JsonSchema\Wrapper;
 
 class GoBuilder
 {
@@ -22,7 +23,7 @@ class GoBuilder
     /** @var GeneratedStruct[] */
     private $generatedStructs;
 
-    /** @var \SplObjectStorage */
+    /** @var GeneratedStruct[] contains generated structs by spl_object_hash of schema object */
     private $generatedStructsBySchema;
 
     private $untitledIndex = 0;
@@ -68,10 +69,24 @@ class GoBuilder
      * @param string $path
      * @return AnyType
      * @throws Exception
+     * @throws \Swaggest\JsonSchema\Exception
+     * @throws \Swaggest\JsonSchema\InvalidValue
      */
     public function getType($schema, $path = '#')
     {
-        return (new TypeBuilder(self::unboolSchema($schema), $path, $this))->build();
+        $s = self::unboolSchema($schema);
+        if ($s instanceof Wrapper) {
+            $path = $s->getObjectItemClass();
+            $typeBuilder = new TypeBuilder($s->exportSchema(), $path, $this);
+            $result = $typeBuilder->build();
+            return $result;
+        }
+        if ($s instanceof \stdClass) {
+            $s = Schema::import($s);
+        }
+        $typeBuilder = new TypeBuilder($s, $path, $this);
+        $result = $typeBuilder->build();
+        return $result;
     }
 
     /**
@@ -82,7 +97,8 @@ class GoBuilder
      */
     public function getClass($schema, $path)
     {
-        return $this->getGeneratedStruct($schema, $path)->structDef;
+        $generatedStruct = $this->getGeneratedStruct($schema, $path);
+        return $generatedStruct->structDef;
     }
 
     /**
@@ -110,6 +126,8 @@ class GoBuilder
      * @param string $path
      * @return GeneratedStruct
      * @throws Exception
+     * @throws \Swaggest\JsonSchema\Exception
+     * @throws \Swaggest\JsonSchema\InvalidValue
      */
     private function makeStruct(Schema $schema, $path)
     {
@@ -150,7 +168,7 @@ class GoBuilder
                 $fieldName = $this->codeBuilder->exportableName($name);
 
                 if ($this->options->trimParentFromPropertyNames) {
-                    if (strpos($fieldName, $structDef->getName()) === 0 && $fieldName !== $structDef->getName() ) {
+                    if (strpos($fieldName, $structDef->getName()) === 0 && $fieldName !== $structDef->getName()) {
                         $fieldName = substr($fieldName, strlen($structDef->getName()));
                     }
                 }
@@ -163,6 +181,14 @@ class GoBuilder
                 );
                 $comment = '';
                 $property = self::unboolSchema($property);
+
+                if ($property instanceof Wrapper) {
+                    $property = $property->exportSchema();
+                }
+
+                if (!$property instanceof Schema) {
+                    $property = new Schema();
+                }
 
                 if ($property->title) {
                     $comment = $property->title . "\n";

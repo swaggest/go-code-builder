@@ -463,7 +463,7 @@ GO
 
         $this->result = array();
 
-        if (null !== $path = $this->schema->getFromRef()) {
+        if (!empty($path = $this->schema->getFromRef())) {
             $this->path = $path;
         }
 
