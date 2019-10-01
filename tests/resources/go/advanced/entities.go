@@ -106,7 +106,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Table) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalTable(i), constTable)
+	return marshalUnion(constTable, marshalTable(i))
 }
 
 // Scalar structure is generated from "#/definitions/scalar".
@@ -179,7 +179,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i ShortStr) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalShortStr(i), constShortStr)
+	return marshalUnion(constShortStr, marshalShortStr(i))
 }
 
 // PropertyOctet structure is generated from "#/definitions/propertyOctet".
@@ -216,7 +216,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i PropertyOctet) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPropertyOctet(i), constPropertyOctet)
+	return marshalUnion(constPropertyOctet, marshalPropertyOctet(i))
 }
 
 // Timestamp structure is generated from "#/definitions/timestamp".
@@ -253,7 +253,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Timestamp) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalTimestamp(i), constTimestamp)
+	return marshalUnion(constTimestamp, marshalTimestamp(i))
 }
 
 // StringedType is an enum type.

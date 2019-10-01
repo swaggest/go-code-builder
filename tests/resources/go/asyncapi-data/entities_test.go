@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+	"github.com/swaggest/assertjson"
 )
 
 func Test_MarshalUnmarshal(t *testing.T) {
@@ -22,17 +25,14 @@ func Test_MarshalUnmarshal(t *testing.T) {
 	}
 
 	j, err := json.Marshal(entity)
-	if err != nil {
-		t.Fatal("unexpected error: " + err.Error())
-	}
-	if string(j) != `{"reads":[{"amount":100,"entity_id":"ISBN123","strategy":"fast","entity_type":"book","reason":"premium"}],"country":"US","reader_id":123,"week":"2008-W05","subscription_id":456}` {
-		t.Fatal("unexpected marshal" + string(j))
-	}
+	require.NoError(t, err)
+	assertjson.Equal(
+		t,
+		[]byte(`{"reads":[{"amount":100,"entity_id":"ISBN123","strategy":"fast","entity_type":"book","reason":"premium"}],"country":"US","reader_id":123,"week":"2008-W05","subscription_id":456}`),
+		j)
 	decodedEntity := MessagingReaderReads{}
 	err = json.Unmarshal(j, &decodedEntity)
-	if err != nil {
-		t.Fatal("unexpected error: " + err.Error())
-	}
+	require.NoError(t, err)
 	if !reflect.DeepEqual(entity, decodedEntity) {
 		t.Fatalf("not equal: %+v %+v", entity, decodedEntity)
 	}

@@ -80,7 +80,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i SwaggerSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSwaggerSchema(i), i.MapOfAnythingValues, constSwaggerSchema)
+	return marshalUnion(constSwaggerSchema, marshalSwaggerSchema(i), i.MapOfAnythingValues)
 }
 
 // Info structure is generated from "#/definitions/info".
@@ -425,7 +425,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i BodyParameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalBodyParameter(i), i.MapOfAnythingValues, constBodyParameter)
+	return marshalUnion(constBodyParameter, marshalBodyParameter(i), i.MapOfAnythingValues)
 }
 
 // Schema structure is generated from "#/definitions/schema".
@@ -733,7 +733,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i HeaderParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHeaderParameterSubSchema(i), i.MapOfAnythingValues, constHeaderParameterSubSchema)
+	return marshalUnion(constHeaderParameterSubSchema, marshalHeaderParameterSubSchema(i), i.MapOfAnythingValues)
 }
 
 // PrimitivesItems structure is generated from "#/definitions/primitivesItems".
@@ -883,7 +883,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i FormDataParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalFormDataParameterSubSchema(i), i.MapOfAnythingValues, constFormDataParameterSubSchema)
+	return marshalUnion(constFormDataParameterSubSchema, marshalFormDataParameterSubSchema(i), i.MapOfAnythingValues)
 }
 
 // QueryParameterSubSchema structure is generated from "#/definitions/queryParameterSubSchema".
@@ -967,7 +967,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i QueryParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalQueryParameterSubSchema(i), i.MapOfAnythingValues, constQueryParameterSubSchema)
+	return marshalUnion(constQueryParameterSubSchema, marshalQueryParameterSubSchema(i), i.MapOfAnythingValues)
 }
 
 // PathParameterSubSchema structure is generated from "#/definitions/pathParameterSubSchema".
@@ -1050,7 +1050,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i PathParameterSubSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPathParameterSubSchema(i), i.MapOfAnythingValues, constPathParameterSubSchema)
+	return marshalUnion(constPathParameterSubSchema, marshalPathParameterSubSchema(i), i.MapOfAnythingValues)
 }
 
 // NonBodyParameter structure is generated from "#/definitions/nonBodyParameter".
@@ -1253,7 +1253,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i FileSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalFileSchema(i), i.MapOfAnythingValues, constFileSchema)
+	return marshalUnion(constFileSchema, marshalFileSchema(i), i.MapOfAnythingValues)
 }
 
 // ResponseSchema structure is generated from "#/definitions/response->schema".
@@ -1454,7 +1454,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i BasicAuthenticationSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalBasicAuthenticationSecurity(i), i.MapOfAnythingValues, constBasicAuthenticationSecurity)
+	return marshalUnion(constBasicAuthenticationSecurity, marshalBasicAuthenticationSecurity(i), i.MapOfAnythingValues)
 }
 
 // APIKeySecurity structure is generated from "#/definitions/apiKeySecurity".
@@ -1502,7 +1502,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i APIKeySecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAPIKeySecurity(i), i.MapOfAnythingValues, constAPIKeySecurity)
+	return marshalUnion(constAPIKeySecurity, marshalAPIKeySecurity(i), i.MapOfAnythingValues)
 }
 
 // Oauth2ImplicitSecurity structure is generated from "#/definitions/oauth2ImplicitSecurity".
@@ -1553,7 +1553,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Oauth2ImplicitSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2ImplicitSecurity(i), i.MapOfAnythingValues, constOauth2ImplicitSecurity)
+	return marshalUnion(constOauth2ImplicitSecurity, marshalOauth2ImplicitSecurity(i), i.MapOfAnythingValues)
 }
 
 // Oauth2PasswordSecurity structure is generated from "#/definitions/oauth2PasswordSecurity".
@@ -1604,7 +1604,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Oauth2PasswordSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2PasswordSecurity(i), i.MapOfAnythingValues, constOauth2PasswordSecurity)
+	return marshalUnion(constOauth2PasswordSecurity, marshalOauth2PasswordSecurity(i), i.MapOfAnythingValues)
 }
 
 // Oauth2ApplicationSecurity structure is generated from "#/definitions/oauth2ApplicationSecurity".
@@ -1655,7 +1655,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Oauth2ApplicationSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2ApplicationSecurity(i), i.MapOfAnythingValues, constOauth2ApplicationSecurity)
+	return marshalUnion(constOauth2ApplicationSecurity, marshalOauth2ApplicationSecurity(i), i.MapOfAnythingValues)
 }
 
 // Oauth2AccessCodeSecurity structure is generated from "#/definitions/oauth2AccessCodeSecurity".
@@ -1708,7 +1708,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Oauth2AccessCodeSecurity) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2AccessCodeSecurity(i), i.MapOfAnythingValues, constOauth2AccessCodeSecurity)
+	return marshalUnion(constOauth2AccessCodeSecurity, marshalOauth2AccessCodeSecurity(i), i.MapOfAnythingValues)
 }
 
 // SecurityDefinitionsAdditionalProperties structure is generated from "#/definitions/securityDefinitions->additionalProperties".

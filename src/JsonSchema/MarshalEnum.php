@@ -3,9 +3,11 @@
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 
+use Swaggest\CodeBuilder\AbstractTemplate;
 use Swaggest\CodeBuilder\PlaceholderString;
 use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
+use Swaggest\GoCodeBuilder\Templates\Type\NamedType;
 use Swaggest\GoCodeBuilder\Templates\Type\Type;
 
 class MarshalEnum extends GoTemplate
@@ -16,7 +18,7 @@ class MarshalEnum extends GoTemplate
     private $type;
 
     /**
-     * @var Type
+     * @var NamedType|AbstractTemplate
      */
     private $base;
 
@@ -33,9 +35,11 @@ class MarshalEnum extends GoTemplate
     /**
      * MarshalEnum constructor.
      * @param Type $type
+     * @param NamedType $base
      * @param array $enum
+     * @param GoBuilder $builder
      */
-    public function __construct(Type $type, Type $base, array $enum, GoBuilder $builder)
+    public function __construct(Type $type, NamedType $base, array $enum, GoBuilder $builder)
     {
         $this->type = $type;
         $this->enum = $enum;
@@ -92,12 +96,15 @@ GO;
 {$this->padLines('', $this->renderConstMarshal() . $this->renderConstUnmarshal())}
 GO;
 
-        $code = new Code(new PlaceholderString($result, [
-            ':type' => $this->type,
-            ':base' => $this->base,
-        ]));
-        $code->imports()->addByName('fmt');
-        return $code;
+        if ($this->base instanceof AbstractTemplate) {
+            $code = new Code(new PlaceholderString($result, [
+                ':type' => $this->type,
+                ':base' => $this->base,
+            ]));
+            $code->imports()->addByName('fmt');
+            return $code;
+        }
+        return '';
     }
 
     private function renderMarshal()
@@ -125,7 +132,7 @@ GO;
             return '';
         }
 
-		return <<<GO
+        return <<<GO
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
 	var ii :base
@@ -154,12 +161,16 @@ GO;
 {$this->padLines('', $this->renderMarshal() . $this->renderUnmarshal())}
 GO;
 
-        $code = new Code(new PlaceholderString($result, [
-            ':type' => $this->type,
-            ':base' => $this->base,
-        ]));
-        $code->imports()->addByName('fmt');
-        return $code;
+        if ($this->base instanceof AbstractTemplate) {
+            $code = new Code(new PlaceholderString($result, [
+                ':type' => $this->type,
+                ':base' => $this->base,
+            ]));
+            $code->imports()->addByName('fmt');
+            return $code;
+        }
+
+        return '';
     }
 
     private function renderIfCheck($var, $return)

@@ -195,6 +195,12 @@ GO;
 
         $maps = '';
 
+        if ($this->constValues !== null) {
+            $maps .= ', const:type';
+        }
+
+        $maps .= ', marshal:type(i)';
+
         if ($this->patternProperties !== null) {
             foreach ($this->patternProperties as $regex => $patternPropertiesName) {
                 $maps .= ', i.' . $patternPropertiesName;
@@ -213,14 +219,12 @@ GO;
             }
         }
 
-        if ($this->constValues !== null) {
-            $maps .= ', const:type';
-        }
+        $maps = substr($maps, 2);
 
         return <<<GO
 {$this->renderConstRawMessage()}// MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshal:type(i)$maps)
+	return marshalUnion($maps)
 }
 
 GO;

@@ -5,9 +5,10 @@ namespace Swaggest\GoCodeBuilder\Templates\Struct;
 
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\NamedType;
 use Swaggest\GoCodeBuilder\Templates\Type\Type;
 
-class StructType extends GoTemplate implements AnyType
+class StructType extends GoTemplate implements NamedType
 {
     /** @var StructDef */
     private $structDef;

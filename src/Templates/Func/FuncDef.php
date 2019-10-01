@@ -9,11 +9,11 @@ class FuncDef extends GoTemplate
 {
     /** @var Arguments */
     private $arguments;
-    /** @var Result */
+    /** @var Result|null */
     private $result;
-    /** @var Code */
+    /** @var Code|null */
     private $body;
-    /** @var Argument */
+    /** @var Argument|null */
     private $self;
 
     /** @var string */
@@ -43,7 +43,7 @@ class FuncDef extends GoTemplate
     }
 
     /**
-     * @return Argument
+     * @return Argument|null
      */
     public function getSelf()
     {
@@ -130,7 +130,7 @@ GO;
     }
 
     /**
-     * @return Result
+     * @return Result|null
      */
     public function getResult()
     {

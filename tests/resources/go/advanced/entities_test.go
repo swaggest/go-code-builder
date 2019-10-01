@@ -2,8 +2,11 @@ package entities
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/swaggest/assertjson"
 )
 
 func Test_MarshalUnmarshal(t *testing.T) {
@@ -31,15 +34,15 @@ func Test_MarshalUnmarshal(t *testing.T) {
 	}
 
 	data, err := json.Marshal(entity)
-	assert.NoError(t, err)
-	assert.Equal(t,
-		`{"message-id":{"value":"foo","type":"shortstr"},"x-whatever":"hello!","additional1":{"type":"longstr","value":"baaar"},"additional2":{"type":"short","value":"123"}}`,
-		string(data))
+	require.NoError(t, err)
+	assertjson.Equal(t,
+		[]byte(`{"message-id":{"value":"foo","type":"shortstr"},"x-whatever":"hello!","additional1":{"type":"longstr","value":"baaar"},"additional2":{"type":"short","value":"123"}}`),
+		data)
 
 	unmarshaled := Properties{}
 	err = json.Unmarshal(data, &unmarshaled)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	anotherData, err := json.Marshal(unmarshaled)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, string(data), string(anotherData))
 }

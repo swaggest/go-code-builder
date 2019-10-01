@@ -4,6 +4,7 @@ namespace Swaggest\GoCodeBuilder\Templates\Type;
 
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 use Swaggest\GoCodeBuilder\TypeCast\Registry;
+use Swaggest\GoCodeBuilder\TypeCast\RegistryMux;
 
 class TypeCast extends GoTemplate
 {
@@ -26,8 +27,8 @@ class TypeCast extends GoTemplate
      * TypeCast constructor.
      * @param AnyType $toType
      * @param AnyType $fromType
-     * @param $toVarName
-     * @param $fromVarName
+     * @param string $toVarName
+     * @param string $fromVarName
      * @param Registry $registry
      */
     public function __construct(AnyType $toType, AnyType $fromType, $toVarName, $fromVarName, Registry $registry = null)
@@ -36,6 +37,9 @@ class TypeCast extends GoTemplate
         $this->toType = $toType;
         $this->fromVarName = $fromVarName;
         $this->toVarName = $toVarName;
+        if (null === $registry) {
+            $registry = new RegistryMux();
+        }
         $this->typeRegistry = $registry;
     }
 
@@ -54,7 +58,7 @@ class TypeCast extends GoTemplate
             $res = new TypeCast($this->toType, $fromType->getType(), $this->toVarName, $tmpName, $this->typeRegistry);
             $res->assignOp = ' = *';
             return <<<GO
-if $this->fromVarName != nil { // $this->toType <- $this->fromType
+if $this->fromVarName != nil { // {$this->toType->getTypeString()} <- {$this->fromType->getTypeString()}
 	$tmpName := *{$this->fromVarName}
 {$this->indentLines($res->toString())}
 }
@@ -91,7 +95,7 @@ GO;
 
         } else {
             if ($this->assignOp === ' = *') {
-                $tmpName = 'tmp' . substr(md5($this->fromType), 0, 4);
+                $tmpName = 'tmp' . substr(md5($this->fromType->getTypeString()), 0, 4);
                 $tmpCast = <<<GO
 {$tmpName} := *$this->fromVarName
 
@@ -241,8 +245,7 @@ GO;
         $fromTypeString = $fromType->getTypeString();
         $toTypeString = $toType->getTypeString();
 
-        if ($this->typeRegistry
-            && $this->typeRegistry->canProcess($toTypeString, $fromTypeString)
+        if ($this->typeRegistry->canProcess($toTypeString, $fromTypeString)
         ) {
             return $this->typeRegistry->process($toTypeString, $fromTypeString, $this->toVarName, $this->fromVarName, $this->assignOp);
         }

@@ -58,7 +58,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Book) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalBook(i), constBook)
+	return marshalUnion(constBook, marshalBook(i))
 }
 
 // PlotStrategy is an enum type.

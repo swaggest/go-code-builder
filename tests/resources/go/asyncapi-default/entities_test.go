@@ -2,8 +2,11 @@ package entities
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/swaggest/assertjson"
 )
 
 func Test_MarshalUnmarshal(t *testing.T) {
@@ -28,16 +31,16 @@ func Test_MarshalUnmarshal(t *testing.T) {
 	}
 
 	data, err := json.Marshal(entity)
-	assert.NoError(t, err)
-	assert.Equal(t,
-		`{"asyncapi":"1.2.0","components":{"securitySchemes":{"foo":{"in":"user","type":"apiKey"}}},"x-whatever":"hello!"}`,
-		string(data))
+	require.NoError(t, err)
+	assertjson.Equal(t,
+		[]byte(`{"asyncapi":"1.2.0","components":{"securitySchemes":{"foo":{"in":"user","type":"apiKey"}}},"x-whatever":"hello!"}`),
+		data)
 
 	unmarshaled := AsyncAPI{}
 	err = json.Unmarshal(data, &unmarshaled)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	anotherData, err := json.Marshal(unmarshaled)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, string(data), string(anotherData))
 }
 
@@ -76,7 +79,6 @@ func Benchmark_Unmarshal(b *testing.B) {
 		_ = json.Unmarshal(data, &unmarshaled)
 	}
 }
-
 
 func TestAsyncAPI_MarshalJSON(t *testing.T) {
 	data := `{
@@ -246,9 +248,10 @@ func TestAsyncAPI_MarshalJSON(t *testing.T) {
 }`
 
 	var a AsyncAPI
-	assert.NoError(t, json.Unmarshal([]byte(data), &a))
+	require.NoError(t, json.Unmarshal([]byte(data), &a))
 
 	marshaled, err := json.MarshalIndent(a, "", " ")
-	assert.NoError(t, err)
-	assert.Equal(t, data, string(marshaled))
+	require.NoError(t, err)
+
+	assertjson.Equal(t, []byte(data), marshaled)
 }

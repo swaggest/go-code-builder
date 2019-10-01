@@ -13,12 +13,6 @@ class GoCodeBuilder extends CodeBuilder
         $this->initialisms = new Initialisms();
     }
 
-    public $goFiles = array();
-    public $headComment = <<<GO
-// ATTENTION! This file was generated automatically, any manual modifications may be lost
-
-GO;
-
     public function setBuilderVersion($builderVersion)
     {
         $this->versionComment = <<<GO

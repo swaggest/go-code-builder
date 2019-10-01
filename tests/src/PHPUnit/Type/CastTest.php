@@ -4,6 +4,7 @@ namespace Swaggest\GoCodeBuilder\Tests\PHPUnit\Type;
 
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeUtil;
+use Swaggest\GoCodeBuilder\TypeCast\RegistryMux;
 
 class CastTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +14,8 @@ class CastTest extends \PHPUnit_Framework_TestCase
             TypeUtil::fromString('string'),
             TypeUtil::fromString('string'),
             'toVar',
-            'fromVar'))
+            'fromVar',
+            new RegistryMux()))
             ->render()
         );
     }

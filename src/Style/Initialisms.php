@@ -47,18 +47,21 @@ class Initialisms
     public function process($goName)
     {
         $words = preg_split('/(?=[A-Z])/', $goName);
-        foreach ($words as &$word) {
-            if ($word === strtolower($word)) { // skip lowercase words
-                continue;
-            }
+        if (false !== $words) {
+            foreach ($words as &$word) {
+                if ($word === strtolower($word)) { // skip lowercase words
+                    continue;
+                }
 
-            $uppercase = strtoupper($word);
-            if (isset($this->values[$uppercase])) {
-                $word = $uppercase;
+                $uppercase = strtoupper($word);
+                if (isset($this->values[$uppercase])) {
+                    $word = $uppercase;
+                }
             }
+            $goName = implode('', $words);
+            return $goName;
         }
-        $goName = implode('', $words);
-        return $goName;
+        return '';
     }
 
 }

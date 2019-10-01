@@ -10,7 +10,7 @@ class Argument extends GoTemplate
 {
     /** @var string */
     public $name;
-    /** @var Type */
+    /** @var AnyType */
     public $type;
     /** @var boolean */
     public $isVariadic;
@@ -37,9 +37,6 @@ class Argument extends GoTemplate
         }
     }
 
-    /**
-     * @return Type
-     */
     public function getType()
     {
         return $this->type;

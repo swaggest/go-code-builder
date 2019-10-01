@@ -7,6 +7,7 @@ use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 
 class StructProperty extends GoTemplate
 {
+    /** @var string|null */
     private $name;
     private $type;
     private $tags;
@@ -22,7 +23,7 @@ class StructProperty extends GoTemplate
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName()
     {

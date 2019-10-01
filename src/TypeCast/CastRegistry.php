@@ -16,7 +16,7 @@ class CastRegistry implements Registry
     /** @var FuncDef[] */
     private $usedCasts = array();
 
-    /** @var StructCast[] */
+    /** @var CastFunctions[] */
     private $casts = array();
 
     public function addStructCast(CastFunctions $cast)
@@ -42,11 +42,11 @@ class CastRegistry implements Registry
     }
 
     /**
-     * @param $toTypeString
-     * @param $fromTypeString
-     * @param $toVarName
-     * @param $fromVarName
-     * @param $assignOp
+     * @param string $toTypeString
+     * @param string $fromTypeString
+     * @param string $toVarName
+     * @param string $fromVarName
+     * @param string $assignOp
      * @return string
      * @throws TypeCastException
      */

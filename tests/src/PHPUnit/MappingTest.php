@@ -13,10 +13,6 @@ class MappingTest extends \PHPUnit_Framework_TestCase
         $mapping = new Mapping();
         $mapping->baseType = TypeUtil::fromString('base.MyStruct');
         $mapping->derivedType = TypeUtil::fromString('derived.MineStruct');
-
-
-
-
     }
 
 
