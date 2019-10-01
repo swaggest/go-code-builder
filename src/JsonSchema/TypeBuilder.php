@@ -10,6 +10,7 @@ use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructType;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\GoCodeBuilder\Templates\Type\Map;
+use Swaggest\GoCodeBuilder\Templates\Type\NamedType;
 use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\Slice;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeUtil;
@@ -21,7 +22,7 @@ use Swaggest\GoCodeBuilder\Templates\Type\Type as GoType;
 
 class TypeBuilder
 {
-    /** @var JsonSchema */
+    /** @var Schema */
     private $schema;
     /** @var string */
     private $path;
@@ -30,7 +31,7 @@ class TypeBuilder
     /** @var AnyType[] */
     private $result;
 
-    /** @var null|string|[]string JSON Schema type */
+    /** @var null|string|string[] JSON Schema type */
     private $type;
 
     /**
@@ -128,7 +129,7 @@ class TypeBuilder
     {
         $schema = $this->schema;
 
-        $pathItems = (string)Schema::names()->items;
+        $pathItems = Schema::names()->items;
         if ($schema->items instanceof Schema) {
             $items = array();
             $additionalItems = $schema->items;
@@ -138,19 +139,17 @@ class TypeBuilder
         } else { // listed items
             $items = $schema->items;
             $additionalItems = $schema->additionalItems;
-            $pathItems = (string)Schema::names()->additionalItems;
+            $pathItems = Schema::names()->additionalItems;
         }
 
-        if ($items !== null || $additionalItems !== null) {
-            $itemsLen = is_array($items) ? count($items) : 0;
-            $index = 0;
-            if ($index < $itemsLen) {
-            } else {
-                if ($additionalItems instanceof Schema) {
-                    $this->result[] = new Slice(Pointer::tryDereferenceOnce(
-                        $this->goBuilder->getType($additionalItems, $this->path . '->' . $pathItems))
-                    );
-                }
+        $itemsLen = is_array($items) ? count($items) : 0;
+        $index = 0;
+        if ($index < $itemsLen) {
+        } else {
+            if ($additionalItems instanceof Schema) {
+                $this->result[] = new Slice(Pointer::tryDereferenceOnce(
+                    $this->goBuilder->getType($additionalItems, $this->path . '->' . $pathItems))
+                );
             }
         }
     }
@@ -159,6 +158,9 @@ class TypeBuilder
     {
         if ($this->schema->patternProperties !== null) {
             foreach ($this->schema->patternProperties as $pattern => $schema) {
+                if (!$schema instanceof Schema) {
+                    continue;
+                }
                 $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($schema, $this->path . '->' . $pattern));
                 $name = $this->goBuilder->codeBuilder->exportableName('patternProperties_' . $pattern);
                 if (null !== $betterName = $this->makeName($itemType)) {
@@ -182,7 +184,7 @@ class TypeBuilder
             $goType = Pointer::tryDereferenceOnce(
                 $this->goBuilder->getType(
                     $this->schema->additionalProperties,
-                    $this->path . '->' . (string)Schema::names()->additionalProperties)
+                    $this->path . '->' . Schema::names()->additionalProperties)
             );
 
             if ($this->schema->properties !== null || $this->schema->patternProperties !== null) {
@@ -361,7 +363,7 @@ GO
         }
     }
 
-    private function processEnum(AnyType $baseType)
+    private function processEnum(NamedType $baseType)
     {
         $oneOfEnum = true;
         $enum = null;
@@ -369,11 +371,13 @@ GO
         $enumSchemas = null;
         if ($this->schema->oneOf !== null) {
             foreach ($this->schema->oneOf as $schema) {
-                if ($schema->const !== null) {
-                    $enum[] = $schema->const;
-                    $enumSchemas[] = $schema;
-                } else {
-                    $oneOfEnum = false;
+                if ($schema instanceof Schema) {
+                    if ($schema->const !== null) {
+                        $enum[] = $schema->const;
+                        $enumSchemas[] = $schema;
+                    } else {
+                        $oneOfEnum = false;
+                    }
                 }
             }
         } else {
@@ -463,7 +467,8 @@ GO
 
         $this->result = array();
 
-        if (!empty($path = $this->schema->getFromRef())) {
+        $path = $this->schema->getFromRef();
+        if (!empty($path)) {
             $this->path = $path;
         }
 
@@ -485,7 +490,7 @@ GO
             $this->processOr($or, 'type');
         } elseif ($this->type) {
             $type = $this->typeSwitch($this->type, $this->schema->minimum, $this->schema->maximum, $this->schema->format);
-            if (($type !== null)) { // todo properly process const = null
+            if ($type instanceof NamedType) { // todo properly process const = null
                 $type = $this->processEnum($type);
             }
             $this->result[] = $type;

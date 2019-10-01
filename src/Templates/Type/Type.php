@@ -6,15 +6,11 @@ use Swaggest\GoCodeBuilder\Import;
 use Swaggest\GoCodeBuilder\Templates\GoFile;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
-/**
- * Class Type
- * @package Swaggest\GoCodeBuilder\Templates
- */
-class Type extends GoTemplate implements AnyType
+class Type extends GoTemplate implements NamedType
 {
     /** @var string */
     private $type;
-    /** @var Import */
+    /** @var Import|null */
     private $import;
 
     public function __construct($type, Import $import = null)
@@ -29,7 +25,7 @@ class Type extends GoTemplate implements AnyType
     }
 
     /**
-     * @return Import
+     * @return Import|null
      */
     public function getImport()
     {
@@ -52,7 +48,8 @@ class Type extends GoTemplate implements AnyType
         return $prefix . $this->type;
     }
 
-    public function equals(Type $type) {
+    public function equals(Type $type)
+    {
         if ($type->type !== $this->type) {
             return false;
         }

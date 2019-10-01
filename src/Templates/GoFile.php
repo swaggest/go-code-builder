@@ -19,7 +19,7 @@ class GoFile extends GoTemplate
 
     private $skipImportComment = false;
 
-    /** @var GoFile */
+    /** @var GoFile|null */
     private $transaction;
 
 
@@ -79,8 +79,8 @@ class GoFile extends GoTemplate
 
     /**
      * GoFile constructor.
-     * @param $package
-     * @param $importPath
+     * @param string $package
+     * @param string|null $importPath
      */
     public function __construct($package, $importPath = null)
     {
@@ -107,7 +107,7 @@ class GoFile extends GoTemplate
     }
 
     /**
-     * @param Code|StructDef $code
+     * @param Code $code
      * @return GoFile
      */
     public function setCode($code)
@@ -212,20 +212,17 @@ GO;
         return '';
     }
 
-    /** @var GoFile */
+    /** @var GoFile|null */
     private static $currentGoFile;
 
-    /**
-     * @return GoFile
-     */
     public static function getCurrentGoFile()
     {
         return self::$currentGoFile;
     }
 
     /**
-     * @param $currentGoFile
-     * @return GoFile previous go file
+     * @param GoFile $currentGoFile
+     * @return GoFile|null previous go file
      */
     public static function setCurrentGoFile(GoFile $currentGoFile = null)
     {

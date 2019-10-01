@@ -45,11 +45,11 @@ class RegistryMux implements Registry
     }
 
     /**
-     * @param $toTypeString
-     * @param $fromTypeString
-     * @param $toVarName
-     * @param $fromVarName
-     * @param $assignOp
+     * @param string $toTypeString
+     * @param string $fromTypeString
+     * @param string $toVarName
+     * @param string $fromVarName
+     * @param string $assignOp
      * @return Code|string
      * @throws TypeCastException
      */

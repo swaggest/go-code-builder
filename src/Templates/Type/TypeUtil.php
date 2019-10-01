@@ -7,7 +7,7 @@ use Swaggest\GoCodeBuilder\Import;
 class TypeUtil
 {
     /**
-     * @param $typeString
+     * @param string $typeString
      * @return AnyType|Type
      */
     public static function fromString($typeString)

@@ -12,6 +12,7 @@ use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\TypeCast;
 use Swaggest\GoCodeBuilder\TypeCast\CastFunctions;
 use Swaggest\GoCodeBuilder\TypeCast\Registry;
+use Swaggest\GoCodeBuilder\TypeCast\RegistryMux;
 
 class StructCast implements CastFunctions
 {
@@ -33,7 +34,7 @@ class StructCast implements CastFunctions
      * StructCast constructor.
      * @param StructDef $baseStruct
      * @param StructDef $derivedStruct
-     * @param \string[] $propNamesMap
+     * @param string[] $propNamesMap
      * @param Registry $registry
      */
     public function __construct(StructDef $baseStruct, StructDef $derivedStruct, $propNamesMap = array(),
@@ -42,6 +43,9 @@ class StructCast implements CastFunctions
         $this->baseStruct = $baseStruct;
         $this->derivedStruct = $derivedStruct;
         $this->propNamesMap = $propNamesMap;
+        if (null === $registry) {
+            $registry = new RegistryMux();
+        }
         $this->typeRegistry = $registry;
 
         $baseProperties = $this->baseStruct->getProperties();

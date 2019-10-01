@@ -23,7 +23,7 @@ class GoBuilder
     /** @var GeneratedStruct[] */
     private $generatedStructs;
 
-    /** @var GeneratedStruct[] contains generated structs by spl_object_hash of schema object */
+    /** @var \SplObjectStorage contains generated structs by schema object */
     private $generatedStructsBySchema;
 
     private $untitledIndex = 0;
@@ -65,7 +65,7 @@ class GoBuilder
     }
 
     /**
-     * @param JsonSchema $schema
+     * @param Schema $schema
      * @param string $path
      * @return AnyType
      * @throws Exception

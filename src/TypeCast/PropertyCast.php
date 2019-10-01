@@ -30,11 +30,11 @@ class PropertyCast implements CastFunctions
     /**
      * PropertyCast constructor.
      * @param StructDef $baseStruct
-     * @param $propertyName
+     * @param string $propertyName
      * @param AnyType $derivedType
      * @param Registry $typeRegistry
      */
-    public function __construct(StructDef $baseStruct, $propertyName, AnyType $derivedType, Registry $typeRegistry = null)
+    public function __construct(StructDef $baseStruct, $propertyName, AnyType $derivedType, Registry $typeRegistry)
     {
         $this->baseStruct = $baseStruct;
         $this->propertyName = $propertyName;

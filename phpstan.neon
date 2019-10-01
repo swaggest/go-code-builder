@@ -1,0 +1,5 @@
+parameters:
+	ignoreErrors:
+		- '#Access to an undefined property .*Swaggest\\JsonSchema\\NameMirror.+#'
+		- '#Binary operation "." between string and bool|Swaggest\JsonSchema\SchemaContract results in an error.#'
+		- '#Binary operation "." between string and array<Swaggest\JsonSchema\SchemaContract>|bool|Swaggest\JsonSchema\SchemaContract|null results in an error.#'
