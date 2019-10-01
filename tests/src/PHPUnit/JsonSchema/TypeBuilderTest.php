@@ -4,6 +4,7 @@ namespace Swaggest\GoCodeBuilder\Tests\PHPUnit\JsonSchema;
 
 
 use Swaggest\GoCodeBuilder\JsonSchema\GoBuilder;
+use Swaggest\GoCodeBuilder\JsonSchema\TypeBuilder;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
 
@@ -50,6 +51,31 @@ GO;
             $actualGen .= $struct->structDef;
         }
         $this->assertSame($expectedGen, $actualGen);
+    }
+
+    function testXGoTypeString()
+    {
+        $builder = new GoBuilder();
+        $schema = new Schema();
+        $schema->{'x-go-type'} = 'my-package/domain/orders.Order';
+        $tb = new TypeBuilder($schema, '#', $builder);
+        $type = $tb->build();
+        $this->assertEquals('my-package/domain/orders.Order', $type->getTypeString());
+    }
+
+    function testXGoTypeGoSwaggerObject()
+    {
+        $builder = new GoBuilder();
+        $schema = new Schema();
+        $schema->{'x-go-type'} = json_decode('{
+                  "import": {
+                    "package": "my-package/domain/orders"
+                  },
+                  "type": "Order"
+                }');
+        $tb = new TypeBuilder($schema, '#', $builder);
+        $type = $tb->build();
+        $this->assertEquals('my-package/domain/orders.Order', $type->getTypeString());
     }
 
 }

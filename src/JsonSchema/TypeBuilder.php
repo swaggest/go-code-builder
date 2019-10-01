@@ -462,7 +462,28 @@ GO
     public function build()
     {
         if ($this->schema->{'x-go-type'}) {
-            return TypeUtil::fromString($this->schema->{'x-go-type'});
+            // go-swagger formatted type.
+            /*
+             * {
+                  "import": {
+                    "package": "github.com/my-org/my-service/internal/domain/orders"
+                  },
+                  "type": "Order"
+                }
+             */
+            $xGoType = $this->schema->{'x-go-type'};
+            if ($xGoType instanceof \stdClass) {
+                $typeString = '';
+                if (isset($xGoType->import) && isset($xGoType->import->package)) {
+                    $typeString .= $xGoType->import->package . '.';
+                }
+                if (isset($xGoType->type)) {
+                    $typeString .= $xGoType->type;
+                }
+                return TypeUtil::fromString($typeString);
+            } elseif (is_string($xGoType)) {
+                return TypeUtil::fromString($xGoType);
+            }
         }
 
         $this->result = array();
