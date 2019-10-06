@@ -2,8 +2,6 @@
 
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
-
-use Swaggest\GoCodeBuilder\Import;
 use Swaggest\GoCodeBuilder\Templates\Constant\TypeConstBlock;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
@@ -19,9 +17,15 @@ use Swaggest\JsonSchema\Constraint\Type;
 use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
 use Swaggest\GoCodeBuilder\Templates\Type\Type as GoType;
+use Swaggest\JsonSchema\SchemaContract;
+use Swaggest\JsonSchema\SchemaExporter;
 
 class TypeBuilder
 {
+    const X_GO_TYPE = 'x-go-type';
+
+    const NAME_ANY = 'anything';
+
     /** @var Schema */
     private $schema;
     /** @var string */
@@ -33,6 +37,8 @@ class TypeBuilder
 
     /** @var null|string|string[] JSON Schema type */
     private $type;
+
+    private $nullable = false;
 
     /**
      * TypeBuilder constructor.
@@ -56,24 +62,50 @@ class TypeBuilder
         if ($type instanceof StructType) {
             return $type->getName();
         }
-        if ($type instanceof GoType) {
+        if ($type instanceof NamedType) {
             if ($type->getName() === 'interface{}') {
-                return 'anything';
+                return self::NAME_ANY;
             }
             return $type->getName();
         }
+        if ($type->getTypeString() === '[]interface{}') {
+            return 'SliceOf_' . self::NAME_ANY;
+        }
+        if ($type instanceof Slice) {
+            $itemName = $this->makeName($type->getType());
+            if ($itemName !== null) {
+                return 'SliceOf_' . $itemName . '_Values';
+            }
+        }
+
         return null;
     }
 
+    /**
+     * @param Schema[]|SchemaContract[] $orSchemas
+     * @param string|mixed $kind
+     * @throws Exception
+     * @throws \Swaggest\JsonSchema\Exception
+     * @throws \Swaggest\JsonSchema\InvalidValue
+     */
     private function processOr($orSchemas, $kind)
     {
         $types = [];
         foreach ($orSchemas as $i => $item) {
-            $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($item, $this->path . '/' . $kind . '/' . $i));
-            if ($itemType->getTypeString() === 'interface{}') {
-                continue;
+            if (!$item instanceof Schema && $item instanceof SchemaExporter) {
+                $item = $item->exportSchema();
             }
-            $types [] = $itemType;
+            if ($item instanceof Schema) {
+                $path = $this->path . '/' . $kind . '/' . $i;
+                if ($kind === Schema::names()->type && is_string($item->type)) {
+                    $path = $this->path . '[' . $item->type . ']';
+                }
+                $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($item, $path));
+                if ($itemType->getTypeString() === 'interface{}') {
+                    continue;
+                }
+                $types [] = $itemType;
+            }
         }
         if (count($types) == 1) {
             $this->result[] = $types[0];
@@ -81,32 +113,40 @@ class TypeBuilder
         }
 
         foreach ($orSchemas as $i => $item) {
-            $name = $this->goBuilder->codeBuilder->exportableName($kind . '/' . $i);
-            $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($item, $this->path . '/' . $kind . '/' . $i));
-            if (null !== $betterName = $this->makeName($itemType)) {
-                $name = $this->goBuilder->codeBuilder->exportableName($betterName);
-            }
-
-            $resultStruct = $this->makeResultStruct();
-
-            if ($this->goBuilder->options->trimParentFromPropertyNames) {
-                if (strpos($name, $resultStruct->getName()) === 0 && $name !== $resultStruct->getName()) {
-                    $name = substr($name, strlen($resultStruct->getName()));
+            if ($item instanceof Schema) {
+                $name = $this->goBuilder->codeBuilder->exportableName($kind . '/' . $i);
+                $path = $this->path . '/' . $kind . '/' . $i;
+                if ($kind === Schema::names()->type && is_string($item->type) && is_string($kind)) {
+                    $path = $this->path . '[' . $item->type . ']';
+                    $name = $this->goBuilder->codeBuilder->exportableName($kind . '/' . $item->type);
                 }
-            }
-
-            if (!$itemType instanceof Map && !$itemType instanceof Slice) {
-                if ($itemType->getTypeString() === 'interface{}') {
-                    continue;
+                $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($item, $path));
+                if (($kind !== Schema::names()->type) &&
+                    null !== $betterName = $this->makeName($itemType)) {
+                    $name = $this->goBuilder->codeBuilder->exportableName($betterName);
                 }
-                $itemType = new Pointer($itemType);
-            }
 
-            $structProperty = new StructProperty($name, $itemType);
-            $structProperty->getTags()->setTag('json', '-');
-            $resultStruct->addProperty($structProperty);
-            $generatedStruct = $this->getGeneratedStruct();
-            $generatedStruct->marshalJson->addSomeOf($kind, $name);
+                $resultStruct = $this->makeResultStruct();
+
+                if ($this->goBuilder->options->trimParentFromPropertyNames) {
+                    if (strpos($name, $resultStruct->getName()) === 0 && $name !== $resultStruct->getName()) {
+                        $name = substr($name, strlen($resultStruct->getName()));
+                    }
+                }
+
+                if ((!$itemType instanceof Map) && (!$itemType instanceof Slice)) {
+                    if ($itemType->getTypeString() === 'interface{}') {
+                        continue;
+                    }
+                    $itemType = new Pointer($itemType);
+                }
+
+                $structProperty = new StructProperty($name, $itemType);
+                $structProperty->getTags()->setTag('json', '-');
+                $resultStruct->addProperty($structProperty);
+                $generatedStruct = $this->getGeneratedStruct();
+                $generatedStruct->marshalJson->addSomeOf($kind, $name);
+            }
         }
     }
 
@@ -117,11 +157,11 @@ class TypeBuilder
             return;
         }
         if ($this->schema->allOf !== null) {
-            $this->processOr($this->schema->allOf, 'allOf');
+            $this->processOr($this->schema->allOf, Schema::names()->allOf);
         } elseif ($this->schema->anyOf !== null) {
-            $this->processOr($this->schema->anyOf, 'anyOf');
+            $this->processOr($this->schema->anyOf, Schema::names()->anyOf);
         } elseif ($this->schema->oneOf !== null) {
-            $this->processOr($this->schema->oneOf, 'oneOf');
+            $this->processOr($this->schema->oneOf, Schema::names()->oneOf);
         }
     }
 
@@ -156,6 +196,17 @@ class TypeBuilder
 
     private function processObjectType()
     {
+        $canBeObject = false;
+        if ($this->type === null ||
+            $this->type === Schema::OBJECT
+        ) {
+            $canBeObject = true;
+        }
+
+        if (!$canBeObject) {
+            return;
+        }
+
         if ($this->schema->patternProperties !== null) {
             foreach ($this->schema->patternProperties as $pattern => $schema) {
                 if (!$schema instanceof Schema) {
@@ -164,7 +215,11 @@ class TypeBuilder
                 $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($schema, $this->path . '->' . $pattern));
                 $name = $this->goBuilder->codeBuilder->exportableName('patternProperties_' . $pattern);
                 if (null !== $betterName = $this->makeName($itemType)) {
-                    $name = $this->goBuilder->codeBuilder->exportableName('MapOf_' . $betterName . '_Values');
+                    if ($betterName === self::NAME_ANY) {
+                        $name = $this->goBuilder->codeBuilder->exportableName('MapOf_' . $betterName);
+                    } else {
+                        $name = $this->goBuilder->codeBuilder->exportableName('MapOf_' . $betterName . '_Values');
+                    }
                 }
                 $structProperty = new StructProperty(
                     $name,
@@ -180,22 +235,59 @@ class TypeBuilder
             }
         }
 
-        if ($this->schema->additionalProperties instanceof Schema) {
-            $goType = Pointer::tryDereferenceOnce(
-                $this->goBuilder->getType(
-                    $this->schema->additionalProperties,
-                    $this->path . '->' . Schema::names()->additionalProperties)
-            );
+        $additionalProperties = $this->schema->additionalProperties;
+        if (
+            $additionalProperties instanceof Schema ||
+            $additionalProperties === null ||
+            $additionalProperties === true
+        ) {
 
-            if ($this->schema->properties !== null || $this->schema->patternProperties !== null) {
-                $structProperty = new StructProperty(
-                    $this->goBuilder->codeBuilder->exportableName('additionalProperties'),
-                    new Map(new GoType("string"), $goType)
+            if ($additionalProperties instanceof Schema) {
+                $goType = Pointer::tryDereferenceOnce(
+                    $this->goBuilder->getType(
+                        $additionalProperties,
+                        $this->path . '->' . Schema::names()->additionalProperties)
                 );
-                $structProperty->getTags()->setTag('json', '-');
-                $this->makeResultStruct()->addProperty($structProperty);
-                $this->getGeneratedStruct()->marshalJson->enableAdditionalProperties();
             } else {
+                $goType = TypeUtil::fromString('interface{}');
+            }
+
+            if (
+                $this->schema->properties !== null ||
+                $this->schema->patternProperties !== null
+            ) {
+                $resultStruct = $this->makeResultStruct();
+                $existingProperties = [];
+                if ($this->schema->properties !== null) {
+                    foreach ($this->schema->properties->toArray() as $propertyName => $property) {
+                        $existingProperties[$this->goBuilder->codeBuilder->exportableName($propertyName)] = true;
+                    }
+                }
+
+                $possibleNames = ['additionalProperties', 'extraProperties', 'unmatchedProperties'];
+                foreach ($possibleNames as $name) {
+                    $propName = $this->goBuilder->codeBuilder->exportableName($name);
+                    if (!isset($existingProperties[$propName])) {
+                        break;
+                    }
+                }
+                $i = 1;
+                while (isset($existingProperties[$propName])) {
+                    $i++;
+                    $propName = $this->goBuilder->codeBuilder->exportableName('additionalProperties' . $i);
+                }
+
+                if (!$this->getGeneratedStruct()->marshalJson->isAdditionalPropertiesEnabled()) {
+                    $structProperty = new StructProperty(
+                        $propName,
+                        new Map(new GoType("string"), $goType)
+                    );
+                    $structProperty->setComment('All unmatched properties');
+                    $structProperty->getTags()->setTag('json', '-');
+                    $resultStruct->addProperty($structProperty);
+                    $this->getGeneratedStruct()->marshalJson->enableAdditionalProperties($propName);
+                }
+            } elseif ($additionalProperties instanceof Schema) {
                 $this->result[] = new Map(new GoType('string'), $goType);
             }
         }
@@ -241,15 +333,15 @@ class TypeBuilder
 
             case Type::STRING:
                 if ($format === Format::DATE_TIME) {
-                    return new Pointer(new GoType('Time', new Import('time')));
+                    return TypeUtil::fromString('*time.Time');
                 }
                 return new GoType('string');
 
             case Type::OBJECT:
-                return new GoType('map[string]interface{}');
+                return TypeUtil::fromString('map[string]interface{}');
 
             case Type::ARR:
-                return new GoType('[]interface{}');
+                return TypeUtil::fromString('[]interface{}');
 
             case Type::NULL:
                 return new GoType('interface{}');
@@ -261,6 +353,16 @@ class TypeBuilder
 
     private function processNamedClass()
     {
+        $canBeObject = false;
+        if ($this->type === null ||
+            $this->type === Schema::OBJECT) {
+            $canBeObject = true;
+        }
+
+        if (!$canBeObject) {
+            return;
+        }
+
         if ($this->schema->properties !== null) {
             $this->result[] = $this->makeResultStruct()->getType();
         }
@@ -461,18 +563,65 @@ GO
      */
     public function build()
     {
-        if ($this->schema->{'x-go-type'}) {
-            return TypeUtil::fromString($this->schema->{'x-go-type'});
+        if (!$this->goBuilder->options->ignoreXGoType && $this->schema->{self::X_GO_TYPE}) {
+            // go-swagger formatted type.
+            /*
+             * {
+                  "import": {
+                    "package": "github.com/my-org/my-service/internal/domain/orders"
+                  },
+                  "type": "Order"
+                }
+             */
+            $xGoType = $this->schema->{self::X_GO_TYPE};
+            if ($xGoType instanceof \stdClass) {
+                $typeString = '';
+                if (isset($xGoType->import) && isset($xGoType->import->package)) {
+                    $typeString .= $xGoType->import->package . '.';
+                }
+                if (isset($xGoType->type)) {
+                    $typeString .= $xGoType->type;
+                }
+                return TypeUtil::fromString($typeString);
+            } elseif (is_string($xGoType)) {
+                return TypeUtil::fromString($xGoType);
+            }
         }
 
         $this->result = array();
 
-        $path = $this->schema->getFromRef();
+        // TODO reduce structure complexity in Swaggest\JsonSchema.
+        /** @var string[]|boolean[] $path */
+        $path = $this->schema->getFromRefs();
         if (!empty($path)) {
+            if (false === $path[count($path) - 1]) {
+                $path = null;
+            } else {
+                $path = $path[0];
+            }
+        }
+        if (!empty($path) && is_string($path)) {
             $this->path = $path;
         }
 
         $this->type = $this->schema->type;
+        if (is_array($this->type)) {
+            foreach ($this->type as $k => $item) {
+                if ($item === Schema::NULL) {
+                    $this->nullable = true;
+                    unset($this->type[$k]);
+                    $this->type = array_values($this->type);
+                    break;
+                }
+            }
+
+            if (empty($this->type)) {
+                $this->type = null;
+            } elseif (count($this->type) === 1) {
+                $this->type = $this->type[0];
+            }
+        }
+
         $this->inferTypeFromEnumConst();
 
         $this->processNamedClass();
@@ -484,14 +633,28 @@ GO
             $or = [];
             foreach ($this->type as $type) {
                 $schema = clone $this->schema;
+                $schema->setFromRef(false);
                 $schema->type = $type;
                 $or [] = $schema;
             }
-            $this->processOr($or, 'type');
+            $this->processOr($or, Schema::names()->type);
         } elseif ($this->type) {
             $type = $this->typeSwitch($this->type, $this->schema->minimum, $this->schema->maximum, $this->schema->format);
             if ($type instanceof NamedType) { // todo properly process const = null
                 $type = $this->processEnum($type);
+            }
+            if ($this->nullable || $this->goBuilder->options->withZeroValues) {
+                if (
+                    (!$type instanceof Pointer) &&
+                    (!$type instanceof Map) &&
+                    (!$type instanceof Slice) &&
+                    ($type->getTypeString() !== 'interface{}')
+                ) {
+                    $type = new Pointer($type);
+                    if ($this->nullable && !$this->goBuilder->options->ignoreNullable) {
+                        $type->setNoOmitEmpty(true);
+                    }
+                }
             }
             $this->result[] = $type;
         }
@@ -518,8 +681,5 @@ GO
                 return $this->result[0];
             }
         }
-
-
-        return new GoType('interface{}');
     }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "AMQP 0-9-1 Operation Binding Object",
-  "description": "This object contains information about the operation representation in AMQP.\nSee https://github.com/asyncapi/bindings/tree/master/amqp#operation-binding-object.",
+  "title": "AMQP 0-9-1 Message Binding Object",
+  "description": "This object contains information about the message representation in AMQP.\nSee https://github.com/asyncapi/bindings/tree/master/amqp#message-binding-object.",
   "type": "object",
   "properties": {
     "contentEncoding": {

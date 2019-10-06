@@ -41,7 +41,5 @@ class AsyncApi2Test extends \PHPUnit_Framework_TestCase
         $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/asyncapi2/entities.go');
 
         $this->assertSame($expectedGen, $goFile->render());
-
     }
-
 }

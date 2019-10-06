@@ -8,8 +8,6 @@ use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
 class MarshalUnion extends GoTemplate
 {
-    public $withRegex;
-
     protected function toString()
     {
         $code = new Code();

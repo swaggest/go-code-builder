@@ -16,3 +16,7 @@ test-coverage:
 test-go:
 	@cd tests/resources/go
 	@go test ./...
+
+docs:
+	@php ./vendor/bin/phpdoc-md generate src > API.md
+
