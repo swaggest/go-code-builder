@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
 )
@@ -25,7 +24,7 @@ func Test_MarshalUnmarshal(t *testing.T) {
 				},
 			},
 		},
-		MapOfAnythingValues: map[string]interface{}{
+		MapOfAnything: map[string]interface{}{
 			"x-whatever": "hello!",
 		},
 	}
@@ -41,7 +40,7 @@ func Test_MarshalUnmarshal(t *testing.T) {
 	require.NoError(t, err)
 	anotherData, err := json.Marshal(unmarshaled)
 	require.NoError(t, err)
-	assert.Equal(t, string(data), string(anotherData))
+	assertjson.Equal(t, data, anotherData)
 }
 
 func Benchmark_Marshal(b *testing.B) {
@@ -62,7 +61,7 @@ func Benchmark_Marshal(b *testing.B) {
 					},
 				},
 			},
-			MapOfAnythingValues: map[string]interface{}{
+			MapOfAnything: map[string]interface{}{
 				"x-whatever": "hello!",
 			},
 		}

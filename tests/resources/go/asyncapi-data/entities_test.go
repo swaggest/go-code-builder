@@ -2,7 +2,7 @@ package entities
 
 import (
 	"encoding/json"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -24,16 +24,32 @@ func Test_MarshalUnmarshal(t *testing.T) {
 		SubscriptionID: 456,
 	}
 
-	j, err := json.Marshal(entity)
+	encodedJSON, err := json.Marshal(entity)
 	require.NoError(t, err)
-	assertjson.Equal(
-		t,
-		[]byte(`{"reads":[{"amount":100,"entity_id":"ISBN123","strategy":"fast","entity_type":"book","reason":"premium"}],"country":"US","reader_id":123,"week":"2008-W05","subscription_id":456}`),
-		j)
+
+	expectedJSON := []byte(`{
+  "reads": [
+    {
+      "amount": 100,
+      "entity_id": "ISBN123",
+      "strategy": "fast",
+      "entity_type": "book",
+      "reason": "premium"
+    }
+  ],
+  "country": "US",
+  "reader_id": 123,
+  "week": "2008-W05",
+  "subscription_id": 456
+}`)
+
+	assertjson.Equal(t, expectedJSON, encodedJSON)
 	decodedEntity := MessagingReaderReads{}
-	err = json.Unmarshal(j, &decodedEntity)
+	err = json.Unmarshal(encodedJSON, &decodedEntity)
 	require.NoError(t, err)
-	if !reflect.DeepEqual(entity, decodedEntity) {
-		t.Fatalf("not equal: %+v %+v", entity, decodedEntity)
-	}
+	assert.Equal(t, entity.Reads[0], decodedEntity.Reads[0])
+	//assert.Equal(t, entity, decodedEntity)
+	encodedJSON, err = json.Marshal(decodedEntity)
+	require.NoError(t, err)
+	assertjson.Equal(t, expectedJSON, encodedJSON)
 }

@@ -7,36 +7,38 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 )
 
-// Schema structure is generated from "#".
+// CoreSchemaMetaSchema structure is generated from "#[object]".
 //
 // Core schema meta-schema.
-type Schema struct {
-	ID                   string                                      `json:"$id,omitempty"`
-	Schema               *Schema                                     `json:"-"`
-	Ref                  string                                      `json:"$ref,omitempty"`
-	Comment              string                                      `json:"$comment,omitempty"`
-	Title                string                                      `json:"title,omitempty"`
-	Description          string                                      `json:"description,omitempty"`
+type CoreSchemaMetaSchema struct {
+	ID                   *string                                     `json:"$id,omitempty"`
+	Schema               *string                                     `json:"$schema,omitempty"`
+	Ref                  *string                                     `json:"$ref,omitempty"`
+	Comment              *string                                     `json:"$comment,omitempty"`
+	Title                *string                                     `json:"title,omitempty"`
+	Description          *string                                     `json:"description,omitempty"`
 	Default              interface{}                                 `json:"default,omitempty"`
-	ReadOnly             bool                                        `json:"readOnly,omitempty"`
+	ReadOnly             *bool                                       `json:"readOnly,omitempty"`
 	Examples             []interface{}                               `json:"examples,omitempty"`
-	MultipleOf           float64                                     `json:"multipleOf,omitempty"`
-	Maximum              float64                                     `json:"maximum,omitempty"`
-	ExclusiveMaximum     float64                                     `json:"exclusiveMaximum,omitempty"`
-	Minimum              float64                                     `json:"minimum,omitempty"`
-	ExclusiveMinimum     float64                                     `json:"exclusiveMinimum,omitempty"`
-	MaxLength            int64                                       `json:"maxLength,omitempty"`
+	MultipleOf           *float64                                    `json:"multipleOf,omitempty"`
+	Maximum              *float64                                    `json:"maximum,omitempty"`
+	ExclusiveMaximum     *float64                                    `json:"exclusiveMaximum,omitempty"`
+	Minimum              *float64                                    `json:"minimum,omitempty"`
+	ExclusiveMinimum     *float64                                    `json:"exclusiveMinimum,omitempty"`
+	MaxLength            *int64                                      `json:"maxLength,omitempty"`
 	MinLength            int64                                       `json:"minLength,omitempty"`
-	Pattern              string                                      `json:"pattern,omitempty"`
+	Pattern              *string                                     `json:"pattern,omitempty"`
+	ExtraProperties      map[string]interface{}                      `json:"-"`                              // All unmatched properties
 	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
 	Items                *Items                                      `json:"items,omitempty"`
-	MaxItems             int64                                       `json:"maxItems,omitempty"`
+	MaxItems             *int64                                      `json:"maxItems,omitempty"`
 	MinItems             int64                                       `json:"minItems,omitempty"`
-	UniqueItems          bool                                        `json:"uniqueItems,omitempty"`
+	UniqueItems          *bool                                       `json:"uniqueItems,omitempty"`
 	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema
-	MaxProperties        int64                                       `json:"maxProperties,omitempty"`
+	MaxProperties        *int64                                      `json:"maxProperties,omitempty"`
 	MinProperties        int64                                       `json:"minProperties,omitempty"`
 	Required             []string                                    `json:"required,omitempty"`
 	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema
@@ -48,9 +50,9 @@ type Schema struct {
 	Const                interface{}                                 `json:"const,omitempty"`
 	Enum                 []interface{}                               `json:"enum,omitempty"`
 	Type                 *Type                                       `json:"type,omitempty"`
-	Format               string                                      `json:"format,omitempty"`
-	ContentMediaType     string                                      `json:"contentMediaType,omitempty"`
-	ContentEncoding      string                                      `json:"contentEncoding,omitempty"`
+	Format               *string                                     `json:"format,omitempty"`
+	ContentMediaType     *string                                     `json:"contentMediaType,omitempty"`
+	ContentEncoding      *string                                     `json:"contentEncoding,omitempty"`
 	If                   *Schema                                     `json:"if,omitempty"`                   // Core schema meta-schema
 	Then                 *Schema                                     `json:"then,omitempty"`                 // Core schema meta-schema
 	Else                 *Schema                                     `json:"else,omitempty"`                 // Core schema meta-schema
@@ -58,53 +60,121 @@ type Schema struct {
 	AnyOf                []Schema                                    `json:"anyOf,omitempty"`
 	OneOf                []Schema                                    `json:"oneOf,omitempty"`
 	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema
-	Type0                *Type0                                      `json:"-"`
-	Type1                *Type1                                      `json:"-"`
+}
+
+type marshalCoreSchemaMetaSchema CoreSchemaMetaSchema
+
+// UnmarshalJSON decodes JSON.
+func (i *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
+	ii := marshalCoreSchemaMetaSchema(*i)
+
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
+			"$id",
+			"$schema",
+			"$ref",
+			"$comment",
+			"title",
+			"description",
+			"default",
+			"readOnly",
+			"examples",
+			"multipleOf",
+			"maximum",
+			"exclusiveMaximum",
+			"minimum",
+			"exclusiveMinimum",
+			"maxLength",
+			"minLength",
+			"pattern",
+			"additionalItems",
+			"items",
+			"maxItems",
+			"minItems",
+			"uniqueItems",
+			"contains",
+			"maxProperties",
+			"minProperties",
+			"required",
+			"additionalProperties",
+			"definitions",
+			"properties",
+			"patternProperties",
+			"dependencies",
+			"propertyNames",
+			"const",
+			"enum",
+			"type",
+			"format",
+			"contentMediaType",
+			"contentEncoding",
+			"if",
+			"then",
+			"else",
+			"allOf",
+			"anyOf",
+			"oneOf",
+			"not",
+		},
+		additionalProperties: &ii.ExtraProperties,
+		jsonData: data,
+	}.unmarshal()
+	if err != nil {
+		return err
+	}
+	*i = CoreSchemaMetaSchema(ii)
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i CoreSchemaMetaSchema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalCoreSchemaMetaSchema(i), i.ExtraProperties)
+}
+
+// Schema structure is generated from "#".
+//
+// Core schema meta-schema.
+type Schema struct {
+	TypeObject  *CoreSchemaMetaSchema `json:"-"`
+	TypeBoolean *bool                 `json:"-"`
 }
 
 type marshalSchema Schema
 
 // UnmarshalJSON decodes JSON.
 func (i *Schema) UnmarshalJSON(data []byte) error {
-	ii := marshalSchema(*i)
-	mayUnmarshal := []interface{}{&ii.Schema, &ii.Type0, &ii.Type1}
+	mayUnmarshal := []interface{}{&i.TypeObject, &i.TypeBoolean}
 	err := unionMap{
-		mustUnmarshal: []interface{}{&ii},
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
 	if mayUnmarshal[0] == nil {
-		ii.Schema = nil
+		i.TypeObject = nil
 	}
 	if mayUnmarshal[1] == nil {
-		ii.Type0 = nil
+		i.TypeBoolean = nil
 	}
-	if mayUnmarshal[2] == nil {
-		ii.Type1 = nil
-	}
-	if err != nil {
-		return err
-	}
-	*i = Schema(ii)
+
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i Schema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchema(i), i.Schema, i.Type0, i.Type1)
+	return marshalUnion(marshalSchema(i), i.TypeObject, i.TypeBoolean)
 }
 
-// Items structure is generated from "#->items".
+// Items structure is generated from "#[object]->items".
 type Items struct {
-	Schema *Schema  `json:"-"`
-	AnyOf1 []Schema `json:"-"`
+	Schema              *Schema  `json:"-"`
+	SliceOfSchemaValues []Schema `json:"-"`
 }
 
 type marshalItems Items
 
 // UnmarshalJSON decodes JSON.
 func (i *Items) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Schema, &i.AnyOf1}
+	mayUnmarshal := []interface{}{&i.Schema, &i.SliceOfSchemaValues}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
@@ -113,7 +183,7 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 		i.Schema = nil
 	}
 	if mayUnmarshal[1] == nil {
-		i.AnyOf1 = nil
+		i.SliceOfSchemaValues = nil
 	}
 
 	return err
@@ -121,20 +191,20 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Items) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalItems(i), i.Schema, i.AnyOf1)
+	return marshalUnion(marshalItems(i), i.Schema, i.SliceOfSchemaValues)
 }
 
-// DependenciesAdditionalProperties structure is generated from "#->dependencies->additionalProperties".
+// DependenciesAdditionalProperties structure is generated from "#[object]->dependencies->additionalProperties".
 type DependenciesAdditionalProperties struct {
-	Schema *Schema  `json:"-"`
-	AnyOf1 []string `json:"-"`
+	Schema              *Schema  `json:"-"`
+	SliceOfStringValues []string `json:"-"`
 }
 
 type marshalDependenciesAdditionalProperties DependenciesAdditionalProperties
 
 // UnmarshalJSON decodes JSON.
 func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Schema, &i.AnyOf1}
+	mayUnmarshal := []interface{}{&i.Schema, &i.SliceOfStringValues}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
@@ -143,7 +213,7 @@ func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 		i.Schema = nil
 	}
 	if mayUnmarshal[1] == nil {
-		i.AnyOf1 = nil
+		i.SliceOfStringValues = nil
 	}
 
 	return err
@@ -151,20 +221,20 @@ func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalDependenciesAdditionalProperties(i), i.Schema, i.AnyOf1)
+	return marshalUnion(marshalDependenciesAdditionalProperties(i), i.Schema, i.SliceOfStringValues)
 }
 
-// Type structure is generated from "#->type".
+// Type structure is generated from "#[object]->type".
 type Type struct {
-	SimpleTypes *SimpleTypes  `json:"-"`
-	AnyOf1      []SimpleTypes `json:"-"`
+	SimpleTypes              *SimpleTypes  `json:"-"`
+	SliceOfSimpleTypesValues []SimpleTypes `json:"-"`
 }
 
 type marshalType Type
 
 // UnmarshalJSON decodes JSON.
 func (i *Type) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.SimpleTypes, &i.AnyOf1}
+	mayUnmarshal := []interface{}{&i.SimpleTypes, &i.SliceOfSimpleTypesValues}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
@@ -173,7 +243,7 @@ func (i *Type) UnmarshalJSON(data []byte) error {
 		i.SimpleTypes = nil
 	}
 	if mayUnmarshal[1] == nil {
-		i.AnyOf1 = nil
+		i.SliceOfSimpleTypesValues = nil
 	}
 
 	return err
@@ -181,109 +251,7 @@ func (i *Type) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Type) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalType(i), i.SimpleTypes, i.AnyOf1)
-}
-
-// Type0 structure is generated from "#/type/0".
-//
-// Core schema meta-schema.
-type Type0 struct {
-	ID                   string                                      `json:"$id,omitempty"`
-	Schema               string                                      `json:"$schema,omitempty"`
-	Ref                  string                                      `json:"$ref,omitempty"`
-	Comment              string                                      `json:"$comment,omitempty"`
-	Title                string                                      `json:"title,omitempty"`
-	Description          string                                      `json:"description,omitempty"`
-	Default              interface{}                                 `json:"default,omitempty"`
-	ReadOnly             bool                                        `json:"readOnly,omitempty"`
-	Examples             []interface{}                               `json:"examples,omitempty"`
-	MultipleOf           float64                                     `json:"multipleOf,omitempty"`
-	Maximum              float64                                     `json:"maximum,omitempty"`
-	ExclusiveMaximum     float64                                     `json:"exclusiveMaximum,omitempty"`
-	Minimum              float64                                     `json:"minimum,omitempty"`
-	ExclusiveMinimum     float64                                     `json:"exclusiveMinimum,omitempty"`
-	MaxLength            int64                                       `json:"maxLength,omitempty"`
-	MinLength            int64                                       `json:"minLength,omitempty"`
-	Pattern              string                                      `json:"pattern,omitempty"`
-	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
-	Items                *Items                                      `json:"items,omitempty"`
-	MaxItems             int64                                       `json:"maxItems,omitempty"`
-	MinItems             int64                                       `json:"minItems,omitempty"`
-	UniqueItems          bool                                        `json:"uniqueItems,omitempty"`
-	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema
-	MaxProperties        int64                                       `json:"maxProperties,omitempty"`
-	MinProperties        int64                                       `json:"minProperties,omitempty"`
-	Required             []string                                    `json:"required,omitempty"`
-	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema
-	Definitions          map[string]Schema                           `json:"definitions,omitempty"`
-	Properties           map[string]Schema                           `json:"properties,omitempty"`
-	PatternProperties    map[string]Schema                           `json:"patternProperties,omitempty"`
-	Dependencies         map[string]DependenciesAdditionalProperties `json:"dependencies,omitempty"`
-	PropertyNames        *Schema                                     `json:"propertyNames,omitempty"`        // Core schema meta-schema
-	Const                interface{}                                 `json:"const,omitempty"`
-	Enum                 []interface{}                               `json:"enum,omitempty"`
-	Type                 *Type                                       `json:"type,omitempty"`
-	Format               string                                      `json:"format,omitempty"`
-	ContentMediaType     string                                      `json:"contentMediaType,omitempty"`
-	ContentEncoding      string                                      `json:"contentEncoding,omitempty"`
-	If                   *Schema                                     `json:"if,omitempty"`                   // Core schema meta-schema
-	Then                 *Schema                                     `json:"then,omitempty"`                 // Core schema meta-schema
-	Else                 *Schema                                     `json:"else,omitempty"`                 // Core schema meta-schema
-	AllOf                []Schema                                    `json:"allOf,omitempty"`
-	AnyOf                []Schema                                    `json:"anyOf,omitempty"`
-	OneOf                []Schema                                    `json:"oneOf,omitempty"`
-	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema
-}
-
-// Type1 structure is generated from "#/type/1".
-//
-// Core schema meta-schema.
-type Type1 struct {
-	ID                   string                                      `json:"$id,omitempty"`
-	Schema               string                                      `json:"$schema,omitempty"`
-	Ref                  string                                      `json:"$ref,omitempty"`
-	Comment              string                                      `json:"$comment,omitempty"`
-	Title                string                                      `json:"title,omitempty"`
-	Description          string                                      `json:"description,omitempty"`
-	Default              interface{}                                 `json:"default,omitempty"`
-	ReadOnly             bool                                        `json:"readOnly,omitempty"`
-	Examples             []interface{}                               `json:"examples,omitempty"`
-	MultipleOf           float64                                     `json:"multipleOf,omitempty"`
-	Maximum              float64                                     `json:"maximum,omitempty"`
-	ExclusiveMaximum     float64                                     `json:"exclusiveMaximum,omitempty"`
-	Minimum              float64                                     `json:"minimum,omitempty"`
-	ExclusiveMinimum     float64                                     `json:"exclusiveMinimum,omitempty"`
-	MaxLength            int64                                       `json:"maxLength,omitempty"`
-	MinLength            int64                                       `json:"minLength,omitempty"`
-	Pattern              string                                      `json:"pattern,omitempty"`
-	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
-	Items                *Items                                      `json:"items,omitempty"`
-	MaxItems             int64                                       `json:"maxItems,omitempty"`
-	MinItems             int64                                       `json:"minItems,omitempty"`
-	UniqueItems          bool                                        `json:"uniqueItems,omitempty"`
-	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema
-	MaxProperties        int64                                       `json:"maxProperties,omitempty"`
-	MinProperties        int64                                       `json:"minProperties,omitempty"`
-	Required             []string                                    `json:"required,omitempty"`
-	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema
-	Definitions          map[string]Schema                           `json:"definitions,omitempty"`
-	Properties           map[string]Schema                           `json:"properties,omitempty"`
-	PatternProperties    map[string]Schema                           `json:"patternProperties,omitempty"`
-	Dependencies         map[string]DependenciesAdditionalProperties `json:"dependencies,omitempty"`
-	PropertyNames        *Schema                                     `json:"propertyNames,omitempty"`        // Core schema meta-schema
-	Const                interface{}                                 `json:"const,omitempty"`
-	Enum                 []interface{}                               `json:"enum,omitempty"`
-	Type                 *Type                                       `json:"type,omitempty"`
-	Format               string                                      `json:"format,omitempty"`
-	ContentMediaType     string                                      `json:"contentMediaType,omitempty"`
-	ContentEncoding      string                                      `json:"contentEncoding,omitempty"`
-	If                   *Schema                                     `json:"if,omitempty"`                   // Core schema meta-schema
-	Then                 *Schema                                     `json:"then,omitempty"`                 // Core schema meta-schema
-	Else                 *Schema                                     `json:"else,omitempty"`                 // Core schema meta-schema
-	AllOf                []Schema                                    `json:"allOf,omitempty"`
-	AnyOf                []Schema                                    `json:"anyOf,omitempty"`
-	OneOf                []Schema                                    `json:"oneOf,omitempty"`
-	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema
+	return marshalUnion(marshalType(i), i.SimpleTypes, i.SliceOfSimpleTypesValues)
 }
 
 // SimpleTypes is an enum type.
@@ -384,9 +352,11 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 	return result, nil
 }
 type unionMap struct {
-	mustUnmarshal []interface{}
-	mayUnmarshal  []interface{}
-	jsonData      []byte
+	mustUnmarshal        []interface{}
+	mayUnmarshal         []interface{}
+	ignoreKeys           []string
+	additionalProperties interface{}
+	jsonData             []byte
 }
 
 func (u unionMap) unmarshal() error {
@@ -405,5 +375,55 @@ func (u unionMap) unmarshal() error {
 		}
 	}
 
+	if u.additionalProperties == nil {
+		return nil
+	}
+
+	// unmarshal to a generic map
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(u.jsonData, &m)
+	if err != nil {
+		return err
+	}
+	// removing ignored keys (defined in struct)
+	for _, i := range u.ignoreKeys {
+		delete(m, i)
+	}
+	// returning early on empty map
+	if len(m) == 0 {
+		return nil
+	}
+
+	// Returning early on empty map.
+	if len(m) == 0 {
+		return nil
+	}
+	if u.additionalProperties != nil {
+		return u.unmarshalAdditionalProperties(m)
+	}
+	return nil
+}
+func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) error {
+	var err error
+	subMap := make([]byte, 1, 100)
+	subMap[0] = '{'
+
+	// Iterating map and filling additional properties.
+	for key, val := range m {
+		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+		if len(subMap) != 1 {
+			subMap = append(subMap[:len(subMap)-1], ',')
+		}
+		subMap = append(subMap, []byte(keyEscaped)...)
+		subMap = append(subMap, []byte(*val)...)
+		subMap = append(subMap, '}')
+	}
+
+	if len(subMap) > 1 {
+		err = json.Unmarshal(subMap, u.additionalProperties)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

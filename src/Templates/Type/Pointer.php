@@ -4,10 +4,32 @@ namespace Swaggest\GoCodeBuilder\Templates\Type;
 
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 
-class Pointer extends GoTemplate implements AnyType
+class Pointer extends GoTemplate implements AnyType, NoOmitEmpty
 {
     /** @var AnyType */
     private $type;
+
+    /**
+     * Json tag `omitempty` should be avoided if this flag is true.
+     * @var bool
+     */
+    private $noOmitEmpty = false;
+
+    /**
+     * @return bool
+     */
+    public function isNoOmitEmpty()
+    {
+        return $this->noOmitEmpty;
+    }
+
+    /**
+     * @param bool $noOmitEmpty
+     */
+    public function setNoOmitEmpty($noOmitEmpty)
+    {
+        $this->noOmitEmpty = $noOmitEmpty;
+    }
 
     /**
      * Pointer constructor.

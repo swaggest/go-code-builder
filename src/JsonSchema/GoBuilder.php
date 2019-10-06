@@ -6,10 +6,9 @@ use Swaggest\GoCodeBuilder\GoCodeBuilder;
 use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
-use Swaggest\GoCodeBuilder\Templates\Struct\Tags;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
+use Swaggest\GoCodeBuilder\Templates\Type\NoOmitEmpty;
 use Swaggest\GoCodeBuilder\Templates\Type\Type;
-use Swaggest\JsonSchema\JsonSchema;
 use Swaggest\JsonSchema\Schema;
 use Swaggest\JsonSchema\Wrapper;
 
@@ -29,7 +28,6 @@ class GoBuilder
     private $untitledIndex = 0;
     /** @var GoCodeBuilder */
     public $codeBuilder;
-    public $requiresMarshalMapHelper = false;
 
     /** @var GoBuilderStructHook */
     public $structPreparedHook;
@@ -106,6 +104,8 @@ class GoBuilder
      * @param string $path
      * @return mixed|GeneratedStruct
      * @throws Exception
+     * @throws \Swaggest\JsonSchema\Exception
+     * @throws \Swaggest\JsonSchema\InvalidValue
      */
     public function getGeneratedStruct($schema, $path)
     {
@@ -139,11 +139,20 @@ class GoBuilder
         $this->generatedStructsBySchema->attach($schema, $generatedStruct);
         $generatedStruct->schema = $schema;
 
-        if ($path === '#') {
-            $structDef = new StructDef('Untitled' . ++$this->untitledIndex);
-        } else {
-            $structDef = new StructDef($this->codeBuilder->exportableName($this->pathToName($path)));
+        $structName = '';
+        if ($schema->title) {
+            $structName = $this->codeBuilder->exportableName($schema->title);
         }
+
+        if (empty($structName)) {
+            if ($path === '#') {
+                $structName = 'Untitled' . ++$this->untitledIndex;
+            } else {
+                $structName = $this->codeBuilder->exportableName($this->pathToName($path));
+            }
+        }
+        $structDef = new StructDef($structName);
+
 
         if ($this->structCreatedHook !== null) {
             $this->structCreatedHook->process($structDef, $path, $schema);
@@ -163,8 +172,16 @@ class GoBuilder
         $generatedStruct->path = $path;
         $generatedStruct->marshalJson = $marshalJson;
 
-        if ($schema->properties !== null) {
-            foreach ($schema->properties as $name => $property) {
+        // Properties are only processed if type has object semantic.
+        // This removes properties from multi-type and non-object (e.g. boolean) structures.
+        $processProperties = false;
+        if ($schema->type === null || $schema->type === Schema::OBJECT) {
+            $processProperties = true;
+        }
+
+        if ($processProperties && $schema->properties !== null) {
+            // Iterating over a copy (toArray) to not conflict with any other iterations in nested processings.
+            foreach ($schema->properties->toArray() as $name => $property) {
                 $fieldName = $this->codeBuilder->exportableName($name);
 
                 if ($this->options->trimParentFromPropertyNames) {
@@ -176,9 +193,14 @@ class GoBuilder
                 $goPropertyType = $this->getType($property, $path . '->' . $name);
                 $goProperty = new StructProperty(
                     $fieldName,
-                    $goPropertyType,
-                    (new Tags())->setTag('json', $name . ',omitempty')
+                    $goPropertyType
                 );
+                // Nullable properties need `null` explicitly available in json payload.
+                if (!$goPropertyType instanceof NoOmitEmpty || !$goPropertyType->isNoOmitEmpty()) {
+                    $goProperty->getTags()->setTag('json', $name . ',omitempty');
+                } else {
+                    $goProperty->getTags()->setTag('json', $name);
+                }
                 $comment = '';
                 $property = self::unboolSchema($property);
 
@@ -240,6 +262,9 @@ class GoBuilder
 
     public function pathToName($path)
     {
+        // Removing type marker, e.g. #[object]/properties => #/properties
+        $path = preg_replace('/\[.+\]/', '', $path);
+
         if (null !== $this->pathToNameHook) {
             return $this->pathToNameHook->pathToName($path);
         }

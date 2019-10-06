@@ -5,6 +5,9 @@ namespace Swaggest\GoCodeBuilder;
 use Swaggest\CodeBuilder\CodeBuilder;
 use Swaggest\GoCodeBuilder\Style\Initialisms;
 
+/**
+ * GoCodeBuilder provides file manager and names processor.
+ */
 class GoCodeBuilder extends CodeBuilder
 {
     public function __construct()

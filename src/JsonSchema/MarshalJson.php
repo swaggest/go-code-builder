@@ -12,8 +12,10 @@ class MarshalJson extends GoTemplate
 {
     private $type;
     private $builder;
+    /** @var string[] */
     private $propertyNames;
     private $additionalPropertiesEnabled = false;
+    private $additionalPropertiesName;
     private $patternProperties;
     private $someOf;
 
@@ -29,10 +31,16 @@ class MarshalJson extends GoTemplate
         $this->code = new Code();
     }
 
-    public function enableAdditionalProperties()
+    public function enableAdditionalProperties($name)
     {
         $this->additionalPropertiesEnabled = true;
+        $this->additionalPropertiesName = $name;
         return $this;
+    }
+
+    public function isAdditionalPropertiesEnabled()
+    {
+        return $this->additionalPropertiesEnabled;
     }
 
     public function addPatternProperty($regex, $name)
@@ -140,14 +148,25 @@ GO;
             $unionMap .= 'mayUnmarshal: ' . $mayUnmarshal . ",\n";
         }
 
-        if ($this->propertyNames !== null && ($this->patternProperties || $this->additionalPropertiesEnabled)) {
-            $propertyNames = <<<GO
+        if (
+            $this->propertyNames !== null &&
+            ($this->patternProperties || $this->additionalPropertiesEnabled)
+        ) {
+            // All known property names (including constant values) has to be removed from
+            // pattern and additional properties matching.
+            $ignoreKeys = $this->propertyNames;
+            if (!empty($this->constValues)) {
+                foreach ($this->constValues as $propertyName => $value) {
+                    $ignoreKeys[] = $propertyName;
+                }
+            }
+            $ignoreKeysExpr = <<<GO
 []string{
-	"{$this->padLines("\t", implode("\",\n\"", $this->propertyNames))}",
+	"{$this->padLines("\t", implode("\",\n\"", $ignoreKeys))}",
 }
 GO;
             $this->builder->unmarshalUnion->withIgnoreKeys = true;
-            $unionMap .= 'ignoreKeys: ' . $propertyNames . ",\n";
+            $unionMap .= 'ignoreKeys: ' . $ignoreKeysExpr . ",\n";
         }
 
         if ($this->patternProperties !== null) {
@@ -164,7 +183,7 @@ GO;
 
         if ($this->additionalPropertiesEnabled) {
             $this->builder->unmarshalUnion->withAdditionalProperties = true;
-            $unionMap .= 'additionalProperties: ' . "&{$this->receiver()}.AdditionalProperties,\n";
+            $unionMap .= 'additionalProperties: ' . "&{$this->receiver()}.{$this->additionalPropertiesName},\n";
         }
 
 
@@ -208,7 +227,7 @@ GO;
         }
 
         if ($this->additionalPropertiesEnabled) {
-            $maps .= ', i.AdditionalProperties';
+            $maps .= ', i.' . $this->additionalPropertiesName;
         }
 
         if ($this->someOf !== null) {

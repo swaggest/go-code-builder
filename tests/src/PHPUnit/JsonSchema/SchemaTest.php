@@ -12,6 +12,7 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
         $anotherSchema = Schema::object()
             ->setProperty('hello', Schema::boolean())
             ->setProperty('world', Schema::string());
+        $anotherSchema->additionalProperties = false;
 
 
         $schema = Schema::object()
@@ -32,12 +33,44 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
         $expectedStructs = <<<'GO'
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
-	SampleInt    int64      `json:"sampleInt,omitempty"`
-	SampleBool   bool       `json:"sampleBool,omitempty"`
-	SampleString string     `json:"sampleString,omitempty"`
-	SampleNumber float64    `json:"sampleNumber,omitempty"`
-	SampleSelf   *Untitled1 `json:"sampleSelf,omitempty"`
-	Another      *Another   `json:"another,omitempty"`
+	SampleInt            int64                  `json:"sampleInt,omitempty"`
+	SampleBool           bool                   `json:"sampleBool,omitempty"`
+	SampleString         string                 `json:"sampleString,omitempty"`
+	SampleNumber         float64                `json:"sampleNumber,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`                      // All unmatched properties
+	SampleSelf           *Untitled1             `json:"sampleSelf,omitempty"`
+	Another              *Another               `json:"another,omitempty"`
+}
+
+type marshalUntitled1 Untitled1
+
+// UnmarshalJSON decodes JSON.
+func (i *Untitled1) UnmarshalJSON(data []byte) error {
+	ii := marshalUntitled1(*i)
+
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
+			"sampleInt",
+			"sampleBool",
+			"sampleString",
+			"sampleNumber",
+			"sampleSelf",
+			"another",
+		},
+		additionalProperties: &ii.AdditionalProperties,
+		jsonData: data,
+	}.unmarshal()
+	if err != nil {
+		return err
+	}
+	*i = Untitled1(ii)
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i Untitled1) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalUntitled1(i), i.AdditionalProperties)
 }
 
 // Another structure is generated from "#->another".

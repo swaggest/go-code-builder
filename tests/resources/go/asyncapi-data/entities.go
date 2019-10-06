@@ -7,23 +7,56 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 // MessagingReaderReads structure is generated from "#/components/schemas/MessagingReaderReads".
 type MessagingReaderReads struct {
-	Reads          []Book `json:"reads,omitempty"`
-	Country        string `json:"country,omitempty"`         // Country
-	ReaderID       int64  `json:"reader_id,omitempty"`
-	Week           string `json:"week,omitempty"`            // Week
-	SubscriptionID int64  `json:"subscription_id,omitempty"`
+	Reads                []Book                 `json:"reads,omitempty"`
+	Country              string                 `json:"country,omitempty"`         // Country
+	ReaderID             int64                  `json:"reader_id,omitempty"`
+	Week                 string                 `json:"week,omitempty"`            // Week
+	SubscriptionID       int64                  `json:"subscription_id,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`                         // All unmatched properties
+}
+
+type marshalMessagingReaderReads MessagingReaderReads
+
+// UnmarshalJSON decodes JSON.
+func (i *MessagingReaderReads) UnmarshalJSON(data []byte) error {
+	ii := marshalMessagingReaderReads(*i)
+
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
+			"reads",
+			"country",
+			"reader_id",
+			"week",
+			"subscription_id",
+		},
+		additionalProperties: &ii.AdditionalProperties,
+		jsonData: data,
+	}.unmarshal()
+	if err != nil {
+		return err
+	}
+	*i = MessagingReaderReads(ii)
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i MessagingReaderReads) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalMessagingReaderReads(i), i.AdditionalProperties)
 }
 
 // Book structure is generated from "#/components/schemas/Book".
 type Book struct {
-	Amount   int64        `json:"amount,omitempty"`
-	EntityID string       `json:"entity_id,omitempty"` // ID of the charged entity
-	Strategy PlotStrategy `json:"strategy,omitempty"`  // Read strategy
-	Type     ReadType     `json:"type,omitempty"`      // Read type
+	Amount               int64                  `json:"amount,omitempty"`
+	EntityID             string                 `json:"entity_id,omitempty"` // ID of the charged entity
+	Strategy             PlotStrategy           `json:"strategy,omitempty"`  // Read strategy
+	Type                 ReadType               `json:"type,omitempty"`      // Read type
+	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties
 }
 
 type marshalBook Book
@@ -36,6 +69,15 @@ func (i *Book) UnmarshalJSON(data []byte) error {
 	err := unionMap{
 		mustUnmarshal: []interface{}{&ii},
 		mayUnmarshal: mayUnmarshal,
+		ignoreKeys: []string{
+			"amount",
+			"entity_id",
+			"strategy",
+			"type",
+			"entity_type",
+			"reason",
+		},
+		additionalProperties: &ii.AdditionalProperties,
 		jsonData: data,
 	}.unmarshal()
 	if v, ok := constValues["entity_type"]; !ok || string(v) != `"book"` {
@@ -58,7 +100,7 @@ var (
 
 // MarshalJSON encodes JSON.
 func (i Book) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constBook, marshalBook(i))
+	return marshalUnion(constBook, marshalBook(i), i.AdditionalProperties)
 }
 
 // PlotStrategy is an enum type.
@@ -186,9 +228,11 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 	return result, nil
 }
 type unionMap struct {
-	mustUnmarshal []interface{}
-	mayUnmarshal  []interface{}
-	jsonData      []byte
+	mustUnmarshal        []interface{}
+	mayUnmarshal         []interface{}
+	ignoreKeys           []string
+	additionalProperties interface{}
+	jsonData             []byte
 }
 
 func (u unionMap) unmarshal() error {
@@ -207,5 +251,55 @@ func (u unionMap) unmarshal() error {
 		}
 	}
 
+	if u.additionalProperties == nil {
+		return nil
+	}
+
+	// unmarshal to a generic map
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(u.jsonData, &m)
+	if err != nil {
+		return err
+	}
+	// removing ignored keys (defined in struct)
+	for _, i := range u.ignoreKeys {
+		delete(m, i)
+	}
+	// returning early on empty map
+	if len(m) == 0 {
+		return nil
+	}
+
+	// Returning early on empty map.
+	if len(m) == 0 {
+		return nil
+	}
+	if u.additionalProperties != nil {
+		return u.unmarshalAdditionalProperties(m)
+	}
+	return nil
+}
+func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) error {
+	var err error
+	subMap := make([]byte, 1, 100)
+	subMap[0] = '{'
+
+	// Iterating map and filling additional properties.
+	for key, val := range m {
+		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+		if len(subMap) != 1 {
+			subMap = append(subMap[:len(subMap)-1], ',')
+		}
+		subMap = append(subMap, []byte(keyEscaped)...)
+		subMap = append(subMap, []byte(*val)...)
+		subMap = append(subMap, '}')
+	}
+
+	if len(subMap) > 1 {
+		err = json.Unmarshal(subMap, u.additionalProperties)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

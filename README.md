@@ -42,6 +42,10 @@ foreach ($builder->getGeneratedStructs() as $generatedStruct) {
 $goFile->getCode()->addSnippet($builder->getCode());
 ```
 
-## CLI tool
+## API Documentation
+
+Classes [documentation](API.md).
+
+## CLI Tool
 
 You can use [json-cli](https://github.com/swaggest/json-cli#gengo) to generate Go structures from command line.

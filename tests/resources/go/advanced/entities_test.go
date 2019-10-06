@@ -14,7 +14,7 @@ func Test_MarshalUnmarshal(t *testing.T) {
 		MessageID: &ShortStr{
 			Value: "foo",
 		},
-		MapOfAnythingValues: map[string]interface{}{
+		MapOfAnything: map[string]interface{}{
 			"x-whatever": "hello!",
 		},
 		AdditionalProperties: map[string]Property{

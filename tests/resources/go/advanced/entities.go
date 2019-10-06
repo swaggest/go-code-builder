@@ -27,8 +27,8 @@ type Properties struct {
 	Type                 *ShortStr              `json:"type,omitempty"`
 	UserID               *ShortStr              `json:"user-id,omitempty"`
 	AppID                *ShortStr              `json:"app-id,omitempty"`
-	MapOfAnythingValues  map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
-	AdditionalProperties map[string]Property    `json:"-"`
+	MapOfAnything        map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
+	AdditionalProperties map[string]Property    `json:"-"`                          // All unmatched properties
 }
 
 type marshalProperties Properties
@@ -55,7 +55,7 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 			"app-id",
 		},
 		patternProperties: map[*regexp.Regexp]interface{}{
-			regexX: &ii.MapOfAnythingValues, // ^x-
+			regexX: &ii.MapOfAnything, // ^x-
 		},
 		additionalProperties: &ii.AdditionalProperties,
 		jsonData: data,
@@ -69,7 +69,7 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Properties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalProperties(i), i.MapOfAnythingValues, i.AdditionalProperties)
+	return marshalUnion(marshalProperties(i), i.MapOfAnything, i.AdditionalProperties)
 }
 
 // Table structure is generated from "#/definitions/table".

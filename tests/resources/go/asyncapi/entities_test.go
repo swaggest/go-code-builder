@@ -12,7 +12,7 @@ import (
 func TestInfo_MarshalJSON(t *testing.T) {
 	i := Info{
 		Version: "v1",
-		MapOfAnythingValues: map[string]interface{}{
+		MapOfAnything: map[string]interface{}{
 			"x-two": "two",
 			"x-one": 1,
 		},

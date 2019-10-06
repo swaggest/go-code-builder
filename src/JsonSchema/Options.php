@@ -43,6 +43,24 @@ class Options extends ClassStructure
     public $skipMarshal = false;
 
     /**
+     * Generate structure for schema with `x-go-type` available.
+     * @var bool
+     */
+    public $ignoreXGoType = false;
+
+    /**
+     * Use pointer types to avoid zero value ambiguity.
+     * @var bool
+     */
+    public $withZeroValues = false;
+
+    /**
+     * Add omitempty to nullable values.
+     * @var bool
+     */
+    public $ignoreNullable = false;
+
+    /**
      * @param static $properties
      * @param Schema $ownerSchema
      */
