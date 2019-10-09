@@ -692,17 +692,17 @@ func (i OperationBindingsObject) MarshalJSON() ([]byte, error) {
 // This object contains information about the operation representation in AMQP.
 // See https://github.com/asyncapi/bindings/tree/master/amqp#operation-binding-object.
 type AMQP091OperationBindingObject struct {
-	Expiration     int64                                           `json:"expiration,omitempty"`     // TTL (Time-To-Live) for the message. It MUST be greater than or equal to zero. Applies to Publish, Subscribe.
-	UserID         string                                          `json:"userId,omitempty"`         // Identifies the user who has sent the message. Applies to Publish, Subscribe.
-	Cc             []string                                        `json:"cc,omitempty"`             // The routing keys the message should be routed to at the time of publishing. Applies to Publish, Subscribe.
-	Priority       int64                                           `json:"priority,omitempty"`       // A priority for the message. Applies to Publish, Subscribe.
-	DeliveryMode   AmqpOperationBindingObject010JSONDeliveryMode   `json:"deliveryMode,omitempty"`   // Delivery mode of the message. Its value MUST be either 1 (transient) or 2 (persistent). Applies to Publish, Subscribe.
-	Mandatory      bool                                            `json:"mandatory,omitempty"`      // Whether the message is mandatory or not. Applies to Publish.
-	Bcc            []string                                        `json:"bcc,omitempty"`            // Like cc but consumers will not receive this information. Applies to Publish.
-	ReplyTo        string                                          `json:"replyTo,omitempty"`        // Name of the queue where the consumer should send the response. Applies to Publish, Subscribe.
-	Timestamp      bool                                            `json:"timestamp,omitempty"`      // Whether the message should include a timestamp or not. Applies to Publish, Subscribe.
-	Ack            bool                                            `json:"ack,omitempty"`            // Whether the consumer should ack the message or not. Applies to Subscribe.
-	BindingVersion AmqpOperationBindingObject010JSONBindingVersion `json:"bindingVersion,omitempty"` // The version of this binding. If omitted, "latest" MUST be assumed. Applies to Publish, Subscribe.
+	Expiration     int64                                       `json:"expiration,omitempty"`     // TTL (Time-To-Live) for the message. It MUST be greater than or equal to zero. Applies to Publish, Subscribe.
+	UserID         string                                      `json:"userId,omitempty"`         // Identifies the user who has sent the message. Applies to Publish, Subscribe.
+	Cc             []string                                    `json:"cc,omitempty"`             // The routing keys the message should be routed to at the time of publishing. Applies to Publish, Subscribe.
+	Priority       int64                                       `json:"priority,omitempty"`       // A priority for the message. Applies to Publish, Subscribe.
+	DeliveryMode   AMQP091OperationBindingObjectDeliveryMode   `json:"deliveryMode,omitempty"`   // Delivery mode of the message. Its value MUST be either 1 (transient) or 2 (persistent). Applies to Publish, Subscribe.
+	Mandatory      bool                                        `json:"mandatory,omitempty"`      // Whether the message is mandatory or not. Applies to Publish.
+	Bcc            []string                                    `json:"bcc,omitempty"`            // Like cc but consumers will not receive this information. Applies to Publish.
+	ReplyTo        string                                      `json:"replyTo,omitempty"`        // Name of the queue where the consumer should send the response. Applies to Publish, Subscribe.
+	Timestamp      bool                                        `json:"timestamp,omitempty"`      // Whether the message should include a timestamp or not. Applies to Publish, Subscribe.
+	Ack            bool                                        `json:"ack,omitempty"`            // Whether the consumer should ack the message or not. Applies to Subscribe.
+	BindingVersion AMQP091OperationBindingObjectBindingVersion `json:"bindingVersion,omitempty"` // The version of this binding. If omitted, "latest" MUST be assumed. Applies to Publish, Subscribe.
 }
 
 // OperationTraitsItems structure is generated from "#/definitions/operation->traits->items".
@@ -938,9 +938,9 @@ func (i MessageBindingsObject) MarshalJSON() ([]byte, error) {
 // This object contains information about the message representation in AMQP.
 // See https://github.com/asyncapi/bindings/tree/master/amqp#message-binding-object.
 type AMQP091MessageBindingObject struct {
-	ContentEncoding string                                        `json:"contentEncoding,omitempty"` // A MIME encoding for the message content.
-	MessageType     string                                        `json:"messageType,omitempty"`     // Application-specific message type.
-	BindingVersion  AmqpMessageBindingObject010JSONBindingVersion `json:"bindingVersion,omitempty"`  // The version of this binding. If omitted, "latest" MUST be assumed.
+	ContentEncoding string                                    `json:"contentEncoding,omitempty"` // A MIME encoding for the message content.
+	MessageType     string                                    `json:"messageType,omitempty"`     // Application-specific message type.
+	BindingVersion  AMQP091MessageBindingObjectBindingVersion `json:"bindingVersion,omitempty"`  // The version of this binding. If omitted, "latest" MUST be assumed.
 }
 
 // MessageTrait structure is generated from "#/definitions/messageTrait".
@@ -1221,10 +1221,10 @@ func (i ChannelBindingsObject) MarshalJSON() ([]byte, error) {
 // This object contains information about the channel representation in AMQP.
 // See https://github.com/asyncapi/bindings/tree/master/amqp#channel-binding-object.
 type AMQP091ChannelBindingObject struct {
-	Is             AmqpChannelBindingObject010JSONIs             `json:"is,omitempty"`             // Defines what type of channel is it. Can be either `queue` or `routingKey` (default).
-	Exchange       *Exchange                                     `json:"exchange,omitempty"`       // When `is`=`routingKey`, this object defines the exchange properties.
-	Queue          *Queue                                        `json:"queue,omitempty"`          // When `is`=`queue`, this object defines the queue properties.
-	BindingVersion AmqpChannelBindingObject010JSONBindingVersion `json:"bindingVersion,omitempty"` // The version of this binding. If omitted, "latest" MUST be assumed.
+	Is             AMQP091ChannelBindingObjectIs             `json:"is,omitempty"`             // Defines what type of channel is it. Can be either `queue` or `routingKey` (default).
+	Exchange       *Exchange                                 `json:"exchange,omitempty"`       // When `is`=`routingKey`, this object defines the exchange properties.
+	Queue          *Queue                                    `json:"queue,omitempty"`          // When `is`=`queue`, this object defines the queue properties.
+	BindingVersion AMQP091ChannelBindingObjectBindingVersion `json:"bindingVersion,omitempty"` // The version of this binding. If omitted, "latest" MUST be assumed.
 }
 
 // Exchange structure is generated from "#/definitions/exchange".
@@ -2044,168 +2044,168 @@ func (i ComponentsCorrelationIds) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalComponentsCorrelationIds(i), i.MapOfComponentsCorrelationIdsWDValues, i.AdditionalProperties)
 }
 
-// AmqpOperationBindingObject010JSONDeliveryMode is an enum type.
-type AmqpOperationBindingObject010JSONDeliveryMode int64
+// AMQP091OperationBindingObjectDeliveryMode is an enum type.
+type AMQP091OperationBindingObjectDeliveryMode int64
 
-// AmqpOperationBindingObject010JSONDeliveryMode values enumeration.
+// AMQP091OperationBindingObjectDeliveryMode values enumeration.
 const (
-	AmqpOperationBindingObject010JSONDeliveryModeTransient = AmqpOperationBindingObject010JSONDeliveryMode(1)
-	AmqpOperationBindingObject010JSONDeliveryModePersistent = AmqpOperationBindingObject010JSONDeliveryMode(2)
+	AMQP091OperationBindingObjectDeliveryModeTransient = AMQP091OperationBindingObjectDeliveryMode(1)
+	AMQP091OperationBindingObjectDeliveryModePersistent = AMQP091OperationBindingObjectDeliveryMode(2)
 )
 
 // MarshalJSON encodes JSON.
-func (i AmqpOperationBindingObject010JSONDeliveryMode) MarshalJSON() ([]byte, error) {
+func (i AMQP091OperationBindingObjectDeliveryMode) MarshalJSON() ([]byte, error) {
 	switch i {
-	case AmqpOperationBindingObject010JSONDeliveryModeTransient:
-	case AmqpOperationBindingObject010JSONDeliveryModePersistent:
+	case AMQP091OperationBindingObjectDeliveryModeTransient:
+	case AMQP091OperationBindingObjectDeliveryModePersistent:
 
 	default:
-		return nil, fmt.Errorf("unexpected AmqpOperationBindingObject010JSONDeliveryMode value: %v", i)
+		return nil, fmt.Errorf("unexpected AMQP091OperationBindingObjectDeliveryMode value: %v", i)
 	}
 
 	return json.Marshal(int64(i))
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *AmqpOperationBindingObject010JSONDeliveryMode) UnmarshalJSON(data []byte) error {
+func (i *AMQP091OperationBindingObjectDeliveryMode) UnmarshalJSON(data []byte) error {
 	var ii int64
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
-	v := AmqpOperationBindingObject010JSONDeliveryMode(ii)
+	v := AMQP091OperationBindingObjectDeliveryMode(ii)
 	switch v {
-	case AmqpOperationBindingObject010JSONDeliveryModeTransient:
-	case AmqpOperationBindingObject010JSONDeliveryModePersistent:
+	case AMQP091OperationBindingObjectDeliveryModeTransient:
+	case AMQP091OperationBindingObjectDeliveryModePersistent:
 
 	default:
-		return fmt.Errorf("unexpected AmqpOperationBindingObject010JSONDeliveryMode value: %v", v)
+		return fmt.Errorf("unexpected AMQP091OperationBindingObjectDeliveryMode value: %v", v)
 	}
 
 	*i = v
 	return nil
 }
 
-// AmqpOperationBindingObject010JSONBindingVersion is an enum type.
-type AmqpOperationBindingObject010JSONBindingVersion string
+// AMQP091OperationBindingObjectBindingVersion is an enum type.
+type AMQP091OperationBindingObjectBindingVersion string
 
-// AmqpOperationBindingObject010JSONBindingVersion values enumeration.
+// AMQP091OperationBindingObjectBindingVersion values enumeration.
 const (
-	AmqpOperationBindingObject010JSONBindingVersion010 = AmqpOperationBindingObject010JSONBindingVersion("0.1.0")
-	AmqpOperationBindingObject010JSONBindingVersionLatest = AmqpOperationBindingObject010JSONBindingVersion("latest")
+	AMQP091OperationBindingObjectBindingVersion010 = AMQP091OperationBindingObjectBindingVersion("0.1.0")
+	AMQP091OperationBindingObjectBindingVersionLatest = AMQP091OperationBindingObjectBindingVersion("latest")
 )
 
 // MarshalJSON encodes JSON.
-func (i AmqpOperationBindingObject010JSONBindingVersion) MarshalJSON() ([]byte, error) {
+func (i AMQP091OperationBindingObjectBindingVersion) MarshalJSON() ([]byte, error) {
 	switch i {
-	case AmqpOperationBindingObject010JSONBindingVersion010:
-	case AmqpOperationBindingObject010JSONBindingVersionLatest:
+	case AMQP091OperationBindingObjectBindingVersion010:
+	case AMQP091OperationBindingObjectBindingVersionLatest:
 
 	default:
-		return nil, fmt.Errorf("unexpected AmqpOperationBindingObject010JSONBindingVersion value: %v", i)
+		return nil, fmt.Errorf("unexpected AMQP091OperationBindingObjectBindingVersion value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *AmqpOperationBindingObject010JSONBindingVersion) UnmarshalJSON(data []byte) error {
+func (i *AMQP091OperationBindingObjectBindingVersion) UnmarshalJSON(data []byte) error {
 	var ii string
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
-	v := AmqpOperationBindingObject010JSONBindingVersion(ii)
+	v := AMQP091OperationBindingObjectBindingVersion(ii)
 	switch v {
-	case AmqpOperationBindingObject010JSONBindingVersion010:
-	case AmqpOperationBindingObject010JSONBindingVersionLatest:
+	case AMQP091OperationBindingObjectBindingVersion010:
+	case AMQP091OperationBindingObjectBindingVersionLatest:
 
 	default:
-		return fmt.Errorf("unexpected AmqpOperationBindingObject010JSONBindingVersion value: %v", v)
+		return fmt.Errorf("unexpected AMQP091OperationBindingObjectBindingVersion value: %v", v)
 	}
 
 	*i = v
 	return nil
 }
 
-// AmqpMessageBindingObject010JSONBindingVersion is an enum type.
-type AmqpMessageBindingObject010JSONBindingVersion string
+// AMQP091MessageBindingObjectBindingVersion is an enum type.
+type AMQP091MessageBindingObjectBindingVersion string
 
-// AmqpMessageBindingObject010JSONBindingVersion values enumeration.
+// AMQP091MessageBindingObjectBindingVersion values enumeration.
 const (
-	AmqpMessageBindingObject010JSONBindingVersion010 = AmqpMessageBindingObject010JSONBindingVersion("0.1.0")
-	AmqpMessageBindingObject010JSONBindingVersionLatest = AmqpMessageBindingObject010JSONBindingVersion("latest")
+	AMQP091MessageBindingObjectBindingVersion010 = AMQP091MessageBindingObjectBindingVersion("0.1.0")
+	AMQP091MessageBindingObjectBindingVersionLatest = AMQP091MessageBindingObjectBindingVersion("latest")
 )
 
 // MarshalJSON encodes JSON.
-func (i AmqpMessageBindingObject010JSONBindingVersion) MarshalJSON() ([]byte, error) {
+func (i AMQP091MessageBindingObjectBindingVersion) MarshalJSON() ([]byte, error) {
 	switch i {
-	case AmqpMessageBindingObject010JSONBindingVersion010:
-	case AmqpMessageBindingObject010JSONBindingVersionLatest:
+	case AMQP091MessageBindingObjectBindingVersion010:
+	case AMQP091MessageBindingObjectBindingVersionLatest:
 
 	default:
-		return nil, fmt.Errorf("unexpected AmqpMessageBindingObject010JSONBindingVersion value: %v", i)
+		return nil, fmt.Errorf("unexpected AMQP091MessageBindingObjectBindingVersion value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *AmqpMessageBindingObject010JSONBindingVersion) UnmarshalJSON(data []byte) error {
+func (i *AMQP091MessageBindingObjectBindingVersion) UnmarshalJSON(data []byte) error {
 	var ii string
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
-	v := AmqpMessageBindingObject010JSONBindingVersion(ii)
+	v := AMQP091MessageBindingObjectBindingVersion(ii)
 	switch v {
-	case AmqpMessageBindingObject010JSONBindingVersion010:
-	case AmqpMessageBindingObject010JSONBindingVersionLatest:
+	case AMQP091MessageBindingObjectBindingVersion010:
+	case AMQP091MessageBindingObjectBindingVersionLatest:
 
 	default:
-		return fmt.Errorf("unexpected AmqpMessageBindingObject010JSONBindingVersion value: %v", v)
+		return fmt.Errorf("unexpected AMQP091MessageBindingObjectBindingVersion value: %v", v)
 	}
 
 	*i = v
 	return nil
 }
 
-// AmqpChannelBindingObject010JSONIs is an enum type.
-type AmqpChannelBindingObject010JSONIs string
+// AMQP091ChannelBindingObjectIs is an enum type.
+type AMQP091ChannelBindingObjectIs string
 
-// AmqpChannelBindingObject010JSONIs values enumeration.
+// AMQP091ChannelBindingObjectIs values enumeration.
 const (
-	AmqpChannelBindingObject010JSONIsRoutingKey = AmqpChannelBindingObject010JSONIs("routingKey")
-	AmqpChannelBindingObject010JSONIsQueue = AmqpChannelBindingObject010JSONIs("queue")
+	AMQP091ChannelBindingObjectIsRoutingKey = AMQP091ChannelBindingObjectIs("routingKey")
+	AMQP091ChannelBindingObjectIsQueue = AMQP091ChannelBindingObjectIs("queue")
 )
 
 // MarshalJSON encodes JSON.
-func (i AmqpChannelBindingObject010JSONIs) MarshalJSON() ([]byte, error) {
+func (i AMQP091ChannelBindingObjectIs) MarshalJSON() ([]byte, error) {
 	switch i {
-	case AmqpChannelBindingObject010JSONIsRoutingKey:
-	case AmqpChannelBindingObject010JSONIsQueue:
+	case AMQP091ChannelBindingObjectIsRoutingKey:
+	case AMQP091ChannelBindingObjectIsQueue:
 
 	default:
-		return nil, fmt.Errorf("unexpected AmqpChannelBindingObject010JSONIs value: %v", i)
+		return nil, fmt.Errorf("unexpected AMQP091ChannelBindingObjectIs value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *AmqpChannelBindingObject010JSONIs) UnmarshalJSON(data []byte) error {
+func (i *AMQP091ChannelBindingObjectIs) UnmarshalJSON(data []byte) error {
 	var ii string
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
-	v := AmqpChannelBindingObject010JSONIs(ii)
+	v := AMQP091ChannelBindingObjectIs(ii)
 	switch v {
-	case AmqpChannelBindingObject010JSONIsRoutingKey:
-	case AmqpChannelBindingObject010JSONIsQueue:
+	case AMQP091ChannelBindingObjectIsRoutingKey:
+	case AMQP091ChannelBindingObjectIsQueue:
 
 	default:
-		return fmt.Errorf("unexpected AmqpChannelBindingObject010JSONIs value: %v", v)
+		return fmt.Errorf("unexpected AMQP091ChannelBindingObjectIs value: %v", v)
 	}
 
 	*i = v
@@ -2263,42 +2263,42 @@ func (i *ExchangeType) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// AmqpChannelBindingObject010JSONBindingVersion is an enum type.
-type AmqpChannelBindingObject010JSONBindingVersion string
+// AMQP091ChannelBindingObjectBindingVersion is an enum type.
+type AMQP091ChannelBindingObjectBindingVersion string
 
-// AmqpChannelBindingObject010JSONBindingVersion values enumeration.
+// AMQP091ChannelBindingObjectBindingVersion values enumeration.
 const (
-	AmqpChannelBindingObject010JSONBindingVersion010 = AmqpChannelBindingObject010JSONBindingVersion("0.1.0")
-	AmqpChannelBindingObject010JSONBindingVersionLatest = AmqpChannelBindingObject010JSONBindingVersion("latest")
+	AMQP091ChannelBindingObjectBindingVersion010 = AMQP091ChannelBindingObjectBindingVersion("0.1.0")
+	AMQP091ChannelBindingObjectBindingVersionLatest = AMQP091ChannelBindingObjectBindingVersion("latest")
 )
 
 // MarshalJSON encodes JSON.
-func (i AmqpChannelBindingObject010JSONBindingVersion) MarshalJSON() ([]byte, error) {
+func (i AMQP091ChannelBindingObjectBindingVersion) MarshalJSON() ([]byte, error) {
 	switch i {
-	case AmqpChannelBindingObject010JSONBindingVersion010:
-	case AmqpChannelBindingObject010JSONBindingVersionLatest:
+	case AMQP091ChannelBindingObjectBindingVersion010:
+	case AMQP091ChannelBindingObjectBindingVersionLatest:
 
 	default:
-		return nil, fmt.Errorf("unexpected AmqpChannelBindingObject010JSONBindingVersion value: %v", i)
+		return nil, fmt.Errorf("unexpected AMQP091ChannelBindingObjectBindingVersion value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *AmqpChannelBindingObject010JSONBindingVersion) UnmarshalJSON(data []byte) error {
+func (i *AMQP091ChannelBindingObjectBindingVersion) UnmarshalJSON(data []byte) error {
 	var ii string
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
-	v := AmqpChannelBindingObject010JSONBindingVersion(ii)
+	v := AMQP091ChannelBindingObjectBindingVersion(ii)
 	switch v {
-	case AmqpChannelBindingObject010JSONBindingVersion010:
-	case AmqpChannelBindingObject010JSONBindingVersionLatest:
+	case AMQP091ChannelBindingObjectBindingVersion010:
+	case AMQP091ChannelBindingObjectBindingVersionLatest:
 
 	default:
-		return fmt.Errorf("unexpected AmqpChannelBindingObject010JSONBindingVersion value: %v", v)
+		return fmt.Errorf("unexpected AMQP091ChannelBindingObjectBindingVersion value: %v", v)
 	}
 
 	*i = v

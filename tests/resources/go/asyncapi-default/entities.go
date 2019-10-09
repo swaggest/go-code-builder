@@ -15,7 +15,7 @@ import (
 //
 // AsyncAPI 1.2.0 schema.
 type AsyncAPI struct {
-	Asyncapi      Asyncapi               `json:"asyncapi,omitempty"`     // The AsyncAPI specification version of this document.
+	Asyncapi      AsyncAPIAsyncapi       `json:"asyncapi,omitempty"`     // The AsyncAPI specification version of this document.
 	Info          *Info                  `json:"info,omitempty"`         // General information about the API.
 	BaseTopic     string                 `json:"baseTopic,omitempty"`    // The base topic to the API. Example: 'hitch'.
 	Servers       []Server               `json:"servers,omitempty"`
@@ -1315,45 +1315,45 @@ func (i ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalComponentsSecuritySchemes(i), i.MapOfComponentsSecuritySchemesAZAZ09Values, i.AdditionalProperties)
 }
 
-// Asyncapi is an enum type.
-type Asyncapi string
+// AsyncAPIAsyncapi is an enum type.
+type AsyncAPIAsyncapi string
 
-// Asyncapi values enumeration.
+// AsyncAPIAsyncapi values enumeration.
 const (
-	Asyncapi100 = Asyncapi("1.0.0")
-	Asyncapi110 = Asyncapi("1.1.0")
-	Asyncapi120 = Asyncapi("1.2.0")
+	AsyncAPIAsyncapi100 = AsyncAPIAsyncapi("1.0.0")
+	AsyncAPIAsyncapi110 = AsyncAPIAsyncapi("1.1.0")
+	AsyncAPIAsyncapi120 = AsyncAPIAsyncapi("1.2.0")
 )
 
 // MarshalJSON encodes JSON.
-func (i Asyncapi) MarshalJSON() ([]byte, error) {
+func (i AsyncAPIAsyncapi) MarshalJSON() ([]byte, error) {
 	switch i {
-	case Asyncapi100:
-	case Asyncapi110:
-	case Asyncapi120:
+	case AsyncAPIAsyncapi100:
+	case AsyncAPIAsyncapi110:
+	case AsyncAPIAsyncapi120:
 
 	default:
-		return nil, fmt.Errorf("unexpected Asyncapi value: %v", i)
+		return nil, fmt.Errorf("unexpected AsyncAPIAsyncapi value: %v", i)
 	}
 
 	return json.Marshal(string(i))
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Asyncapi) UnmarshalJSON(data []byte) error {
+func (i *AsyncAPIAsyncapi) UnmarshalJSON(data []byte) error {
 	var ii string
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
-	v := Asyncapi(ii)
+	v := AsyncAPIAsyncapi(ii)
 	switch v {
-	case Asyncapi100:
-	case Asyncapi110:
-	case Asyncapi120:
+	case AsyncAPIAsyncapi100:
+	case AsyncAPIAsyncapi110:
+	case AsyncAPIAsyncapi120:
 
 	default:
-		return fmt.Errorf("unexpected Asyncapi value: %v", v)
+		return fmt.Errorf("unexpected AsyncAPIAsyncapi value: %v", v)
 	}
 
 	*i = v

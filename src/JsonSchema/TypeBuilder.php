@@ -23,6 +23,8 @@ use Swaggest\JsonSchema\SchemaExporter;
 class TypeBuilder
 {
     const X_GO_TYPE = 'x-go-type';
+    const X_NULLABLE = 'x-nullable';
+    const NULLABLE = 'nullable';
 
     const NAME_ANY = 'anything';
 
@@ -40,17 +42,21 @@ class TypeBuilder
 
     private $nullable = false;
 
+    /** @var StructDef|null parent structure if available */
+    private $parentStruct;
+
     /**
      * TypeBuilder constructor.
      * @param Schema $schema
      * @param string $path
      * @param GoBuilder $goBuilder
      */
-    public function __construct(Schema $schema, $path, GoBuilder $goBuilder)
+    public function __construct(Schema $schema, $path, GoBuilder $goBuilder, StructDef $parentStruct = null)
     {
         $this->schema = $schema;
         $this->path = $path;
         $this->goBuilder = $goBuilder;
+        $this->parentStruct = $parentStruct;
     }
 
     private function makeName(AnyType $type)
@@ -373,6 +379,11 @@ class TypeBuilder
         if ($this->schema->const !== null) { // todo properly process null const
             $path = $this->goBuilder->pathToName($this->path);
             $typeName = $this->goBuilder->codeBuilder->exportableName($path);
+            if ($this->parentStruct && false !== $pos = strrpos($path, '->')) {
+                $propertyName = substr($path, $pos);
+                $typeName = $this->goBuilder->codeBuilder->exportableName($this->parentStruct->getName() . $propertyName);
+            }
+
             $type = new GoType($typeName);
 
             $baseType = new GoType('interface{}');
@@ -402,7 +413,7 @@ GO
             );
 
             $typeConstBlock->addValue(
-                $this->goBuilder->codeBuilder->exportableName($path . '_' . $this->schema->const),
+                $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $this->schema->const),
                 $this->schema->const
             );
 
@@ -502,6 +513,11 @@ GO
             $path = $this->goBuilder->pathToName($this->path);
 
             $typeName = $this->goBuilder->codeBuilder->exportableName($path);
+            if ($this->parentStruct && false !== $pos = strrpos($path, '->')) {
+                $propertyName = substr($path, $pos);
+                $typeName = $this->goBuilder->codeBuilder->exportableName($this->parentStruct->getName() . $propertyName);
+            }
+
             $type = new GoType($typeName);
             $this->goBuilder->pathTypesDefined[$this->path] = $type;
 
@@ -517,12 +533,12 @@ GO
 
 
             foreach ($enum as $index => $item) {
-                $itemName = $this->goBuilder->codeBuilder->exportableName($path . '_' . $item);
+                $itemName = $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $item);
                 $comment = null;
                 if (isset($enumSchemas[$index])) {
                     $schema = $enumSchemas[$index];
                     if (isset($schema->title)) {
-                        $itemName = $this->goBuilder->codeBuilder->exportableName($path . '_' . $schema->title);
+                        $itemName = $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $schema->title);
                     }
                     if (isset($schema->description)) {
                         $comment = $schema->description;
@@ -605,6 +621,17 @@ GO
         }
 
         $this->type = $this->schema->type;
+
+        if ($this->goBuilder->options->enableXNullable) {
+            if ($this->schema->{self::X_NULLABLE} === true || $this->schema->{self::NULLABLE} === true) {
+                if (is_array($this->type) && !in_array(Schema::NULL, $this->type)) {
+                    $this->type[] = Schema::NULL;
+                } elseif (is_string($this->type) && $this->type !== Schema::NULL) {
+                    $this->type = [$this->type, Schema::NULL];
+                }
+            }
+        }
+
         if (is_array($this->type)) {
             foreach ($this->type as $k => $item) {
                 if ($item === Schema::NULL) {

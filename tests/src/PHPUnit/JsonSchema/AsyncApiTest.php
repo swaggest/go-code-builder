@@ -16,7 +16,9 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
     public function testGen()
     {
         $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../resources/asyncapi.json'));
-        $schema = Schema::import($schemaData);
+        $refResolver = new Preloaded();
+        $context = new Context($refResolver);
+        $schema = Schema::import($schemaData, $context);
 
 
         $builder = new GoBuilder();
@@ -48,7 +50,9 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
     public function testGenConst()
     {
         $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../resources/asyncapi.json'));
-        $schema = Schema::import($schemaData);
+        $refResolver = new Preloaded();
+        $context = new Context($refResolver);
+        $schema = Schema::import($schemaData, $context);
 
 
         $builder = new GoBuilder();
@@ -81,7 +85,9 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
     public function testGenSkipMarshal()
     {
         $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../resources/asyncapi.json'));
-        $schema = Schema::import($schemaData);
+        $refResolver = new Preloaded();
+        $context = new Context($refResolver);
+        $schema = Schema::import($schemaData, $context);
 
 
         $builder = new GoBuilder();
@@ -113,7 +119,9 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
     public function testGenSkipUnmarshal()
     {
         $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../resources/asyncapi.json'));
-        $schema = Schema::import($schemaData);
+        $refResolver = new Preloaded();
+        $context = new Context($refResolver);
+        $schema = Schema::import($schemaData, $context);
 
 
         $builder = new GoBuilder();

@@ -7,6 +7,8 @@ use Swaggest\GoCodeBuilder\JsonSchema\GoBuilder;
 use Swaggest\GoCodeBuilder\JsonSchema\StructHookCallback;
 use Swaggest\GoCodeBuilder\Templates\GoFile;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
+use Swaggest\JsonSchema\Context;
+use Swaggest\JsonSchema\RemoteRef\Preloaded;
 use Swaggest\JsonSchema\Schema;
 
 class SwaggerSchemaGenerateTest extends \PHPUnit_Framework_TestCase
@@ -14,7 +16,9 @@ class SwaggerSchemaGenerateTest extends \PHPUnit_Framework_TestCase
     public function testGen()
     {
         $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../resources/swagger-schema.json'));
-        $schema = Schema::import($schemaData);
+        $refResolver = new Preloaded();
+        $context = new Context($refResolver);
+        $schema = Schema::import($schemaData, $context);
 
 
         $builder = new GoBuilder();

@@ -49,6 +49,12 @@ class Options extends ClassStructure
     public $ignoreXGoType = false;
 
     /**
+     * Add `null` to types if `x-nullable` or `nullable` is available.
+     * @var bool
+     */
+    public $enableXNullable = false;
+
+    /**
      * Use pointer types to avoid zero value ambiguity.
      * @var bool
      */
@@ -61,7 +67,7 @@ class Options extends ClassStructure
     public $ignoreNullable = false;
 
     /**
-     * @param static $properties
+     * @param Properties|static $properties
      * @param Schema $ownerSchema
      */
     public static function setUpProperties($properties, Schema $ownerSchema)

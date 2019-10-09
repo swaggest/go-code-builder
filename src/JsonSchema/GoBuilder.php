@@ -70,19 +70,19 @@ class GoBuilder
      * @throws \Swaggest\JsonSchema\Exception
      * @throws \Swaggest\JsonSchema\InvalidValue
      */
-    public function getType($schema, $path = '#')
+    public function getType($schema, $path = '#', StructDef $parentStruct = null)
     {
         $s = self::unboolSchema($schema);
         if ($s instanceof Wrapper) {
             $path = $s->getObjectItemClass();
-            $typeBuilder = new TypeBuilder($s->exportSchema(), $path, $this);
+            $typeBuilder = new TypeBuilder($s->exportSchema(), $path, $this, $parentStruct);
             $result = $typeBuilder->build();
             return $result;
         }
         if ($s instanceof \stdClass) {
             $s = Schema::import($s);
         }
-        $typeBuilder = new TypeBuilder($s, $path, $this);
+        $typeBuilder = new TypeBuilder($s, $path, $this, $parentStruct);
         $result = $typeBuilder->build();
         return $result;
     }
@@ -120,6 +120,7 @@ class GoBuilder
         return $this->makeStruct($schema, $path);
     }
 
+    private $namesGenerated = [];
 
     /**
      * @param Schema $schema
@@ -151,6 +152,17 @@ class GoBuilder
                 $structName = $this->codeBuilder->exportableName($this->pathToName($path));
             }
         }
+
+        $structPreferredName = $structName;
+        $i = 1;
+        while (isset($this->namesGenerated[$structName])) {
+            $structName = $structPreferredName . $i;
+            $i++;
+        }
+
+        $this->namesGenerated[$structName] = true;
+
+
         $structDef = new StructDef($structName);
 
 
@@ -190,7 +202,7 @@ class GoBuilder
                     }
                 }
 
-                $goPropertyType = $this->getType($property, $path . '->' . $name);
+                $goPropertyType = $this->getType($property, $path . '->' . $name, $structDef);
                 $goProperty = new StructProperty(
                     $fieldName,
                     $goPropertyType
@@ -263,7 +275,7 @@ class GoBuilder
     public function pathToName($path)
     {
         // Removing type marker, e.g. #[object]/properties => #/properties
-        $path = preg_replace('/\[.+\]/', '', $path);
+        $path = preg_replace('/\[\w+\]/', '', $path);
 
         if (null !== $this->pathToNameHook) {
             return $this->pathToNameHook->pathToName($path);

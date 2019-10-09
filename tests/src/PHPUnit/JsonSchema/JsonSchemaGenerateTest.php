@@ -7,6 +7,8 @@ use Swaggest\GoCodeBuilder\JsonSchema\GoBuilder;
 use Swaggest\GoCodeBuilder\JsonSchema\StructHookCallback;
 use Swaggest\GoCodeBuilder\Templates\GoFile;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
+use Swaggest\JsonSchema\Context;
+use Swaggest\JsonSchema\RemoteRef\Preloaded;
 use Swaggest\JsonSchema\Schema;
 
 class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
@@ -45,7 +47,9 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
 
     public function testNonNegativeIntegerDefault0()
     {
-        $schema = Schema::import('http://json-schema.org/draft-07/schema#/definitions/nonNegativeIntegerDefault0');
+        $refResolver = new Preloaded();
+        $context = new Context($refResolver);
+        $schema = Schema::import('http://json-schema.org/draft-07/schema#/definitions/nonNegativeIntegerDefault0', $context);
 
         $builder = new GoBuilder();
         $builder->options->hideConstProperties = true;

@@ -5,6 +5,8 @@ namespace Swaggest\GoCodeBuilder\Tests\PHPUnit\JsonSchema;
 
 use Swaggest\GoCodeBuilder\JsonSchema\GoBuilder;
 use Swaggest\GoCodeBuilder\JsonSchema\TypeBuilder;
+use Swaggest\JsonSchema\Context;
+use Swaggest\JsonSchema\RemoteRef\Preloaded;
 use Swaggest\JsonSchema\Schema;
 
 class TypeBuilderTest extends \PHPUnit_Framework_TestCase
@@ -32,7 +34,9 @@ class TypeBuilderTest extends \PHPUnit_Framework_TestCase
 }
 JSON
         );
-        $schema = Schema::import($schemaData);
+        $refResolver = new Preloaded();
+        $context = new Context($refResolver);
+        $schema = Schema::import($schemaData, $context);
         $goBuilder = new GoBuilder();
         $type = $goBuilder->getType($schema);
 
