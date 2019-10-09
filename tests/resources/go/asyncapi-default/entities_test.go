@@ -10,7 +10,7 @@ import (
 
 func Test_MarshalUnmarshal(t *testing.T) {
 	entity := AsyncAPI{
-		Asyncapi: Asyncapi120,
+		Asyncapi: AsyncAPIAsyncapi120,
 		Components: &Components{
 			SecuritySchemes: &ComponentsSecuritySchemes{
 				MapOfComponentsSecuritySchemesAZAZ09Values: map[string]ComponentsSecuritySchemesAZAZ09{
@@ -47,7 +47,7 @@ func Benchmark_Marshal(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		entity := AsyncAPI{
-			Asyncapi: Asyncapi120,
+			Asyncapi: AsyncAPIAsyncapi120,
 			Components: &Components{
 				SecuritySchemes: &ComponentsSecuritySchemes{
 					MapOfComponentsSecuritySchemesAZAZ09Values: map[string]ComponentsSecuritySchemesAZAZ09{
