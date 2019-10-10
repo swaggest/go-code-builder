@@ -67,6 +67,12 @@ class Options extends ClassStructure
     public $ignoreNullable = false;
 
     /**
+     * Enable `additionalProperties` if they are missing (null) in schema.
+     * @var bool
+     */
+    public $defaultAdditionalProperties = true;
+
+    /**
      * @param Properties|static $properties
      * @param Schema $ownerSchema
      */
