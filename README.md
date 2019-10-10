@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/swaggest/go-code-builder.svg?branch=master)](https://travis-ci.org/swaggest/go-code-builder)
 [![codecov](https://codecov.io/gh/swaggest/go-code-builder/branch/master/graph/badge.svg)](https://codecov.io/gh/swaggest/go-code-builder)
+![Code lines](https://sloc.xyz/github/swaggest/go-code-builder/?category=code)
+![Comments](https://sloc.xyz/github/swaggest/go-code-builder/?category=comments)
 
 This library generates Go mapping structures defined by [JSON schema](http://json-schema.org/).
 
