@@ -101,13 +101,23 @@ GO;
         $prop = new Schema();
         $prop->type = [Schema::STRING, Schema::NULL];
 
+        $propXNullable = new Schema();
+        $propXNullable->type = Schema::STRING;
+        $propXNullable->{TypeBuilder::X_NULLABLE} = true;
+
+        $propNullable = new Schema();
+        $propNullable->type = Schema::STRING;
+        $propNullable->{TypeBuilder::NULLABLE} = true;
+
         $obj = Schema::object();
-        $obj->setProperty('nullable', $prop);
+        $obj->setProperty('schema-nullable', $prop);
+        $obj->setProperty('x-nullable', $propXNullable);
+        $obj->setProperty('nullable', $propNullable);
         $obj->setProperty('regular', Schema::string());
-        $obj->additionalProperties = false;
 
 
         $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
         $tb = new TypeBuilder($prop, '#', $builder);
         $type = $tb->build();
         $this->assertEquals('*string', $type->getTypeString());
@@ -118,8 +128,10 @@ GO;
         $this->assertEquals(<<<'GO'
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
-	Nullable *string `json:"nullable"`
-	Regular  string  `json:"regular,omitempty"`
+	SchemaNullable *string `json:"schema-nullable"`
+	XNullable      string  `json:"x-nullable,omitempty"`
+	Nullable       string  `json:"nullable,omitempty"`
+	Regular        string  `json:"regular,omitempty"`
 }
 
 
@@ -128,6 +140,7 @@ GO
 
 
         $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
         $builder->options->withZeroValues = true;
         $tb = new TypeBuilder($prop, '#', $builder);
         $type = $tb->build();
@@ -139,8 +152,10 @@ GO
         $this->assertEquals(<<<'GO'
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
-	Nullable *string `json:"nullable"`
-	Regular  *string `json:"regular,omitempty"`
+	SchemaNullable *string `json:"schema-nullable"`
+	XNullable      *string `json:"x-nullable,omitempty"`
+	Nullable       *string `json:"nullable,omitempty"`
+	Regular        *string `json:"regular,omitempty"`
 }
 
 
@@ -149,6 +164,7 @@ GO
 
 
         $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
         $builder->options->ignoreNullable = true;
         $tb = new TypeBuilder($prop, '#', $builder);
         $type = $tb->build();
@@ -160,8 +176,35 @@ GO
         $this->assertEquals(<<<'GO'
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
-	Nullable *string `json:"nullable,omitempty"`
-	Regular  string  `json:"regular,omitempty"`
+	SchemaNullable *string `json:"schema-nullable,omitempty"`
+	XNullable      string  `json:"x-nullable,omitempty"`
+	Nullable       string  `json:"nullable,omitempty"`
+	Regular        string  `json:"regular,omitempty"`
+}
+
+
+GO
+            , $struct->structDef->render());
+
+
+
+        $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
+        $builder->options->enableXNullable = true;
+        $tb = new TypeBuilder($prop, '#', $builder);
+        $type = $tb->build();
+        $this->assertEquals('*string', $type->getTypeString());
+
+        $this->assertEquals('*Untitled1', $builder->getType($obj)->getTypeString());
+        $struct = $builder->getGeneratedStruct($obj, '#');
+
+        $this->assertEquals(<<<'GO'
+// Untitled1 structure is generated from "#".
+type Untitled1 struct {
+	SchemaNullable *string `json:"schema-nullable"`
+	XNullable      *string `json:"x-nullable"`
+	Nullable       *string `json:"nullable"`
+	Regular        string  `json:"regular,omitempty"`
 }
 
 

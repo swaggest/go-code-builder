@@ -241,10 +241,13 @@ class TypeBuilder
             }
         }
 
+        /** @var null|boolean|Schema $additionalProperties */
         $additionalProperties = $this->schema->additionalProperties;
+        if ($this->goBuilder->options->defaultAdditionalProperties && $additionalProperties === null) {
+            $additionalProperties = true;
+        }
         if (
             $additionalProperties instanceof Schema ||
-            $additionalProperties === null ||
             $additionalProperties === true
         ) {
 

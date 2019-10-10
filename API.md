@@ -39,6 +39,7 @@
 - [\Swaggest\GoCodeBuilder\Templates\Struct\StructIface](#class-swaggestgocodebuildertemplatesstructstructiface)
 - [\Swaggest\GoCodeBuilder\Templates\Type\TypeCast](#class-swaggestgocodebuildertemplatestypetypecast)
 - [\Swaggest\GoCodeBuilder\Templates\Type\TypeCastException](#class-swaggestgocodebuildertemplatestypetypecastexception)
+- [\Swaggest\GoCodeBuilder\Templates\Type\NoOmitEmpty (interface)](#interface-swaggestgocodebuildertemplatestypenoomitempty)
 - [\Swaggest\GoCodeBuilder\Templates\Type\Type](#class-swaggestgocodebuildertemplatestypetype)
 - [\Swaggest\GoCodeBuilder\Templates\Type\FuncType](#class-swaggestgocodebuildertemplatestypefunctype)
 - [\Swaggest\GoCodeBuilder\Templates\Type\Map](#class-swaggestgocodebuildertemplatestypemap)
@@ -123,7 +124,8 @@
 | public | <strong>addNamedProperty(</strong><em>mixed</em> <strong>$name</strong>)</strong> : <em>void</em> |
 | public | <strong>addPatternProperty(</strong><em>mixed</em> <strong>$regex</strong>, <em>mixed</em> <strong>$name</strong>)</strong> : <em>void</em> |
 | public | <strong>addSomeOf(</strong><em>mixed</em> <strong>$kind</strong>, <em>mixed</em> <strong>$name</strong>)</strong> : <em>void</em> |
-| public | <strong>enableAdditionalProperties()</strong> : <em>void</em> |
+| public | <strong>enableAdditionalProperties(</strong><em>mixed</em> <strong>$name</strong>)</strong> : <em>void</em> |
+| public | <strong>isAdditionalPropertiesEnabled()</strong> : <em>bool</em> |
 | protected | <strong>toString()</strong> : <em>void</em> |
 
 *This class extends [\Swaggest\GoCodeBuilder\Templates\GoTemplate](#class-swaggestgocodebuildertemplatesgotemplate-abstract)*
@@ -162,9 +164,8 @@
 
 | Visibility | Function |
 |:-----------|:---------|
-| public | <strong>__construct(</strong><em>\Swaggest\JsonSchema\Schema</em> <strong>$schema</strong>, <em>string</em> <strong>$path</strong>, <em>[\Swaggest\GoCodeBuilder\JsonSchema\GoBuilder](#class-swaggestgocodebuilderjsonschemagobuilder)</em> <strong>$goBuilder</strong>)</strong> : <em>void</em><br /><em>TypeBuilder constructor.</em> |
+| public | <strong>__construct(</strong><em>\Swaggest\JsonSchema\Schema</em> <strong>$schema</strong>, <em>string</em> <strong>$path</strong>, <em>[\Swaggest\GoCodeBuilder\JsonSchema\GoBuilder](#class-swaggestgocodebuilderjsonschemagobuilder)</em> <strong>$goBuilder</strong>, <em>[\Swaggest\GoCodeBuilder\Templates\Struct\StructDef](#class-swaggestgocodebuildertemplatesstructstructdef)</em> <strong>$parentStruct=null</strong>)</strong> : <em>void</em><br /><em>TypeBuilder constructor.</em> |
 | public | <strong>build()</strong> : <em>[\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)</em> |
-| public | <strong>setParentName(</strong><em>mixed</em> <strong>$parentName</strong>)</strong> : <em>void</em> |
 
 <hr />
 
@@ -172,7 +173,7 @@
 
 | Visibility | Function |
 |:-----------|:---------|
-| public static | <strong>setUpProperties(</strong><em>\Swaggest\GoCodeBuilder\JsonSchema\static</em> <strong>$properties</strong>, <em>\Swaggest\JsonSchema\Schema</em> <strong>$ownerSchema</strong>)</strong> : <em>void</em> |
+| public static | <strong>setUpProperties(</strong><em>\Swaggest\GoCodeBuilder\JsonSchema\Properties/\Swaggest\GoCodeBuilder\JsonSchema\static</em> <strong>$properties</strong>, <em>\Swaggest\JsonSchema\Schema</em> <strong>$ownerSchema</strong>)</strong> : <em>void</em> |
 
 *This class extends \Swaggest\JsonSchema\Structure\ClassStructure*
 
@@ -208,7 +209,7 @@
 | public | <strong>getCode()</strong> : <em>mixed</em> |
 | public | <strong>getGeneratedStruct(</strong><em>\Swaggest\GoCodeBuilder\JsonSchema\Schema</em> <strong>$schema</strong>, <em>string</em> <strong>$path</strong>)</strong> : <em>mixed/[\Swaggest\GoCodeBuilder\JsonSchema\GeneratedStruct](#class-swaggestgocodebuilderjsonschemageneratedstruct)</em> |
 | public | <strong>getGeneratedStructs()</strong> : <em>[\Swaggest\GoCodeBuilder\JsonSchema\GeneratedStruct](#class-swaggestgocodebuilderjsonschemageneratedstruct)[]</em> |
-| public | <strong>getType(</strong><em>\Swaggest\GoCodeBuilder\JsonSchema\Schema</em> <strong>$schema</strong>, <em>string</em> <strong>$path=`'#'`</strong>)</strong> : <em>[\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)</em> |
+| public | <strong>getType(</strong><em>\Swaggest\GoCodeBuilder\JsonSchema\Schema</em> <strong>$schema</strong>, <em>string</em> <strong>$path=`'#'`</strong>, <em>[\Swaggest\GoCodeBuilder\Templates\Struct\StructDef](#class-swaggestgocodebuildertemplatesstructstructdef)</em> <strong>$parentStruct=null</strong>)</strong> : <em>[\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)</em> |
 | public | <strong>pathToName(</strong><em>mixed</em> <strong>$path</strong>)</strong> : <em>void</em> |
 
 <hr />
@@ -549,6 +550,14 @@
 
 <hr />
 
+### Interface: \Swaggest\GoCodeBuilder\Templates\Type\NoOmitEmpty
+
+| Visibility | Function |
+|:-----------|:---------|
+| public | <strong>isNoOmitEmpty()</strong> : <em>bool</em> |
+
+<hr />
+
 ### Class: \Swaggest\GoCodeBuilder\Templates\Type\Type
 
 | Visibility | Function |
@@ -604,12 +613,14 @@
 | public | <strong>__construct(</strong><em>[\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)</em> <strong>$type</strong>)</strong> : <em>void</em><br /><em>Pointer constructor.</em> |
 | public | <strong>getType()</strong> : <em>[\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)</em> |
 | public | <strong>getTypeString()</strong> : <em>mixed</em> |
+| public | <strong>isNoOmitEmpty()</strong> : <em>bool</em> |
+| public | <strong>setNoOmitEmpty(</strong><em>bool</em> <strong>$noOmitEmpty</strong>)</strong> : <em>void</em> |
 | public static | <strong>tryDereferenceOnce(</strong><em>[\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)</em> <strong>$type</strong>)</strong> : <em>[\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)</em> |
 | protected | <strong>toString()</strong> : <em>void</em> |
 
 *This class extends [\Swaggest\GoCodeBuilder\Templates\GoTemplate](#class-swaggestgocodebuildertemplatesgotemplate-abstract)*
 
-*This class implements [\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype)*
+*This class implements [\Swaggest\GoCodeBuilder\Templates\Type\AnyType](#interface-swaggestgocodebuildertemplatestypeanytype), [\Swaggest\GoCodeBuilder\Templates\Type\NoOmitEmpty](#interface-swaggestgocodebuildertemplatestypenoomitempty)*
 
 <hr />
 
