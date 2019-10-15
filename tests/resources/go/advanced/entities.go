@@ -430,7 +430,11 @@ func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) e
 			subMap = append(subMap[:len(subMap)-1], ',')
 		}
 		subMap = append(subMap, []byte(keyEscaped)...)
-		subMap = append(subMap, []byte(*val)...)
+		if val != nil {
+			subMap = append(subMap, []byte(*val)...)
+		} else {
+			subMap = append(subMap, []byte("null")...)
+		}
 		subMap = append(subMap, '}')
 	}
 
@@ -462,7 +466,11 @@ func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) erro
 				}
 
 				subMap = append(subMap, []byte(keyEscaped)...)
-				subMap = append(subMap, []byte(*val)...)
+				if val != nil {
+					subMap = append(subMap, []byte(*val)...)
+				} else {
+					subMap = append(subMap, []byte("null")...)
+				}
 				subMap = append(subMap, '}')
 
 				patternMapsRaw[regex] = subMap
