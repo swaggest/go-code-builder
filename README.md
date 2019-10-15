@@ -48,6 +48,32 @@ $goFile->getCode()->addSnippet($builder->getCode());
 
 Classes [documentation](API.md).
 
+## Schema extensions
+
+Magic properties (vendor extensions) defined in schema enable special handling.
+
+### `x-go-type`
+
+Can have a value string or an object. Contains type reference that can be used instead of generated type.
+
+If `$ignoreXGoType` option is `true` value of vendor extension is disregarded and type is generated.
+
+Value examples:
+
+* `"[]myorg.com/go-null-types.NullString::nulltypes.NullString"`
+* `"myorg.com/my-app/order.Entity"`
+* `"float64"`
+* `{"import": {"package": "my-package/domain/orders"}, "type": "Order"}`
+* `{"import": {"package": "my-package", "alias": "mp"}, "type": "Order"}`
+
+### `x-nullable`, `nullable`
+
+If `true` schema type is converted to `[<type>, "null"]`. Requires `$enableXNullable` option.
+
+### `x-omitempty`
+
+A `boolean` value to control `,omitempty` presence.
+
 ## CLI Tool
 
 You can use [json-cli](https://github.com/swaggest/json-cli#gengo) to generate Go structures from command line.

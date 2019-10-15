@@ -23,6 +23,7 @@ use Swaggest\JsonSchema\SchemaExporter;
 class TypeBuilder
 {
     const X_GO_TYPE = 'x-go-type';
+    const X_OMIT_EMPTY = 'x-omitempty';
     const X_NULLABLE = 'x-nullable';
     const NULLABLE = 'nullable';
 
@@ -673,7 +674,10 @@ GO
             if ($type instanceof NamedType) { // todo properly process const = null
                 $type = $this->processEnum($type);
             }
-            if ($this->nullable || $this->goBuilder->options->withZeroValues) {
+            if (
+                $this->nullable ||
+                ($this->goBuilder->options->withZeroValues && false !== $this->schema->{self::X_OMIT_EMPTY})
+            ) {
                 if (
                     (!$type instanceof Pointer) &&
                     (!$type instanceof Map) &&

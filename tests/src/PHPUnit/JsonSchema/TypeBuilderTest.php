@@ -104,16 +104,22 @@ GO;
         $propXNullable = new Schema();
         $propXNullable->type = Schema::STRING;
         $propXNullable->{TypeBuilder::X_NULLABLE} = true;
+        $propXNullable->{TypeBuilder::X_OMIT_EMPTY} = true;
 
         $propNullable = new Schema();
         $propNullable->type = Schema::STRING;
         $propNullable->{TypeBuilder::NULLABLE} = true;
+
+        $propKeepEmpty = new Schema();
+        $propKeepEmpty->type = Schema::STRING;
+        $propKeepEmpty->{TypeBuilder::X_OMIT_EMPTY} = false;
 
         $obj = Schema::object();
         $obj->setProperty('schema-nullable', $prop);
         $obj->setProperty('x-nullable', $propXNullable);
         $obj->setProperty('nullable', $propNullable);
         $obj->setProperty('regular', Schema::string());
+        $obj->setProperty('keep-empty', $propKeepEmpty);
 
 
         $builder = new GoBuilder();
@@ -132,6 +138,7 @@ type Untitled1 struct {
 	XNullable      string  `json:"x-nullable,omitempty"`
 	Nullable       string  `json:"nullable,omitempty"`
 	Regular        string  `json:"regular,omitempty"`
+	KeepEmpty      string  `json:"keep-empty"`
 }
 
 
@@ -156,6 +163,7 @@ type Untitled1 struct {
 	XNullable      *string `json:"x-nullable,omitempty"`
 	Nullable       *string `json:"nullable,omitempty"`
 	Regular        *string `json:"regular,omitempty"`
+	KeepEmpty      string  `json:"keep-empty"`
 }
 
 
@@ -180,6 +188,7 @@ type Untitled1 struct {
 	XNullable      string  `json:"x-nullable,omitempty"`
 	Nullable       string  `json:"nullable,omitempty"`
 	Regular        string  `json:"regular,omitempty"`
+	KeepEmpty      string  `json:"keep-empty"`
 }
 
 
@@ -202,9 +211,10 @@ GO
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
 	SchemaNullable *string `json:"schema-nullable"`
-	XNullable      *string `json:"x-nullable"`
+	XNullable      *string `json:"x-nullable,omitempty"`
 	Nullable       *string `json:"nullable"`
 	Regular        string  `json:"regular,omitempty"`
+	KeepEmpty      string  `json:"keep-empty"`
 }
 
 
