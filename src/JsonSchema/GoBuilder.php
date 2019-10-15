@@ -207,12 +207,6 @@ class GoBuilder
                     $fieldName,
                     $goPropertyType
                 );
-                // Nullable properties need `null` explicitly available in json payload.
-                if (!$goPropertyType instanceof NoOmitEmpty || !$goPropertyType->isNoOmitEmpty()) {
-                    $goProperty->getTags()->setTag('json', $name . ',omitempty');
-                } else {
-                    $goProperty->getTags()->setTag('json', $name);
-                }
                 $comment = '';
                 $property = self::unboolSchema($property);
 
@@ -222,6 +216,20 @@ class GoBuilder
 
                 if (!$property instanceof Schema) {
                     $property = new Schema();
+                }
+
+                // Nullable properties need `null` explicitly available in json payload.
+                if (
+                    false === $property->{TypeBuilder::X_OMIT_EMPTY} ||
+                    (
+                        $goPropertyType instanceof NoOmitEmpty &&
+                        $goPropertyType->isNoOmitEmpty() &&
+                        true !== $property->{TypeBuilder::X_OMIT_EMPTY}
+                    )
+                ) {
+                    $goProperty->getTags()->setTag('json', $name);
+                } else {
+                    $goProperty->getTags()->setTag('json', $name . ',omitempty');
                 }
 
                 if ($property->title) {
