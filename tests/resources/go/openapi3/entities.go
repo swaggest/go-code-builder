@@ -375,22 +375,22 @@ func (i PathItem) MarshalJSON() ([]byte, error) {
 
 // Parameter structure is generated from "#/definitions/Parameter".
 type Parameter struct {
-	Name                   string                                           `json:"name,omitempty"`
-	In                     string                                           `json:"in,omitempty"`
-	Description            string                                           `json:"description,omitempty"`
-	Required               bool                                             `json:"required,omitempty"`
-	Deprecated             bool                                             `json:"deprecated,omitempty"`
-	AllowEmptyValue        bool                                             `json:"allowEmptyValue,omitempty"`
-	Style                  string                                           `json:"style,omitempty"`
-	Explode                bool                                             `json:"explode,omitempty"`
-	AllowReserved          bool                                             `json:"allowReserved,omitempty"`
-	Schema                 *ParameterSchema                                 `json:"schema,omitempty"`
-	Content                map[string]MediaType                             `json:"content,omitempty"`
-	Example                interface{}                                      `json:"example,omitempty"`
-	Examples               map[string]ParameterExamplesAdditionalProperties `json:"examples,omitempty"`
-	SchemaXORContentOneOf1 *SchemaXORContentOneOf1                          `json:"-"`
-	Location               *ParameterLocation                               `json:"-"`
-	MapOfAnything          map[string]interface{}                           `json:"-"`                         // Key must match pattern: ^x-
+	Name             string                                           `json:"name,omitempty"`
+	In               string                                           `json:"in,omitempty"`
+	Description      string                                           `json:"description,omitempty"`
+	Required         bool                                             `json:"required,omitempty"`
+	Deprecated       bool                                             `json:"deprecated,omitempty"`
+	AllowEmptyValue  bool                                             `json:"allowEmptyValue,omitempty"`
+	Style            string                                           `json:"style,omitempty"`
+	Explode          bool                                             `json:"explode,omitempty"`
+	AllowReserved    bool                                             `json:"allowReserved,omitempty"`
+	Schema           *ParameterSchema                                 `json:"schema,omitempty"`
+	Content          map[string]MediaType                             `json:"content,omitempty"`
+	Example          interface{}                                      `json:"example,omitempty"`
+	Examples         map[string]ParameterExamplesAdditionalProperties `json:"examples,omitempty"`
+	SchemaXORContent *SchemaXORContentOneOf1                          `json:"-"`
+	Location         *ParameterLocation                               `json:"-"`
+	MapOfAnything    map[string]interface{}                           `json:"-"`                         // Key must match pattern: ^x-
 }
 
 type marshalParameter Parameter
@@ -400,7 +400,7 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 	ii := marshalParameter(*i)
 
 	err := unionMap{
-		mustUnmarshal: []interface{}{&ii, &ii.SchemaXORContentOneOf1, &ii.Location},
+		mustUnmarshal: []interface{}{&ii, &ii.SchemaXORContent, &ii.Location},
 		ignoreKeys: []string{
 			"name",
 			"in",
@@ -430,7 +430,7 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Parameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameter(i), i.MapOfAnything, i.SchemaXORContentOneOf1, i.Location)
+	return marshalUnion(marshalParameter(i), i.MapOfAnything, i.SchemaXORContent, i.Location)
 }
 
 // Schema structure is generated from "#/definitions/Schema".

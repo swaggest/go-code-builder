@@ -19,6 +19,7 @@ use Swaggest\JsonSchema\Schema;
 use Swaggest\GoCodeBuilder\Templates\Type\Type as GoType;
 use Swaggest\JsonSchema\SchemaContract;
 use Swaggest\JsonSchema\SchemaExporter;
+use Swaggest\JsonSchemaMaker\JsonSchemaFromInstance;
 
 class TypeBuilder
 {
@@ -26,6 +27,8 @@ class TypeBuilder
     const X_OMIT_EMPTY = 'x-omitempty';
     const X_NULLABLE = 'x-nullable';
     const NULLABLE = 'nullable';
+    const EXAMPLES = 'examples';
+    const EXAMPLE = 'example';
 
     const NAME_ANY = 'anything';
 
@@ -127,17 +130,35 @@ class TypeBuilder
                     $path = $this->path . '[' . $item->type . ']';
                     $name = $this->goBuilder->codeBuilder->exportableName($kind . '/' . $item->type);
                 }
+
+                $betterName = null;
+                if ($refs = $item->getFromRefs()) {
+                    $betterName = $this->goBuilder->pathToName($refs[0]);
+                    if (empty($this->goBuilder->codeBuilder->exportableName($betterName, true))) {
+                        $betterName = null;
+                    }
+                }
+
                 $itemType = Pointer::tryDereferenceOnce($this->goBuilder->getType($item, $path));
-                if (($kind !== Schema::names()->type) &&
-                    null !== $betterName = $this->makeName($itemType)) {
+                if (empty($betterName) &&
+                    ($kind !== Schema::names()->type)) {
+                    $betterName = $this->makeName($itemType);
+                }
+
+                if (!empty($betterName) && !empty($this->goBuilder->codeBuilder->exportableName($betterName, true))) {
                     $name = $this->goBuilder->codeBuilder->exportableName($betterName);
                 }
 
                 $resultStruct = $this->makeResultStruct();
 
                 if ($this->goBuilder->options->trimParentFromPropertyNames) {
-                    if (strpos($name, $resultStruct->getName()) === 0 && $name !== $resultStruct->getName()) {
-                        $name = substr($name, strlen($resultStruct->getName()));
+                    $stripped = substr($name, strlen($resultStruct->getName()));
+                    if (
+                        strpos($name, $resultStruct->getName()) === 0
+                        && $name !== $resultStruct->getName()
+                        && $stripped === $this->goBuilder->codeBuilder->exportableName($stripped)
+                    ) {
+                        $name = $stripped;
                     }
                 }
 
@@ -149,6 +170,7 @@ class TypeBuilder
                 }
 
                 $structProperty = new StructProperty($name, $itemType);
+//                $structProperty->setComment($path);
                 $structProperty->getTags()->setTag('json', '-');
                 $resultStruct->addProperty($structProperty);
                 $generatedStruct = $this->getGeneratedStruct();
@@ -607,6 +629,27 @@ GO
                 return TypeUtil::fromString($xGoType);
             }
         }
+
+        if (
+            $this->goBuilder->options->inheritSchemaFromExamples
+            && empty($this->schema->type) && empty($this->schema->properties)
+        ) {
+            $schemaMaker = new JsonSchemaFromInstance($this->schema);
+
+            if (
+                isset($this->schema->{self::EXAMPLES})
+                && is_array($this->schema->{self::EXAMPLES})
+            ) {
+                foreach ($this->schema->{self::EXAMPLES} as $example) {
+                    $schemaMaker->addInstanceValue($example);
+                }
+            }
+
+            if (isset($this->schema->{self::EXAMPLE})) {
+                $schemaMaker->addInstanceValue($this->schema->{self::EXAMPLE});
+            }
+        }
+
 
         $this->result = array();
 

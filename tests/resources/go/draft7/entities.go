@@ -31,7 +31,6 @@ type CoreSchemaMetaSchema struct {
 	MaxLength            *int64                                      `json:"maxLength,omitempty"`
 	MinLength            int64                                       `json:"minLength,omitempty"`
 	Pattern              *string                                     `json:"pattern,omitempty"`
-	ExtraProperties      map[string]interface{}                      `json:"-"`                              // All unmatched properties
 	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
 	Items                *Items                                      `json:"items,omitempty"`
 	MaxItems             *int64                                      `json:"maxItems,omitempty"`
@@ -60,6 +59,7 @@ type CoreSchemaMetaSchema struct {
 	AnyOf                []Schema                                    `json:"anyOf,omitempty"`
 	OneOf                []Schema                                    `json:"oneOf,omitempty"`
 	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema
+	ExtraProperties      map[string]interface{}                      `json:"-"`                              // All unmatched properties
 }
 
 type marshalCoreSchemaMetaSchema CoreSchemaMetaSchema
@@ -166,15 +166,15 @@ func (i Schema) MarshalJSON() ([]byte, error) {
 
 // Items structure is generated from "#[object]->items".
 type Items struct {
-	Schema              *Schema  `json:"-"`
-	SliceOfSchemaValues []Schema `json:"-"`
+	Schema      *Schema  `json:"-"`
+	SchemaArray []Schema `json:"-"`
 }
 
 type marshalItems Items
 
 // UnmarshalJSON decodes JSON.
 func (i *Items) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Schema, &i.SliceOfSchemaValues}
+	mayUnmarshal := []interface{}{&i.Schema, &i.SchemaArray}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
@@ -183,7 +183,7 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 		i.Schema = nil
 	}
 	if mayUnmarshal[1] == nil {
-		i.SliceOfSchemaValues = nil
+		i.SchemaArray = nil
 	}
 
 	return err
@@ -191,20 +191,20 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Items) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalItems(i), i.Schema, i.SliceOfSchemaValues)
+	return marshalUnion(marshalItems(i), i.Schema, i.SchemaArray)
 }
 
 // DependenciesAdditionalProperties structure is generated from "#[object]->dependencies->additionalProperties".
 type DependenciesAdditionalProperties struct {
-	Schema              *Schema  `json:"-"`
-	SliceOfStringValues []string `json:"-"`
+	Schema      *Schema  `json:"-"`
+	StringArray []string `json:"-"`
 }
 
 type marshalDependenciesAdditionalProperties DependenciesAdditionalProperties
 
 // UnmarshalJSON decodes JSON.
 func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Schema, &i.SliceOfStringValues}
+	mayUnmarshal := []interface{}{&i.Schema, &i.StringArray}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
@@ -213,7 +213,7 @@ func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 		i.Schema = nil
 	}
 	if mayUnmarshal[1] == nil {
-		i.SliceOfStringValues = nil
+		i.StringArray = nil
 	}
 
 	return err
@@ -221,7 +221,7 @@ func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalDependenciesAdditionalProperties(i), i.Schema, i.SliceOfStringValues)
+	return marshalUnion(marshalDependenciesAdditionalProperties(i), i.Schema, i.StringArray)
 }
 
 // Type structure is generated from "#[object]->type".

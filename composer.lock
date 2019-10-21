@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba0a98cc0cb7eb67c6a46267e9468461",
+    "content-hash": "b1b87d431553fb3c3c8470300050ec3d",
     "packages": [
         {
             "name": "php-yaoi/php-yaoi",
@@ -232,16 +232,16 @@
         },
         {
             "name": "swaggest/json-schema",
-            "version": "v0.12.21",
+            "version": "v0.12.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swaggest/php-json-schema.git",
-                "reference": "2b2e7c953e953ff2436f950908fe4ccf03125713"
+                "reference": "d6ed96bd74d404129d3c5548e416beab2f9b2435"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/2b2e7c953e953ff2436f950908fe4ccf03125713",
-                "reference": "2b2e7c953e953ff2436f950908fe4ccf03125713",
+                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/d6ed96bd74d404129d3c5548e416beab2f9b2435",
+                "reference": "d6ed96bd74d404129d3c5548e416beab2f9b2435",
                 "shasum": ""
             },
             "require": {
@@ -272,7 +272,53 @@
                 }
             ],
             "description": "High definition PHP structures with JSON-schema based validation",
-            "time": "2019-10-01T13:37:46+00:00"
+            "time": "2019-10-22T07:10:34+00:00"
+        },
+        {
+            "name": "swaggest/json-schema-maker",
+            "version": "v0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swaggest/json-schema-maker.git",
+                "reference": "4336134bb9e8890d0b6eea5dab51660a82c2b142"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swaggest/json-schema-maker/zipball/4336134bb9e8890d0b6eea5dab51660a82c2b142",
+                "reference": "4336134bb9e8890d0b6eea5dab51660a82c2b142",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=5.5.0",
+                "swaggest/json-schema": "^0.12.21"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Swaggest\\JsonSchemaMaker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Viacheslav Poturaev",
+                    "email": "vearutop@gmail.com",
+                    "homepage": "https://github.com/vearutop"
+                }
+            ],
+            "description": "Instance to JSON schema and back",
+            "homepage": "https://github.com/swaggest/json-schema-maker",
+            "keywords": [
+                "json-schema"
+            ],
+            "time": "2019-10-03T23:40:03+00:00"
         }
     ],
     "packages-dev": [

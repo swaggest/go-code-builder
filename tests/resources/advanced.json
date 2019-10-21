@@ -3,6 +3,73 @@
   "$id": "props.json",
   "type": "object",
   "definitions": {
+    "refOrSchema": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/reference"
+        },
+        {
+          "$ref": "#/definitions/schema"
+        }
+      ]
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "$ref"
+      ],
+      "properties": {
+        "$ref": {
+          "$ref": "#/definitions/referenceObject"
+        }
+      }
+    },
+    "referenceObject": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schema": {
+      "type": "object",
+      "x-go-type": "map[string]interface{}"
+    },
+    "noTypeWithExamples": {
+      "examples": [
+        {
+          "firstName": "John",
+          "lastName": "Doe",
+          "age": 30
+        },
+        {
+          "firstName": "Sarah",
+          "lastName": "Connor",
+          "age": null,
+          "gender": "F"
+        }
+      ]
+    },
+    "noTypeWithExample": {
+      "example": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "age": 30
+      }
+    },
+    "address": {
+      "properties": {
+        "addressStripped": {
+          "type": "string"
+        },
+        "address1": {
+          "type": "string"
+        },
+        "address2": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        }
+      }
+    },
     "stringedType": {
       "type": "string",
       "enum": [
@@ -111,6 +178,18 @@
     }
   },
   "properties": {
+    "refOrSchema": {
+      "$ref": "#/definitions/refOrSchema"
+    },
+    "noTypeWithExamples": {
+      "$ref": "#/definitions/noTypeWithExamples"
+    },
+    "noTypeWithExample": {
+      "$ref": "#/definitions/noTypeWithExample"
+    },
+    "address": {
+      "$ref": "#/definitions/address"
+    },
     "headers": {
       "$ref": "#/definitions/table",
       "description": "message header field table"

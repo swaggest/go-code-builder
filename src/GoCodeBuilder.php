@@ -69,7 +69,7 @@ GO;
     }
 
 
-    public function exportableName($name)
+    public function exportableName($name, $requireBase = false)
     {
         /** @var string $goName */
         $goName = preg_replace("/([^a-zA-Z0-9_]+)/", "_", $name);
@@ -77,6 +77,10 @@ GO;
         if ($goName === 'String') {
             $goName = 'StringProperty';
         }
+        if (!$goName && $requireBase) {
+            return '';
+        }
+
         if (!$goName) {
             $goName = 'Property' . substr(md5($name), 0, 6);
         } elseif (is_numeric($goName[0])) {
