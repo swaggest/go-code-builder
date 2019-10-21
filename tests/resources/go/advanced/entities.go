@@ -14,6 +14,10 @@ import (
 
 // Properties structure is generated from "#".
 type Properties struct {
+	RefOrSchema          *RefOrSchema           `json:"refOrSchema,omitempty"`
+	NoTypeWithExamples   *NoTypeWithExamples    `json:"noTypeWithExamples,omitempty"`
+	NoTypeWithExample    *NoTypeWithExample     `json:"noTypeWithExample,omitempty"`
+	Address              *Address               `json:"address,omitempty"`
 	Headers              *Table                 `json:"headers,omitempty"`
 	ContentType          *ShortStr              `json:"content-type,omitempty"`
 	ContentEncoding      *ShortStr              `json:"content-encoding,omitempty"`
@@ -27,8 +31,8 @@ type Properties struct {
 	Type                 *ShortStr              `json:"type,omitempty"`
 	UserID               *ShortStr              `json:"user-id,omitempty"`
 	AppID                *ShortStr              `json:"app-id,omitempty"`
-	MapOfAnything        map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
-	AdditionalProperties map[string]Property    `json:"-"`                          // All unmatched properties
+	MapOfAnything        map[string]interface{} `json:"-"`                            // Key must match pattern: ^x-
+	AdditionalProperties map[string]Property    `json:"-"`                            // All unmatched properties
 }
 
 type marshalProperties Properties
@@ -40,6 +44,10 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 	err := unionMap{
 		mustUnmarshal: []interface{}{&ii},
 		ignoreKeys: []string{
+			"refOrSchema",
+			"noTypeWithExamples",
+			"noTypeWithExample",
+			"address",
 			"headers",
 			"content-type",
 			"content-encoding",
@@ -70,6 +78,180 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 // MarshalJSON encodes JSON.
 func (i Properties) MarshalJSON() ([]byte, error) {
 	return marshalUnion(marshalProperties(i), i.MapOfAnything, i.AdditionalProperties)
+}
+
+// Reference structure is generated from "#/definitions/reference".
+type Reference struct {
+	Ref                  string                 `json:"$ref,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`              // All unmatched properties
+}
+
+type marshalReference Reference
+
+// UnmarshalJSON decodes JSON.
+func (i *Reference) UnmarshalJSON(data []byte) error {
+	ii := marshalReference(*i)
+
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
+			"$ref",
+		},
+		additionalProperties: &ii.AdditionalProperties,
+		jsonData: data,
+	}.unmarshal()
+	if err != nil {
+		return err
+	}
+	*i = Reference(ii)
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i Reference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalReference(i), i.AdditionalProperties)
+}
+
+// RefOrSchema structure is generated from "#/definitions/refOrSchema".
+type RefOrSchema struct {
+	Reference *Reference             `json:"-"`
+	Schema    map[string]interface{} `json:"-"`
+}
+
+type marshalRefOrSchema RefOrSchema
+
+// UnmarshalJSON decodes JSON.
+func (i *RefOrSchema) UnmarshalJSON(data []byte) error {
+	mayUnmarshal := []interface{}{&i.Reference, &i.Schema}
+	err := unionMap{
+		mayUnmarshal: mayUnmarshal,
+		jsonData: data,
+	}.unmarshal()
+	if mayUnmarshal[0] == nil {
+		i.Reference = nil
+	}
+	if mayUnmarshal[1] == nil {
+		i.Schema = nil
+	}
+
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i RefOrSchema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalRefOrSchema(i), i.Reference, i.Schema)
+}
+
+// NoTypeWithExamples structure is generated from "#/definitions/noTypeWithExamples".
+type NoTypeWithExamples struct {
+	FirstName            string                 `json:"firstName,omitempty"`
+	LastName             string                 `json:"lastName,omitempty"`
+	Age                  *int64                 `json:"age"`
+	Gender               string                 `json:"gender,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties
+}
+
+type marshalNoTypeWithExamples NoTypeWithExamples
+
+// UnmarshalJSON decodes JSON.
+func (i *NoTypeWithExamples) UnmarshalJSON(data []byte) error {
+	ii := marshalNoTypeWithExamples(*i)
+
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
+			"firstName",
+			"lastName",
+			"age",
+			"gender",
+		},
+		additionalProperties: &ii.AdditionalProperties,
+		jsonData: data,
+	}.unmarshal()
+	if err != nil {
+		return err
+	}
+	*i = NoTypeWithExamples(ii)
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i NoTypeWithExamples) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalNoTypeWithExamples(i), i.AdditionalProperties)
+}
+
+// NoTypeWithExample structure is generated from "#/definitions/noTypeWithExample".
+type NoTypeWithExample struct {
+	FirstName            string                 `json:"firstName,omitempty"`
+	LastName             string                 `json:"lastName,omitempty"`
+	Age                  int64                  `json:"age,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties
+}
+
+type marshalNoTypeWithExample NoTypeWithExample
+
+// UnmarshalJSON decodes JSON.
+func (i *NoTypeWithExample) UnmarshalJSON(data []byte) error {
+	ii := marshalNoTypeWithExample(*i)
+
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
+			"firstName",
+			"lastName",
+			"age",
+		},
+		additionalProperties: &ii.AdditionalProperties,
+		jsonData: data,
+	}.unmarshal()
+	if err != nil {
+		return err
+	}
+	*i = NoTypeWithExample(ii)
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i NoTypeWithExample) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalNoTypeWithExample(i), i.AdditionalProperties)
+}
+
+// Address structure is generated from "#/definitions/address".
+type Address struct {
+	Stripped             string                 `json:"addressStripped,omitempty"`
+	Address1             string                 `json:"address1,omitempty"`
+	Address2             string                 `json:"address2,omitempty"`
+	City                 string                 `json:"city,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`                         // All unmatched properties
+}
+
+type marshalAddress Address
+
+// UnmarshalJSON decodes JSON.
+func (i *Address) UnmarshalJSON(data []byte) error {
+	ii := marshalAddress(*i)
+
+	err := unionMap{
+		mustUnmarshal: []interface{}{&ii},
+		ignoreKeys: []string{
+			"addressStripped",
+			"address1",
+			"address2",
+			"city",
+		},
+		additionalProperties: &ii.AdditionalProperties,
+		jsonData: data,
+	}.unmarshal()
+	if err != nil {
+		return err
+	}
+	*i = Address(ii)
+	return err
+}
+
+// MarshalJSON encodes JSON.
+func (i Address) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAddress(i), i.AdditionalProperties)
 }
 
 // Table structure is generated from "#/definitions/table".

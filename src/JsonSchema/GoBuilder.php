@@ -72,6 +72,10 @@ class GoBuilder
      */
     public function getType($schema, $path = '#', StructDef $parentStruct = null)
     {
+        if (isset($this->generatedStructs[$path])) {
+            return $this->generatedStructs[$path]->structDef->getType();
+        }
+
         $s = self::unboolSchema($schema);
         if ($s instanceof Wrapper) {
             $path = $s->getObjectItemClass();
@@ -197,8 +201,13 @@ class GoBuilder
                 $fieldName = $this->codeBuilder->exportableName($name);
 
                 if ($this->options->trimParentFromPropertyNames) {
-                    if (strpos($fieldName, $structDef->getName()) === 0 && $fieldName !== $structDef->getName()) {
-                        $fieldName = substr($fieldName, strlen($structDef->getName()));
+                    $stripped = substr($fieldName, strlen($structDef->getName()));
+                    if (
+                        strpos($fieldName, $structDef->getName()) === 0
+                        && $fieldName !== $structDef->getName()
+                        && $stripped === $this->codeBuilder->exportableName($stripped)
+                    ) {
+                        $fieldName = $stripped;
                     }
                 }
 

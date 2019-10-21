@@ -1004,14 +1004,14 @@ func (i MessageTrait) MarshalJSON() ([]byte, error) {
 // MessageTraitHeaders structure is generated from "#/definitions/messageTrait->headers".
 type MessageTraitHeaders struct {
 	Reference *Reference             `json:"-"`
-	OneOf1    map[string]interface{} `json:"-"`
+	Schema    map[string]interface{} `json:"-"`
 }
 
 type marshalMessageTraitHeaders MessageTraitHeaders
 
 // UnmarshalJSON decodes JSON.
 func (i *MessageTraitHeaders) UnmarshalJSON(data []byte) error {
-	mayUnmarshal := []interface{}{&i.Reference, &i.OneOf1}
+	mayUnmarshal := []interface{}{&i.Reference, &i.Schema}
 	err := unionMap{
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
@@ -1020,7 +1020,7 @@ func (i *MessageTraitHeaders) UnmarshalJSON(data []byte) error {
 		i.Reference = nil
 	}
 	if mayUnmarshal[1] == nil {
-		i.OneOf1 = nil
+		i.Schema = nil
 	}
 
 	return err
@@ -1028,7 +1028,7 @@ func (i *MessageTraitHeaders) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i MessageTraitHeaders) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalMessageTraitHeaders(i), i.Reference, i.OneOf1)
+	return marshalUnion(marshalMessageTraitHeaders(i), i.Reference, i.Schema)
 }
 
 // MessageTraitCorrelationID structure is generated from "#/definitions/messageTrait->correlationId".

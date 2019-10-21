@@ -73,6 +73,12 @@ class Options extends ClassStructure
     public $defaultAdditionalProperties = true;
 
     /**
+     * Inherit schema from schema examples where available.
+     * @var bool
+     */
+    public $inheritSchemaFromExamples = false;
+
+    /**
      * @param Properties|static $properties
      * @param Schema $ownerSchema
      */
