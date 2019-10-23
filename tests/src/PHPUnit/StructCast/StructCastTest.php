@@ -44,7 +44,6 @@ func (base *Base) LoadFrom(derived Derived) {
 	if derived.ID != nil {
 		base.Id = int64(*derived.ID)
 	}
-
 }
 
 
@@ -251,7 +250,6 @@ func (base *Base) LoadFrom(derived Derived) {
 		}
 		base.BodyMap[toKeyf30f].LoadFrom(derived.BodyMap[keyf30f])
 	}
-
 }
 
 GO;

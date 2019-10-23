@@ -95,48 +95,57 @@ GO
 func (u unionMap) unmarshal() error {
 	{$this->ifThenElse($this->withMustUnmarshal,
             "for _, item := range u.mustUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}")}
+	
 	{$this->ifThenElse($this->withMayUnmarshal,
             "for i, item := range u.mayUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			u.mayUnmarshal[i] = nil
 		}
 	}")}
+	
 	{$this->ifThenElse($this->withPatternProperties && !$this->withAdditionalProperties,
             "if len(u.patternProperties) == 0 {
 		return nil
 	}")}
+	
 	{$this->ifThenElse(!$this->withPatternProperties && $this->withAdditionalProperties,
             "if u.additionalProperties == nil {
 		return nil
 	}")}
+	
 	{$this->ifThenElse($this->withPatternProperties && $this->withAdditionalProperties,
             "if len(u.patternProperties) == 0 && u.additionalProperties == nil {
 		return nil
 	}")}
+	
 	{$this->ifThenElse($this->withPatternProperties || $this->withAdditionalProperties,
-            "// unmarshal to a generic map
+            "// Unmarshal to a generic map.
 	var m map[string]*json.RawMessage
+
 	err := json.Unmarshal(u.jsonData, &m)
 	if err != nil {
 		return err
 	}")}
+	
 	{$this->ifThenElse($this->withIgnoreKeys && ($this->withPatternProperties || $this->withAdditionalProperties),
-            "// removing ignored keys (defined in struct)
+            "// Remove ignored keys (defined in struct).
 	for _, i := range u.ignoreKeys {
 		delete(m, i)
 	}
-	// returning early on empty map
+	
+	// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}")}
+	
 	{$this->ifThenElse($this->withPatternProperties,
             "if len(u.patternProperties) != 0 {
 		err = u.unmarshalPatternProperties(m)
@@ -144,35 +153,45 @@ func (u unionMap) unmarshal() error {
 			return err
 		}
 	}")}
+	
 	{$this->ifThenElse($this->withPatternProperties || $this->withAdditionalProperties,
             "// Returning early on empty map.
 	if len(m) == 0 {
 		return nil
 	}")}
+	
 	{$this->ifThenElse($this->withAdditionalProperties,
             "if u.additionalProperties != nil {
 		return u.unmarshalAdditionalProperties(m)
 	}")}
+	
 	return nil
 }
+
 {$this->ifThenElse($this->withAdditionalProperties, <<<'GO'
 func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) error {
 	var err error
+	
 	subMap := make([]byte, 1, 100)
+	
 	subMap[0] = '{'
 
 	// Iterating map and filling additional properties.
 	for key, val := range m {
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+		
 		if len(subMap) != 1 {
 			subMap = append(subMap[:len(subMap)-1], ',')
 		}
+		
 		subMap = append(subMap, []byte(keyEscaped)...)
+		
 		if val != nil {
 			subMap = append(subMap, []byte(*val)...)
 		} else {
 			subMap = append(subMap, []byte("null")...)
 		}
+		
 		subMap = append(subMap, '}')
 	}
 
@@ -182,6 +201,7 @@ func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) e
 			return err
 		}
 	}
+	
 	return nil
 }
 GO
@@ -189,16 +209,19 @@ GO
 {$this->ifThenElse($this->withPatternProperties, <<<'GO'
 func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) error {
 	patternMapsRaw := make(map[*regexp.Regexp][]byte, len(u.patternProperties))
+	
 	// Iterating map and filling pattern properties sub maps.
 	for key, val := range m {
 		matched := false
-		var ok bool
+		ok := false
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
 
 		for regex := range u.patternProperties {
 			if regex.MatchString(key) {
 				matched = true
+				
 				var subMap []byte
+				
 				if subMap, ok = patternMapsRaw[regex]; !ok {
 					subMap = make([]byte, 1, 100)
 					subMap[0] = '{'
@@ -207,11 +230,13 @@ func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) erro
 				}
 
 				subMap = append(subMap, []byte(keyEscaped)...)
+				
 				if val != nil {
 					subMap = append(subMap, []byte(*val)...)
 				} else {
 					subMap = append(subMap, []byte("null")...)
 				}
+				
 				subMap = append(subMap, '}')
 
 				patternMapsRaw[regex] = subMap
@@ -234,8 +259,11 @@ func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) erro
 			}
 		}
 	}
+	
 	return nil
 }
+
+
 GO
         )}
 GO;

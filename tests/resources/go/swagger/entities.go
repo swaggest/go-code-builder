@@ -64,13 +64,17 @@ func (i *SwaggerSchema) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["swagger"]; !ok || string(v) != `"2.0"` {
 		return fmt.Errorf(`bad or missing const value for "swagger" ("2.0" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = SwaggerSchema(ii)
+
 	return err
 }
 
@@ -118,10 +122,13 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Info(ii)
+
 	return err
 }
 
@@ -158,10 +165,13 @@ func (i *Contact) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Contact(ii)
+
 	return err
 }
 
@@ -194,10 +204,13 @@ func (i *License) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = License(ii)
+
 	return err
 }
 
@@ -226,6 +239,7 @@ func (i *Paths) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 
 	return err
 }
@@ -273,10 +287,13 @@ func (i *PathItem) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = PathItem(ii)
+
 	return err
 }
 
@@ -329,10 +346,13 @@ func (i *Operation) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Operation(ii)
+
 	return err
 }
 
@@ -367,10 +387,13 @@ func (i *ExternalDocs) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = ExternalDocs(ii)
+
 	return err
 }
 
@@ -410,13 +433,17 @@ func (i *BodyParameter) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["in"]; !ok || string(v) != `"body"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("body" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = BodyParameter(ii)
+
 	return err
 }
 
@@ -512,10 +539,13 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Schema(ii)
+
 	return err
 }
 
@@ -539,13 +569,16 @@ func (i *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Schema = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.Bool = nil
 	}
 
+	
 	return err
 }
 
@@ -569,13 +602,16 @@ func (i *HTTPJSONSchemaOrgDraft04SchemaPropertiesType) UnmarshalJSON(data []byte
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.SimpleTypes = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.SliceOfSimpleTypesValues = nil
 	}
 
+	
 	return err
 }
 
@@ -599,13 +635,16 @@ func (i *SchemaItems) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Schema = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.SliceOfSchemaValues = nil
 	}
 
+	
 	return err
 }
 
@@ -644,10 +683,13 @@ func (i *XML) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = XML(ii)
+
 	return err
 }
 
@@ -719,13 +761,17 @@ func (i *HeaderParameterSubSchema) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["in"]; !ok || string(v) != `"header"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("header" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = HeaderParameterSubSchema(ii)
+
 	return err
 }
 
@@ -793,10 +839,13 @@ func (i *PrimitivesItems) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = PrimitivesItems(ii)
+
 	return err
 }
 
@@ -870,13 +919,17 @@ func (i *FormDataParameterSubSchema) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["in"]; !ok || string(v) != `"formData"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("formData" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = FormDataParameterSubSchema(ii)
+
 	return err
 }
 
@@ -955,13 +1008,17 @@ func (i *QueryParameterSubSchema) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["in"]; !ok || string(v) != `"query"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("query" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = QueryParameterSubSchema(ii)
+
 	return err
 }
 
@@ -1037,16 +1094,21 @@ func (i *PathParameterSubSchema) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["required"]; !ok || string(v) != "true" {
 		return fmt.Errorf(`bad or missing const value for "required" (true expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["in"]; !ok || string(v) != `"path"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("path" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = PathParameterSubSchema(ii)
+
 	return err
 }
 
@@ -1077,19 +1139,24 @@ func (i *NonBodyParameter) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.HeaderParameterSubSchema = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.FormDataParameterSubSchema = nil
 	}
+
 	if mayUnmarshal[2] == nil {
 		i.QueryParameterSubSchema = nil
 	}
+
 	if mayUnmarshal[3] == nil {
 		i.PathParameterSubSchema = nil
 	}
 
+	
 	return err
 }
 
@@ -1113,13 +1180,16 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.BodyParameter = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.NonBodyParameter = nil
 	}
 
+	
 	return err
 }
 
@@ -1148,13 +1218,16 @@ func (i *ParametersListItems) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Parameter = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.JSONReference = nil
 	}
 
+	
 	return err
 }
 
@@ -1191,10 +1264,13 @@ func (i *Response) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Response(ii)
+
 	return err
 }
 
@@ -1244,13 +1320,17 @@ func (i *FileSchema) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"file"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("file" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = FileSchema(ii)
+
 	return err
 }
 
@@ -1279,13 +1359,16 @@ func (i *ResponseSchema) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Schema = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.FileSchema = nil
 	}
 
+	
 	return err
 }
 
@@ -1350,10 +1433,13 @@ func (i *Header) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Header(ii)
+
 	return err
 }
 
@@ -1377,13 +1463,16 @@ func (i *ResponseValue) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Response = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.JSONReference = nil
 	}
 
+	
 	return err
 }
 
@@ -1412,6 +1501,7 @@ func (i *Responses) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 
 	return err
 }
@@ -1446,13 +1536,17 @@ func (i *BasicAuthenticationSecurity) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"basic"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("basic" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = BasicAuthenticationSecurity(ii)
+
 	return err
 }
 
@@ -1495,13 +1589,17 @@ func (i *APIKeySecurity) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"apiKey"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("apiKey" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = APIKeySecurity(ii)
+
 	return err
 }
 
@@ -1545,16 +1643,21 @@ func (i *Oauth2ImplicitSecurity) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"oauth2"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["flow"]; !ok || string(v) != `"implicit"` {
 		return fmt.Errorf(`bad or missing const value for "flow" ("implicit" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = Oauth2ImplicitSecurity(ii)
+
 	return err
 }
 
@@ -1598,16 +1701,21 @@ func (i *Oauth2PasswordSecurity) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"oauth2"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["flow"]; !ok || string(v) != `"password"` {
 		return fmt.Errorf(`bad or missing const value for "flow" ("password" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = Oauth2PasswordSecurity(ii)
+
 	return err
 }
 
@@ -1651,16 +1759,21 @@ func (i *Oauth2ApplicationSecurity) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"oauth2"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["flow"]; !ok || string(v) != `"application"` {
 		return fmt.Errorf(`bad or missing const value for "flow" ("application" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = Oauth2ApplicationSecurity(ii)
+
 	return err
 }
 
@@ -1706,16 +1819,21 @@ func (i *Oauth2AccessCodeSecurity) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"oauth2"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["flow"]; !ok || string(v) != `"accessCode"` {
 		return fmt.Errorf(`bad or missing const value for "flow" ("accessCode" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = Oauth2AccessCodeSecurity(ii)
+
 	return err
 }
 
@@ -1748,25 +1866,32 @@ func (i *SecurityDefinitionsAdditionalProperties) UnmarshalJSON(data []byte) err
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.BasicAuthenticationSecurity = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.APIKeySecurity = nil
 	}
+
 	if mayUnmarshal[2] == nil {
 		i.Oauth2ImplicitSecurity = nil
 	}
+
 	if mayUnmarshal[3] == nil {
 		i.Oauth2PasswordSecurity = nil
 	}
+
 	if mayUnmarshal[4] == nil {
 		i.Oauth2ApplicationSecurity = nil
 	}
+
 	if mayUnmarshal[5] == nil {
 		i.Oauth2AccessCodeSecurity = nil
 	}
 
+	
 	return err
 }
 
@@ -1801,10 +1926,13 @@ func (i *Tag) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Tag(ii)
+
 	return err
 }
 
@@ -1842,11 +1970,14 @@ func (i SchemesListItems) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *SchemesListItems) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := SchemesListItems(ii)
+
 	switch v {
 	case SchemesListItemsHTTP:
 	case SchemesListItemsHTTPS:
@@ -1858,6 +1989,7 @@ func (i *SchemesListItems) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -1896,11 +2028,14 @@ func (i SimpleTypes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *SimpleTypes) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := SimpleTypes(ii)
+
 	switch v {
 	case SimpleTypesArray:
 	case SimpleTypesBoolean:
@@ -1915,6 +2050,7 @@ func (i *SimpleTypes) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -1949,11 +2085,14 @@ func (i HeaderParameterSubSchemaType) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *HeaderParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := HeaderParameterSubSchemaType(ii)
+
 	switch v {
 	case HeaderParameterSubSchemaTypeString:
 	case HeaderParameterSubSchemaTypeNumber:
@@ -1966,6 +2105,7 @@ func (i *HeaderParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2000,11 +2140,14 @@ func (i PrimitivesItemsType) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *PrimitivesItemsType) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := PrimitivesItemsType(ii)
+
 	switch v {
 	case PrimitivesItemsTypeString:
 	case PrimitivesItemsTypeNumber:
@@ -2017,6 +2160,7 @@ func (i *PrimitivesItemsType) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2049,11 +2193,14 @@ func (i CollectionFormat) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *CollectionFormat) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := CollectionFormat(ii)
+
 	switch v {
 	case CollectionFormatCsv:
 	case CollectionFormatSsv:
@@ -2065,6 +2212,7 @@ func (i *CollectionFormat) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2101,11 +2249,14 @@ func (i FormDataParameterSubSchemaType) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *FormDataParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := FormDataParameterSubSchemaType(ii)
+
 	switch v {
 	case FormDataParameterSubSchemaTypeString:
 	case FormDataParameterSubSchemaTypeNumber:
@@ -2119,6 +2270,7 @@ func (i *FormDataParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2153,11 +2305,14 @@ func (i CollectionFormatWithMulti) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *CollectionFormatWithMulti) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := CollectionFormatWithMulti(ii)
+
 	switch v {
 	case CollectionFormatWithMultiCsv:
 	case CollectionFormatWithMultiSsv:
@@ -2170,6 +2325,7 @@ func (i *CollectionFormatWithMulti) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2204,11 +2360,14 @@ func (i QueryParameterSubSchemaType) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *QueryParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := QueryParameterSubSchemaType(ii)
+
 	switch v {
 	case QueryParameterSubSchemaTypeString:
 	case QueryParameterSubSchemaTypeNumber:
@@ -2221,6 +2380,7 @@ func (i *QueryParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2255,11 +2415,14 @@ func (i PathParameterSubSchemaType) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *PathParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := PathParameterSubSchemaType(ii)
+
 	switch v {
 	case PathParameterSubSchemaTypeString:
 	case PathParameterSubSchemaTypeNumber:
@@ -2272,6 +2435,7 @@ func (i *PathParameterSubSchemaType) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2306,11 +2470,14 @@ func (i HeaderType) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *HeaderType) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := HeaderType(ii)
+
 	switch v {
 	case HeaderTypeString:
 	case HeaderTypeNumber:
@@ -2323,6 +2490,7 @@ func (i *HeaderType) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2351,11 +2519,14 @@ func (i APIKeySecurityIn) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *APIKeySecurityIn) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := APIKeySecurityIn(ii)
+
 	switch v {
 	case APIKeySecurityInHeader:
 	case APIKeySecurityInQuery:
@@ -2365,6 +2536,7 @@ func (i *APIKeySecurityIn) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -2372,23 +2544,29 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 	result := make([]byte, 1, 100)
 	result[0] = '{'
 	isObject := true
+	
 	for _, m := range maps {
 		j, err := json.Marshal(m)
 		if err != nil {
 			return nil, err
 		}
+		
 		if string(j) == "{}" {
 			continue
 		}
+		
 		if string(j) == "null" {
 			continue
 		}
+		
 		if j[0] != '{' {
 			if len(result) == 1 && (isObject || bytes.Equal(result, j)) {
 				result = j
 				isObject = false
+				
 				continue
 			}
+			
 			return nil, errors.New("failed to union map: object expected, " + string(j) + " received")
 		}
 
@@ -2399,8 +2577,10 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		if len(result) > 1 {
 			result[len(result)-1] = ','
 		}
+		
 		result = append(result, j[1:]...)
 	}
+	
 	// Close empty result.
 	if isObject && len(result) == 1 {
 		result = append(result, '}')
@@ -2425,43 +2605,50 @@ type unionMap struct {
 
 func (u unionMap) unmarshal() error {
 	for _, item := range u.mustUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}
+
 	for i, item := range u.mayUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			u.mayUnmarshal[i] = nil
 		}
 	}
+
 	if len(u.patternProperties) == 0 {
 		return nil
 	}
 
-	// unmarshal to a generic map
+	// Unmarshal to a generic map.
 	var m map[string]*json.RawMessage
+
 	err := json.Unmarshal(u.jsonData, &m)
 	if err != nil {
 		return err
 	}
-	// removing ignored keys (defined in struct)
+
+	// Remove ignored keys (defined in struct).
 	for _, i := range u.ignoreKeys {
 		delete(m, i)
 	}
-	// returning early on empty map
+
+	// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}
+
 	if len(u.patternProperties) != 0 {
 		err = u.unmarshalPatternProperties(m)
 		if err != nil {
 			return err
 		}
 	}
+
 	// Returning early on empty map.
 	if len(m) == 0 {
 		return nil
@@ -2472,16 +2659,19 @@ func (u unionMap) unmarshal() error {
 
 func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) error {
 	patternMapsRaw := make(map[*regexp.Regexp][]byte, len(u.patternProperties))
+
 	// Iterating map and filling pattern properties sub maps.
 	for key, val := range m {
 		matched := false
-		var ok bool
+		ok := false
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
 
 		for regex := range u.patternProperties {
 			if regex.MatchString(key) {
 				matched = true
+
 				var subMap []byte
+
 				if subMap, ok = patternMapsRaw[regex]; !ok {
 					subMap = make([]byte, 1, 100)
 					subMap[0] = '{'
@@ -2490,11 +2680,13 @@ func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) erro
 				}
 
 				subMap = append(subMap, []byte(keyEscaped)...)
+
 				if val != nil {
 					subMap = append(subMap, []byte(*val)...)
 				} else {
 					subMap = append(subMap, []byte("null")...)
 				}
+
 				subMap = append(subMap, '}')
 
 				patternMapsRaw[regex] = subMap
@@ -2517,5 +2709,6 @@ func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) erro
 			}
 		}
 	}
+
 	return nil
 }

@@ -38,10 +38,13 @@ func (i *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 		additionalProperties: &ii.AdditionalProperties,
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = MessagingReaderReads(ii)
+
 	return err
 }
 
@@ -80,16 +83,21 @@ func (i *Book) UnmarshalJSON(data []byte) error {
 		additionalProperties: &ii.AdditionalProperties,
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["entity_type"]; !ok || string(v) != `"book"` {
 		return fmt.Errorf(`bad or missing const value for "entity_type" ("book" expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["reason"]; !ok || string(v) != `"premium"` {
 		return fmt.Errorf(`bad or missing const value for "reason" ("premium" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = Book(ii)
+
 	return err
 }
 
@@ -128,11 +136,14 @@ func (i PlotStrategy) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *PlotStrategy) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := PlotStrategy(ii)
+
 	switch v {
 	case PlotStrategyFast:
 	case PlotStrategySlow:
@@ -142,6 +153,7 @@ func (i *PlotStrategy) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -170,11 +182,14 @@ func (i ReadType) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *ReadType) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := ReadType(ii)
+
 	switch v {
 	case ReadTypeNight:
 	case ReadTypeDay:
@@ -184,6 +199,7 @@ func (i *ReadType) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -191,23 +207,29 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 	result := make([]byte, 1, 100)
 	result[0] = '{'
 	isObject := true
+	
 	for _, m := range maps {
 		j, err := json.Marshal(m)
 		if err != nil {
 			return nil, err
 		}
+		
 		if string(j) == "{}" {
 			continue
 		}
+		
 		if string(j) == "null" {
 			continue
 		}
+		
 		if j[0] != '{' {
 			if len(result) == 1 && (isObject || bytes.Equal(result, j)) {
 				result = j
 				isObject = false
+				
 				continue
 			}
+			
 			return nil, errors.New("failed to union map: object expected, " + string(j) + " received")
 		}
 
@@ -218,8 +240,10 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		if len(result) > 1 {
 			result[len(result)-1] = ','
 		}
+		
 		result = append(result, j[1:]...)
 	}
+	
 	// Close empty result.
 	if isObject && len(result) == 1 {
 		result = append(result, '}')
@@ -237,14 +261,15 @@ type unionMap struct {
 
 func (u unionMap) unmarshal() error {
 	for _, item := range u.mustUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}
+
 	for i, item := range u.mayUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			u.mayUnmarshal[i] = nil
@@ -255,17 +280,20 @@ func (u unionMap) unmarshal() error {
 		return nil
 	}
 
-	// unmarshal to a generic map
+	// Unmarshal to a generic map.
 	var m map[string]*json.RawMessage
+
 	err := json.Unmarshal(u.jsonData, &m)
 	if err != nil {
 		return err
 	}
-	// removing ignored keys (defined in struct)
+
+	// Remove ignored keys (defined in struct).
 	for _, i := range u.ignoreKeys {
 		delete(m, i)
 	}
-	// returning early on empty map
+
+	// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}
@@ -274,28 +302,37 @@ func (u unionMap) unmarshal() error {
 	if len(m) == 0 {
 		return nil
 	}
+
 	if u.additionalProperties != nil {
 		return u.unmarshalAdditionalProperties(m)
 	}
+
 	return nil
 }
+
 func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) error {
 	var err error
+
 	subMap := make([]byte, 1, 100)
+
 	subMap[0] = '{'
 
 	// Iterating map and filling additional properties.
 	for key, val := range m {
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+
 		if len(subMap) != 1 {
 			subMap = append(subMap[:len(subMap)-1], ',')
 		}
+
 		subMap = append(subMap, []byte(keyEscaped)...)
+
 		if val != nil {
 			subMap = append(subMap, []byte(*val)...)
 		} else {
 			subMap = append(subMap, []byte("null")...)
 		}
+
 		subMap = append(subMap, '}')
 	}
 
@@ -305,5 +342,6 @@ func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) e
 			return err
 		}
 	}
+
 	return nil
 }

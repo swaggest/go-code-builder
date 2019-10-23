@@ -53,10 +53,13 @@ func (i *AsyncAPI) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = AsyncAPI(ii)
+
 	return err
 }
 
@@ -95,10 +98,13 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Info(ii)
+
 	return err
 }
 
@@ -131,10 +137,13 @@ func (i *Contact) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Contact(ii)
+
 	return err
 }
 
@@ -163,10 +172,13 @@ func (i *License) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = License(ii)
+
 	return err
 }
 
@@ -203,10 +215,13 @@ func (i *Server) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Server(ii)
+
 	return err
 }
 
@@ -239,10 +254,13 @@ func (i *ServerVariable) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = ServerVariable(ii)
+
 	return err
 }
 
@@ -267,6 +285,7 @@ func (i *Topics) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 
 	return err
 }
@@ -302,10 +321,13 @@ func (i *TopicItem) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = TopicItem(ii)
+
 	return err
 }
 
@@ -338,10 +360,13 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Parameter(ii)
+
 	return err
 }
 
@@ -384,10 +409,13 @@ func (i *Message) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Message(ii)
+
 	return err
 }
 
@@ -418,10 +446,13 @@ func (i *Tag) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Tag(ii)
+
 	return err
 }
 
@@ -452,10 +483,13 @@ func (i *ExternalDocs) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = ExternalDocs(ii)
+
 	return err
 }
 
@@ -482,10 +516,13 @@ func (i *OperationOneOf1) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = OperationOneOf1(ii)
+
 	return err
 }
 
@@ -505,13 +542,16 @@ func (i *Operation) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Message = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.OneOf1 = nil
 	}
 
+	
 	return err
 }
 
@@ -544,10 +584,13 @@ func (i *Stream) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Stream(ii)
+
 	return err
 }
 
@@ -569,13 +612,17 @@ func (i *StreamFramingOneOf0) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"chunked"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("chunked" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = StreamFramingOneOf0(ii)
+
 	return err
 }
 
@@ -595,13 +642,16 @@ func (i *StreamFramingOneOf1) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"sse"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("sse" expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["delimiter"]; !ok || string(v) != `"\\n\\n"` {
 		return fmt.Errorf(`bad or missing const value for "delimiter" ("\\n\\n" expected, %v received)`, v)
 	}
 
+	
 	return err
 }
 
@@ -629,13 +679,16 @@ func (i *StreamFraming) UnmarshalJSON(data []byte) error {
 		additionalProperties: &i.AdditionalProperties,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.OneOf0 = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.OneOf1 = nil
 	}
 
+	
 	return err
 }
 
@@ -666,10 +719,13 @@ func (i *Events) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Events(ii)
+
 	return err
 }
 
@@ -704,10 +760,13 @@ func (i *Reference) UnmarshalJSON(data []byte) error {
 		additionalProperties: &ii.AdditionalProperties,
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Reference(ii)
+
 	return err
 }
 
@@ -737,13 +796,17 @@ func (i *UserPassword) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"userPassword"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("userPassword" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = UserPassword(ii)
+
 	return err
 }
 
@@ -775,13 +838,17 @@ func (i *APIKey) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"apiKey"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("apiKey" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = APIKey(ii)
+
 	return err
 }
 
@@ -811,13 +878,17 @@ func (i *X509) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"X509"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("X509" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = X509(ii)
+
 	return err
 }
 
@@ -847,13 +918,17 @@ func (i *SymmetricEncryption) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"symmetricEncryption"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("symmetricEncryption" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = SymmetricEncryption(ii)
+
 	return err
 }
 
@@ -883,13 +958,17 @@ func (i *AsymmetricEncryption) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"asymmetricEncryption"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("asymmetricEncryption" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = AsymmetricEncryption(ii)
+
 	return err
 }
 
@@ -921,13 +1000,17 @@ func (i *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"http"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("http" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = NonBearerHTTPSecurityScheme(ii)
+
 	return err
 }
 
@@ -960,16 +1043,21 @@ func (i *BearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["scheme"]; !ok || string(v) != `"bearer"` {
 		return fmt.Errorf(`bad or missing const value for "scheme" ("bearer" expected, %v received)`, v)
 	}
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"http"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("http" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = BearerHTTPSecurityScheme(ii)
+
 	return err
 }
 
@@ -1003,13 +1091,17 @@ func (i *APIKeyHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		},
 		jsonData: data,
 	}.unmarshal()
+
 	if v, ok := constValues["type"]; !ok || string(v) != `"httpApiKey"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("httpApiKey" expected, %v received)`, v)
 	}
+
 	if err != nil {
 		return err
 	}
+
 	*i = APIKeyHTTPSecurityScheme(ii)
+
 	return err
 }
 
@@ -1030,16 +1122,20 @@ func (i *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.NonBearerHTTPSecurityScheme = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.BearerHTTPSecurityScheme = nil
 	}
+
 	if mayUnmarshal[2] == nil {
 		i.APIKeyHTTPSecurityScheme = nil
 	}
 
+	
 	return err
 }
 
@@ -1063,25 +1159,32 @@ func (i *SecurityScheme) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.UserPassword = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.APIKey = nil
 	}
+
 	if mayUnmarshal[2] == nil {
 		i.X509 = nil
 	}
+
 	if mayUnmarshal[3] == nil {
 		i.SymmetricEncryption = nil
 	}
+
 	if mayUnmarshal[4] == nil {
 		i.AsymmetricEncryption = nil
 	}
+
 	if mayUnmarshal[5] == nil {
 		i.HTTPSecurityScheme = nil
 	}
 
+	
 	return err
 }
 
@@ -1101,13 +1204,16 @@ func (i *ComponentsSecuritySchemesAZAZ09) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Reference = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.SecurityScheme = nil
 	}
 
+	
 	return err
 }
 
@@ -1131,6 +1237,7 @@ func (i *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 		jsonData: data,
 	}.unmarshal()
 
+
 	return err
 }
 
@@ -1148,11 +1255,14 @@ const (
 // UnmarshalJSON decodes JSON.
 func (i *AsyncAPIAsyncapi) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := AsyncAPIAsyncapi(ii)
+
 	switch v {
 	case AsyncAPIAsyncapi100:
 	case AsyncAPIAsyncapi110:
@@ -1163,6 +1273,7 @@ func (i *AsyncAPIAsyncapi) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -1190,11 +1301,14 @@ const (
 // UnmarshalJSON decodes JSON.
 func (i *ServerScheme) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := ServerScheme(ii)
+
 	switch v {
 	case ServerSchemeKafka:
 	case ServerSchemeKafkaSecure:
@@ -1216,6 +1330,7 @@ func (i *ServerScheme) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -1231,11 +1346,14 @@ const (
 // UnmarshalJSON decodes JSON.
 func (i *StreamFramingOneOf0Delimiter) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := StreamFramingOneOf0Delimiter(ii)
+
 	switch v {
 	case StreamFramingOneOf0DelimiterRN:
 	case StreamFramingOneOf0DelimiterN:
@@ -1245,6 +1363,7 @@ func (i *StreamFramingOneOf0Delimiter) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -1260,11 +1379,14 @@ const (
 // UnmarshalJSON decodes JSON.
 func (i *APIKeyIn) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := APIKeyIn(ii)
+
 	switch v {
 	case APIKeyInUser:
 	case APIKeyInPassword:
@@ -1274,6 +1396,7 @@ func (i *APIKeyIn) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -1290,11 +1413,14 @@ const (
 // UnmarshalJSON decodes JSON.
 func (i *APIKeyHTTPSecuritySchemeIn) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := APIKeyHTTPSecuritySchemeIn(ii)
+
 	switch v {
 	case APIKeyHTTPSecuritySchemeInHeader:
 	case APIKeyHTTPSecuritySchemeInQuery:
@@ -1305,6 +1431,7 @@ func (i *APIKeyHTTPSecuritySchemeIn) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -1326,14 +1453,15 @@ type unionMap struct {
 
 func (u unionMap) unmarshal() error {
 	for _, item := range u.mustUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}
+
 	for i, item := range u.mayUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			u.mayUnmarshal[i] = nil
@@ -1343,52 +1471,67 @@ func (u unionMap) unmarshal() error {
 	if len(u.patternProperties) == 0 && u.additionalProperties == nil {
 		return nil
 	}
-	// unmarshal to a generic map
+
+	// Unmarshal to a generic map.
 	var m map[string]*json.RawMessage
+
 	err := json.Unmarshal(u.jsonData, &m)
 	if err != nil {
 		return err
 	}
-	// removing ignored keys (defined in struct)
+
+	// Remove ignored keys (defined in struct).
 	for _, i := range u.ignoreKeys {
 		delete(m, i)
 	}
-	// returning early on empty map
+
+	// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}
+
 	if len(u.patternProperties) != 0 {
 		err = u.unmarshalPatternProperties(m)
 		if err != nil {
 			return err
 		}
 	}
+
 	// Returning early on empty map.
 	if len(m) == 0 {
 		return nil
 	}
+
 	if u.additionalProperties != nil {
 		return u.unmarshalAdditionalProperties(m)
 	}
+
 	return nil
 }
+
 func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) error {
 	var err error
+
 	subMap := make([]byte, 1, 100)
+
 	subMap[0] = '{'
 
 	// Iterating map and filling additional properties.
 	for key, val := range m {
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+
 		if len(subMap) != 1 {
 			subMap = append(subMap[:len(subMap)-1], ',')
 		}
+
 		subMap = append(subMap, []byte(keyEscaped)...)
+
 		if val != nil {
 			subMap = append(subMap, []byte(*val)...)
 		} else {
 			subMap = append(subMap, []byte("null")...)
 		}
+
 		subMap = append(subMap, '}')
 	}
 
@@ -1398,20 +1541,24 @@ func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) e
 			return err
 		}
 	}
+
 	return nil
 }
 func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) error {
 	patternMapsRaw := make(map[*regexp.Regexp][]byte, len(u.patternProperties))
+
 	// Iterating map and filling pattern properties sub maps.
 	for key, val := range m {
 		matched := false
-		var ok bool
+		ok := false
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
 
 		for regex := range u.patternProperties {
 			if regex.MatchString(key) {
 				matched = true
+
 				var subMap []byte
+
 				if subMap, ok = patternMapsRaw[regex]; !ok {
 					subMap = make([]byte, 1, 100)
 					subMap[0] = '{'
@@ -1420,11 +1567,13 @@ func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) erro
 				}
 
 				subMap = append(subMap, []byte(keyEscaped)...)
+
 				if val != nil {
 					subMap = append(subMap, []byte(*val)...)
 				} else {
 					subMap = append(subMap, []byte("null")...)
 				}
+
 				subMap = append(subMap, '}')
 
 				patternMapsRaw[regex] = subMap
@@ -1447,5 +1596,6 @@ func (u unionMap) unmarshalPatternProperties(m map[string]*json.RawMessage) erro
 			}
 		}
 	}
+
 	return nil
 }

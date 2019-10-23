@@ -90,7 +90,7 @@ class FuncDef extends GoTemplate
             $body = $this->body ? $this->body->render() : '';
             $code = <<<GO
 {$this->renderComment()}func {$this->renderSelf()}{$this->name}({$this->arguments}){$result} {
-{$this->padLines("\t", $body, false)}
+{$this->padLines("\t", trim($body), false)}
 }
 
 

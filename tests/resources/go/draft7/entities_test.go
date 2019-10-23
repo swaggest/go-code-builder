@@ -2,12 +2,13 @@ package entities_test
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/require"
-	"github.com/swaggest/assertjson"
-	"github.com/yudai/gojsondiff/formatter"
 	"io/ioutil"
 	entities "test/draft7"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+	"github.com/swaggest/assertjson"
+	"github.com/yudai/gojsondiff/formatter"
 )
 
 func TestSchema_MarshalJSON_roundtrip_asyncapi2(t *testing.T) {
@@ -61,7 +62,6 @@ func BenchmarkSchema_UnmarshalJSON(b *testing.B) {
 		_ = json.Unmarshal(data, &s)
 	}
 }
-
 
 func BenchmarkSchema_MarshalJSON(b *testing.B) {
 	data, err := ioutil.ReadFile("../../../../vendor/swaggest/json-schema/spec/json-schema-draft7.json")
