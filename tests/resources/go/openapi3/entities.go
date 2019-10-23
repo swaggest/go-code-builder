@@ -3579,7 +3579,7 @@ func (u unionMap) unmarshal() error {
 		}
 	}
 
-	// Returning early on empty map.
+	// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}

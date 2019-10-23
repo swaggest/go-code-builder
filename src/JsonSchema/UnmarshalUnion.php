@@ -154,8 +154,8 @@ func (u unionMap) unmarshal() error {
 		}
 	}")}
 	
-	{$this->ifThenElse($this->withPatternProperties || $this->withAdditionalProperties,
-            "// Returning early on empty map.
+	{$this->ifThenElse($this->withPatternProperties,
+            "// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}")}

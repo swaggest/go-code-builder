@@ -425,11 +425,6 @@ func (u unionMap) unmarshal() error {
 		return nil
 	}
 
-	// Returning early on empty map.
-	if len(m) == 0 {
-		return nil
-	}
-
 	if u.additionalProperties != nil {
 		return u.unmarshalAdditionalProperties(m)
 	}
