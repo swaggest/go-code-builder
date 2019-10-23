@@ -120,10 +120,13 @@ func (i *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 		additionalProperties: &ii.ExtraProperties,
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = CoreSchemaMetaSchema(ii)
+
 	return err
 }
 
@@ -149,13 +152,16 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.TypeObject = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.TypeBoolean = nil
 	}
 
+	
 	return err
 }
 
@@ -179,13 +185,16 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Schema = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.SchemaArray = nil
 	}
 
+	
 	return err
 }
 
@@ -209,13 +218,16 @@ func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.Schema = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.StringArray = nil
 	}
 
+	
 	return err
 }
 
@@ -239,13 +251,16 @@ func (i *Type) UnmarshalJSON(data []byte) error {
 		mayUnmarshal: mayUnmarshal,
 		jsonData: data,
 	}.unmarshal()
+
 	if mayUnmarshal[0] == nil {
 		i.SimpleTypes = nil
 	}
+
 	if mayUnmarshal[1] == nil {
 		i.SliceOfSimpleTypesValues = nil
 	}
 
+	
 	return err
 }
 
@@ -289,11 +304,14 @@ func (i SimpleTypes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON decodes JSON.
 func (i *SimpleTypes) UnmarshalJSON(data []byte) error {
 	var ii string
+
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+
 	v := SimpleTypes(ii)
+
 	switch v {
 	case SimpleTypesArray:
 	case SimpleTypesBoolean:
@@ -308,6 +326,7 @@ func (i *SimpleTypes) UnmarshalJSON(data []byte) error {
 	}
 
 	*i = v
+
 	return nil
 }
 
@@ -315,23 +334,29 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 	result := make([]byte, 1, 100)
 	result[0] = '{'
 	isObject := true
+	
 	for _, m := range maps {
 		j, err := json.Marshal(m)
 		if err != nil {
 			return nil, err
 		}
+		
 		if string(j) == "{}" {
 			continue
 		}
+		
 		if string(j) == "null" {
 			continue
 		}
+		
 		if j[0] != '{' {
 			if len(result) == 1 && (isObject || bytes.Equal(result, j)) {
 				result = j
 				isObject = false
+				
 				continue
 			}
+			
 			return nil, errors.New("failed to union map: object expected, " + string(j) + " received")
 		}
 
@@ -342,8 +367,10 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		if len(result) > 1 {
 			result[len(result)-1] = ','
 		}
+		
 		result = append(result, j[1:]...)
 	}
+	
 	// Close empty result.
 	if isObject && len(result) == 1 {
 		result = append(result, '}')
@@ -361,14 +388,15 @@ type unionMap struct {
 
 func (u unionMap) unmarshal() error {
 	for _, item := range u.mustUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			return err
 		}
 	}
+
 	for i, item := range u.mayUnmarshal {
-		// unmarshal to struct
+		// Unmarshal to struct.
 		err := json.Unmarshal(u.jsonData, item)
 		if err != nil {
 			u.mayUnmarshal[i] = nil
@@ -379,17 +407,20 @@ func (u unionMap) unmarshal() error {
 		return nil
 	}
 
-	// unmarshal to a generic map
+	// Unmarshal to a generic map.
 	var m map[string]*json.RawMessage
+
 	err := json.Unmarshal(u.jsonData, &m)
 	if err != nil {
 		return err
 	}
-	// removing ignored keys (defined in struct)
+
+	// Remove ignored keys (defined in struct).
 	for _, i := range u.ignoreKeys {
 		delete(m, i)
 	}
-	// returning early on empty map
+
+	// Return early on empty map.
 	if len(m) == 0 {
 		return nil
 	}
@@ -398,28 +429,37 @@ func (u unionMap) unmarshal() error {
 	if len(m) == 0 {
 		return nil
 	}
+
 	if u.additionalProperties != nil {
 		return u.unmarshalAdditionalProperties(m)
 	}
+
 	return nil
 }
+
 func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) error {
 	var err error
+
 	subMap := make([]byte, 1, 100)
+
 	subMap[0] = '{'
 
 	// Iterating map and filling additional properties.
 	for key, val := range m {
 		keyEscaped := `"` + strings.Replace(key, `"`, `\"`, -1) + `":`
+
 		if len(subMap) != 1 {
 			subMap = append(subMap[:len(subMap)-1], ',')
 		}
+
 		subMap = append(subMap, []byte(keyEscaped)...)
+
 		if val != nil {
 			subMap = append(subMap, []byte(*val)...)
 		} else {
 			subMap = append(subMap, []byte("null")...)
 		}
+
 		subMap = append(subMap, '}')
 	}
 
@@ -429,5 +469,6 @@ func (u unionMap) unmarshalAdditionalProperties(m map[string]*json.RawMessage) e
 			return err
 		}
 	}
+
 	return nil
 }

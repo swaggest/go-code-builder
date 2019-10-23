@@ -199,6 +199,7 @@ func (i *:type) UnmarshalJSON(data []byte) error {
 	}.unmarshal()
 	{$this->padLines("\t", $this->renderMayUnmarshalTail()
 			. $this->renderMainStructEnd())}
+	
 	return err
 }
 
@@ -279,6 +280,7 @@ GO;
             $this->code->imports()->addByName('fmt');
             foreach ($this->constValues as $name => $value) {
                 $result .= <<<GO
+
 if v, ok := constValues[{$this->escapeValue($name)}]; !ok || string(v) != {$this->escapeValue(json_encode($value))} {
 	return fmt.Errorf({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected, %v received)')}, v)
 }
@@ -296,6 +298,7 @@ GO;
                     continue;
                 }
                 $result .= <<<GO
+
 if mayUnmarshal[$i] == nil {
 	$item = nil
 }
@@ -380,9 +383,11 @@ GO;
         if ($this->propertyNames !== null) {
             // todo error is checked after constants, fix
             return <<<'GO'
+
 if err != nil {
 	return err
 }
+
 *i = :type(ii)
 GO;
 

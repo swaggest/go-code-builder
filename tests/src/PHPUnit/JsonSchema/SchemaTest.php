@@ -61,10 +61,13 @@ func (i *Untitled1) UnmarshalJSON(data []byte) error {
 		additionalProperties: &ii.AdditionalProperties,
 		jsonData: data,
 	}.unmarshal()
+
 	if err != nil {
 		return err
 	}
+
 	*i = Untitled1(ii)
+
 	return err
 }
 

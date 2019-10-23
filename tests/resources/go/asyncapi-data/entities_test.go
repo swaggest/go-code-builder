@@ -2,8 +2,9 @@ package entities
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
@@ -48,7 +49,7 @@ func Test_MarshalUnmarshal(t *testing.T) {
 	err = json.Unmarshal(encodedJSON, &decodedEntity)
 	require.NoError(t, err)
 	assert.Equal(t, entity.Reads[0], decodedEntity.Reads[0])
-	//assert.Equal(t, entity, decodedEntity)
+	// assert.Equal(t, entity, decodedEntity)
 	encodedJSON, err = json.Marshal(decodedEntity)
 	require.NoError(t, err)
 	assertjson.Equal(t, expectedJSON, encodedJSON)

@@ -57,7 +57,8 @@ class MarshalEnum extends GoTemplate
         return <<<GO
 // MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
-	{$this->padLines("\t", $this->renderIfCheck('i', 'return nil, fmt.Errorf("unexpected :type value: %v", i)'))}
+	{$this->padLines("\t", trim($this->renderIfCheck('i', 'return nil, fmt.Errorf("unexpected :type value: %v", i)')))}
+
 	return json.Marshal(:base(i))
 }
 
@@ -75,13 +76,16 @@ GO;
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
 	var ii :base
+	
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+	
 	v := :type(ii)
 	{$this->padLines("\t", $this->renderIfCheck('v', 'return fmt.Errorf("unexpected :type value: %v", v)'))}
 	*i = v
+	
 	return nil
 }
 		
@@ -116,13 +120,13 @@ GO;
         return <<<GO
 // MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
-	{$this->padLines("\t", $this->renderIfCheck('i', 'return nil, fmt.Errorf("unexpected :type value: %v", i)'))}
+	{$this->padLines("\t", trim($this->renderIfCheck('i', 'return nil, fmt.Errorf("unexpected :type value: %v", i)')))}
+
 	return json.Marshal(:base(i))
 }
 
 
 GO;
-
     }
 
 
@@ -136,13 +140,16 @@ GO;
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
 	var ii :base
+	
 	err := json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
+	
 	v := :type(ii)
 	{$this->padLines("\t", $this->renderIfCheck('v', 'return fmt.Errorf("unexpected :type value: %v", v)'))}
 	*i = v
+	
 	return nil
 }
 
@@ -183,6 +190,7 @@ GO;
             $checks .= "case $name:\n";
         }
         return <<<GO
+
 switch $var {
 $checks
 default:

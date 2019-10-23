@@ -39,9 +39,12 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         }
         $goFile->getCode()->addSnippet($builder->getCode());
 
-        $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/draft7/entities.go');
+        $filePath = __DIR__ . '/../../../resources/go/draft7/entities.go';
+        file_put_contents($filePath, $goFile->render());
 
-        $this->assertSame($expectedGen, $goFile->render());
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
     }
 
 

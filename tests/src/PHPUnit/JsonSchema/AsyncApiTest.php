@@ -41,10 +41,12 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         $goFile->getCode()->addSnippet($builder->getCode());
 
 
-        $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/asyncapi/entities.go');
+        $filePath = __DIR__ . '/../../../resources/go/asyncapi/entities.go';
+        file_put_contents($filePath, $goFile->render());
 
-        $this->assertSame($expectedGen, $goFile->render());
-
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
     }
 
     public function testGenConst()
@@ -74,12 +76,12 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         }
         $goFile->getCode()->addSnippet($builder->getCode());
 
+        $filePath = __DIR__ . '/../../../resources/go/asyncapi-default/entities.go';
+        file_put_contents($filePath, $goFile->render());
 
-//        file_put_contents(__DIR__ . '/../../../resources/go/temp/entities.go', $goFile->render());
-        $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/asyncapi-default/entities.go');
-
-        $this->assertSame($expectedGen, $goFile->render());
-
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
     }
 
     public function testGenSkipMarshal()
@@ -108,11 +110,12 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         }
         $goFile->getCode()->addSnippet($builder->getCode());
 
+        $filePath = __DIR__ . '/../../../resources/go/asyncapi-skip-marshal/entities.go';
+        file_put_contents($filePath, $goFile->render());
 
-        $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/asyncapi-skip-marshal/entities.go');
-
-        $this->assertSame($expectedGen, $goFile->render());
-
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
     }
 
 
@@ -142,11 +145,12 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         }
         $goFile->getCode()->addSnippet($builder->getCode());
 
+        $filePath = __DIR__ . '/../../../resources/go/asyncapi-skip-unmarshal/entities.go';
+        file_put_contents($filePath,$goFile->render());
 
-        $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/asyncapi-skip-unmarshal/entities.go');
-
-        $this->assertSame($expectedGen, $goFile->render());
-
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
     }
 
     function testGenData()
@@ -165,7 +169,7 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         $builder = new GoBuilder();
         $builder->options->hideConstProperties = true;
         $builder->options->trimParentFromPropertyNames = true;
-        $builder->pathToNameHook->prefixes []= '#/components/schemas';
+        $builder->pathToNameHook->prefixes [] = '#/components/schemas';
         $builder->getType($schema);
 
         $goFile = new GoFile('entities');
@@ -174,10 +178,11 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         }
         $goFile->getCode()->addSnippet($builder->getCode());
 
-        $expectedGen = file_get_contents(__DIR__ . '/../../../resources/go/asyncapi-data/entities.go');
+        $filePath = __DIR__ . '/../../../resources/go/asyncapi-data/entities.go';
+        file_put_contents($filePath, $goFile->render());
 
-        $this->assertSame($expectedGen, $goFile->render());
-
-
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
     }
 }

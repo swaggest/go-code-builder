@@ -50,7 +50,6 @@ func (base *Base) LoadFrom(derived Derived) {
 	if derived.DString != nil {
 		base.BString = *derived.DString
 	}
-
 }
 
 
