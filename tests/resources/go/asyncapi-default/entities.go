@@ -1698,21 +1698,21 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 	result := make([]byte, 1, 100)
 	result[0] = '{'
 	isObject := true
-	
+
 	for _, m := range maps {
 		j, err := json.Marshal(m)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		if string(j) == "{}" {
 			continue
 		}
-		
+
 		if string(j) == "null" {
 			continue
 		}
-		
+
 		if j[0] != '{' {
 			if len(result) == 1 && (isObject || bytes.Equal(result, j)) {
 				result = j
@@ -1720,7 +1720,7 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 				
 				continue
 			}
-			
+
 			return nil, errors.New("failed to union map: object expected, " + string(j) + " received")
 		}
 
@@ -1731,10 +1731,10 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 		if len(result) > 1 {
 			result[len(result)-1] = ','
 		}
-		
+
 		result = append(result, j[1:]...)
 	}
-	
+
 	// Close empty result.
 	if isObject && len(result) == 1 {
 		result = append(result, '}')
