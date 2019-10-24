@@ -191,14 +191,14 @@ GO;
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
 	{$this->padLines("\t",
-			$this->renderMainStructStart()
-			. $this->renderMayUnmarshalHead()
-		)}
+            $this->renderMainStructStart()
+            . $this->renderMayUnmarshalHead()
+        )}
 	err := unionMap{
 {$this->padLines("\t\t", $unionMap, false)}		jsonData: data,
 	}.unmarshal()
 	{$this->padLines("\t", $this->renderMayUnmarshalTail()
-			. $this->renderMainStructEnd())}
+            . $this->renderMainStructEnd())}
 	
 	return err
 }
