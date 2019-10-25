@@ -226,7 +226,7 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 			if len(result) == 1 && (isObject || bytes.Equal(result, j)) {
 				result = j
 				isObject = false
-				
+
 				continue
 			}
 
