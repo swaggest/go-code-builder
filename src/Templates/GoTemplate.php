@@ -56,6 +56,12 @@ abstract class GoTemplate extends AbstractTemplate
 
     }
 
+    public function tabIndents($text, $spaces = 4)
+    {
+        // TODO fix spaces replace in mid string.
+        return preg_replace('/ {' . $spaces . '}/', "\t", $text);
+    }
+
     public function stripEmptyLines($text)
     {
         $lines = explode("\n", $text);

@@ -14,8 +14,10 @@ test-coverage:
 	@php -derror_reporting="E_ALL & ~E_DEPRECATED" -dzend_extension=xdebug.so vendor/bin/phpunit --configuration phpunit.xml --coverage-text --coverage-clover=coverage.xml
 
 test-go:
-	@cd tests/resources/go
-	@go test ./...
+	@cd tests/resources/go && GO111MODULE=on go test ./...
+
+lint-go:
+	@cd tests/resources/go && golangci-lint run --enable-all --disable lll,maligned,gochecknoglobals,goimports,gofmt,funlen ./...
 
 docs:
 	@php ./vendor/bin/phpdoc-md generate src > API.md

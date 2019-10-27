@@ -74,7 +74,7 @@
 | Visibility | Function |
 |:-----------|:---------|
 | public | <strong>__construct()</strong> : <em>void</em> |
-| public | <strong>exportableName(</strong><em>mixed</em> <strong>$name</strong>)</strong> : <em>void</em> |
+| public | <strong>exportableName(</strong><em>mixed</em> <strong>$name</strong>, <em>bool</em> <strong>$requireBase=false</strong>)</strong> : <em>void</em> |
 | public | <strong>privateName(</strong><em>mixed</em> <strong>$name</strong>)</strong> : <em>void</em> |
 | public | <strong>setBuilderVersion(</strong><em>mixed</em> <strong>$builderVersion</strong>)</strong> : <em>void</em> |
 | public | <strong>storeToDisk(</strong><em>mixed</em> <strong>$srcPath</strong>)</strong> : <em>void</em> |
@@ -278,6 +278,7 @@
 | public | <strong>padLines(</strong><em>mixed</em> <strong>$with</strong>, <em>mixed</em> <strong>$text</strong>, <em>bool</em> <strong>$skipFirst=true</strong>, <em>bool</em> <strong>$forcePad=false</strong>)</strong> : <em>void</em> |
 | public | <strong>setComment(</strong><em>mixed</em> <strong>$comment</strong>)</strong> : <em>void</em> |
 | public | <strong>stripEmptyLines(</strong><em>mixed</em> <strong>$text</strong>)</strong> : <em>void</em> |
+| public | <strong>tabIndents(</strong><em>mixed</em> <strong>$text</strong>, <em>mixed</em> <strong>$spaces=4</strong>)</strong> : <em>void</em> |
 | public | <strong>trim(</strong><em>mixed</em> <strong>$s</strong>)</strong> : <em>void</em> |
 | protected | <strong>renderComment()</strong> : <em>void</em> |
 

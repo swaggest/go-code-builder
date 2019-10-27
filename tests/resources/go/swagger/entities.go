@@ -227,11 +227,8 @@ type Paths struct {
 	MapOfPathItemValues map[string]PathItem    `json:"-"` // Key must match pattern: ^/
 }
 
-type marshalPaths Paths
-
 // UnmarshalJSON decodes JSON.
 func (i *Paths) UnmarshalJSON(data []byte) error {
-
 	err := unionMap{
 		patternProperties: map[*regexp.Regexp]interface{}{
 			regexX: &i.MapOfAnything, // ^x-
@@ -240,13 +237,12 @@ func (i *Paths) UnmarshalJSON(data []byte) error {
 		jsonData: data,
 	}.unmarshal()
 
-
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i Paths) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPaths(i), i.MapOfAnything, i.MapOfPathItemValues)
+	return marshalUnion(i.MapOfAnything, i.MapOfPathItemValues)
 }
 
 // PathItem structure is generated from "#/definitions/pathItem".
@@ -560,8 +556,6 @@ type SchemaAdditionalProperties struct {
 	Bool   *bool   `json:"-"`
 }
 
-type marshalSchemaAdditionalProperties SchemaAdditionalProperties
-
 // UnmarshalJSON decodes JSON.
 func (i *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Schema, &i.Bool}
@@ -578,13 +572,12 @@ func (i *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
 		i.Bool = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i SchemaAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchemaAdditionalProperties(i), i.Schema, i.Bool)
+	return marshalUnion(i.Schema, i.Bool)
 }
 
 // HTTPJSONSchemaOrgDraft04SchemaPropertiesType structure is generated from "http://json-schema.org/draft-04/schema#/properties/type".
@@ -592,8 +585,6 @@ type HTTPJSONSchemaOrgDraft04SchemaPropertiesType struct {
 	SimpleTypes              *SimpleTypes  `json:"-"`
 	SliceOfSimpleTypesValues []SimpleTypes `json:"-"`
 }
-
-type marshalHTTPJSONSchemaOrgDraft04SchemaPropertiesType HTTPJSONSchemaOrgDraft04SchemaPropertiesType
 
 // UnmarshalJSON decodes JSON.
 func (i *HTTPJSONSchemaOrgDraft04SchemaPropertiesType) UnmarshalJSON(data []byte) error {
@@ -611,13 +602,12 @@ func (i *HTTPJSONSchemaOrgDraft04SchemaPropertiesType) UnmarshalJSON(data []byte
 		i.SliceOfSimpleTypesValues = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i HTTPJSONSchemaOrgDraft04SchemaPropertiesType) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHTTPJSONSchemaOrgDraft04SchemaPropertiesType(i), i.SimpleTypes, i.SliceOfSimpleTypesValues)
+	return marshalUnion(i.SimpleTypes, i.SliceOfSimpleTypesValues)
 }
 
 // SchemaItems structure is generated from "#/definitions/schema->items".
@@ -625,8 +615,6 @@ type SchemaItems struct {
 	Schema              *Schema  `json:"-"`
 	SliceOfSchemaValues []Schema `json:"-"`
 }
-
-type marshalSchemaItems SchemaItems
 
 // UnmarshalJSON decodes JSON.
 func (i *SchemaItems) UnmarshalJSON(data []byte) error {
@@ -644,13 +632,12 @@ func (i *SchemaItems) UnmarshalJSON(data []byte) error {
 		i.SliceOfSchemaValues = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i SchemaItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchemaItems(i), i.Schema, i.SliceOfSchemaValues)
+	return marshalUnion(i.Schema, i.SliceOfSchemaValues)
 }
 
 // XML structure is generated from "#/definitions/xml".
@@ -1130,8 +1117,6 @@ type NonBodyParameter struct {
 	PathParameterSubSchema     *PathParameterSubSchema     `json:"-"`
 }
 
-type marshalNonBodyParameter NonBodyParameter
-
 // UnmarshalJSON decodes JSON.
 func (i *NonBodyParameter) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.HeaderParameterSubSchema, &i.FormDataParameterSubSchema, &i.QueryParameterSubSchema, &i.PathParameterSubSchema}
@@ -1156,13 +1141,12 @@ func (i *NonBodyParameter) UnmarshalJSON(data []byte) error {
 		i.PathParameterSubSchema = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i NonBodyParameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalNonBodyParameter(i), i.HeaderParameterSubSchema, i.FormDataParameterSubSchema, i.QueryParameterSubSchema, i.PathParameterSubSchema)
+	return marshalUnion(i.HeaderParameterSubSchema, i.FormDataParameterSubSchema, i.QueryParameterSubSchema, i.PathParameterSubSchema)
 }
 
 // Parameter structure is generated from "#/definitions/parameter".
@@ -1170,8 +1154,6 @@ type Parameter struct {
 	BodyParameter    *BodyParameter    `json:"-"`
 	NonBodyParameter *NonBodyParameter `json:"-"`
 }
-
-type marshalParameter Parameter
 
 // UnmarshalJSON decodes JSON.
 func (i *Parameter) UnmarshalJSON(data []byte) error {
@@ -1189,13 +1171,12 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 		i.NonBodyParameter = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i Parameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameter(i), i.BodyParameter, i.NonBodyParameter)
+	return marshalUnion(i.BodyParameter, i.NonBodyParameter)
 }
 
 // JSONReference structure is generated from "#/definitions/jsonReference".
@@ -1208,8 +1189,6 @@ type ParametersListItems struct {
 	Parameter     *Parameter     `json:"-"`
 	JSONReference *JSONReference `json:"-"`
 }
-
-type marshalParametersListItems ParametersListItems
 
 // UnmarshalJSON decodes JSON.
 func (i *ParametersListItems) UnmarshalJSON(data []byte) error {
@@ -1227,13 +1206,12 @@ func (i *ParametersListItems) UnmarshalJSON(data []byte) error {
 		i.JSONReference = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i ParametersListItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParametersListItems(i), i.Parameter, i.JSONReference)
+	return marshalUnion(i.Parameter, i.JSONReference)
 }
 
 // Response structure is generated from "#/definitions/response".
@@ -1350,8 +1328,6 @@ type ResponseSchema struct {
 	FileSchema *FileSchema `json:"-"`
 }
 
-type marshalResponseSchema ResponseSchema
-
 // UnmarshalJSON decodes JSON.
 func (i *ResponseSchema) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Schema, &i.FileSchema}
@@ -1368,13 +1344,12 @@ func (i *ResponseSchema) UnmarshalJSON(data []byte) error {
 		i.FileSchema = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i ResponseSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponseSchema(i), i.Schema, i.FileSchema)
+	return marshalUnion(i.Schema, i.FileSchema)
 }
 
 // Header structure is generated from "#/definitions/header".
@@ -1454,8 +1429,6 @@ type ResponseValue struct {
 	JSONReference *JSONReference `json:"-"`
 }
 
-type marshalResponseValue ResponseValue
-
 // UnmarshalJSON decodes JSON.
 func (i *ResponseValue) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.Response, &i.JSONReference}
@@ -1472,13 +1445,12 @@ func (i *ResponseValue) UnmarshalJSON(data []byte) error {
 		i.JSONReference = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i ResponseValue) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponseValue(i), i.Response, i.JSONReference)
+	return marshalUnion(i.Response, i.JSONReference)
 }
 
 // Responses structure is generated from "#/definitions/responses".
@@ -1489,11 +1461,8 @@ type Responses struct {
 	MapOfAnything            map[string]interface{}   `json:"-"` // Key must match pattern: ^x-
 }
 
-type marshalResponses Responses
-
 // UnmarshalJSON decodes JSON.
 func (i *Responses) UnmarshalJSON(data []byte) error {
-
 	err := unionMap{
 		patternProperties: map[*regexp.Regexp]interface{}{
 			regex093Default: &i.MapOfResponseValueValues, // ^([0-9]{3})$|^(default)$
@@ -1502,13 +1471,12 @@ func (i *Responses) UnmarshalJSON(data []byte) error {
 		jsonData: data,
 	}.unmarshal()
 
-
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i Responses) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponses(i), i.MapOfResponseValueValues, i.MapOfAnything)
+	return marshalUnion(i.MapOfResponseValueValues, i.MapOfAnything)
 }
 
 // BasicAuthenticationSecurity structure is generated from "#/definitions/basicAuthenticationSecurity".
@@ -1857,8 +1825,6 @@ type SecurityDefinitionsAdditionalProperties struct {
 	Oauth2AccessCodeSecurity    *Oauth2AccessCodeSecurity    `json:"-"`
 }
 
-type marshalSecurityDefinitionsAdditionalProperties SecurityDefinitionsAdditionalProperties
-
 // UnmarshalJSON decodes JSON.
 func (i *SecurityDefinitionsAdditionalProperties) UnmarshalJSON(data []byte) error {
 	mayUnmarshal := []interface{}{&i.BasicAuthenticationSecurity, &i.APIKeySecurity, &i.Oauth2ImplicitSecurity, &i.Oauth2PasswordSecurity, &i.Oauth2ApplicationSecurity, &i.Oauth2AccessCodeSecurity}
@@ -1891,13 +1857,12 @@ func (i *SecurityDefinitionsAdditionalProperties) UnmarshalJSON(data []byte) err
 		i.Oauth2AccessCodeSecurity = nil
 	}
 
-	
 	return err
 }
 
 // MarshalJSON encodes JSON.
 func (i SecurityDefinitionsAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSecurityDefinitionsAdditionalProperties(i), i.BasicAuthenticationSecurity, i.APIKeySecurity, i.Oauth2ImplicitSecurity, i.Oauth2PasswordSecurity, i.Oauth2ApplicationSecurity, i.Oauth2AccessCodeSecurity)
+	return marshalUnion(i.BasicAuthenticationSecurity, i.APIKeySecurity, i.Oauth2ImplicitSecurity, i.Oauth2PasswordSecurity, i.Oauth2ApplicationSecurity, i.Oauth2AccessCodeSecurity)
 }
 
 // Tag structure is generated from "#/definitions/tag".

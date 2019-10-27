@@ -36,7 +36,21 @@ func Test_MarshalUnmarshal(t *testing.T) {
 	data, err := json.Marshal(entity)
 	require.NoError(t, err)
 	assertjson.Equal(t,
-		[]byte(`{"message-id":{"value":"foo","type":"shortstr"},"x-whatever":"hello!","additional1":{"type":"longstr","value":"baaar"},"additional2":{"type":"short","value":"123"}}`),
+		[]byte(`{
+  "message-id": {
+    "value": "foo",
+    "type": "shortstr"
+  },
+  "x-whatever": "hello!",
+  "additional1": {
+    "type": "longstr",
+    "value": "baaar"
+  },
+  "additional2": {
+    "type": "short",
+    "value": "123"
+  }
+}`),
 		data)
 
 	unmarshaled := Properties{}

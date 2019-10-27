@@ -58,6 +58,7 @@ func BenchmarkSchema_UnmarshalJSON(b *testing.B) {
 	b.ResetTimer()
 
 	s := entities.Schema{}
+
 	for i := 0; i < b.N; i++ {
 		_ = json.Unmarshal(data, &s)
 	}
@@ -66,6 +67,7 @@ func BenchmarkSchema_UnmarshalJSON(b *testing.B) {
 func BenchmarkSchema_MarshalJSON(b *testing.B) {
 	data, err := ioutil.ReadFile("../../../../vendor/swaggest/json-schema/spec/json-schema-draft7.json")
 	require.NoError(b, err)
+
 	s := entities.Schema{}
 	require.NoError(b, json.Unmarshal(data, &s))
 
