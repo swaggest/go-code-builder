@@ -31,6 +31,7 @@ class OpenApiTest extends \PHPUnit_Framework_TestCase
         $builder->getType($schema);
 
         $goFile = new GoFile('entities');
+        $goFile->fileComment = '';
         foreach ($builder->getGeneratedStructs() as $generatedStruct) {
             $goFile->getCode()->addSnippet($generatedStruct->structDef);
         }

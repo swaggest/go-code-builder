@@ -45,7 +45,9 @@ func Test_MarshalUnmarshal(t *testing.T) {
 }`)
 
 	assertjson.Equal(t, expectedJSON, encodedJSON)
+
 	decodedEntity := MessagingReaderReads{}
+
 	err = json.Unmarshal(encodedJSON, &decodedEntity)
 	require.NoError(t, err)
 	assert.Equal(t, entity.Reads[0], decodedEntity.Reads[0])

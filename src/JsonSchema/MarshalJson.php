@@ -57,7 +57,7 @@ class MarshalJson extends GoTemplate
 
     public function addNamedProperty($name)
     {
-        $this->propertyNames [] = $name;
+        $this->propertyNames[] = $name;
         return $this;
     }
 
@@ -75,9 +75,17 @@ class MarshalJson extends GoTemplate
             return '';
         }
 
-        $result = <<<GO
+        $result = '';
+
+        if ($this->propertyNames !== null) {
+            $result .= <<<'GO'
 type marshal:type :type
 
+
+GO;
+        }
+
+        $result .= <<<GO
 {$this->padLines('',
             $this->renderUnmarshal()
             . $this->renderMarshal())}
@@ -187,20 +195,21 @@ GO;
         }
 
 
+        $funcBody = <<<GO
+{$this->renderMainStructStart()}{$this->renderMayUnmarshalHead()}
+err := unionMap{
+{$this->padLines("\t", $unionMap, false)}	jsonData: data,
+}.unmarshal()
+{$this->renderMayUnmarshalTail()}{$this->renderMainStructEnd()}
+
+return err
+GO;
+
+
         return <<<GO
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
-	{$this->padLines("\t",
-            $this->renderMainStructStart()
-            . $this->renderMayUnmarshalHead()
-        )}
-	err := unionMap{
-{$this->padLines("\t\t", $unionMap, false)}		jsonData: data,
-	}.unmarshal()
-	{$this->padLines("\t", $this->renderMayUnmarshalTail()
-            . $this->renderMainStructEnd())}
-	
-	return err
+{$this->padLines("\t", $this->tabIndents($this->stripEmptyLines($funcBody)), false)}
 }
 
 
@@ -219,7 +228,9 @@ GO;
             $maps .= ', const:type';
         }
 
-        $maps .= ', marshal:type(i)';
+        if ($this->propertyNames !== null) {
+            $maps .= ', marshal:type(i)';
+        }
 
         if ($this->patternProperties !== null) {
             foreach ($this->patternProperties as $regex => $patternPropertiesName) {

@@ -33,6 +33,7 @@ class AdvancedTest extends \PHPUnit_Framework_TestCase
         $builder->getType($schema);
 
         $goFile = new GoFile('entities');
+        $goFile->fileComment = '';
         $goFile->setComment('Package entities contains generated structures.');
         foreach ($builder->getGeneratedStructs() as $generatedStruct) {
             $goFile->getCode()->addSnippet($generatedStruct->structDef);
@@ -41,7 +42,7 @@ class AdvancedTest extends \PHPUnit_Framework_TestCase
 
 
         $filePath = __DIR__ . '/../../../resources/go/advanced/entities.go';
-        file_put_contents($filePath,$goFile->render());
+        file_put_contents($filePath, $goFile->render());
 
         exec('git diff ' . $filePath, $out);
         $out = implode("\n", $out);
