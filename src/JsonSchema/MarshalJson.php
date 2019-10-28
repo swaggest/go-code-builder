@@ -145,10 +145,6 @@ GO;
 
         $unionMap = '';
         $mustUnmarshal = $this->renderMustUnmarshal();
-        if ($mustUnmarshal !== 'nil') {
-            $this->builder->unmarshalUnion->withMustUnmarshal = true;
-            $unionMap .= 'mustUnmarshal: ' . $mustUnmarshal . ",\n";
-        }
 
         $mayUnmarshal = $this->renderMayUnmarshal();
         if ($mayUnmarshal !== 'nil') {
@@ -196,8 +192,9 @@ GO;
 
 
         $funcBody = <<<GO
-{$this->renderMainStructStart()}{$this->renderMayUnmarshalHead()}
-err := unionMap{
+var err error
+{$this->renderMainStructStart()}{$this->renderMayUnmarshalHead()}{$mustUnmarshal}
+err = unionMap{
 {$this->padLines("\t", $unionMap, false)}	jsonData: data,
 }.unmarshal()
 {$this->renderMayUnmarshalTail()}{$this->renderMainStructEnd()}
@@ -265,23 +262,34 @@ GO;
 
     private function renderMustUnmarshal()
     {
-        $items = array();
+        $result = '';
         if ($this->propertyNames) {
-            $items[] = '&ii';
+            $result .= <<<'GO'
+
+
+err = json.Unmarshal(data, &ii)
+if err != nil {
+    return err
+}
+
+GO;
         }
+
         if (isset($this->someOf['allOf'])) {
             foreach ($this->someOf['allOf'] as $propertyName) {
-                $items [] = "&{$this->receiver()}." . $propertyName;
+                $result .= <<<GO
+
+
+err = json.Unmarshal(data, &{$this->receiver()}.{$propertyName})
+if err != nil {
+    return err
+}
+
+GO;
             }
         }
-        if ($items) {
-            $itemsString = implode(', ', $items);
-            return <<<GO
-[]interface{}{{$itemsString}}
-GO;
 
-        }
-        return 'nil';
+        return $result;
     }
 
     private function renderMayUnmarshalTail()
