@@ -260,7 +260,7 @@ class TypeBuilder
                 $structProperty->getTags()->setTag('json', '-');
                 $structProperty->setComment('Key must match pattern: ' . $pattern);
                 $this->makeResultStruct()->addProperty($structProperty);
-                $this->getGeneratedStruct()->marshalJson->addPatternProperty($pattern, $structProperty->getName());
+                $this->getGeneratedStruct()->marshalJson->addPatternProperty($pattern, $structProperty);
             }
         }
 
