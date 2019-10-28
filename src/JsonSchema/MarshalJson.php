@@ -17,7 +17,8 @@ class MarshalJson extends GoTemplate
     /** @var string[] */
     private $propertyNames;
     private $additionalPropertiesEnabled = false;
-    private $additionalPropertiesName;
+    /** @var StructProperty */
+    private $additionalProperties;
     /** @var StructProperty[] */
     private $patternProperties;
     private $someOf;
@@ -34,10 +35,10 @@ class MarshalJson extends GoTemplate
         $this->code = new Code();
     }
 
-    public function enableAdditionalProperties($name)
+    public function enableAdditionalProperties(StructProperty $structProperty)
     {
         $this->additionalPropertiesEnabled = true;
-        $this->additionalPropertiesName = $name;
+        $this->additionalProperties = $structProperty;
         return $this;
     }
 
@@ -181,11 +182,13 @@ GO;
         $unionMap = '';
         $mustUnmarshal = $this->renderMustUnmarshal();
         $mayUnmarshal = $this->renderMayUnmarshal();
+        $withIgnoreKeys = false; // TODO move to renderer
 
         if (
             $this->propertyNames !== null &&
             ($this->patternProperties || $this->additionalPropertiesEnabled)
         ) {
+            $withIgnoreKeys = true;
             $this->builder->unmarshalUnion->withIgnoreKeys = true;
             $unionMap .= 'ignoreKeys: ignoreKeys:type' . ",\n";
         }
@@ -212,7 +215,7 @@ GO;
                 $mapUnmarshal .= <<<GO
 
 if v, ok := m[{$this->escapeValue($name)}]; !ok || string(v) != {$this->escapeValue(json_encode($value))} {
-	return fmt.Errorf({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected, %v received)')}, v)
+	return fmt.Errorf({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected, %s received)')}, v)
 }
 delete(m, {$this->escapeValue($name)})
 
@@ -220,6 +223,18 @@ delete(m, {$this->escapeValue($name)})
 GO;
 
             }
+        }
+
+        if ($mapUnmarshal && $withIgnoreKeys) {
+            $mapUnmarshal .= <<<'GO'
+
+for _, key := range ignoreKeys:type {
+    delete(m, key)
+}
+
+
+GO;
+
         }
 
 
@@ -233,8 +248,8 @@ GO;
 
             foreach ($this->patternProperties as $regex => $patternProperty) {
                 $regexName = $this->builder->unmarshalUnion->patternVarName($regex);
-                $itemType = 'interface{}';
                 $mapType = $patternProperty->getType();
+                $itemType = 'interface{}';
                 if ($mapType instanceof Map) {
                     $itemType = $mapType->getValueType()->render();
                 }
@@ -243,7 +258,7 @@ GO;
             matched = true
             
             if {$this->receiver()}.{$patternProperty->getName()} == nil {
-                {$this->receiver()}.{$patternProperty->getName()} = make({$patternProperty->getType()})
+                {$this->receiver()}.{$patternProperty->getName()} = make({$patternProperty->getType()}, 1)
             }
             
             var val {$itemType}
@@ -271,20 +286,36 @@ GO;
 
 
         if ($this->additionalPropertiesEnabled) {
-            $this->builder->unmarshalUnion->withAdditionalProperties = true;
-            $unionMap .= 'additionalProperties: ' . "&{$this->receiver()}.{$this->additionalPropertiesName},\n";
+            $mapType = $this->additionalProperties->getType();
+            $itemType = 'interface{}';
+            if ($mapType instanceof Map) {
+                $itemType = $mapType->getValueType()->render();
+            }
+
+            $mapUnmarshal .= <<<GO
+for key, rawValue := range m {
+    if {$this->receiver()}.{$this->additionalProperties->getName()} == nil {
+        {$this->receiver()}.{$this->additionalProperties->getName()} = make({$this->additionalProperties->getType()}, 1)
+    }
+
+    var val {$itemType}
+    err = json.Unmarshal(rawValue, &val)
+    if err != nil {
+        return err
+    }
+    {$this->receiver()}.{$this->additionalProperties->getName()}[key] = val
+}
+
+GO;
         }
 
 
         $funcBody = <<<GO
 var err error
 {$this->renderMainStructStart()}{$mustUnmarshal}{$mayUnmarshal}{$mapUnmarshal}
-err = unionMap{
-{$this->padLines("\t", $unionMap, false)}	jsonData: data,
-}.unmarshal()
 {$this->renderMainStructEnd()}
 
-return err
+return nil
 GO;
 
 
@@ -321,7 +352,7 @@ GO;
         }
 
         if ($this->additionalPropertiesEnabled) {
-            $maps .= ', i.' . $this->additionalPropertiesName;
+            $maps .= ', i.' . $this->additionalProperties->getName();
         }
 
         if ($this->someOf !== null) {
@@ -421,10 +452,6 @@ GO;
         if ($this->propertyNames !== null) {
             // todo error is checked after constants, fix
             return <<<'GO'
-
-if err != nil {
-	return err
-}
 
 *i = :type(ii)
 GO;
