@@ -14,13 +14,21 @@ class MarshalJson extends GoTemplate
 {
     private $type;
     private $builder;
+
     /** @var string[] */
     private $propertyNames;
+
+    /** @var string[] */
+    public $distinctNullNames = [];
+
     private $additionalPropertiesEnabled = false;
+
     /** @var StructProperty */
     private $additionalProperties;
+
     /** @var StructProperty[] */
     private $patternProperties;
+
     private $someOf;
 
     private $code;
@@ -179,7 +187,6 @@ GO;
             $this->builder->unmarshalUnion->goBuilder = $this->builder;
         }
 
-        $unionMap = '';
         $mustUnmarshal = $this->renderMustUnmarshal();
         $mayUnmarshal = $this->renderMayUnmarshal();
         $withIgnoreKeys = false; // TODO move to renderer
@@ -189,12 +196,13 @@ GO;
             ($this->patternProperties || $this->additionalPropertiesEnabled)
         ) {
             $withIgnoreKeys = true;
-            $this->builder->unmarshalUnion->withIgnoreKeys = true;
-            $unionMap .= 'ignoreKeys: ignoreKeys:type' . ",\n";
         }
 
         $mapUnmarshal = '';
-        if ($this->patternProperties !== null || $this->additionalPropertiesEnabled || $this->constValues !== null) {
+        if ($this->patternProperties !== null
+            || $this->additionalPropertiesEnabled
+            || $this->constValues !== null
+            || !empty($this->distinctNullNames)) {
             $mapUnmarshal = <<<'GO'
 
 
@@ -217,12 +225,27 @@ GO;
 if v, ok := m[{$this->escapeValue($name)}]; !ok || string(v) != {$this->escapeValue(json_encode($value))} {
 	return fmt.Errorf({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected, %s received)')}, v)
 }
+
 delete(m, {$this->escapeValue($name)})
 
 
 GO;
-
             }
+        }
+
+        foreach ($this->distinctNullNames as $goPropertyName => $name) {
+            $name = $this->escapeValue($name);
+            $mapUnmarshal .= <<<GO
+
+if ii.$goPropertyName == nil {
+    if _, ok := m[$name]; ok {
+        var v interface{}
+        ii.$goPropertyName = &v
+    }
+}
+
+GO;
+
         }
 
         if ($mapUnmarshal && $withIgnoreKeys) {
@@ -254,6 +277,7 @@ GO;
                     $itemType = $mapType->getValueType()->render();
                 }
                 $mapUnmarshal .= <<<GO
+
         if $regexName.MatchString(key) {
             matched = true
             
@@ -262,10 +286,12 @@ GO;
             }
             
             var val {$itemType}
+
             err = json.Unmarshal(rawValue, &val)
             if err != nil {
                 return err
             }
+            
             {$this->receiver()}.{$patternProperty->getName()}[key] = val
         }
 
@@ -274,6 +300,7 @@ GO;
 
 
             $mapUnmarshal .= <<<GO
+
     if matched {
         delete(m, key)
     }
@@ -293,16 +320,19 @@ GO;
             }
 
             $mapUnmarshal .= <<<GO
+
 for key, rawValue := range m {
     if {$this->receiver()}.{$this->additionalProperties->getName()} == nil {
         {$this->receiver()}.{$this->additionalProperties->getName()} = make({$this->additionalProperties->getType()}, 1)
     }
 
     var val {$itemType}
+
     err = json.Unmarshal(rawValue, &val)
     if err != nil {
         return err
     }
+
     {$this->receiver()}.{$this->additionalProperties->getName()}[key] = val
 }
 
@@ -312,6 +342,7 @@ GO;
 
         $funcBody = <<<GO
 var err error
+
 {$this->renderMainStructStart()}{$mustUnmarshal}{$mayUnmarshal}{$mapUnmarshal}
 {$this->renderMainStructEnd()}
 

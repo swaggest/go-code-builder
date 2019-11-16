@@ -175,7 +175,7 @@ type Message struct {
 	Description   string                 `json:"description,omitempty"`  // A longer description of the message. CommonMark is allowed.
 	ExternalDocs  *ExternalDocs          `json:"externalDocs,omitempty"` // information about external documentation
 	Deprecated    bool                   `json:"deprecated,omitempty"`
-	Example       interface{}            `json:"example,omitempty"`
+	Example       *interface{}           `json:"example,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: ^x-
 }
 

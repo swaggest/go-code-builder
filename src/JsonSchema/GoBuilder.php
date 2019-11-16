@@ -8,6 +8,7 @@ use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\GoCodeBuilder\Templates\Type\NoOmitEmpty;
+use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
 use Swaggest\GoCodeBuilder\Templates\Type\Type;
 use Swaggest\JsonSchema\Schema;
 use Swaggest\JsonSchema\Wrapper;
@@ -264,6 +265,13 @@ class GoBuilder
                     if (count($enum) === 1) {
                         $marshalJson->constValues[$name] = $enum[0];
                         continue;
+                    }
+                }
+
+                if ($goPropertyType->getTypeString() === 'interface{}') {
+                    if ($this->options->distinctNull) {
+                        $goProperty->setType(new Pointer($goPropertyType));
+                        $marshalJson->distinctNullNames[$goProperty->getName()] = $name;
                     }
                 }
 

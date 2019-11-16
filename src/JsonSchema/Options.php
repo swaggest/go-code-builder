@@ -67,6 +67,12 @@ class Options extends ClassStructure
     public $ignoreNullable = false;
 
     /**
+     * Separate `null` from non-existent key by using `*interface{}` type in property.
+     * @var bool
+     */
+    public $distinctNull = true;
+
+    /**
      * Enable `additionalProperties` if they are missing (null) in schema.
      * @var bool
      */

@@ -50,10 +50,10 @@ func TestSchema_MarshalJSON_roundtrip_sample(t *testing.T) {
 	s := entities.Schema{}
 	require.NoError(t, json.Unmarshal(data, &s))
 
-	if s.TypeObject.Default != nil {
-		val := (*s.TypeObject.Default).(string)
-		println(val)
-	}
+	//if s.TypeObject.Default != nil {
+	//	val := (*s.TypeObject.Default).(string)
+	//	println(val)
+	//}
 
 	marshaled, err := json.Marshal(s)
 	require.NoError(t, err)
@@ -70,12 +70,6 @@ func BenchmarkSchema_MarshalJSON_roundtrip_sample(b *testing.B) {
 
 	s := entities.Schema{}
 	require.NoError(b, json.Unmarshal(data, &s))
-
-	if s.TypeObject.Default != nil && *s.TypeObject.Default == nil {
-		println("NULL")
-		//val := (*s.TypeObject.Default).(string)
-		//println(val)
-	}
 
 	marshaled, err := json.Marshal(s)
 	require.NoError(b, err)

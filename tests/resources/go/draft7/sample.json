@@ -7,6 +7,12 @@
   "unknown": null,
   "anotherUnknown": 5,
   "default": null,
+  "properties": {
+    "foo": {
+      "type": "string",
+      "default": "abc"
+    }
+  },
   "allOf": [
     {
       "const": null

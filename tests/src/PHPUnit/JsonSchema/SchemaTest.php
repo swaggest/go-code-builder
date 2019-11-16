@@ -44,31 +44,55 @@ type Untitled1 struct {
 
 type marshalUntitled1 Untitled1
 
+var ignoreKeysUntitled1 = []string{
+	"sampleInt",
+	"sampleBool",
+	"sampleString",
+	"sampleNumber",
+	"sampleSelf",
+	"another",
+}
+
 // UnmarshalJSON decodes JSON.
 func (i *Untitled1) UnmarshalJSON(data []byte) error {
+	var err error
+
 	ii := marshalUntitled1(*i)
 
-	err := unionMap{
-		mustUnmarshal: []interface{}{&ii},
-		ignoreKeys: []string{
-			"sampleInt",
-			"sampleBool",
-			"sampleString",
-			"sampleNumber",
-			"sampleSelf",
-			"another",
-		},
-		additionalProperties: &ii.AdditionalProperties,
-		jsonData: data,
-	}.unmarshal()
-
+	err = json.Unmarshal(data, &ii)
 	if err != nil {
 		return err
 	}
 
+	var m map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &m)
+	if err != nil {
+		m = nil
+	}
+
+	for _, key := range ignoreKeysUntitled1 {
+		delete(m, key)
+	}
+
+	for key, rawValue := range m {
+		if ii.AdditionalProperties == nil {
+			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		}
+
+		var val interface{}
+
+		err = json.Unmarshal(rawValue, &val)
+		if err != nil {
+			return err
+		}
+
+		ii.AdditionalProperties[key] = val
+	}
+
 	*i = Untitled1(ii)
 
-	return err
+	return nil
 }
 
 // MarshalJSON encodes JSON.
