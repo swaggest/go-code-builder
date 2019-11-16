@@ -282,7 +282,7 @@ GO;
             matched = true
             
             if {$this->receiver()}.{$patternProperty->getName()} == nil {
-                {$this->receiver()}.{$patternProperty->getName()} = make({$patternProperty->getType()}, 1)
+                {$this->receiver()}.{$patternProperty->getName()} = make({$patternProperty->getType()->render()}, 1)
             }
             
             var val {$itemType}
@@ -323,7 +323,7 @@ GO;
 
 for key, rawValue := range m {
     if {$this->receiver()}.{$this->additionalProperties->getName()} == nil {
-        {$this->receiver()}.{$this->additionalProperties->getName()} = make({$this->additionalProperties->getType()}, 1)
+        {$this->receiver()}.{$this->additionalProperties->getName()} = make({$this->additionalProperties->getType()->render()}, 1)
     }
 
     var val {$itemType}
