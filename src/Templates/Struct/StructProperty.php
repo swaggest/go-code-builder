@@ -38,6 +38,11 @@ class StructProperty extends GoTemplate
         return $this->type;
     }
 
+    public function setType(AnyType $type)
+    {
+        $this->type = $type;
+    }
+
     /**
      * @return Tags
      */

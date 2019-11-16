@@ -260,7 +260,7 @@ class TypeBuilder
                 $structProperty->getTags()->setTag('json', '-');
                 $structProperty->setComment('Key must match pattern: ' . $pattern);
                 $this->makeResultStruct()->addProperty($structProperty);
-                $this->getGeneratedStruct()->marshalJson->addPatternProperty($pattern, $structProperty->getName());
+                $this->getGeneratedStruct()->marshalJson->addPatternProperty($pattern, $structProperty);
             }
         }
 
@@ -317,7 +317,7 @@ class TypeBuilder
                     $structProperty->setComment('All unmatched properties');
                     $structProperty->getTags()->setTag('json', '-');
                     $resultStruct->addProperty($structProperty);
-                    $this->getGeneratedStruct()->marshalJson->enableAdditionalProperties($propName);
+                    $this->getGeneratedStruct()->marshalJson->enableAdditionalProperties($structProperty);
                 }
             } elseif ($additionalProperties instanceof Schema) {
                 $this->result[] = new Map(new GoType('string'), $goType);
