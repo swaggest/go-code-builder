@@ -114,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed unnecessary regexp dependency, #7.
 
+[0.4.18]: https://github.com/swaggest/go-code-builder/compare/v0.4.17...v0.4.18
 [0.4.17]: https://github.com/swaggest/go-code-builder/compare/v0.4.16...v0.4.17
 [0.4.16]: https://github.com/swaggest/go-code-builder/compare/v0.4.15...v0.4.16
 [0.4.15]: https://github.com/swaggest/go-code-builder/compare/v0.4.14...v0.4.15
