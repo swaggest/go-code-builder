@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Indentation of pattern properties loop.
+- Removed `composer.lock` from exported distribution.
 
 ## [0.4.18] - 2019-11-16
 
