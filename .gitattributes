@@ -8,5 +8,4 @@
 /.scrutinizer.yml export-ignore
 /.travis.yml export-ignore
 /phpunit.xml export-ignore
-/changelog.md export-ignore
 /composer.lock export-ignore
