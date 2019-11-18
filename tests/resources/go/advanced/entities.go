@@ -79,22 +79,22 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)

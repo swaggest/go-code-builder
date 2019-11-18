@@ -65,22 +65,22 @@ func (i *AsyncAPI) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -142,22 +142,22 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -213,22 +213,22 @@ func (i *Contact) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -280,22 +280,22 @@ func (i *License) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -355,22 +355,22 @@ func (i *Server) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -426,22 +426,22 @@ func (i *ServerVariable) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -476,39 +476,39 @@ func (i *Topics) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if i.MapOfAnything == nil {
-					i.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				i.MapOfAnything[key] = val
+			if i.MapOfAnything == nil {
+				i.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
-			if regex.MatchString(key) {
-				matched = true
+			var val interface{}
 
-				if i.MapOfTopicItemValues == nil {
-					i.MapOfTopicItemValues = make(map[string]TopicItem, 1)
-				}
-
-				var val TopicItem
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				i.MapOfTopicItemValues[key] = val
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
 			}
+
+			i.MapOfAnything[key] = val
+		}
+
+		if regex.MatchString(key) {
+			matched = true
+
+			if i.MapOfTopicItemValues == nil {
+				i.MapOfTopicItemValues = make(map[string]TopicItem, 1)
+			}
+
+			var val TopicItem
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			i.MapOfTopicItemValues[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -564,22 +564,22 @@ func (i *TopicItem) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -635,22 +635,22 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -723,22 +723,22 @@ func (i *Message) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -792,22 +792,22 @@ func (i *Tag) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -861,22 +861,22 @@ func (i *ExternalDocs) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -926,22 +926,22 @@ func (i *OperationOneOf1) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1021,22 +1021,22 @@ func (i *Stream) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1152,22 +1152,22 @@ func (i *StreamFraming) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if i.MapOfAnything == nil {
-					i.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				i.MapOfAnything[key] = val
+			if i.MapOfAnything == nil {
+				i.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			i.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1234,22 +1234,22 @@ func (i *Events) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1371,22 +1371,22 @@ func (i *UserPassword) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1445,22 +1445,22 @@ func (i *APIKey) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1517,22 +1517,22 @@ func (i *X509) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1589,22 +1589,22 @@ func (i *SymmetricEncryption) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1661,22 +1661,22 @@ func (i *AsymmetricEncryption) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1735,22 +1735,22 @@ func (i *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1816,22 +1816,22 @@ func (i *BearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -1892,22 +1892,22 @@ func (i *APIKeyHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexX.MatchString(key) {
-				matched = true
+		if regexX.MatchString(key) {
+			matched = true
 
-				if ii.MapOfAnything == nil {
-					ii.MapOfAnything = make(map[string]interface{}, 1)
-				}
-
-				var val interface{}
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				ii.MapOfAnything[key] = val
+			if ii.MapOfAnything == nil {
+				ii.MapOfAnything = make(map[string]interface{}, 1)
 			}
+
+			var val interface{}
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			ii.MapOfAnything[key] = val
+		}
 
 		if matched {
 			delete(m, key)
@@ -2042,22 +2042,22 @@ func (i *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 	for key, rawValue := range m {
 		matched := false
 
-			if regexAZAZ09.MatchString(key) {
-				matched = true
+		if regexAZAZ09.MatchString(key) {
+			matched = true
 
-				if i.MapOfComponentsSecuritySchemesAZAZ09Values == nil {
-					i.MapOfComponentsSecuritySchemesAZAZ09Values = make(map[string]ComponentsSecuritySchemesAZAZ09, 1)
-				}
-
-				var val ComponentsSecuritySchemesAZAZ09
-
-				err = json.Unmarshal(rawValue, &val)
-				if err != nil {
-					return err
-				}
-
-				i.MapOfComponentsSecuritySchemesAZAZ09Values[key] = val
+			if i.MapOfComponentsSecuritySchemesAZAZ09Values == nil {
+				i.MapOfComponentsSecuritySchemesAZAZ09Values = make(map[string]ComponentsSecuritySchemesAZAZ09, 1)
 			}
+
+			var val ComponentsSecuritySchemesAZAZ09
+
+			err = json.Unmarshal(rawValue, &val)
+			if err != nil {
+				return err
+			}
+
+			i.MapOfComponentsSecuritySchemesAZAZ09Values[key] = val
+		}
 
 		if matched {
 			delete(m, key)
