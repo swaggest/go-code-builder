@@ -85,6 +85,12 @@ class Options extends ClassStructure
     public $inheritSchemaFromExamples = false;
 
     /**
+     * Generate fluent setters for struct fields.
+     * @var bool
+     */
+    public $fluentSetters = false;
+
+    /**
      * @param Properties|static $properties
      * @param Schema $ownerSchema
      */

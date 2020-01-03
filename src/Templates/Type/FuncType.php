@@ -18,7 +18,15 @@ class FuncType extends GoTemplate implements AnyType
     protected function toString()
     {
         // func({$data->iteratorResultGoType}, error) bool
-        return 'func(' . $this->func->getArguments()->toTypesString() . ') ' . $this->func->getResult()->toTypesString();
+        $res = 'func(';
+        if ($this->func->getArguments() !== null) {
+            $res .= $this->func->getArguments()->toTypesString();
+        }
+        $res .= ') ';
+        if ($this->func->getResult() !== null) {
+            $res .= $this->func->getResult()->toTypesString();
+        }
+        return trim($res);
     }
 
     public function getTypeString()
