@@ -25,6 +25,7 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         $builder->options->withZeroValues = true;
         $builder->options->ignoreNullable = false;
         $builder->options->defaultAdditionalProperties = true;
+        $builder->options->fluentSetters = true;
         $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
             if ('#' === $path) {
                 $structDef->setName('Schema');
@@ -35,7 +36,7 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         });
         $builder->getType($schema);
 
-        $goFile = new GoFile('entities');
+        $goFile = new GoFile('jsonschema');
         $goFile->fileComment = '';
         foreach ($builder->getGeneratedStructs() as $generatedStruct) {
             $goFile->getCode()->addSnippet($generatedStruct->structDef);

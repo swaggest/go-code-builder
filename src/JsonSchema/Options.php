@@ -84,6 +84,8 @@ class Options extends ClassStructure
      */
     public $inheritSchemaFromExamples = false;
 
+    public $fluentSetters = false;
+
     /**
      * @param Properties|static $properties
      * @param Schema $ownerSchema

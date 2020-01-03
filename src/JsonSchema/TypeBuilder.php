@@ -3,6 +3,7 @@
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 use Swaggest\GoCodeBuilder\Templates\Constant\TypeConstBlock;
+use Swaggest\GoCodeBuilder\Templates\Struct\FluentSetter;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructType;
@@ -173,6 +174,11 @@ class TypeBuilder
 //                $structProperty->setComment($path);
                 $structProperty->getTags()->setTag('json', '-');
                 $resultStruct->addProperty($structProperty);
+
+                if ($this->goBuilder->options->fluentSetters) {
+                    $resultStruct->addFunc(FluentSetter::make($resultStruct, $structProperty));
+                }
+
                 $generatedStruct = $this->getGeneratedStruct();
                 $generatedStruct->marshalJson->addSomeOf($kind, $name);
             }
@@ -259,7 +265,14 @@ class TypeBuilder
                 );
                 $structProperty->getTags()->setTag('json', '-');
                 $structProperty->setComment('Key must match pattern: ' . $pattern);
-                $this->makeResultStruct()->addProperty($structProperty);
+
+                $resultStruct = $this->makeResultStruct();
+                $resultStruct->addProperty($structProperty);
+
+                if ($this->goBuilder->options->fluentSetters) {
+                    $resultStruct->addFunc(FluentSetter::make($resultStruct, $structProperty));
+                }
+
                 $this->getGeneratedStruct()->marshalJson->addPatternProperty($pattern, $structProperty);
             }
         }
@@ -317,6 +330,11 @@ class TypeBuilder
                     $structProperty->setComment('All unmatched properties');
                     $structProperty->getTags()->setTag('json', '-');
                     $resultStruct->addProperty($structProperty);
+
+                    if ($this->goBuilder->options->fluentSetters) {
+                        $resultStruct->addFunc(FluentSetter::make($resultStruct, $structProperty));
+                    }
+
                     $this->getGeneratedStruct()->marshalJson->enableAdditionalProperties($structProperty);
                 }
             } elseif ($additionalProperties instanceof Schema) {

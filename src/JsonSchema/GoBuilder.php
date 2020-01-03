@@ -4,6 +4,7 @@ namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 use Swaggest\GoCodeBuilder\GoCodeBuilder;
 use Swaggest\GoCodeBuilder\Templates\Code;
+use Swaggest\GoCodeBuilder\Templates\Struct\FluentSetter;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
@@ -270,12 +271,18 @@ class GoBuilder
 
                 if ($goPropertyType->getTypeString() === 'interface{}') {
                     if ($this->options->distinctNull) {
-                        $goProperty->setType(new Pointer($goPropertyType));
+                        $goPropertyType = new Pointer($goPropertyType);
+                        $goProperty->setType($goPropertyType);
                         $marshalJson->distinctNullNames[$goProperty->getName()] = $name;
                     }
                 }
 
                 $structDef->addProperty($goProperty);
+
+                if ($this->options->fluentSetters) {
+                    $structDef->addFunc(FluentSetter::make($structDef, $goProperty));
+                }
+
                 $marshalJson->addNamedProperty($name);
             }
         }
