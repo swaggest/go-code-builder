@@ -48,4 +48,20 @@ GO
 
     }
 
+
+    public function testNoArgsNoResult()
+    {
+        $func = new FuncDef('Sample');
+
+        $this->assertSame(<<<GO
+func Sample() {
+
+}
+
+
+GO
+            , $func->render());
+
+    }
+
 }
