@@ -33,7 +33,7 @@ class Argument extends GoTemplate
         if ($this->name === null) {
             return $this->type->render();
         } else {
-            return $this->name . ' ' . $this->type->render() . ($this->isVariadic ? '...' : '');
+            return $this->name . ' ' . ($this->isVariadic ? '...' : '') . $this->type->render();
         }
     }
 
