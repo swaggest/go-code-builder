@@ -117,9 +117,9 @@ class StructDef extends GoTemplate
     public function addFunc(FuncDef $func, $prepend = false)
     {
         if ($prepend) {
-            array_unshift($this->funcs, $func);
+            $this->funcs = array($func->getName() => $func) + $this->funcs;
         } else {
-            $this->funcs[] = $func;
+            $this->funcs[$func->getName()] = $func;
         }
         return $this;
     }
