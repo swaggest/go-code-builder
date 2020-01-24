@@ -131,6 +131,7 @@ GO;
     private function renderConstRawMessage()
     {
         if ($this->constValues !== null) {
+            $this->code->imports()->addByName('encoding/json');
             $result = <<<GO
 var (
 	// const:type is unconditionally added to JSON.
@@ -203,6 +204,7 @@ GO;
             || $this->additionalPropertiesEnabled
             || $this->constValues !== null
             || !empty($this->distinctNullNames)) {
+            $this->code->imports()->addByName('encoding/json');
             $mapUnmarshal = <<<'GO'
 
 
@@ -276,6 +278,7 @@ GO;
                 if ($mapType instanceof Map) {
                     $itemType = $mapType->getValueType()->render();
                 }
+                $this->code->imports()->addByName('encoding/json');
                 $mapUnmarshal .= <<<GO
 
     if $regexName.MatchString(key) {
@@ -319,6 +322,7 @@ GO;
                 $itemType = $mapType->getValueType()->render();
             }
 
+            $this->code->imports()->addByName('encoding/json');
             $mapUnmarshal .= <<<GO
 
 for key, rawValue := range m {
@@ -411,6 +415,7 @@ GO;
     {
         $result = '';
         if ($this->propertyNames) {
+            $this->code->imports()->addByName('encoding/json');
             $result .= <<<'GO'
 
 
@@ -424,6 +429,7 @@ GO;
 
         if (isset($this->someOf['allOf'])) {
             foreach ($this->someOf['allOf'] as $propertyName) {
+                $this->code->imports()->addByName('encoding/json');
                 $result .= <<<GO
 
 
@@ -449,6 +455,7 @@ GO;
                 }
 
                 foreach ($unionPropertyNames as $propertyName) {
+                    $this->code->imports()->addByName('encoding/json');
                     $result .= <<<GO
 
 

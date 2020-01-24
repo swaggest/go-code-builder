@@ -32,6 +32,9 @@ class MarshalEnum extends GoTemplate
      */
     private $builder;
 
+    /** @var Code */
+    private $code;
+
     /**
      * MarshalEnum constructor.
      * @param Type $type
@@ -45,6 +48,7 @@ class MarshalEnum extends GoTemplate
         $this->enum = $enum;
         $this->base = $base;
         $this->builder = $builder;
+        $this->code = new Code();
     }
 
 
@@ -54,6 +58,7 @@ class MarshalEnum extends GoTemplate
             return '';
         }
 
+        $this->code->imports()->addByName('encoding/json');
         return <<<GO
 // MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
@@ -72,6 +77,7 @@ GO;
             return '';
         }
 
+        $this->code->imports()->addByName('encoding/json');
         return <<<GO
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
@@ -117,6 +123,7 @@ GO;
             return '';
         }
 
+        $this->code->imports()->addByName('encoding/json');
         return <<<GO
 // MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
@@ -136,6 +143,7 @@ GO;
             return '';
         }
 
+        $this->code->imports()->addByName('encoding/json');
         return <<<GO
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
@@ -169,12 +177,12 @@ GO;
 GO;
 
         if ($this->base instanceof AbstractTemplate) {
-            $code = new Code(new PlaceholderString($result, [
+            $this->code->addSnippet(new PlaceholderString($result, [
                 ':type' => $this->type,
                 ':base' => $this->base,
             ]));
-            $code->imports()->addByName('fmt');
-            return $code;
+            $this->code->imports()->addByName('fmt');
+            return $this->code;
         }
 
         return '';
