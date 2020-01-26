@@ -71,6 +71,9 @@ func (i *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i MessagingReaderReads) MarshalJSON() ([]byte, error) {
+    if len(i.AdditionalProperties) == 0 {
+        return json.Marshal(marshalMessagingReaderReads(i))
+    }
 	return marshalUnion(marshalMessagingReaderReads(i), i.AdditionalProperties)
 }
 

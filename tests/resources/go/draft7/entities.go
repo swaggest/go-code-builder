@@ -443,6 +443,9 @@ func (i *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i CoreSchemaMetaSchema) MarshalJSON() ([]byte, error) {
+    if len(i.ExtraProperties) == 0 {
+        return json.Marshal(marshalCoreSchemaMetaSchema(i))
+    }
 	return marshalUnion(marshalCoreSchemaMetaSchema(i), i.ExtraProperties)
 }
 
