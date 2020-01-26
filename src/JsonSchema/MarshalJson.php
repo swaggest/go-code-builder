@@ -371,39 +371,56 @@ GO;
         }
 
         $maps = '';
+        $mapsCnt = 0;
 
         if ($this->constValues !== null) {
             $maps .= ', const:type';
+            $mapsCnt++;
         }
 
         if ($this->propertyNames !== null) {
             $maps .= ', marshal:type(i)';
+            $mapsCnt++;
         }
 
         if ($this->patternProperties !== null) {
             foreach ($this->patternProperties as $regex => $patternProperty) {
                 $maps .= ', i.' . $patternProperty->getName();
+                $mapsCnt++;
             }
         }
 
         if ($this->additionalPropertiesEnabled) {
             $maps .= ', i.' . $this->additionalProperties->getName();
+            $mapsCnt++;
         }
 
         if ($this->someOf !== null) {
             foreach ($this->someOf as $kind => $unionPropertyNames) {
                 foreach ($unionPropertyNames as $propertyName) {
                     $maps .= ', i.' . $propertyName;
+                    $mapsCnt++;
                 }
             }
         }
 
         $maps = substr($maps, 2);
 
+        $earlyReturn = '';
+        if ($this->additionalPropertiesEnabled && $this->propertyNames !== null && $mapsCnt === 2) {
+            $earlyReturn = <<<GO
+	if len(i.{$this->additionalProperties->getName()}) == 0 {
+		return json.Marshal(marshal:type(i))
+	}
+
+GO;
+
+        }
+
         return <<<GO
 {$this->renderConstRawMessage()}// MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
-	return marshalUnion($maps)
+{$earlyReturn}	return marshalUnion($maps)
 }
 
 GO;

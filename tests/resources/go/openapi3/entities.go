@@ -1289,6 +1289,9 @@ func (i *Discriminator) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Discriminator) MarshalJSON() ([]byte, error) {
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalDiscriminator(i))
+	}
 	return marshalUnion(marshalDiscriminator(i), i.AdditionalProperties)
 }
 
@@ -3844,6 +3847,9 @@ func (i *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i HTTPSecuritySchemeOneOf1) MarshalJSON() ([]byte, error) {
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalHTTPSecuritySchemeOneOf1(i))
+	}
 	return marshalUnion(marshalHTTPSecuritySchemeOneOf1(i), i.AdditionalProperties)
 }
 
