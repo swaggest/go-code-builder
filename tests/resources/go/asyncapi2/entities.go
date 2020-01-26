@@ -663,9 +663,9 @@ func (i *ServerBindingsObject) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i ServerBindingsObject) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalServerBindingsObject(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalServerBindingsObject(i))
+	}
 	return marshalUnion(marshalServerBindingsObject(i), i.AdditionalProperties)
 }
 
@@ -964,9 +964,9 @@ func (i *Reference) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Reference) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalReference(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalReference(i))
+	}
 	return marshalUnion(marshalReference(i), i.AdditionalProperties)
 }
 
@@ -1362,9 +1362,9 @@ func (i *OperationBindingsObject) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i OperationBindingsObject) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalOperationBindingsObject(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalOperationBindingsObject(i))
+	}
 	return marshalUnion(marshalOperationBindingsObject(i), i.AdditionalProperties)
 }
 
@@ -1797,9 +1797,9 @@ func (i *MessageBindingsObject) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i MessageBindingsObject) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalMessageBindingsObject(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalMessageBindingsObject(i))
+	}
 	return marshalUnion(marshalMessageBindingsObject(i), i.AdditionalProperties)
 }
 
@@ -2221,9 +2221,9 @@ func (i *ChannelBindingsObject) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i ChannelBindingsObject) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalChannelBindingsObject(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalChannelBindingsObject(i))
+	}
 	return marshalUnion(marshalChannelBindingsObject(i), i.AdditionalProperties)
 }
 
@@ -2304,9 +2304,9 @@ func (i *Exchange) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Exchange) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalExchange(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalExchange(i))
+	}
 	return marshalUnion(marshalExchange(i), i.AdditionalProperties)
 }
 
@@ -2374,9 +2374,9 @@ func (i *Queue) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Queue) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalQueue(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalQueue(i))
+	}
 	return marshalUnion(marshalQueue(i), i.AdditionalProperties)
 }
 

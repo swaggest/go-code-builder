@@ -97,6 +97,9 @@ func (i *Untitled1) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Untitled1) MarshalJSON() ([]byte, error) {
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalUntitled1(i))
+	}
 	return marshalUnion(marshalUntitled1(i), i.AdditionalProperties)
 }
 

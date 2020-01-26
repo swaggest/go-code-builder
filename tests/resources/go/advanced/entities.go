@@ -182,9 +182,9 @@ func (i *Reference) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Reference) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalReference(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalReference(i))
+	}
 	return marshalUnion(marshalReference(i), i.AdditionalProperties)
 }
 
@@ -278,9 +278,9 @@ func (i *NoTypeWithExamples) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i NoTypeWithExamples) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalNoTypeWithExamples(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalNoTypeWithExamples(i))
+	}
 	return marshalUnion(marshalNoTypeWithExamples(i), i.AdditionalProperties)
 }
 
@@ -344,9 +344,9 @@ func (i *NoTypeWithExample) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i NoTypeWithExample) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalNoTypeWithExample(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalNoTypeWithExample(i))
+	}
 	return marshalUnion(marshalNoTypeWithExample(i), i.AdditionalProperties)
 }
 
@@ -412,9 +412,9 @@ func (i *Address) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (i Address) MarshalJSON() ([]byte, error) {
-    if len(i.AdditionalProperties) == 0 {
-        return json.Marshal(marshalAddress(i))
-    }
+	if len(i.AdditionalProperties) == 0 {
+		return json.Marshal(marshalAddress(i))
+	}
 	return marshalUnion(marshalAddress(i), i.AdditionalProperties)
 }
 

@@ -406,12 +406,12 @@ GO;
 
         $maps = substr($maps, 2);
 
-        $quickReturn = '';
+        $earlyReturn = '';
         if ($this->additionalPropertiesEnabled && $this->propertyNames !== null && $mapsCnt === 2) {
-            $quickReturn = <<<GO
-    if len(i.{$this->additionalProperties->getName()}) == 0 {
-        return json.Marshal(marshal:type(i))
-    }
+            $earlyReturn = <<<GO
+	if len(i.{$this->additionalProperties->getName()}) == 0 {
+		return json.Marshal(marshal:type(i))
+	}
 
 GO;
 
@@ -420,7 +420,7 @@ GO;
         return <<<GO
 {$this->renderConstRawMessage()}// MarshalJSON encodes JSON.
 func (i :type) MarshalJSON() ([]byte, error) {
-{$quickReturn}	return marshalUnion($maps)
+{$earlyReturn}	return marshalUnion($maps)
 }
 
 GO;
