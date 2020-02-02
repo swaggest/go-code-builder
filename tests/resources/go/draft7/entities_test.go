@@ -1,4 +1,4 @@
-package entities_test
+package jsonschema_test
 
 import (
 	"encoding/json"

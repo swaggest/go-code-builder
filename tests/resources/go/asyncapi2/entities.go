@@ -3197,10 +3197,10 @@ func (i Oauth2Flows) MarshalJSON() ([]byte, error) {
 
 // Oauth2FlowsFlows structure is generated from "#/definitions/oauth2Flows->flows".
 type Oauth2FlowsFlows struct {
-	Implicit          Oauth2Flow `json:"implicit,omitempty"`
-	Password          Oauth2Flow `json:"password,omitempty"`
-	ClientCredentials Oauth2Flow `json:"clientCredentials,omitempty"`
-	AuthorizationCode Oauth2Flow `json:"authorizationCode,omitempty"`
+	Implicit          *Oauth2Flow `json:"implicit,omitempty"`
+	Password          *Oauth2Flow `json:"password,omitempty"`
+	ClientCredentials *Oauth2Flow `json:"clientCredentials,omitempty"`
+	AuthorizationCode *Oauth2Flow `json:"authorizationCode,omitempty"`
 }
 
 // Oauth2Flow structure is generated from "#/definitions/oauth2Flow".

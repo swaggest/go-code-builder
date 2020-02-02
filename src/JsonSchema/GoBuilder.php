@@ -7,6 +7,7 @@ use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\Struct\FluentSetter;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
+use Swaggest\GoCodeBuilder\Templates\Struct\StructType;
 use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\GoCodeBuilder\Templates\Type\NoOmitEmpty;
 use Swaggest\GoCodeBuilder\Templates\Type\Pointer;
@@ -76,6 +77,14 @@ class GoBuilder
     {
         if (isset($this->generatedStructs[$path])) {
             return $this->generatedStructs[$path]->structDef->getType();
+        }
+
+        if (!is_bool($schema) && null !== $refs = $schema->getFromRefs()) {
+            foreach ($refs as $ref) {
+                if (isset($this->generatedStructs[$ref])) {
+                    return $this->generatedStructs[$ref]->structDef->getType();
+                }
+            }
         }
 
         $s = self::unboolSchema($schema);
@@ -159,8 +168,12 @@ class GoBuilder
             }
         }
 
+        if (isset($this->namesGenerated[$structName]) && $schema->getMeta(TypeBuilder::CONDITIONAL_META)) {
+            $structName = $structName . 'Conditional';
+        }
+
         $structPreferredName = $structName;
-        $i = 1;
+        $i = 2;
         while (isset($this->namesGenerated[$structName])) {
             $structName = $structPreferredName . $i;
             $i++;
@@ -214,6 +227,9 @@ class GoBuilder
                 }
 
                 $goPropertyType = $this->getType($property, $path . '->' . $name, $structDef);
+                if ($goPropertyType instanceof StructType) {
+                    $goPropertyType = new Pointer($goPropertyType);
+                }
                 $goProperty = new StructProperty(
                     $fieldName,
                     $goPropertyType

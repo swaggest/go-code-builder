@@ -775,7 +775,6 @@ type Schema struct {
 	MinProperties        int64                                         `json:"minProperties,omitempty"`
 	Required             []string                                      `json:"required,omitempty"`
 	Enum                 []interface{}                                 `json:"enum,omitempty"`
-	MapOfAnything        map[string]interface{}                        `json:"-"`                              // Key must match pattern: ^x-
 	AdditionalProperties *SchemaAdditionalProperties                   `json:"additionalProperties,omitempty"`
 	Type                 *HTTPJSONSchemaOrgDraft04SchemaPropertiesType `json:"type,omitempty"`
 	Items                *SchemaItems                                  `json:"items,omitempty"`
@@ -786,6 +785,7 @@ type Schema struct {
 	XML                  *XML                                          `json:"xml,omitempty"`
 	ExternalDocs         *ExternalDocs                                 `json:"externalDocs,omitempty"`         // information about external documentation
 	Example              *interface{}                                  `json:"example,omitempty"`
+	MapOfAnything        map[string]interface{}                        `json:"-"`                              // Key must match pattern: ^x-
 }
 
 type marshalSchema Schema
@@ -1185,7 +1185,6 @@ func (i HeaderParameterSubSchema) MarshalJSON() ([]byte, error) {
 type PrimitivesItems struct {
 	Type             PrimitivesItemsType    `json:"type,omitempty"`
 	Format           string                 `json:"format,omitempty"`
-	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
 	Items            *PrimitivesItems       `json:"items,omitempty"`
 	CollectionFormat CollectionFormat       `json:"collectionFormat,omitempty"`
 	Default          *interface{}           `json:"default,omitempty"`
@@ -1201,6 +1200,7 @@ type PrimitivesItems struct {
 	UniqueItems      bool                   `json:"uniqueItems,omitempty"`
 	Enum             []interface{}          `json:"enum,omitempty"`
 	MultipleOf       float64                `json:"multipleOf,omitempty"`
+	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
 }
 
 type marshalPrimitivesItems PrimitivesItems

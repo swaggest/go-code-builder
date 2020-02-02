@@ -832,7 +832,6 @@ type Schema struct {
 	Required             []string                                        `json:"required,omitempty"`
 	Enum                 []interface{}                                   `json:"enum,omitempty"`
 	Type                 SchemaType                                      `json:"type,omitempty"`
-	MapOfAnything        map[string]interface{}                          `json:"-"`                              // Key must match pattern: ^x-
 	Not                  *SchemaNot                                      `json:"not,omitempty"`
 	AllOf                []SchemaAllOfItems                              `json:"allOf,omitempty"`
 	OneOf                []SchemaOneOfItems                              `json:"oneOf,omitempty"`
@@ -851,6 +850,7 @@ type Schema struct {
 	ExternalDocs         *ExternalDocumentation                          `json:"externalDocs,omitempty"`
 	Deprecated           bool                                            `json:"deprecated,omitempty"`
 	XML                  *XML                                            `json:"xml,omitempty"`
+	MapOfAnything        map[string]interface{}                          `json:"-"`                              // Key must match pattern: ^x-
 }
 
 type marshalSchema Schema
@@ -1405,8 +1405,8 @@ type MediaType struct {
 	Schema        *MediaTypeSchema                                 `json:"schema,omitempty"`
 	Example       *interface{}                                     `json:"example,omitempty"`
 	Examples      map[string]MediaTypeExamplesAdditionalProperties `json:"examples,omitempty"`
-	MapOfAnything map[string]interface{}                           `json:"-"`                  // Key must match pattern: ^x-
 	Encoding      map[string]Encoding                              `json:"encoding,omitempty"`
+	MapOfAnything map[string]interface{}                           `json:"-"`                  // Key must match pattern: ^x-
 }
 
 type marshalMediaType MediaType
@@ -2175,11 +2175,11 @@ type Operation struct {
 	Parameters    []OperationParametersItems                        `json:"parameters,omitempty"`
 	RequestBody   *OperationRequestBody                             `json:"requestBody,omitempty"`
 	Responses     *Responses                                        `json:"responses,omitempty"`
-	MapOfAnything map[string]interface{}                            `json:"-"`                      // Key must match pattern: ^x-
 	Callbacks     map[string]OperationCallbacksAdditionalProperties `json:"callbacks,omitempty"`
 	Deprecated    bool                                              `json:"deprecated,omitempty"`
 	Security      []map[string][]string                             `json:"security,omitempty"`
 	Servers       []Server                                          `json:"servers,omitempty"`
+	MapOfAnything map[string]interface{}                            `json:"-"`                      // Key must match pattern: ^x-
 }
 
 type marshalOperation Operation

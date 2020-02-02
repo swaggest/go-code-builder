@@ -128,7 +128,7 @@ GO;
         $type = $tb->build();
         $this->assertEquals('*string', $type->getTypeString());
 
-        $this->assertEquals('*Untitled1', $builder->getType($obj)->getTypeString());
+        $this->assertEquals('Untitled1', $builder->getType($obj)->getTypeString());
         $struct = $builder->getGeneratedStruct($obj, '#');
 
         $this->assertEquals(<<<'GO'
@@ -153,7 +153,7 @@ GO
         $type = $tb->build();
         $this->assertEquals('*string', $type->getTypeString());
 
-        $this->assertEquals('*Untitled1', $builder->getType($obj)->getTypeString());
+        $this->assertEquals('Untitled1', $builder->getType($obj)->getTypeString());
         $struct = $builder->getGeneratedStruct($obj, '#');
 
         $this->assertEquals(<<<'GO'
@@ -178,7 +178,7 @@ GO
         $type = $tb->build();
         $this->assertEquals('*string', $type->getTypeString());
 
-        $this->assertEquals('*Untitled1', $builder->getType($obj)->getTypeString());
+        $this->assertEquals('Untitled1', $builder->getType($obj)->getTypeString());
         $struct = $builder->getGeneratedStruct($obj, '#');
 
         $this->assertEquals(<<<'GO'
@@ -204,7 +204,7 @@ GO
         $type = $tb->build();
         $this->assertEquals('*string', $type->getTypeString());
 
-        $this->assertEquals('*Untitled1', $builder->getType($obj)->getTypeString());
+        $this->assertEquals('Untitled1', $builder->getType($obj)->getTypeString());
         $struct = $builder->getGeneratedStruct($obj, '#');
 
         $this->assertEquals(<<<'GO'
