@@ -79,7 +79,7 @@ class GoBuilder
             return $this->generatedStructs[$path]->structDef->getType();
         }
 
-        if (!is_bool($schema) && null !== $refs = $schema->getFromRefs()) {
+        if (!is_bool($schema) && (null !== $refs = $schema->getFromRefs()) && !in_array(false, $refs)) {
             foreach ($refs as $ref) {
                 if (isset($this->generatedStructs[$ref])) {
                     return $this->generatedStructs[$ref]->structDef->getType();
