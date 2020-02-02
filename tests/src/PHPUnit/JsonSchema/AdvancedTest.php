@@ -94,4 +94,51 @@ JSON;
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
+
+    public function testObjectOrString()
+    {
+        $schemaData = <<<'JSON'
+{
+    "items": {
+        "$ref": "#/definitions/element"
+    },
+    "type": "array",
+    "definitions": {
+        "element": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "val": {
+                    "type": "integer"
+                }
+            },
+            "type": [
+                "object",
+                "string"
+            ]
+        }
+    }
+}
+JSON;
+        $schema = Schema::import(json_decode($schemaData));
+        $builder = new GoBuilder();
+
+        $builder->getType($schema);
+        $goFile = new GoFile('entities');
+        $goFile->fileComment = '';
+        $goFile->setComment('Package entities contains generated structures.');
+        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
+            $goFile->getCode()->addSnippet($generatedStruct->structDef);
+        }
+        $goFile->getCode()->addSnippet($builder->getCode());
+
+        $filePath = __DIR__ . '/../../../resources/go/advanced/object-or-string/entities.go';
+        file_put_contents($filePath, $goFile->render());
+
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
+    }
+
 }
