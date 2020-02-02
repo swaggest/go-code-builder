@@ -31,6 +31,8 @@ class TypeBuilder
     const EXAMPLES = 'examples';
     const EXAMPLE = 'example';
 
+    const CONDITIONAL_META = 'conditional';
+
     const NAME_ANY = 'anything';
 
     /** @var Schema */
@@ -123,19 +125,22 @@ class TypeBuilder
             return;
         }
 
+        $props = [];
         foreach ($orSchemas as $i => $item) {
             if ($item instanceof Schema) {
                 $name = $this->goBuilder->codeBuilder->exportableName($kind . '/' . $i);
                 $path = $this->path . '/' . $kind . '/' . $i;
+
                 if ($kind === Schema::names()->type && is_string($item->type) && is_string($kind)) {
                     $path = $this->path . '[' . $item->type . ']';
                     $name = $this->goBuilder->codeBuilder->exportableName($kind . '/' . $item->type);
                 }
 
                 $betterName = null;
-                if ($refs = $item->getFromRefs()) {
+                if (($refs = $item->getFromRefs()) && (($kind !== Schema::names()->type) || $item->type === Schema::OBJECT)) {
                     $betterName = $this->goBuilder->pathToName($refs[0]);
-                    if (empty($this->goBuilder->codeBuilder->exportableName($betterName, true))) {
+                    $betterName = $this->goBuilder->codeBuilder->exportableName($betterName, true);
+                    if (empty($betterName) || isset($props[$betterName])) {
                         $betterName = null;
                     }
                 }
@@ -144,12 +149,14 @@ class TypeBuilder
                 if (empty($betterName) &&
                     ($kind !== Schema::names()->type)) {
                     $betterName = $this->makeName($itemType);
+                    $betterName = $this->goBuilder->codeBuilder->exportableName($betterName, true);
                 }
 
-                if (!empty($betterName) && !empty($this->goBuilder->codeBuilder->exportableName($betterName, true))) {
-                    $name = $this->goBuilder->codeBuilder->exportableName($betterName);
+                if (!empty($betterName) && !isset($props[$betterName])) {
+                    $name = $betterName;
                 }
 
+                $this->schema->addMeta(true, self::CONDITIONAL_META);
                 $resultStruct = $this->makeResultStruct();
 
                 if ($this->goBuilder->options->trimParentFromPropertyNames) {
@@ -170,6 +177,7 @@ class TypeBuilder
                     $itemType = new Pointer($itemType);
                 }
 
+                $props[$name] = true;
                 $structProperty = new StructProperty($name, $itemType);
 //                $structProperty->setComment($path);
                 $structProperty->getTags()->setTag('json', '-');
@@ -764,7 +772,7 @@ GO
 
 
         if ($this->resultStruct !== null) {
-            return new Pointer($this->resultStruct->getType());
+            return $this->resultStruct->getType();
         }
 
         if (empty($this->result)) {

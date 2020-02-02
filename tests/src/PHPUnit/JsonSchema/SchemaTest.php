@@ -118,7 +118,7 @@ GO;
         }
 
         $this->assertSame($expectedStructs, $actualStructs);
-        $this->assertSame('*Untitled1', $type->getTypeString());
+        $this->assertSame('Untitled1', $type->getTypeString());
     }
 
 
