@@ -296,7 +296,7 @@ class GoBuilder
                 $structDef->addProperty($goProperty);
 
                 if ($this->options->fluentSetters) {
-                    $structDef->addFunc(FluentSetter::make($structDef, $goProperty));
+                    FluentSetter::addToStruct($structDef, $goProperty);
                 }
 
                 $marshalJson->addNamedProperty($name);

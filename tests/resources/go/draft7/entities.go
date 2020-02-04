@@ -227,9 +227,27 @@ func (v *CoreSchemaMetaSchema) WithDefinitions(val map[string]Schema) *CoreSchem
 	return v
 }
 
+// WithDefinitionsItem sets Definitions item value.
+func (v *CoreSchemaMetaSchema) WithDefinitionsItem(key string, val Schema) *CoreSchemaMetaSchema {
+	if v.Definitions == nil {
+		v.Definitions = make(map[string]Schema, 1)
+	}
+	v.Definitions[key] = val
+	return v
+}
+
 // WithProperties sets Properties value.
 func (v *CoreSchemaMetaSchema) WithProperties(val map[string]Schema) *CoreSchemaMetaSchema {
 	v.Properties = val
+	return v
+}
+
+// WithPropertiesItem sets Properties item value.
+func (v *CoreSchemaMetaSchema) WithPropertiesItem(key string, val Schema) *CoreSchemaMetaSchema {
+	if v.Properties == nil {
+		v.Properties = make(map[string]Schema, 1)
+	}
+	v.Properties[key] = val
 	return v
 }
 
@@ -239,9 +257,27 @@ func (v *CoreSchemaMetaSchema) WithPatternProperties(val map[string]Schema) *Cor
 	return v
 }
 
+// WithPatternPropertiesItem sets PatternProperties item value.
+func (v *CoreSchemaMetaSchema) WithPatternPropertiesItem(key string, val Schema) *CoreSchemaMetaSchema {
+	if v.PatternProperties == nil {
+		v.PatternProperties = make(map[string]Schema, 1)
+	}
+	v.PatternProperties[key] = val
+	return v
+}
+
 // WithDependencies sets Dependencies value.
 func (v *CoreSchemaMetaSchema) WithDependencies(val map[string]DependenciesAdditionalProperties) *CoreSchemaMetaSchema {
 	v.Dependencies = val
+	return v
+}
+
+// WithDependenciesItem sets Dependencies item value.
+func (v *CoreSchemaMetaSchema) WithDependenciesItem(key string, val DependenciesAdditionalProperties) *CoreSchemaMetaSchema {
+	if v.Dependencies == nil {
+		v.Dependencies = make(map[string]DependenciesAdditionalProperties, 1)
+	}
+	v.Dependencies[key] = val
 	return v
 }
 
@@ -332,6 +368,15 @@ func (v *CoreSchemaMetaSchema) WithNot(val Schema) *CoreSchemaMetaSchema {
 // WithExtraProperties sets ExtraProperties value.
 func (v *CoreSchemaMetaSchema) WithExtraProperties(val map[string]interface{}) *CoreSchemaMetaSchema {
 	v.ExtraProperties = val
+	return v
+}
+
+// WithExtraPropertiesItem sets ExtraProperties item value.
+func (v *CoreSchemaMetaSchema) WithExtraPropertiesItem(key string, val interface{}) *CoreSchemaMetaSchema {
+	if v.ExtraProperties == nil {
+		v.ExtraProperties = make(map[string]interface{}, 1)
+	}
+	v.ExtraProperties[key] = val
 	return v
 }
 
