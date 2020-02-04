@@ -184,7 +184,7 @@ class TypeBuilder
                 $resultStruct->addProperty($structProperty);
 
                 if ($this->goBuilder->options->fluentSetters) {
-                    $resultStruct->addFunc(FluentSetter::make($resultStruct, $structProperty));
+                    FluentSetter::addToStruct($resultStruct, $structProperty);
                 }
 
                 $generatedStruct = $this->getGeneratedStruct();
@@ -278,7 +278,7 @@ class TypeBuilder
                 $resultStruct->addProperty($structProperty);
 
                 if ($this->goBuilder->options->fluentSetters) {
-                    $resultStruct->addFunc(FluentSetter::make($resultStruct, $structProperty));
+                    FluentSetter::addToStruct($resultStruct, $structProperty);
                 }
 
                 $this->getGeneratedStruct()->marshalJson->addPatternProperty($pattern, $structProperty);
@@ -340,7 +340,7 @@ class TypeBuilder
                     $resultStruct->addProperty($structProperty);
 
                     if ($this->goBuilder->options->fluentSetters) {
-                        $resultStruct->addFunc(FluentSetter::make($resultStruct, $structProperty));
+                        FluentSetter::addToStruct($resultStruct, $structProperty);
                     }
 
                     $this->getGeneratedStruct()->marshalJson->enableAdditionalProperties($structProperty);
