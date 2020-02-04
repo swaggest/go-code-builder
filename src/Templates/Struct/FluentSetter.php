@@ -82,7 +82,7 @@ if v.{$goProperty->getName()} == nil {
 v.{$goProperty->getName()}[key] = val
 return v
 GO
-            , [':type' => $goProperty->getType()])));
+            , [':type' => $valType])));
 
         return $setter;
     }
