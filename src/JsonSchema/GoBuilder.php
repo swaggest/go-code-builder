@@ -3,6 +3,7 @@
 namespace Swaggest\GoCodeBuilder\JsonSchema;
 
 use Swaggest\GoCodeBuilder\GoCodeBuilder;
+use Swaggest\GoCodeBuilder\Style\Comment;
 use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\Struct\FluentSetter;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
@@ -68,12 +69,14 @@ class GoBuilder
     /**
      * @param Schema $schema
      * @param string $path
+     * @param StructDef|null $parentStruct
+     * @param bool $isRequired
      * @return AnyType
      * @throws Exception
      * @throws \Swaggest\JsonSchema\Exception
      * @throws \Swaggest\JsonSchema\InvalidValue
      */
-    public function getType($schema, $path = '#', StructDef $parentStruct = null)
+    public function getType($schema, $path = '#', StructDef $parentStruct = null, $isRequired = false)
     {
         if (isset($this->generatedStructs[$path])) {
             return $this->generatedStructs[$path]->structDef->getType();
@@ -97,7 +100,7 @@ class GoBuilder
         if ($s instanceof \stdClass) {
             $s = Schema::import($s);
         }
-        $typeBuilder = new TypeBuilder($s, $path, $this, $parentStruct);
+        $typeBuilder = new TypeBuilder($s, $path, $this, $parentStruct, $isRequired);
         $result = $typeBuilder->build();
         return $result;
     }
@@ -107,6 +110,8 @@ class GoBuilder
      * @param string $path
      * @return StructDef
      * @throws Exception
+     * @throws \Swaggest\JsonSchema\Exception
+     * @throws \Swaggest\JsonSchema\InvalidValue
      */
     public function getClass($schema, $path)
     {
@@ -226,9 +231,12 @@ class GoBuilder
                     }
                 }
 
-                $goPropertyType = $this->getType($property, $path . '->' . $name, $structDef);
+                $isRequired = (null !== $schema->required) && in_array($name, $schema->required);
+                $goPropertyType = $this->getType($property, $path . '->' . $name, $structDef, $isRequired);
                 if ($goPropertyType instanceof StructType) {
-                    $goPropertyType = new Pointer($goPropertyType);
+                    if (!$isRequired) {
+                        $goPropertyType = new Pointer($goPropertyType);
+                    }
                 }
                 $goProperty = new StructProperty(
                     $fieldName,
@@ -252,19 +260,32 @@ class GoBuilder
                         $goPropertyType instanceof NoOmitEmpty &&
                         $goPropertyType->isNoOmitEmpty() &&
                         true !== $property->{TypeBuilder::X_OMIT_EMPTY}
-                    )
+                    ) ||
+                    ($isRequired && true !== $property->{TypeBuilder::X_OMIT_EMPTY})
                 ) {
                     $goProperty->getTags()->setTag('json', $name);
                 } else {
                     $goProperty->getTags()->setTag('json', $name . ',omitempty');
                 }
 
+                $comment = '';
                 if ($property->title) {
-                    $comment = $property->title . "\n";
+                    $comment .= Comment::sentence($property->title) . "\n";
                 }
                 if ($property->description) {
-                    $comment .= $property->description;
+                    $comment .= Comment::sentence($property->description) . "\n";
                 }
+                if ($property->pattern) {
+                    $comment .= "Value must match pattern: `{$property->pattern}`.\n";
+                }
+                if ($property->format) {
+                    $comment .= "Format: {$property->format}.\n";
+                }
+                if ($isRequired) {
+                    $comment .= "Required.\n";
+                }
+                $comment = trim($comment);
+
                 if ($comment !== '') {
                     $goProperty->setComment($comment);
                 }
