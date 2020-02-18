@@ -79,7 +79,9 @@ GO
 if v.{$goProperty->getName()} == nil {
     v.{$goProperty->getName()} = make(:type, 1)
 }
+
 v.{$goProperty->getName()}[key] = val
+
 return v
 GO
             , [':type' => $valType])));

@@ -80,7 +80,7 @@ class MarshalJson extends GoTemplate
 
     private function receiver()
     {
-        return $this->propertyNames === null ? 'i' : 'ii';
+        return $this->propertyNames === null ? 'v' : 'vv';
     }
 
     protected function toString()
@@ -239,10 +239,10 @@ GO;
             $name = $this->escapeValue($name);
             $mapUnmarshal .= <<<GO
 
-if ii.$goPropertyName == nil {
+if vv.$goPropertyName == nil {
     if _, ok := m[$name]; ok {
         var v interface{}
-        ii.$goPropertyName = &v
+        vv.$goPropertyName = &v
     }
 }
 
@@ -356,7 +356,7 @@ GO;
 
         return <<<GO
 {$this->renderIgnoreKeys()}// UnmarshalJSON decodes JSON.
-func (i *:type) UnmarshalJSON(data []byte) error {
+func (v *:type) UnmarshalJSON(data []byte) error {
 {$this->padLines("\t", $this->tabIndents($this->stripEmptyLines($funcBody)), false)}
 }
 
@@ -379,26 +379,26 @@ GO;
         }
 
         if ($this->propertyNames !== null) {
-            $maps .= ', marshal:type(i)';
+            $maps .= ', marshal:type(v)';
             $mapsCnt++;
         }
 
         if ($this->patternProperties !== null) {
             foreach ($this->patternProperties as $regex => $patternProperty) {
-                $maps .= ', i.' . $patternProperty->getName();
+                $maps .= ', v.' . $patternProperty->getName();
                 $mapsCnt++;
             }
         }
 
         if ($this->additionalPropertiesEnabled) {
-            $maps .= ', i.' . $this->additionalProperties->getName();
+            $maps .= ', v.' . $this->additionalProperties->getName();
             $mapsCnt++;
         }
 
         if ($this->someOf !== null) {
             foreach ($this->someOf as $kind => $unionPropertyNames) {
                 foreach ($unionPropertyNames as $propertyName) {
-                    $maps .= ', i.' . $propertyName;
+                    $maps .= ', v.' . $propertyName;
                     $mapsCnt++;
                 }
             }
@@ -409,9 +409,10 @@ GO;
         $earlyReturn = '';
         if ($this->additionalPropertiesEnabled && $this->propertyNames !== null && $mapsCnt === 2) {
             $earlyReturn = <<<GO
-	if len(i.{$this->additionalProperties->getName()}) == 0 {
-		return json.Marshal(marshal:type(i))
+	if len(v.{$this->additionalProperties->getName()}) == 0 {
+		return json.Marshal(marshal:type(v))
 	}
+
 
 GO;
 
@@ -419,7 +420,7 @@ GO;
 
         return <<<GO
 {$this->renderConstRawMessage()}// MarshalJSON encodes JSON.
-func (i :type) MarshalJSON() ([]byte, error) {
+func (v :type) MarshalJSON() ([]byte, error) {
 {$earlyReturn}	return marshalUnion($maps)
 }
 
@@ -436,7 +437,7 @@ GO;
             $result .= <<<'GO'
 
 
-err = json.Unmarshal(data, &ii)
+err = json.Unmarshal(data, &vv)
 if err != nil {
     return err
 }
@@ -493,7 +494,7 @@ GO;
     {
         if ($this->propertyNames !== null) {
             return <<<'GO'
-ii := marshal:type(*i)
+vv := marshal:type(*v)
 
 GO;
 
@@ -508,7 +509,7 @@ GO;
             // todo error is checked after constants, fix
             return <<<'GO'
 
-*i = :type(ii)
+*v = :type(vv)
 GO;
 
         }

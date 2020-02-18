@@ -96,7 +96,8 @@
       "properties": {
         "$ref": {
           "type": "string",
-          "format": "uri"
+          "format": "uri",
+          "x-omitempty": true
         }
       }
     },
@@ -604,7 +605,8 @@
               "minItems": 2,
               "items": {
                 "$ref": "#/definitions/message"
-              }
+              },
+              "x-omitempty": true
             }
           }
         }

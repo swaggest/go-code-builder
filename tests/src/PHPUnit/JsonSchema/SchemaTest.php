@@ -37,7 +37,7 @@ type Untitled1 struct {
 	SampleBool           bool                   `json:"sampleBool,omitempty"`
 	SampleString         string                 `json:"sampleString,omitempty"`
 	SampleNumber         float64                `json:"sampleNumber,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                      // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"`                      // All unmatched properties.
 	SampleSelf           *Untitled1             `json:"sampleSelf,omitempty"`
 	Another              *Another               `json:"another,omitempty"`
 }
@@ -54,12 +54,12 @@ var ignoreKeysUntitled1 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Untitled1) UnmarshalJSON(data []byte) error {
+func (v *Untitled1) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalUntitled1(*i)
+	vv := marshalUntitled1(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -76,8 +76,8 @@ func (i *Untitled1) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -87,20 +87,21 @@ func (i *Untitled1) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = Untitled1(ii)
+	*v = Untitled1(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Untitled1) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalUntitled1(i))
+func (v Untitled1) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalUntitled1(v))
 	}
-	return marshalUnion(marshalUntitled1(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalUntitled1(v), v.AdditionalProperties)
 }
 
 // Another structure is generated from "#->another".

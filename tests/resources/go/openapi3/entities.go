@@ -12,15 +12,82 @@ import (
 //
 // Validation schema for OpenAPI Specification 3.0.X.
 type OpenAPI struct {
-	Openapi       string                 `json:"openapi,omitempty"`
-	Info          *Info                  `json:"info,omitempty"`
+	// Value must match pattern: `^3\.0\.\d(-.+)?$`.
+	// Required.
+	Openapi       string                 `json:"openapi"`
+	Info          Info                   `json:"info"`                   // Required.
 	ExternalDocs  *ExternalDocumentation `json:"externalDocs,omitempty"`
 	Servers       []Server               `json:"servers,omitempty"`
 	Security      []map[string][]string  `json:"security,omitempty"`
 	Tags          []Tag                  `json:"tags,omitempty"`
-	Paths         *Paths                 `json:"paths,omitempty"`
+	Paths         Paths                  `json:"paths"`                  // Required.
 	Components    *Components            `json:"components,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: ^x-
+	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: `^x-`.
+}
+
+// WithOpenapi sets Openapi value.
+func (v *OpenAPI) WithOpenapi(val string) *OpenAPI {
+	v.Openapi = val
+	return v
+}
+
+// WithInfo sets Info value.
+func (v *OpenAPI) WithInfo(val Info) *OpenAPI {
+	v.Info = val
+	return v
+}
+
+// WithExternalDocs sets ExternalDocs value.
+func (v *OpenAPI) WithExternalDocs(val ExternalDocumentation) *OpenAPI {
+	v.ExternalDocs = &val
+	return v
+}
+
+// WithServers sets Servers value.
+func (v *OpenAPI) WithServers(val ...Server) *OpenAPI {
+	v.Servers = val
+	return v
+}
+
+// WithSecurity sets Security value.
+func (v *OpenAPI) WithSecurity(val ...map[string][]string) *OpenAPI {
+	v.Security = val
+	return v
+}
+
+// WithTags sets Tags value.
+func (v *OpenAPI) WithTags(val ...Tag) *OpenAPI {
+	v.Tags = val
+	return v
+}
+
+// WithPaths sets Paths value.
+func (v *OpenAPI) WithPaths(val Paths) *OpenAPI {
+	v.Paths = val
+	return v
+}
+
+// WithComponents sets Components value.
+func (v *OpenAPI) WithComponents(val Components) *OpenAPI {
+	v.Components = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *OpenAPI) WithMapOfAnything(val map[string]interface{}) *OpenAPI {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *OpenAPI) WithMapOfAnythingItem(key string, val interface{}) *OpenAPI {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalOpenAPI OpenAPI
@@ -37,12 +104,12 @@ var ignoreKeysOpenAPI = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *OpenAPI) UnmarshalJSON(data []byte) error {
+func (v *OpenAPI) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalOpenAPI(*i)
+	vv := marshalOpenAPI(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -64,8 +131,8 @@ func (i *OpenAPI) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -75,7 +142,7 @@ func (i *OpenAPI) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -83,25 +150,78 @@ func (i *OpenAPI) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = OpenAPI(ii)
+	*v = OpenAPI(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i OpenAPI) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOpenAPI(i), i.MapOfAnything)
+func (v OpenAPI) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOpenAPI(v), v.MapOfAnything)
 }
 
 // Info structure is generated from "#/definitions/Info".
 type Info struct {
-	Title          string                 `json:"title,omitempty"`
-	Description    string                 `json:"description,omitempty"`
-	TermsOfService string                 `json:"termsOfService,omitempty"`
+	Title          string                 `json:"title"`                    // Required.
+	Description    *string                `json:"description,omitempty"`
+	TermsOfService *string                `json:"termsOfService,omitempty"` // Format: uri-reference.
 	Contact        *Contact               `json:"contact,omitempty"`
 	License        *License               `json:"license,omitempty"`
-	Version        string                 `json:"version,omitempty"`
-	MapOfAnything  map[string]interface{} `json:"-"`                        // Key must match pattern: ^x-
+	Version        string                 `json:"version"`                  // Required.
+	MapOfAnything  map[string]interface{} `json:"-"`                        // Key must match pattern: `^x-`.
+}
+
+// WithTitle sets Title value.
+func (v *Info) WithTitle(val string) *Info {
+	v.Title = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Info) WithDescription(val string) *Info {
+	v.Description = &val
+	return v
+}
+
+// WithTermsOfService sets TermsOfService value.
+func (v *Info) WithTermsOfService(val string) *Info {
+	v.TermsOfService = &val
+	return v
+}
+
+// WithContact sets Contact value.
+func (v *Info) WithContact(val Contact) *Info {
+	v.Contact = &val
+	return v
+}
+
+// WithLicense sets License value.
+func (v *Info) WithLicense(val License) *Info {
+	v.License = &val
+	return v
+}
+
+// WithVersion sets Version value.
+func (v *Info) WithVersion(val string) *Info {
+	v.Version = val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Info) WithMapOfAnything(val map[string]interface{}) *Info {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Info) WithMapOfAnythingItem(key string, val interface{}) *Info {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalInfo Info
@@ -116,12 +236,12 @@ var ignoreKeysInfo = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Info) UnmarshalJSON(data []byte) error {
+func (v *Info) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalInfo(*i)
+	vv := marshalInfo(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -143,8 +263,8 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -154,7 +274,7 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -162,22 +282,57 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Info(ii)
+	*v = Info(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Info) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalInfo(i), i.MapOfAnything)
+func (v Info) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalInfo(v), v.MapOfAnything)
 }
 
 // Contact structure is generated from "#/definitions/Contact".
 type Contact struct {
-	Name          string                 `json:"name,omitempty"`
-	URL           string                 `json:"url,omitempty"`
-	Email         string                 `json:"email,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`               // Key must match pattern: ^x-
+	Name          *string                `json:"name,omitempty"`
+	URL           *string                `json:"url,omitempty"`   // Format: uri-reference.
+	Email         *string                `json:"email,omitempty"` // Format: email.
+	MapOfAnything map[string]interface{} `json:"-"`               // Key must match pattern: `^x-`.
+}
+
+// WithName sets Name value.
+func (v *Contact) WithName(val string) *Contact {
+	v.Name = &val
+	return v
+}
+
+// WithURL sets URL value.
+func (v *Contact) WithURL(val string) *Contact {
+	v.URL = &val
+	return v
+}
+
+// WithEmail sets Email value.
+func (v *Contact) WithEmail(val string) *Contact {
+	v.Email = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Contact) WithMapOfAnything(val map[string]interface{}) *Contact {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Contact) WithMapOfAnythingItem(key string, val interface{}) *Contact {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalContact Contact
@@ -189,12 +344,12 @@ var ignoreKeysContact = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Contact) UnmarshalJSON(data []byte) error {
+func (v *Contact) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalContact(*i)
+	vv := marshalContact(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -216,8 +371,8 @@ func (i *Contact) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -227,7 +382,7 @@ func (i *Contact) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -235,21 +390,50 @@ func (i *Contact) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Contact(ii)
+	*v = Contact(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Contact) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalContact(i), i.MapOfAnything)
+func (v Contact) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalContact(v), v.MapOfAnything)
 }
 
 // License structure is generated from "#/definitions/License".
 type License struct {
-	Name          string                 `json:"name,omitempty"`
-	URL           string                 `json:"url,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`              // Key must match pattern: ^x-
+	Name          string                 `json:"name"`          // Required.
+	URL           *string                `json:"url,omitempty"` // Format: uri-reference.
+	MapOfAnything map[string]interface{} `json:"-"`             // Key must match pattern: `^x-`.
+}
+
+// WithName sets Name value.
+func (v *License) WithName(val string) *License {
+	v.Name = val
+	return v
+}
+
+// WithURL sets URL value.
+func (v *License) WithURL(val string) *License {
+	v.URL = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *License) WithMapOfAnything(val map[string]interface{}) *License {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *License) WithMapOfAnythingItem(key string, val interface{}) *License {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalLicense License
@@ -260,12 +444,12 @@ var ignoreKeysLicense = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *License) UnmarshalJSON(data []byte) error {
+func (v *License) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalLicense(*i)
+	vv := marshalLicense(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -287,8 +471,8 @@ func (i *License) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -298,7 +482,7 @@ func (i *License) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -306,21 +490,52 @@ func (i *License) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = License(ii)
+	*v = License(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i License) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalLicense(i), i.MapOfAnything)
+func (v License) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalLicense(v), v.MapOfAnything)
 }
 
 // ExternalDocumentation structure is generated from "#/definitions/ExternalDocumentation".
 type ExternalDocumentation struct {
-	Description   string                 `json:"description,omitempty"`
-	URL           string                 `json:"url,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	Description   *string                `json:"description,omitempty"`
+	// Format: uri-reference.
+	// Required.
+	URL           string                 `json:"url"`
+	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithDescription sets Description value.
+func (v *ExternalDocumentation) WithDescription(val string) *ExternalDocumentation {
+	v.Description = &val
+	return v
+}
+
+// WithURL sets URL value.
+func (v *ExternalDocumentation) WithURL(val string) *ExternalDocumentation {
+	v.URL = val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *ExternalDocumentation) WithMapOfAnything(val map[string]interface{}) *ExternalDocumentation {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *ExternalDocumentation) WithMapOfAnythingItem(key string, val interface{}) *ExternalDocumentation {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalExternalDocumentation ExternalDocumentation
@@ -331,12 +546,12 @@ var ignoreKeysExternalDocumentation = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ExternalDocumentation) UnmarshalJSON(data []byte) error {
+func (v *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalExternalDocumentation(*i)
+	vv := marshalExternalDocumentation(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -358,8 +573,8 @@ func (i *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -369,7 +584,7 @@ func (i *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -377,22 +592,68 @@ func (i *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = ExternalDocumentation(ii)
+	*v = ExternalDocumentation(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ExternalDocumentation) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalExternalDocumentation(i), i.MapOfAnything)
+func (v ExternalDocumentation) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalExternalDocumentation(v), v.MapOfAnything)
 }
 
 // Server structure is generated from "#/definitions/Server".
 type Server struct {
-	URL           string                    `json:"url,omitempty"`
-	Description   string                    `json:"description,omitempty"`
+	URL           string                    `json:"url"`                   // Required.
+	Description   *string                   `json:"description,omitempty"`
 	Variables     map[string]ServerVariable `json:"variables,omitempty"`
-	MapOfAnything map[string]interface{}    `json:"-"`                     // Key must match pattern: ^x-
+	MapOfAnything map[string]interface{}    `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithURL sets URL value.
+func (v *Server) WithURL(val string) *Server {
+	v.URL = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Server) WithDescription(val string) *Server {
+	v.Description = &val
+	return v
+}
+
+// WithVariables sets Variables value.
+func (v *Server) WithVariables(val map[string]ServerVariable) *Server {
+	v.Variables = val
+	return v
+}
+
+// WithVariablesItem sets Variables item value.
+func (v *Server) WithVariablesItem(key string, val ServerVariable) *Server {
+	if v.Variables == nil {
+		v.Variables = make(map[string]ServerVariable, 1)
+	}
+
+	v.Variables[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Server) WithMapOfAnything(val map[string]interface{}) *Server {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Server) WithMapOfAnythingItem(key string, val interface{}) *Server {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalServer Server
@@ -404,12 +665,12 @@ var ignoreKeysServer = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Server) UnmarshalJSON(data []byte) error {
+func (v *Server) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalServer(*i)
+	vv := marshalServer(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -431,8 +692,8 @@ func (i *Server) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -442,7 +703,7 @@ func (i *Server) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -450,22 +711,57 @@ func (i *Server) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Server(ii)
+	*v = Server(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Server) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalServer(i), i.MapOfAnything)
+func (v Server) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalServer(v), v.MapOfAnything)
 }
 
 // ServerVariable structure is generated from "#/definitions/ServerVariable".
 type ServerVariable struct {
 	Enum          []string               `json:"enum,omitempty"`
-	Default       string                 `json:"default,omitempty"`
-	Description   string                 `json:"description,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	Default       string                 `json:"default"`               // Required.
+	Description   *string                `json:"description,omitempty"`
+	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithEnum sets Enum value.
+func (v *ServerVariable) WithEnum(val ...string) *ServerVariable {
+	v.Enum = val
+	return v
+}
+
+// WithDefault sets Default value.
+func (v *ServerVariable) WithDefault(val string) *ServerVariable {
+	v.Default = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *ServerVariable) WithDescription(val string) *ServerVariable {
+	v.Description = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *ServerVariable) WithMapOfAnything(val map[string]interface{}) *ServerVariable {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *ServerVariable) WithMapOfAnythingItem(key string, val interface{}) *ServerVariable {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalServerVariable ServerVariable
@@ -477,12 +773,12 @@ var ignoreKeysServerVariable = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ServerVariable) UnmarshalJSON(data []byte) error {
+func (v *ServerVariable) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalServerVariable(*i)
+	vv := marshalServerVariable(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -504,8 +800,8 @@ func (i *ServerVariable) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -515,7 +811,7 @@ func (i *ServerVariable) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -523,22 +819,57 @@ func (i *ServerVariable) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = ServerVariable(ii)
+	*v = ServerVariable(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ServerVariable) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalServerVariable(i), i.MapOfAnything)
+func (v ServerVariable) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalServerVariable(v), v.MapOfAnything)
 }
 
 // Tag structure is generated from "#/definitions/Tag".
 type Tag struct {
-	Name          string                 `json:"name,omitempty"`
-	Description   string                 `json:"description,omitempty"`
+	Name          string                 `json:"name"`                   // Required.
+	Description   *string                `json:"description,omitempty"`
 	ExternalDocs  *ExternalDocumentation `json:"externalDocs,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: ^x-
+	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: `^x-`.
+}
+
+// WithName sets Name value.
+func (v *Tag) WithName(val string) *Tag {
+	v.Name = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Tag) WithDescription(val string) *Tag {
+	v.Description = &val
+	return v
+}
+
+// WithExternalDocs sets ExternalDocs value.
+func (v *Tag) WithExternalDocs(val ExternalDocumentation) *Tag {
+	v.ExternalDocs = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Tag) WithMapOfAnything(val map[string]interface{}) *Tag {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Tag) WithMapOfAnythingItem(key string, val interface{}) *Tag {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalTag Tag
@@ -550,12 +881,12 @@ var ignoreKeysTag = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Tag) UnmarshalJSON(data []byte) error {
+func (v *Tag) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalTag(*i)
+	vv := marshalTag(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -577,8 +908,8 @@ func (i *Tag) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -588,7 +919,7 @@ func (i *Tag) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -596,25 +927,89 @@ func (i *Tag) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Tag(ii)
+	*v = Tag(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Tag) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalTag(i), i.MapOfAnything)
+func (v Tag) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalTag(v), v.MapOfAnything)
 }
 
 // PathItem structure is generated from "#/definitions/PathItem".
 type PathItem struct {
-	Ref                  string                    `json:"$ref,omitempty"`
-	Summary              string                    `json:"summary,omitempty"`
-	Description          string                    `json:"description,omitempty"`
-	Servers              []Server                  `json:"servers,omitempty"`
-	Parameters           []PathItemParametersItems `json:"parameters,omitempty"`
-	MapOfOperationValues map[string]Operation      `json:"-"`                     // Key must match pattern: ^(get|put|post|delete|options|head|patch|trace)$
-	MapOfAnything        map[string]interface{}    `json:"-"`                     // Key must match pattern: ^x-
+	Ref                  *string                `json:"$ref,omitempty"`
+	Summary              *string                `json:"summary,omitempty"`
+	Description          *string                `json:"description,omitempty"`
+	Servers              []Server               `json:"servers,omitempty"`
+	Parameters           []ParameterOrRef       `json:"parameters,omitempty"`
+	MapOfOperationValues map[string]Operation   `json:"-"`                     // Key must match pattern: `^(get|put|post|delete|options|head|patch|trace)$`.
+	MapOfAnything        map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithRef sets Ref value.
+func (v *PathItem) WithRef(val string) *PathItem {
+	v.Ref = &val
+	return v
+}
+
+// WithSummary sets Summary value.
+func (v *PathItem) WithSummary(val string) *PathItem {
+	v.Summary = &val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *PathItem) WithDescription(val string) *PathItem {
+	v.Description = &val
+	return v
+}
+
+// WithServers sets Servers value.
+func (v *PathItem) WithServers(val ...Server) *PathItem {
+	v.Servers = val
+	return v
+}
+
+// WithParameters sets Parameters value.
+func (v *PathItem) WithParameters(val ...ParameterOrRef) *PathItem {
+	v.Parameters = val
+	return v
+}
+
+// WithMapOfOperationValues sets MapOfOperationValues value.
+func (v *PathItem) WithMapOfOperationValues(val map[string]Operation) *PathItem {
+	v.MapOfOperationValues = val
+	return v
+}
+
+// WithMapOfOperationValuesItem sets MapOfOperationValues item value.
+func (v *PathItem) WithMapOfOperationValuesItem(key string, val Operation) *PathItem {
+	if v.MapOfOperationValues == nil {
+		v.MapOfOperationValues = make(map[string]Operation, 1)
+	}
+
+	v.MapOfOperationValues[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *PathItem) WithMapOfAnything(val map[string]interface{}) *PathItem {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *PathItem) WithMapOfAnythingItem(key string, val interface{}) *PathItem {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalPathItem PathItem
@@ -628,12 +1023,12 @@ var ignoreKeysPathItem = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *PathItem) UnmarshalJSON(data []byte) error {
+func (v *PathItem) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalPathItem(*i)
+	vv := marshalPathItem(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -655,8 +1050,8 @@ func (i *PathItem) UnmarshalJSON(data []byte) error {
 		if regexGetPutPostDeleteOptionsHeadPatchTrace.MatchString(key) {
 			matched = true
 
-			if ii.MapOfOperationValues == nil {
-				ii.MapOfOperationValues = make(map[string]Operation, 1)
+			if vv.MapOfOperationValues == nil {
+				vv.MapOfOperationValues = make(map[string]Operation, 1)
 			}
 
 			var val Operation
@@ -666,14 +1061,14 @@ func (i *PathItem) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfOperationValues[key] = val
+			vv.MapOfOperationValues[key] = val
 		}
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -683,7 +1078,7 @@ func (i *PathItem) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -691,34 +1086,176 @@ func (i *PathItem) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = PathItem(ii)
+	*v = PathItem(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i PathItem) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPathItem(i), i.MapOfOperationValues, i.MapOfAnything)
+func (v PathItem) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalPathItem(v), v.MapOfOperationValues, v.MapOfAnything)
+}
+
+// ParameterReference structure is generated from "#/definitions/ParameterReference".
+type ParameterReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
+}
+
+// WithRef sets Ref value.
+func (v *ParameterReference) WithRef(val string) *ParameterReference {
+	v.Ref = val
+	return v
 }
 
 // Parameter structure is generated from "#/definitions/Parameter".
 type Parameter struct {
-	Name             string                                           `json:"name,omitempty"`
-	In               string                                           `json:"in,omitempty"`
-	Description      string                                           `json:"description,omitempty"`
-	Required         bool                                             `json:"required,omitempty"`
-	Deprecated       bool                                             `json:"deprecated,omitempty"`
-	AllowEmptyValue  bool                                             `json:"allowEmptyValue,omitempty"`
-	Style            string                                           `json:"style,omitempty"`
-	Explode          bool                                             `json:"explode,omitempty"`
-	AllowReserved    bool                                             `json:"allowReserved,omitempty"`
-	Schema           *ParameterSchema                                 `json:"schema,omitempty"`
-	Content          map[string]MediaType                             `json:"content,omitempty"`
-	Example          *interface{}                                     `json:"example,omitempty"`
-	Examples         map[string]ParameterExamplesAdditionalProperties `json:"examples,omitempty"`
-	SchemaXORContent *SchemaXORContentOneOf1                          `json:"-"`
-	Location         *ParameterLocation                               `json:"-"`
-	MapOfAnything    map[string]interface{}                           `json:"-"`                         // Key must match pattern: ^x-
+	Name             string                  `json:"name"`                      // Required.
+	In               ParameterIn             `json:"in"`                        // Required.
+	Description      *string                 `json:"description,omitempty"`
+	Required         *bool                   `json:"required,omitempty"`
+	Deprecated       *bool                   `json:"deprecated,omitempty"`
+	AllowEmptyValue  *bool                   `json:"allowEmptyValue,omitempty"`
+	Style            *string                 `json:"style,omitempty"`
+	Explode          *bool                   `json:"explode,omitempty"`
+	AllowReserved    *bool                   `json:"allowReserved,omitempty"`
+	Schema           *SchemaOrRef            `json:"schema,omitempty"`
+	Content          map[string]MediaType    `json:"content,omitempty"`
+	Example          *interface{}            `json:"example,omitempty"`
+	Examples         map[string]ExampleOrRef `json:"examples,omitempty"`
+	SchemaXORContent *SchemaXORContentOneOf1 `json:"-"`
+	Location         *ParameterLocation      `json:"-"`
+	MapOfAnything    map[string]interface{}  `json:"-"`                         // Key must match pattern: `^x-`.
+}
+
+// WithName sets Name value.
+func (v *Parameter) WithName(val string) *Parameter {
+	v.Name = val
+	return v
+}
+
+// WithIn sets In value.
+func (v *Parameter) WithIn(val ParameterIn) *Parameter {
+	v.In = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Parameter) WithDescription(val string) *Parameter {
+	v.Description = &val
+	return v
+}
+
+// WithRequired sets Required value.
+func (v *Parameter) WithRequired(val bool) *Parameter {
+	v.Required = &val
+	return v
+}
+
+// WithDeprecated sets Deprecated value.
+func (v *Parameter) WithDeprecated(val bool) *Parameter {
+	v.Deprecated = &val
+	return v
+}
+
+// WithAllowEmptyValue sets AllowEmptyValue value.
+func (v *Parameter) WithAllowEmptyValue(val bool) *Parameter {
+	v.AllowEmptyValue = &val
+	return v
+}
+
+// WithStyle sets Style value.
+func (v *Parameter) WithStyle(val string) *Parameter {
+	v.Style = &val
+	return v
+}
+
+// WithExplode sets Explode value.
+func (v *Parameter) WithExplode(val bool) *Parameter {
+	v.Explode = &val
+	return v
+}
+
+// WithAllowReserved sets AllowReserved value.
+func (v *Parameter) WithAllowReserved(val bool) *Parameter {
+	v.AllowReserved = &val
+	return v
+}
+
+// WithSchema sets Schema value.
+func (v *Parameter) WithSchema(val SchemaOrRef) *Parameter {
+	v.Schema = &val
+	return v
+}
+
+// WithContent sets Content value.
+func (v *Parameter) WithContent(val map[string]MediaType) *Parameter {
+	v.Content = val
+	return v
+}
+
+// WithContentItem sets Content item value.
+func (v *Parameter) WithContentItem(key string, val MediaType) *Parameter {
+	if v.Content == nil {
+		v.Content = make(map[string]MediaType, 1)
+	}
+
+	v.Content[key] = val
+
+	return v
+}
+
+// WithExample sets Example value.
+func (v *Parameter) WithExample(val interface{}) *Parameter {
+	v.Example = &val
+	return v
+}
+
+// WithExamples sets Examples value.
+func (v *Parameter) WithExamples(val map[string]ExampleOrRef) *Parameter {
+	v.Examples = val
+	return v
+}
+
+// WithExamplesItem sets Examples item value.
+func (v *Parameter) WithExamplesItem(key string, val ExampleOrRef) *Parameter {
+	if v.Examples == nil {
+		v.Examples = make(map[string]ExampleOrRef, 1)
+	}
+
+	v.Examples[key] = val
+
+	return v
+}
+
+// WithSchemaXORContent sets SchemaXORContent value.
+func (v *Parameter) WithSchemaXORContent(val SchemaXORContentOneOf1) *Parameter {
+	v.SchemaXORContent = &val
+	return v
+}
+
+// WithLocation sets Location value.
+func (v *Parameter) WithLocation(val ParameterLocation) *Parameter {
+	v.Location = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Parameter) WithMapOfAnything(val map[string]interface{}) *Parameter {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Parameter) WithMapOfAnythingItem(key string, val interface{}) *Parameter {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalParameter Parameter
@@ -740,22 +1277,22 @@ var ignoreKeysParameter = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Parameter) UnmarshalJSON(data []byte) error {
+func (v *Parameter) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalParameter(*i)
+	vv := marshalParameter(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &ii.SchemaXORContent)
+	err = json.Unmarshal(data, &vv.SchemaXORContent)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &ii.Location)
+	err = json.Unmarshal(data, &vv.Location)
 	if err != nil {
 		return err
 	}
@@ -767,10 +1304,10 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 		m = nil
 	}
 
-	if ii.Example == nil {
+	if vv.Example == nil {
 		if _, ok := m["example"]; ok {
 			var v interface{}
-			ii.Example = &v
+			vv.Example = &v
 		}
 	}
 
@@ -784,8 +1321,8 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -795,7 +1332,7 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -803,54 +1340,292 @@ func (i *Parameter) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Parameter(ii)
+	*v = Parameter(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Parameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameter(i), i.MapOfAnything, i.SchemaXORContent, i.Location)
+func (v Parameter) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalParameter(v), v.MapOfAnything, v.SchemaXORContent, v.Location)
 }
 
 // Schema structure is generated from "#/definitions/Schema".
 type Schema struct {
-	Title                string                                          `json:"title,omitempty"`
-	MultipleOf           float64                                         `json:"multipleOf,omitempty"`
-	Maximum              float64                                         `json:"maximum,omitempty"`
-	ExclusiveMaximum     bool                                            `json:"exclusiveMaximum,omitempty"`
-	Minimum              float64                                         `json:"minimum,omitempty"`
-	ExclusiveMinimum     bool                                            `json:"exclusiveMinimum,omitempty"`
-	MaxLength            int64                                           `json:"maxLength,omitempty"`
-	MinLength            int64                                           `json:"minLength,omitempty"`
-	Pattern              string                                          `json:"pattern,omitempty"`
-	MaxItems             int64                                           `json:"maxItems,omitempty"`
-	MinItems             int64                                           `json:"minItems,omitempty"`
-	UniqueItems          bool                                            `json:"uniqueItems,omitempty"`
-	MaxProperties        int64                                           `json:"maxProperties,omitempty"`
-	MinProperties        int64                                           `json:"minProperties,omitempty"`
-	Required             []string                                        `json:"required,omitempty"`
-	Enum                 []interface{}                                   `json:"enum,omitempty"`
-	Type                 SchemaType                                      `json:"type,omitempty"`
-	Not                  *SchemaNot                                      `json:"not,omitempty"`
-	AllOf                []SchemaAllOfItems                              `json:"allOf,omitempty"`
-	OneOf                []SchemaOneOfItems                              `json:"oneOf,omitempty"`
-	AnyOf                []SchemaAnyOfItems                              `json:"anyOf,omitempty"`
-	Items                *SchemaItems                                    `json:"items,omitempty"`
-	Properties           map[string]SchemaPropertiesAdditionalProperties `json:"properties,omitempty"`
-	AdditionalProperties *SchemaAdditionalProperties                     `json:"additionalProperties,omitempty"`
-	Description          string                                          `json:"description,omitempty"`
-	Format               string                                          `json:"format,omitempty"`
-	Default              *interface{}                                    `json:"default,omitempty"`
-	Nullable             bool                                            `json:"nullable,omitempty"`
-	Discriminator        *Discriminator                                  `json:"discriminator,omitempty"`
-	ReadOnly             bool                                            `json:"readOnly,omitempty"`
-	WriteOnly            bool                                            `json:"writeOnly,omitempty"`
-	Example              *interface{}                                    `json:"example,omitempty"`
-	ExternalDocs         *ExternalDocumentation                          `json:"externalDocs,omitempty"`
-	Deprecated           bool                                            `json:"deprecated,omitempty"`
-	XML                  *XML                                            `json:"xml,omitempty"`
-	MapOfAnything        map[string]interface{}                          `json:"-"`                              // Key must match pattern: ^x-
+	Title                *string                     `json:"title,omitempty"`
+	MultipleOf           *float64                    `json:"multipleOf,omitempty"`
+	Maximum              *float64                    `json:"maximum,omitempty"`
+	ExclusiveMaximum     *bool                       `json:"exclusiveMaximum,omitempty"`
+	Minimum              *float64                    `json:"minimum,omitempty"`
+	ExclusiveMinimum     *bool                       `json:"exclusiveMinimum,omitempty"`
+	MaxLength            *int64                      `json:"maxLength,omitempty"`
+	MinLength            *int64                      `json:"minLength,omitempty"`
+	Pattern              *string                     `json:"pattern,omitempty"`              // Format: regex.
+	MaxItems             *int64                      `json:"maxItems,omitempty"`
+	MinItems             *int64                      `json:"minItems,omitempty"`
+	UniqueItems          *bool                       `json:"uniqueItems,omitempty"`
+	MaxProperties        *int64                      `json:"maxProperties,omitempty"`
+	MinProperties        *int64                      `json:"minProperties,omitempty"`
+	Required             []string                    `json:"required,omitempty"`
+	Enum                 []interface{}               `json:"enum,omitempty"`
+	Type                 *SchemaType                 `json:"type,omitempty"`
+	Not                  *SchemaOrRef                `json:"not,omitempty"`
+	AllOf                []SchemaOrRef               `json:"allOf,omitempty"`
+	OneOf                []SchemaOrRef               `json:"oneOf,omitempty"`
+	AnyOf                []SchemaOrRef               `json:"anyOf,omitempty"`
+	Items                *SchemaOrRef                `json:"items,omitempty"`
+	Properties           map[string]SchemaOrRef      `json:"properties,omitempty"`
+	AdditionalProperties *SchemaAdditionalProperties `json:"additionalProperties,omitempty"`
+	Description          *string                     `json:"description,omitempty"`
+	Format               *string                     `json:"format,omitempty"`
+	Default              *interface{}                `json:"default,omitempty"`
+	Nullable             *bool                       `json:"nullable,omitempty"`
+	Discriminator        *Discriminator              `json:"discriminator,omitempty"`
+	ReadOnly             *bool                       `json:"readOnly,omitempty"`
+	WriteOnly            *bool                       `json:"writeOnly,omitempty"`
+	Example              *interface{}                `json:"example,omitempty"`
+	ExternalDocs         *ExternalDocumentation      `json:"externalDocs,omitempty"`
+	Deprecated           *bool                       `json:"deprecated,omitempty"`
+	XML                  *XML                        `json:"xml,omitempty"`
+	MapOfAnything        map[string]interface{}      `json:"-"`                              // Key must match pattern: `^x-`.
+}
+
+// WithTitle sets Title value.
+func (v *Schema) WithTitle(val string) *Schema {
+	v.Title = &val
+	return v
+}
+
+// WithMultipleOf sets MultipleOf value.
+func (v *Schema) WithMultipleOf(val float64) *Schema {
+	v.MultipleOf = &val
+	return v
+}
+
+// WithMaximum sets Maximum value.
+func (v *Schema) WithMaximum(val float64) *Schema {
+	v.Maximum = &val
+	return v
+}
+
+// WithExclusiveMaximum sets ExclusiveMaximum value.
+func (v *Schema) WithExclusiveMaximum(val bool) *Schema {
+	v.ExclusiveMaximum = &val
+	return v
+}
+
+// WithMinimum sets Minimum value.
+func (v *Schema) WithMinimum(val float64) *Schema {
+	v.Minimum = &val
+	return v
+}
+
+// WithExclusiveMinimum sets ExclusiveMinimum value.
+func (v *Schema) WithExclusiveMinimum(val bool) *Schema {
+	v.ExclusiveMinimum = &val
+	return v
+}
+
+// WithMaxLength sets MaxLength value.
+func (v *Schema) WithMaxLength(val int64) *Schema {
+	v.MaxLength = &val
+	return v
+}
+
+// WithMinLength sets MinLength value.
+func (v *Schema) WithMinLength(val int64) *Schema {
+	v.MinLength = &val
+	return v
+}
+
+// WithPattern sets Pattern value.
+func (v *Schema) WithPattern(val string) *Schema {
+	v.Pattern = &val
+	return v
+}
+
+// WithMaxItems sets MaxItems value.
+func (v *Schema) WithMaxItems(val int64) *Schema {
+	v.MaxItems = &val
+	return v
+}
+
+// WithMinItems sets MinItems value.
+func (v *Schema) WithMinItems(val int64) *Schema {
+	v.MinItems = &val
+	return v
+}
+
+// WithUniqueItems sets UniqueItems value.
+func (v *Schema) WithUniqueItems(val bool) *Schema {
+	v.UniqueItems = &val
+	return v
+}
+
+// WithMaxProperties sets MaxProperties value.
+func (v *Schema) WithMaxProperties(val int64) *Schema {
+	v.MaxProperties = &val
+	return v
+}
+
+// WithMinProperties sets MinProperties value.
+func (v *Schema) WithMinProperties(val int64) *Schema {
+	v.MinProperties = &val
+	return v
+}
+
+// WithRequired sets Required value.
+func (v *Schema) WithRequired(val ...string) *Schema {
+	v.Required = val
+	return v
+}
+
+// WithEnum sets Enum value.
+func (v *Schema) WithEnum(val ...interface{}) *Schema {
+	v.Enum = val
+	return v
+}
+
+// WithType sets Type value.
+func (v *Schema) WithType(val SchemaType) *Schema {
+	v.Type = &val
+	return v
+}
+
+// WithNot sets Not value.
+func (v *Schema) WithNot(val SchemaOrRef) *Schema {
+	v.Not = &val
+	return v
+}
+
+// WithAllOf sets AllOf value.
+func (v *Schema) WithAllOf(val ...SchemaOrRef) *Schema {
+	v.AllOf = val
+	return v
+}
+
+// WithOneOf sets OneOf value.
+func (v *Schema) WithOneOf(val ...SchemaOrRef) *Schema {
+	v.OneOf = val
+	return v
+}
+
+// WithAnyOf sets AnyOf value.
+func (v *Schema) WithAnyOf(val ...SchemaOrRef) *Schema {
+	v.AnyOf = val
+	return v
+}
+
+// WithItems sets Items value.
+func (v *Schema) WithItems(val SchemaOrRef) *Schema {
+	v.Items = &val
+	return v
+}
+
+// WithProperties sets Properties value.
+func (v *Schema) WithProperties(val map[string]SchemaOrRef) *Schema {
+	v.Properties = val
+	return v
+}
+
+// WithPropertiesItem sets Properties item value.
+func (v *Schema) WithPropertiesItem(key string, val SchemaOrRef) *Schema {
+	if v.Properties == nil {
+		v.Properties = make(map[string]SchemaOrRef, 1)
+	}
+
+	v.Properties[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *Schema) WithAdditionalProperties(val SchemaAdditionalProperties) *Schema {
+	v.AdditionalProperties = &val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Schema) WithDescription(val string) *Schema {
+	v.Description = &val
+	return v
+}
+
+// WithFormat sets Format value.
+func (v *Schema) WithFormat(val string) *Schema {
+	v.Format = &val
+	return v
+}
+
+// WithDefault sets Default value.
+func (v *Schema) WithDefault(val interface{}) *Schema {
+	v.Default = &val
+	return v
+}
+
+// WithNullable sets Nullable value.
+func (v *Schema) WithNullable(val bool) *Schema {
+	v.Nullable = &val
+	return v
+}
+
+// WithDiscriminator sets Discriminator value.
+func (v *Schema) WithDiscriminator(val Discriminator) *Schema {
+	v.Discriminator = &val
+	return v
+}
+
+// WithReadOnly sets ReadOnly value.
+func (v *Schema) WithReadOnly(val bool) *Schema {
+	v.ReadOnly = &val
+	return v
+}
+
+// WithWriteOnly sets WriteOnly value.
+func (v *Schema) WithWriteOnly(val bool) *Schema {
+	v.WriteOnly = &val
+	return v
+}
+
+// WithExample sets Example value.
+func (v *Schema) WithExample(val interface{}) *Schema {
+	v.Example = &val
+	return v
+}
+
+// WithExternalDocs sets ExternalDocs value.
+func (v *Schema) WithExternalDocs(val ExternalDocumentation) *Schema {
+	v.ExternalDocs = &val
+	return v
+}
+
+// WithDeprecated sets Deprecated value.
+func (v *Schema) WithDeprecated(val bool) *Schema {
+	v.Deprecated = &val
+	return v
+}
+
+// WithXML sets XML value.
+func (v *Schema) WithXML(val XML) *Schema {
+	v.XML = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Schema) WithMapOfAnything(val map[string]interface{}) *Schema {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Schema) WithMapOfAnythingItem(key string, val interface{}) *Schema {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalSchema Schema
@@ -894,12 +1669,12 @@ var ignoreKeysSchema = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Schema) UnmarshalJSON(data []byte) error {
+func (v *Schema) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalSchema(*i)
+	vv := marshalSchema(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -911,17 +1686,17 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 		m = nil
 	}
 
-	if ii.Default == nil {
+	if vv.Default == nil {
 		if _, ok := m["default"]; ok {
 			var v interface{}
-			ii.Default = &v
+			vv.Default = &v
 		}
 	}
 
-	if ii.Example == nil {
+	if vv.Example == nil {
 		if _, ok := m["example"]; ok {
 			var v interface{}
-			ii.Example = &v
+			vv.Example = &v
 		}
 	}
 
@@ -935,8 +1710,8 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -946,7 +1721,7 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -954,288 +1729,154 @@ func (i *Schema) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Schema(ii)
+	*v = Schema(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Schema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchema(i), i.MapOfAnything)
+func (v Schema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalSchema(v), v.MapOfAnything)
 }
 
-// Reference structure is generated from "#/definitions/Reference".
-type Reference struct {
-	MapOfStringValues    map[string]string      `json:"-"` // Key must match pattern: ^\$ref$
-	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties
+// SchemaReference structure is generated from "#/definitions/SchemaReference".
+type SchemaReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
+}
+
+// WithRef sets Ref value.
+func (v *SchemaReference) WithRef(val string) *SchemaReference {
+	v.Ref = val
+	return v
+}
+
+// SchemaOrRef structure is generated from "#/definitions/SchemaOrRef".
+type SchemaOrRef struct {
+	Schema          *Schema          `json:"-"`
+	SchemaReference *SchemaReference `json:"-"`
+}
+
+// WithSchema sets Schema value.
+func (v *SchemaOrRef) WithSchema(val Schema) *SchemaOrRef {
+	v.Schema = &val
+	return v
+}
+
+// WithSchemaReference sets SchemaReference value.
+func (v *SchemaOrRef) WithSchemaReference(val SchemaReference) *SchemaOrRef {
+	v.SchemaReference = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Reference) UnmarshalJSON(data []byte) error {
+func (v *SchemaOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
-
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &v.Schema)
 	if err != nil {
-		m = nil
+		v.Schema = nil
 	}
 
-	for key, rawValue := range m {
-		matched := false
-
-		if regexRef.MatchString(key) {
-			matched = true
-
-			if i.MapOfStringValues == nil {
-				i.MapOfStringValues = make(map[string]string, 1)
-			}
-
-			var val string
-
-			err = json.Unmarshal(rawValue, &val)
-			if err != nil {
-				return err
-			}
-
-			i.MapOfStringValues[key] = val
-		}
-
-		if matched {
-			delete(m, key)
-		}
-	}
-
-	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
-		}
-
-		var val interface{}
-
-		err = json.Unmarshal(rawValue, &val)
-		if err != nil {
-			return err
-		}
-
-		i.AdditionalProperties[key] = val
+	err = json.Unmarshal(data, &v.SchemaReference)
+	if err != nil {
+		v.SchemaReference = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Reference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfStringValues, i.AdditionalProperties)
-}
-
-// SchemaNot structure is generated from "#/definitions/Schema->not".
-type SchemaNot struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *SchemaNot) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i SchemaNot) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
-}
-
-// SchemaAllOfItems structure is generated from "#/definitions/Schema->allOf->items".
-type SchemaAllOfItems struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *SchemaAllOfItems) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i SchemaAllOfItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
-}
-
-// SchemaOneOfItems structure is generated from "#/definitions/Schema->oneOf->items".
-type SchemaOneOfItems struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *SchemaOneOfItems) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i SchemaOneOfItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
-}
-
-// SchemaAnyOfItems structure is generated from "#/definitions/Schema->anyOf->items".
-type SchemaAnyOfItems struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *SchemaAnyOfItems) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i SchemaAnyOfItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
-}
-
-// SchemaItems structure is generated from "#/definitions/Schema->items".
-type SchemaItems struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *SchemaItems) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i SchemaItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
-}
-
-// SchemaPropertiesAdditionalProperties structure is generated from "#/definitions/Schema->properties->additionalProperties".
-type SchemaPropertiesAdditionalProperties struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *SchemaPropertiesAdditionalProperties) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i SchemaPropertiesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
+func (v SchemaOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.Schema, v.SchemaReference)
 }
 
 // SchemaAdditionalProperties structure is generated from "#/definitions/Schema->additionalProperties".
 type SchemaAdditionalProperties struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-	Bool      *bool      `json:"-"`
+	SchemaOrRef *SchemaOrRef `json:"-"`
+	Bool        *bool        `json:"-"`
+}
+
+// WithSchemaOrRef sets SchemaOrRef value.
+func (v *SchemaAdditionalProperties) WithSchemaOrRef(val SchemaOrRef) *SchemaAdditionalProperties {
+	v.SchemaOrRef = &val
+	return v
+}
+
+// WithBool sets Bool value.
+func (v *SchemaAdditionalProperties) WithBool(val bool) *SchemaAdditionalProperties {
+	v.Bool = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (v *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Schema)
+	err = json.Unmarshal(data, &v.SchemaOrRef)
 	if err != nil {
-		i.Schema = nil
+		v.SchemaOrRef = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Bool)
 	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.Bool)
-	if err != nil {
-		i.Bool = nil
+		v.Bool = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i SchemaAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference, i.Bool)
+func (v SchemaAdditionalProperties) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.SchemaOrRef, v.Bool)
 }
 
 // Discriminator structure is generated from "#/definitions/Discriminator".
 type Discriminator struct {
-	PropertyName         string                 `json:"propertyName,omitempty"`
+	PropertyName         string                 `json:"propertyName"`      // Required.
 	Mapping              map[string]string      `json:"mapping,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                      // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"`                 // All unmatched properties.
+}
+
+// WithPropertyName sets PropertyName value.
+func (v *Discriminator) WithPropertyName(val string) *Discriminator {
+	v.PropertyName = val
+	return v
+}
+
+// WithMapping sets Mapping value.
+func (v *Discriminator) WithMapping(val map[string]string) *Discriminator {
+	v.Mapping = val
+	return v
+}
+
+// WithMappingItem sets Mapping item value.
+func (v *Discriminator) WithMappingItem(key string, val string) *Discriminator {
+	if v.Mapping == nil {
+		v.Mapping = make(map[string]string, 1)
+	}
+
+	v.Mapping[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *Discriminator) WithAdditionalProperties(val map[string]interface{}) *Discriminator {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *Discriminator) WithAdditionalPropertiesItem(key string, val interface{}) *Discriminator {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 type marshalDiscriminator Discriminator
@@ -1246,12 +1887,12 @@ var ignoreKeysDiscriminator = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Discriminator) UnmarshalJSON(data []byte) error {
+func (v *Discriminator) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalDiscriminator(*i)
+	vv := marshalDiscriminator(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -1268,8 +1909,8 @@ func (i *Discriminator) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -1279,30 +1920,78 @@ func (i *Discriminator) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = Discriminator(ii)
+	*v = Discriminator(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Discriminator) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalDiscriminator(i))
+func (v Discriminator) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalDiscriminator(v))
 	}
-	return marshalUnion(marshalDiscriminator(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalDiscriminator(v), v.AdditionalProperties)
 }
 
 // XML structure is generated from "#/definitions/XML".
 type XML struct {
-	Name          string                 `json:"name,omitempty"`
-	Namespace     string                 `json:"namespace,omitempty"`
-	Prefix        string                 `json:"prefix,omitempty"`
-	Attribute     bool                   `json:"attribute,omitempty"`
-	Wrapped       bool                   `json:"wrapped,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                   // Key must match pattern: ^x-
+	Name          *string                `json:"name,omitempty"`
+	Namespace     *string                `json:"namespace,omitempty"` // Format: uri.
+	Prefix        *string                `json:"prefix,omitempty"`
+	Attribute     *bool                  `json:"attribute,omitempty"`
+	Wrapped       *bool                  `json:"wrapped,omitempty"`
+	MapOfAnything map[string]interface{} `json:"-"`                   // Key must match pattern: `^x-`.
+}
+
+// WithName sets Name value.
+func (v *XML) WithName(val string) *XML {
+	v.Name = &val
+	return v
+}
+
+// WithNamespace sets Namespace value.
+func (v *XML) WithNamespace(val string) *XML {
+	v.Namespace = &val
+	return v
+}
+
+// WithPrefix sets Prefix value.
+func (v *XML) WithPrefix(val string) *XML {
+	v.Prefix = &val
+	return v
+}
+
+// WithAttribute sets Attribute value.
+func (v *XML) WithAttribute(val bool) *XML {
+	v.Attribute = &val
+	return v
+}
+
+// WithWrapped sets Wrapped value.
+func (v *XML) WithWrapped(val bool) *XML {
+	v.Wrapped = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *XML) WithMapOfAnything(val map[string]interface{}) *XML {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *XML) WithMapOfAnythingItem(key string, val interface{}) *XML {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalXML XML
@@ -1316,12 +2005,12 @@ var ignoreKeysXML = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *XML) UnmarshalJSON(data []byte) error {
+func (v *XML) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalXML(*i)
+	vv := marshalXML(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -1343,8 +2032,8 @@ func (i *XML) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -1354,7 +2043,7 @@ func (i *XML) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -1362,51 +2051,86 @@ func (i *XML) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = XML(ii)
+	*v = XML(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i XML) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalXML(i), i.MapOfAnything)
-}
-
-// ParameterSchema structure is generated from "#/definitions/Parameter->schema".
-type ParameterSchema struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ParameterSchema) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ParameterSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
+func (v XML) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalXML(v), v.MapOfAnything)
 }
 
 // MediaType structure is generated from "#/definitions/MediaType".
 type MediaType struct {
-	Schema        *MediaTypeSchema                                 `json:"schema,omitempty"`
-	Example       *interface{}                                     `json:"example,omitempty"`
-	Examples      map[string]MediaTypeExamplesAdditionalProperties `json:"examples,omitempty"`
-	Encoding      map[string]Encoding                              `json:"encoding,omitempty"`
-	MapOfAnything map[string]interface{}                           `json:"-"`                  // Key must match pattern: ^x-
+	Schema        *SchemaOrRef            `json:"schema,omitempty"`
+	Example       *interface{}            `json:"example,omitempty"`
+	Examples      map[string]ExampleOrRef `json:"examples,omitempty"`
+	Encoding      map[string]Encoding     `json:"encoding,omitempty"`
+	MapOfAnything map[string]interface{}  `json:"-"`                  // Key must match pattern: `^x-`.
+}
+
+// WithSchema sets Schema value.
+func (v *MediaType) WithSchema(val SchemaOrRef) *MediaType {
+	v.Schema = &val
+	return v
+}
+
+// WithExample sets Example value.
+func (v *MediaType) WithExample(val interface{}) *MediaType {
+	v.Example = &val
+	return v
+}
+
+// WithExamples sets Examples value.
+func (v *MediaType) WithExamples(val map[string]ExampleOrRef) *MediaType {
+	v.Examples = val
+	return v
+}
+
+// WithExamplesItem sets Examples item value.
+func (v *MediaType) WithExamplesItem(key string, val ExampleOrRef) *MediaType {
+	if v.Examples == nil {
+		v.Examples = make(map[string]ExampleOrRef, 1)
+	}
+
+	v.Examples[key] = val
+
+	return v
+}
+
+// WithEncoding sets Encoding value.
+func (v *MediaType) WithEncoding(val map[string]Encoding) *MediaType {
+	v.Encoding = val
+	return v
+}
+
+// WithEncodingItem sets Encoding item value.
+func (v *MediaType) WithEncodingItem(key string, val Encoding) *MediaType {
+	if v.Encoding == nil {
+		v.Encoding = make(map[string]Encoding, 1)
+	}
+
+	v.Encoding[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *MediaType) WithMapOfAnything(val map[string]interface{}) *MediaType {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *MediaType) WithMapOfAnythingItem(key string, val interface{}) *MediaType {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalMediaType MediaType
@@ -1419,12 +2143,12 @@ var ignoreKeysMediaType = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *MediaType) UnmarshalJSON(data []byte) error {
+func (v *MediaType) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalMediaType(*i)
+	vv := marshalMediaType(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -1436,10 +2160,10 @@ func (i *MediaType) UnmarshalJSON(data []byte) error {
 		m = nil
 	}
 
-	if ii.Example == nil {
+	if vv.Example == nil {
 		if _, ok := m["example"]; ok {
 			var v interface{}
-			ii.Example = &v
+			vv.Example = &v
 		}
 	}
 
@@ -1453,8 +2177,8 @@ func (i *MediaType) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -1464,7 +2188,7 @@ func (i *MediaType) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -1472,51 +2196,77 @@ func (i *MediaType) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = MediaType(ii)
+	*v = MediaType(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i MediaType) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalMediaType(i), i.MapOfAnything)
+func (v MediaType) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalMediaType(v), v.MapOfAnything)
 }
 
-// MediaTypeSchema structure is generated from "#/definitions/MediaType->schema".
-type MediaTypeSchema struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
+// ExampleReference structure is generated from "#/definitions/ExampleReference".
+type ExampleReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
 }
 
-// UnmarshalJSON decodes JSON.
-func (i *MediaTypeSchema) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i MediaTypeSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
+// WithRef sets Ref value.
+func (v *ExampleReference) WithRef(val string) *ExampleReference {
+	v.Ref = val
+	return v
 }
 
 // Example structure is generated from "#/definitions/Example".
 type Example struct {
-	Summary       string                 `json:"summary,omitempty"`
-	Description   string                 `json:"description,omitempty"`
+	Summary       *string                `json:"summary,omitempty"`
+	Description   *string                `json:"description,omitempty"`
 	Value         *interface{}           `json:"value,omitempty"`
-	ExternalValue string                 `json:"externalValue,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                       // Key must match pattern: ^x-
+	ExternalValue *string                `json:"externalValue,omitempty"` // Format: uri-reference.
+	MapOfAnything map[string]interface{} `json:"-"`                       // Key must match pattern: `^x-`.
+}
+
+// WithSummary sets Summary value.
+func (v *Example) WithSummary(val string) *Example {
+	v.Summary = &val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Example) WithDescription(val string) *Example {
+	v.Description = &val
+	return v
+}
+
+// WithValue sets Value value.
+func (v *Example) WithValue(val interface{}) *Example {
+	v.Value = &val
+	return v
+}
+
+// WithExternalValue sets ExternalValue value.
+func (v *Example) WithExternalValue(val string) *Example {
+	v.ExternalValue = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Example) WithMapOfAnything(val map[string]interface{}) *Example {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Example) WithMapOfAnythingItem(key string, val interface{}) *Example {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalExample Example
@@ -1529,12 +2279,12 @@ var ignoreKeysExample = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Example) UnmarshalJSON(data []byte) error {
+func (v *Example) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalExample(*i)
+	vv := marshalExample(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -1546,10 +2296,10 @@ func (i *Example) UnmarshalJSON(data []byte) error {
 		m = nil
 	}
 
-	if ii.Value == nil {
+	if vv.Value == nil {
 		if _, ok := m["value"]; ok {
 			var v interface{}
-			ii.Value = &v
+			vv.Value = &v
 		}
 	}
 
@@ -1563,8 +2313,8 @@ func (i *Example) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -1574,7 +2324,7 @@ func (i *Example) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -1582,66 +2332,218 @@ func (i *Example) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Example(ii)
+	*v = Example(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Example) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalExample(i), i.MapOfAnything)
+func (v Example) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalExample(v), v.MapOfAnything)
 }
 
-// MediaTypeExamplesAdditionalProperties structure is generated from "#/definitions/MediaType->examples->additionalProperties".
-type MediaTypeExamplesAdditionalProperties struct {
-	Example   *Example   `json:"-"`
-	Reference *Reference `json:"-"`
+// ExampleOrRef structure is generated from "#/definitions/ExampleOrRef".
+type ExampleOrRef struct {
+	ExampleReference *ExampleReference `json:"-"`
+	Example          *Example          `json:"-"`
+}
+
+// WithExampleReference sets ExampleReference value.
+func (v *ExampleOrRef) WithExampleReference(val ExampleReference) *ExampleOrRef {
+	v.ExampleReference = &val
+	return v
+}
+
+// WithExample sets Example value.
+func (v *ExampleOrRef) WithExample(val Example) *ExampleOrRef {
+	v.Example = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *MediaTypeExamplesAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (v *ExampleOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Example)
+	err = json.Unmarshal(data, &v.ExampleReference)
 	if err != nil {
-		i.Example = nil
+		v.ExampleReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Example)
 	if err != nil {
-		i.Reference = nil
+		v.Example = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i MediaTypeExamplesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Example, i.Reference)
+func (v ExampleOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.ExampleReference, v.Example)
 }
 
 // Encoding structure is generated from "#/definitions/Encoding".
 type Encoding struct {
-	ContentType   string            `json:"contentType,omitempty"`
+	ContentType   *string           `json:"contentType,omitempty"`
 	Headers       map[string]Header `json:"headers,omitempty"`
-	Style         EncodingStyle     `json:"style,omitempty"`
-	Explode       bool              `json:"explode,omitempty"`
-	AllowReserved bool              `json:"allowReserved,omitempty"`
+	Style         *EncodingStyle    `json:"style,omitempty"`
+	Explode       *bool             `json:"explode,omitempty"`
+	AllowReserved *bool             `json:"allowReserved,omitempty"`
+}
+
+// WithContentType sets ContentType value.
+func (v *Encoding) WithContentType(val string) *Encoding {
+	v.ContentType = &val
+	return v
+}
+
+// WithHeaders sets Headers value.
+func (v *Encoding) WithHeaders(val map[string]Header) *Encoding {
+	v.Headers = val
+	return v
+}
+
+// WithHeadersItem sets Headers item value.
+func (v *Encoding) WithHeadersItem(key string, val Header) *Encoding {
+	if v.Headers == nil {
+		v.Headers = make(map[string]Header, 1)
+	}
+
+	v.Headers[key] = val
+
+	return v
+}
+
+// WithStyle sets Style value.
+func (v *Encoding) WithStyle(val EncodingStyle) *Encoding {
+	v.Style = &val
+	return v
+}
+
+// WithExplode sets Explode value.
+func (v *Encoding) WithExplode(val bool) *Encoding {
+	v.Explode = &val
+	return v
+}
+
+// WithAllowReserved sets AllowReserved value.
+func (v *Encoding) WithAllowReserved(val bool) *Encoding {
+	v.AllowReserved = &val
+	return v
 }
 
 // Header structure is generated from "#/definitions/Header".
 type Header struct {
-	Description     string                                        `json:"description,omitempty"`
-	Required        bool                                          `json:"required,omitempty"`
-	Deprecated      bool                                          `json:"deprecated,omitempty"`
-	AllowEmptyValue bool                                          `json:"allowEmptyValue,omitempty"`
-	Explode         bool                                          `json:"explode,omitempty"`
-	AllowReserved   bool                                          `json:"allowReserved,omitempty"`
-	Schema          *HeaderSchema                                 `json:"schema,omitempty"`
-	Content         map[string]MediaType                          `json:"content,omitempty"`
-	Example         *interface{}                                  `json:"example,omitempty"`
-	Examples        map[string]HeaderExamplesAdditionalProperties `json:"examples,omitempty"`
-	MapOfAnything   map[string]interface{}                        `json:"-"`                         // Key must match pattern: ^x-
+	Description     *string                 `json:"description,omitempty"`
+	Required        *bool                   `json:"required,omitempty"`
+	Deprecated      *bool                   `json:"deprecated,omitempty"`
+	AllowEmptyValue *bool                   `json:"allowEmptyValue,omitempty"`
+	Explode         *bool                   `json:"explode,omitempty"`
+	AllowReserved   *bool                   `json:"allowReserved,omitempty"`
+	Schema          *SchemaOrRef            `json:"schema,omitempty"`
+	Content         map[string]MediaType    `json:"content,omitempty"`
+	Example         *interface{}            `json:"example,omitempty"`
+	Examples        map[string]ExampleOrRef `json:"examples,omitempty"`
+	MapOfAnything   map[string]interface{}  `json:"-"`                         // Key must match pattern: `^x-`.
+}
+
+// WithDescription sets Description value.
+func (v *Header) WithDescription(val string) *Header {
+	v.Description = &val
+	return v
+}
+
+// WithRequired sets Required value.
+func (v *Header) WithRequired(val bool) *Header {
+	v.Required = &val
+	return v
+}
+
+// WithDeprecated sets Deprecated value.
+func (v *Header) WithDeprecated(val bool) *Header {
+	v.Deprecated = &val
+	return v
+}
+
+// WithAllowEmptyValue sets AllowEmptyValue value.
+func (v *Header) WithAllowEmptyValue(val bool) *Header {
+	v.AllowEmptyValue = &val
+	return v
+}
+
+// WithExplode sets Explode value.
+func (v *Header) WithExplode(val bool) *Header {
+	v.Explode = &val
+	return v
+}
+
+// WithAllowReserved sets AllowReserved value.
+func (v *Header) WithAllowReserved(val bool) *Header {
+	v.AllowReserved = &val
+	return v
+}
+
+// WithSchema sets Schema value.
+func (v *Header) WithSchema(val SchemaOrRef) *Header {
+	v.Schema = &val
+	return v
+}
+
+// WithContent sets Content value.
+func (v *Header) WithContent(val map[string]MediaType) *Header {
+	v.Content = val
+	return v
+}
+
+// WithContentItem sets Content item value.
+func (v *Header) WithContentItem(key string, val MediaType) *Header {
+	if v.Content == nil {
+		v.Content = make(map[string]MediaType, 1)
+	}
+
+	v.Content[key] = val
+
+	return v
+}
+
+// WithExample sets Example value.
+func (v *Header) WithExample(val interface{}) *Header {
+	v.Example = &val
+	return v
+}
+
+// WithExamples sets Examples value.
+func (v *Header) WithExamples(val map[string]ExampleOrRef) *Header {
+	v.Examples = val
+	return v
+}
+
+// WithExamplesItem sets Examples item value.
+func (v *Header) WithExamplesItem(key string, val ExampleOrRef) *Header {
+	if v.Examples == nil {
+		v.Examples = make(map[string]ExampleOrRef, 1)
+	}
+
+	v.Examples[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Header) WithMapOfAnything(val map[string]interface{}) *Header {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Header) WithMapOfAnythingItem(key string, val interface{}) *Header {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalHeader Header
@@ -1661,12 +2563,12 @@ var ignoreKeysHeader = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Header) UnmarshalJSON(data []byte) error {
+func (v *Header) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalHeader(*i)
+	vv := marshalHeader(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -1684,10 +2586,10 @@ func (i *Header) UnmarshalJSON(data []byte) error {
 
 	delete(m, "style")
 
-	if ii.Example == nil {
+	if vv.Example == nil {
 		if _, ok := m["example"]; ok {
 			var v interface{}
-			ii.Example = &v
+			vv.Example = &v
 		}
 	}
 
@@ -1701,8 +2603,8 @@ func (i *Header) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -1712,7 +2614,7 @@ func (i *Header) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -1720,7 +2622,7 @@ func (i *Header) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Header(ii)
+	*v = Header(vv)
 
 	return nil
 }
@@ -1731,107 +2633,50 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i Header) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constHeader, marshalHeader(i), i.MapOfAnything)
-}
-
-// HeaderSchema structure is generated from "#/definitions/Header->schema".
-type HeaderSchema struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *HeaderSchema) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i HeaderSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
-}
-
-// HeaderExamplesAdditionalProperties structure is generated from "#/definitions/Header->examples->additionalProperties".
-type HeaderExamplesAdditionalProperties struct {
-	Example   *Example   `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *HeaderExamplesAdditionalProperties) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Example)
-	if err != nil {
-		i.Example = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i HeaderExamplesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Example, i.Reference)
+func (v Header) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constHeader, marshalHeader(v), v.MapOfAnything)
 }
 
 // SchemaXORContentOneOf1 structure is generated from "#/definitions/SchemaXORContent/oneOf/1".
+//
+// Has Content.
 //
 // Some properties are not allowed if content is present.
 type SchemaXORContentOneOf1 struct {
 
 }
 
-// ParameterExamplesAdditionalProperties structure is generated from "#/definitions/Parameter->examples->additionalProperties".
-type ParameterExamplesAdditionalProperties struct {
-	Example   *Example   `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ParameterExamplesAdditionalProperties) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Example)
-	if err != nil {
-		i.Example = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ParameterExamplesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Example, i.Reference)
-}
-
 // ParameterLocationOneOf0 structure is generated from "#/definitions/ParameterLocation/oneOf/0".
+//
+// Path Parameter.
 //
 // Parameter in path.
 type ParameterLocationOneOf0 struct {
-	Style                ParameterLocationOneOf0Style `json:"style,omitempty"`
-	AdditionalProperties map[string]interface{}       `json:"-"`               // All unmatched properties
+	Style                *ParameterLocationOneOf0Style `json:"style,omitempty"`
+	AdditionalProperties map[string]interface{}        `json:"-"`               // All unmatched properties.
+}
+
+// WithStyle sets Style value.
+func (v *ParameterLocationOneOf0) WithStyle(val ParameterLocationOneOf0Style) *ParameterLocationOneOf0 {
+	v.Style = &val
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ParameterLocationOneOf0) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf0 {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ParameterLocationOneOf0) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf0 {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 type marshalParameterLocationOneOf0 ParameterLocationOneOf0
@@ -1843,12 +2688,12 @@ var ignoreKeysParameterLocationOneOf0 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
+func (v *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalParameterLocationOneOf0(*i)
+	vv := marshalParameterLocationOneOf0(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -1877,8 +2722,8 @@ func (i *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -1888,10 +2733,10 @@ func (i *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = ParameterLocationOneOf0(ii)
+	*v = ParameterLocationOneOf0(vv)
 
 	return nil
 }
@@ -1902,16 +2747,41 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i ParameterLocationOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf0, marshalParameterLocationOneOf0(i), i.AdditionalProperties)
+func (v ParameterLocationOneOf0) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf0, marshalParameterLocationOneOf0(v), v.AdditionalProperties)
 }
 
 // ParameterLocationOneOf1 structure is generated from "#/definitions/ParameterLocation/oneOf/1".
 //
+// Query Parameter.
+//
 // Parameter in query.
 type ParameterLocationOneOf1 struct {
-	Style                ParameterLocationOneOf1Style `json:"style,omitempty"`
-	AdditionalProperties map[string]interface{}       `json:"-"`               // All unmatched properties
+	Style                *ParameterLocationOneOf1Style `json:"style,omitempty"`
+	AdditionalProperties map[string]interface{}        `json:"-"`               // All unmatched properties.
+}
+
+// WithStyle sets Style value.
+func (v *ParameterLocationOneOf1) WithStyle(val ParameterLocationOneOf1Style) *ParameterLocationOneOf1 {
+	v.Style = &val
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ParameterLocationOneOf1) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf1 {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ParameterLocationOneOf1) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf1 {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 type marshalParameterLocationOneOf1 ParameterLocationOneOf1
@@ -1922,12 +2792,12 @@ var ignoreKeysParameterLocationOneOf1 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
+func (v *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalParameterLocationOneOf1(*i)
+	vv := marshalParameterLocationOneOf1(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -1950,8 +2820,8 @@ func (i *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -1961,10 +2831,10 @@ func (i *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = ParameterLocationOneOf1(ii)
+	*v = ParameterLocationOneOf1(vv)
 
 	return nil
 }
@@ -1975,19 +2845,38 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i ParameterLocationOneOf1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf1, marshalParameterLocationOneOf1(i), i.AdditionalProperties)
+func (v ParameterLocationOneOf1) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf1, marshalParameterLocationOneOf1(v), v.AdditionalProperties)
 }
 
 // ParameterLocationOneOf2 structure is generated from "#/definitions/ParameterLocation/oneOf/2".
 //
+// Header Parameter.
+//
 // Parameter in header.
 type ParameterLocationOneOf2 struct {
-	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ParameterLocationOneOf2) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf2 {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ParameterLocationOneOf2) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf2 {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
+func (v *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -2010,8 +2899,8 @@ func (i *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
 	delete(m, "style")
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -2021,7 +2910,7 @@ func (i *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
@@ -2033,19 +2922,38 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i ParameterLocationOneOf2) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf2, i.AdditionalProperties)
+func (v ParameterLocationOneOf2) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf2, v.AdditionalProperties)
 }
 
 // ParameterLocationOneOf3 structure is generated from "#/definitions/ParameterLocation/oneOf/3".
 //
+// Cookie Parameter.
+//
 // Parameter in cookie.
 type ParameterLocationOneOf3 struct {
-	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ParameterLocationOneOf3) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf3 {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ParameterLocationOneOf3) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf3 {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
+func (v *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -2068,8 +2976,8 @@ func (i *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
 	delete(m, "style")
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -2079,7 +2987,7 @@ func (i *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
@@ -2091,8 +2999,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i ParameterLocationOneOf3) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf3, i.AdditionalProperties)
+func (v ParameterLocationOneOf3) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf3, v.AdditionalProperties)
 }
 
 // ParameterLocation structure is generated from "#/definitions/ParameterLocation".
@@ -2105,81 +3013,217 @@ type ParameterLocation struct {
 	OneOf3 *ParameterLocationOneOf3 `json:"-"`
 }
 
+// WithOneOf0 sets OneOf0 value.
+func (v *ParameterLocation) WithOneOf0(val ParameterLocationOneOf0) *ParameterLocation {
+	v.OneOf0 = &val
+	return v
+}
+
+// WithOneOf1 sets OneOf1 value.
+func (v *ParameterLocation) WithOneOf1(val ParameterLocationOneOf1) *ParameterLocation {
+	v.OneOf1 = &val
+	return v
+}
+
+// WithOneOf2 sets OneOf2 value.
+func (v *ParameterLocation) WithOneOf2(val ParameterLocationOneOf2) *ParameterLocation {
+	v.OneOf2 = &val
+	return v
+}
+
+// WithOneOf3 sets OneOf3 value.
+func (v *ParameterLocation) WithOneOf3(val ParameterLocationOneOf3) *ParameterLocation {
+	v.OneOf3 = &val
+	return v
+}
+
 // UnmarshalJSON decodes JSON.
-func (i *ParameterLocation) UnmarshalJSON(data []byte) error {
+func (v *ParameterLocation) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.OneOf0)
+	err = json.Unmarshal(data, &v.OneOf0)
 	if err != nil {
-		i.OneOf0 = nil
+		v.OneOf0 = nil
 	}
 
-	err = json.Unmarshal(data, &i.OneOf1)
+	err = json.Unmarshal(data, &v.OneOf1)
 	if err != nil {
-		i.OneOf1 = nil
+		v.OneOf1 = nil
 	}
 
-	err = json.Unmarshal(data, &i.OneOf2)
+	err = json.Unmarshal(data, &v.OneOf2)
 	if err != nil {
-		i.OneOf2 = nil
+		v.OneOf2 = nil
 	}
 
-	err = json.Unmarshal(data, &i.OneOf3)
+	err = json.Unmarshal(data, &v.OneOf3)
 	if err != nil {
-		i.OneOf3 = nil
+		v.OneOf3 = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ParameterLocation) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.OneOf0, i.OneOf1, i.OneOf2, i.OneOf3)
+func (v ParameterLocation) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.OneOf0, v.OneOf1, v.OneOf2, v.OneOf3)
 }
 
-// PathItemParametersItems structure is generated from "#/definitions/PathItem->parameters->items".
-type PathItemParametersItems struct {
-	Parameter *Parameter `json:"-"`
-	Reference *Reference `json:"-"`
+// ParameterOrRef structure is generated from "#/definitions/ParameterOrRef".
+type ParameterOrRef struct {
+	ParameterReference *ParameterReference `json:"-"`
+	Parameter          *Parameter          `json:"-"`
+}
+
+// WithParameterReference sets ParameterReference value.
+func (v *ParameterOrRef) WithParameterReference(val ParameterReference) *ParameterOrRef {
+	v.ParameterReference = &val
+	return v
+}
+
+// WithParameter sets Parameter value.
+func (v *ParameterOrRef) WithParameter(val Parameter) *ParameterOrRef {
+	v.Parameter = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *PathItemParametersItems) UnmarshalJSON(data []byte) error {
+func (v *ParameterOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Parameter)
+	err = json.Unmarshal(data, &v.ParameterReference)
 	if err != nil {
-		i.Parameter = nil
+		v.ParameterReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Parameter)
 	if err != nil {
-		i.Reference = nil
+		v.Parameter = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i PathItemParametersItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Parameter, i.Reference)
+func (v ParameterOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.ParameterReference, v.Parameter)
 }
 
 // Operation structure is generated from "#/definitions/Operation".
 type Operation struct {
-	Tags          []string                                          `json:"tags,omitempty"`
-	Summary       string                                            `json:"summary,omitempty"`
-	Description   string                                            `json:"description,omitempty"`
-	ExternalDocs  *ExternalDocumentation                            `json:"externalDocs,omitempty"`
-	ID            string                                            `json:"operationId,omitempty"`
-	Parameters    []OperationParametersItems                        `json:"parameters,omitempty"`
-	RequestBody   *OperationRequestBody                             `json:"requestBody,omitempty"`
-	Responses     *Responses                                        `json:"responses,omitempty"`
-	Callbacks     map[string]OperationCallbacksAdditionalProperties `json:"callbacks,omitempty"`
-	Deprecated    bool                                              `json:"deprecated,omitempty"`
-	Security      []map[string][]string                             `json:"security,omitempty"`
-	Servers       []Server                                          `json:"servers,omitempty"`
-	MapOfAnything map[string]interface{}                            `json:"-"`                      // Key must match pattern: ^x-
+	Tags          []string                 `json:"tags,omitempty"`
+	Summary       *string                  `json:"summary,omitempty"`
+	Description   *string                  `json:"description,omitempty"`
+	ExternalDocs  *ExternalDocumentation   `json:"externalDocs,omitempty"`
+	ID            *string                  `json:"operationId,omitempty"`
+	Parameters    []ParameterOrRef         `json:"parameters,omitempty"`
+	RequestBody   *RequestBodyOrRef        `json:"requestBody,omitempty"`
+	Responses     Responses                `json:"responses"`              // Required.
+	Callbacks     map[string]CallbackOrRef `json:"callbacks,omitempty"`
+	Deprecated    *bool                    `json:"deprecated,omitempty"`
+	Security      []map[string][]string    `json:"security,omitempty"`
+	Servers       []Server                 `json:"servers,omitempty"`
+	MapOfAnything map[string]interface{}   `json:"-"`                      // Key must match pattern: `^x-`.
+}
+
+// WithTags sets Tags value.
+func (v *Operation) WithTags(val ...string) *Operation {
+	v.Tags = val
+	return v
+}
+
+// WithSummary sets Summary value.
+func (v *Operation) WithSummary(val string) *Operation {
+	v.Summary = &val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Operation) WithDescription(val string) *Operation {
+	v.Description = &val
+	return v
+}
+
+// WithExternalDocs sets ExternalDocs value.
+func (v *Operation) WithExternalDocs(val ExternalDocumentation) *Operation {
+	v.ExternalDocs = &val
+	return v
+}
+
+// WithID sets ID value.
+func (v *Operation) WithID(val string) *Operation {
+	v.ID = &val
+	return v
+}
+
+// WithParameters sets Parameters value.
+func (v *Operation) WithParameters(val ...ParameterOrRef) *Operation {
+	v.Parameters = val
+	return v
+}
+
+// WithRequestBody sets RequestBody value.
+func (v *Operation) WithRequestBody(val RequestBodyOrRef) *Operation {
+	v.RequestBody = &val
+	return v
+}
+
+// WithResponses sets Responses value.
+func (v *Operation) WithResponses(val Responses) *Operation {
+	v.Responses = val
+	return v
+}
+
+// WithCallbacks sets Callbacks value.
+func (v *Operation) WithCallbacks(val map[string]CallbackOrRef) *Operation {
+	v.Callbacks = val
+	return v
+}
+
+// WithCallbacksItem sets Callbacks item value.
+func (v *Operation) WithCallbacksItem(key string, val CallbackOrRef) *Operation {
+	if v.Callbacks == nil {
+		v.Callbacks = make(map[string]CallbackOrRef, 1)
+	}
+
+	v.Callbacks[key] = val
+
+	return v
+}
+
+// WithDeprecated sets Deprecated value.
+func (v *Operation) WithDeprecated(val bool) *Operation {
+	v.Deprecated = &val
+	return v
+}
+
+// WithSecurity sets Security value.
+func (v *Operation) WithSecurity(val ...map[string][]string) *Operation {
+	v.Security = val
+	return v
+}
+
+// WithServers sets Servers value.
+func (v *Operation) WithServers(val ...Server) *Operation {
+	v.Servers = val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Operation) WithMapOfAnything(val map[string]interface{}) *Operation {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Operation) WithMapOfAnythingItem(key string, val interface{}) *Operation {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalOperation Operation
@@ -2200,12 +3244,12 @@ var ignoreKeysOperation = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Operation) UnmarshalJSON(data []byte) error {
+func (v *Operation) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalOperation(*i)
+	vv := marshalOperation(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -2227,8 +3271,8 @@ func (i *Operation) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2238,7 +3282,7 @@ func (i *Operation) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2246,50 +3290,81 @@ func (i *Operation) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Operation(ii)
+	*v = Operation(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Operation) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOperation(i), i.MapOfAnything)
+func (v Operation) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOperation(v), v.MapOfAnything)
 }
 
-// OperationParametersItems structure is generated from "#/definitions/Operation->parameters->items".
-type OperationParametersItems struct {
-	Parameter *Parameter `json:"-"`
-	Reference *Reference `json:"-"`
+// RequestBodyReference structure is generated from "#/definitions/RequestBodyReference".
+type RequestBodyReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
 }
 
-// UnmarshalJSON decodes JSON.
-func (i *OperationParametersItems) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Parameter)
-	if err != nil {
-		i.Parameter = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i OperationParametersItems) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Parameter, i.Reference)
+// WithRef sets Ref value.
+func (v *RequestBodyReference) WithRef(val string) *RequestBodyReference {
+	v.Ref = val
+	return v
 }
 
 // RequestBody structure is generated from "#/definitions/RequestBody".
 type RequestBody struct {
-	Description   string                 `json:"description,omitempty"`
-	Content       map[string]MediaType   `json:"content,omitempty"`
-	Required      bool                   `json:"required,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	Description   *string                `json:"description,omitempty"`
+	Content       map[string]MediaType   `json:"content"`               // Required.
+	Required      *bool                  `json:"required,omitempty"`
+	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithDescription sets Description value.
+func (v *RequestBody) WithDescription(val string) *RequestBody {
+	v.Description = &val
+	return v
+}
+
+// WithContent sets Content value.
+func (v *RequestBody) WithContent(val map[string]MediaType) *RequestBody {
+	v.Content = val
+	return v
+}
+
+// WithContentItem sets Content item value.
+func (v *RequestBody) WithContentItem(key string, val MediaType) *RequestBody {
+	if v.Content == nil {
+		v.Content = make(map[string]MediaType, 1)
+	}
+
+	v.Content[key] = val
+
+	return v
+}
+
+// WithRequired sets Required value.
+func (v *RequestBody) WithRequired(val bool) *RequestBody {
+	v.Required = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *RequestBody) WithMapOfAnything(val map[string]interface{}) *RequestBody {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *RequestBody) WithMapOfAnythingItem(key string, val interface{}) *RequestBody {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalRequestBody RequestBody
@@ -2301,12 +3376,12 @@ var ignoreKeysRequestBody = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *RequestBody) UnmarshalJSON(data []byte) error {
+func (v *RequestBody) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalRequestBody(*i)
+	vv := marshalRequestBody(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -2328,8 +3403,8 @@ func (i *RequestBody) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2339,7 +3414,7 @@ func (i *RequestBody) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2347,49 +3422,101 @@ func (i *RequestBody) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = RequestBody(ii)
+	*v = RequestBody(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i RequestBody) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalRequestBody(i), i.MapOfAnything)
+func (v RequestBody) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalRequestBody(v), v.MapOfAnything)
 }
 
-// OperationRequestBody structure is generated from "#/definitions/Operation->requestBody".
-type OperationRequestBody struct {
-	RequestBody *RequestBody `json:"-"`
-	Reference   *Reference   `json:"-"`
+// RequestBodyOrRef structure is generated from "#/definitions/RequestBodyOrRef".
+type RequestBodyOrRef struct {
+	RequestBodyReference *RequestBodyReference `json:"-"`
+	RequestBody          *RequestBody          `json:"-"`
+}
+
+// WithRequestBodyReference sets RequestBodyReference value.
+func (v *RequestBodyOrRef) WithRequestBodyReference(val RequestBodyReference) *RequestBodyOrRef {
+	v.RequestBodyReference = &val
+	return v
+}
+
+// WithRequestBody sets RequestBody value.
+func (v *RequestBodyOrRef) WithRequestBody(val RequestBody) *RequestBodyOrRef {
+	v.RequestBody = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *OperationRequestBody) UnmarshalJSON(data []byte) error {
+func (v *RequestBodyOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.RequestBody)
+	err = json.Unmarshal(data, &v.RequestBodyReference)
 	if err != nil {
-		i.RequestBody = nil
+		v.RequestBodyReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.RequestBody)
 	if err != nil {
-		i.Reference = nil
+		v.RequestBody = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i OperationRequestBody) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.RequestBody, i.Reference)
+func (v RequestBodyOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.RequestBodyReference, v.RequestBody)
 }
 
 // Responses structure is generated from "#/definitions/Responses".
 type Responses struct {
-	Default                    *ResponsesDefault          `json:"default,omitempty"`
-	MapOfResponses15D2XXValues map[string]Responses15D2XX `json:"-"`                 // Key must match pattern: ^[1-5](?:\d{2}|XX)$
-	MapOfAnything              map[string]interface{}     `json:"-"`                 // Key must match pattern: ^x-
+	Default                  *ResponseOrRef           `json:"default,omitempty"`
+	MapOfResponseOrRefValues map[string]ResponseOrRef `json:"-"`                 // Key must match pattern: `^[1-5](?:\d{2}|XX)$`.
+	MapOfAnything            map[string]interface{}   `json:"-"`                 // Key must match pattern: `^x-`.
+}
+
+// WithDefault sets Default value.
+func (v *Responses) WithDefault(val ResponseOrRef) *Responses {
+	v.Default = &val
+	return v
+}
+
+// WithMapOfResponseOrRefValues sets MapOfResponseOrRefValues value.
+func (v *Responses) WithMapOfResponseOrRefValues(val map[string]ResponseOrRef) *Responses {
+	v.MapOfResponseOrRefValues = val
+	return v
+}
+
+// WithMapOfResponseOrRefValuesItem sets MapOfResponseOrRefValues item value.
+func (v *Responses) WithMapOfResponseOrRefValuesItem(key string, val ResponseOrRef) *Responses {
+	if v.MapOfResponseOrRefValues == nil {
+		v.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
+	}
+
+	v.MapOfResponseOrRefValues[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Responses) WithMapOfAnything(val map[string]interface{}) *Responses {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Responses) WithMapOfAnythingItem(key string, val interface{}) *Responses {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalResponses Responses
@@ -2399,12 +3526,12 @@ var ignoreKeysResponses = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Responses) UnmarshalJSON(data []byte) error {
+func (v *Responses) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalResponses(*i)
+	vv := marshalResponses(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -2426,25 +3553,25 @@ func (i *Responses) UnmarshalJSON(data []byte) error {
 		if regex15D2XX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfResponses15D2XXValues == nil {
-				ii.MapOfResponses15D2XXValues = make(map[string]Responses15D2XX, 1)
+			if vv.MapOfResponseOrRefValues == nil {
+				vv.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
 			}
 
-			var val Responses15D2XX
+			var val ResponseOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			ii.MapOfResponses15D2XXValues[key] = val
+			vv.MapOfResponseOrRefValues[key] = val
 		}
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2454,7 +3581,7 @@ func (i *Responses) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2462,23 +3589,110 @@ func (i *Responses) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Responses(ii)
+	*v = Responses(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Responses) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponses(i), i.MapOfResponses15D2XXValues, i.MapOfAnything)
+func (v Responses) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalResponses(v), v.MapOfResponseOrRefValues, v.MapOfAnything)
+}
+
+// ResponseReference structure is generated from "#/definitions/ResponseReference".
+type ResponseReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
+}
+
+// WithRef sets Ref value.
+func (v *ResponseReference) WithRef(val string) *ResponseReference {
+	v.Ref = val
+	return v
 }
 
 // Response structure is generated from "#/definitions/Response".
 type Response struct {
-	Description   string                                         `json:"description,omitempty"`
-	Headers       map[string]ResponseHeadersAdditionalProperties `json:"headers,omitempty"`
-	Content       map[string]MediaType                           `json:"content,omitempty"`
-	Links         map[string]ResponseLinksAdditionalProperties   `json:"links,omitempty"`
-	MapOfAnything map[string]interface{}                         `json:"-"`                     // Key must match pattern: ^x-
+	Description   string                 `json:"description"`       // Required.
+	Headers       map[string]HeaderOrRef `json:"headers,omitempty"`
+	Content       map[string]MediaType   `json:"content,omitempty"`
+	Links         map[string]LinkOrRef   `json:"links,omitempty"`
+	MapOfAnything map[string]interface{} `json:"-"`                 // Key must match pattern: `^x-`.
+}
+
+// WithDescription sets Description value.
+func (v *Response) WithDescription(val string) *Response {
+	v.Description = val
+	return v
+}
+
+// WithHeaders sets Headers value.
+func (v *Response) WithHeaders(val map[string]HeaderOrRef) *Response {
+	v.Headers = val
+	return v
+}
+
+// WithHeadersItem sets Headers item value.
+func (v *Response) WithHeadersItem(key string, val HeaderOrRef) *Response {
+	if v.Headers == nil {
+		v.Headers = make(map[string]HeaderOrRef, 1)
+	}
+
+	v.Headers[key] = val
+
+	return v
+}
+
+// WithContent sets Content value.
+func (v *Response) WithContent(val map[string]MediaType) *Response {
+	v.Content = val
+	return v
+}
+
+// WithContentItem sets Content item value.
+func (v *Response) WithContentItem(key string, val MediaType) *Response {
+	if v.Content == nil {
+		v.Content = make(map[string]MediaType, 1)
+	}
+
+	v.Content[key] = val
+
+	return v
+}
+
+// WithLinks sets Links value.
+func (v *Response) WithLinks(val map[string]LinkOrRef) *Response {
+	v.Links = val
+	return v
+}
+
+// WithLinksItem sets Links item value.
+func (v *Response) WithLinksItem(key string, val LinkOrRef) *Response {
+	if v.Links == nil {
+		v.Links = make(map[string]LinkOrRef, 1)
+	}
+
+	v.Links[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Response) WithMapOfAnything(val map[string]interface{}) *Response {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Response) WithMapOfAnythingItem(key string, val interface{}) *Response {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalResponse Response
@@ -2491,12 +3705,12 @@ var ignoreKeysResponse = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Response) UnmarshalJSON(data []byte) error {
+func (v *Response) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalResponse(*i)
+	vv := marshalResponse(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -2518,8 +3732,8 @@ func (i *Response) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2529,7 +3743,7 @@ func (i *Response) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2537,53 +3751,155 @@ func (i *Response) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Response(ii)
+	*v = Response(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Response) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponse(i), i.MapOfAnything)
+func (v Response) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalResponse(v), v.MapOfAnything)
 }
 
-// ResponseHeadersAdditionalProperties structure is generated from "#/definitions/Response->headers->additionalProperties".
-type ResponseHeadersAdditionalProperties struct {
-	Header    *Header    `json:"-"`
-	Reference *Reference `json:"-"`
+// HeaderReference structure is generated from "#/definitions/HeaderReference".
+type HeaderReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
+}
+
+// WithRef sets Ref value.
+func (v *HeaderReference) WithRef(val string) *HeaderReference {
+	v.Ref = val
+	return v
+}
+
+// HeaderOrRef structure is generated from "#/definitions/HeaderOrRef".
+type HeaderOrRef struct {
+	HeaderReference *HeaderReference `json:"-"`
+	Header          *Header          `json:"-"`
+}
+
+// WithHeaderReference sets HeaderReference value.
+func (v *HeaderOrRef) WithHeaderReference(val HeaderReference) *HeaderOrRef {
+	v.HeaderReference = &val
+	return v
+}
+
+// WithHeader sets Header value.
+func (v *HeaderOrRef) WithHeader(val Header) *HeaderOrRef {
+	v.Header = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ResponseHeadersAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (v *HeaderOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Header)
+	err = json.Unmarshal(data, &v.HeaderReference)
 	if err != nil {
-		i.Header = nil
+		v.HeaderReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Header)
 	if err != nil {
-		i.Reference = nil
+		v.Header = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ResponseHeadersAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Header, i.Reference)
+func (v HeaderOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.HeaderReference, v.Header)
+}
+
+// LinkReference structure is generated from "#/definitions/LinkReference".
+type LinkReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
+}
+
+// WithRef sets Ref value.
+func (v *LinkReference) WithRef(val string) *LinkReference {
+	v.Ref = val
+	return v
 }
 
 // Link structure is generated from "#/definitions/Link".
 type Link struct {
-	OperationID   string                 `json:"operationId,omitempty"`
-	OperationRef  string                 `json:"operationRef,omitempty"`
+	OperationID   *string                `json:"operationId,omitempty"`
+	OperationRef  *string                `json:"operationRef,omitempty"` // Format: uri-reference.
 	Parameters    map[string]interface{} `json:"parameters,omitempty"`
 	RequestBody   *interface{}           `json:"requestBody,omitempty"`
-	Description   string                 `json:"description,omitempty"`
+	Description   *string                `json:"description,omitempty"`
 	Server        *Server                `json:"server,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: ^x-
+	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: `^x-`.
+}
+
+// WithOperationID sets OperationID value.
+func (v *Link) WithOperationID(val string) *Link {
+	v.OperationID = &val
+	return v
+}
+
+// WithOperationRef sets OperationRef value.
+func (v *Link) WithOperationRef(val string) *Link {
+	v.OperationRef = &val
+	return v
+}
+
+// WithParameters sets Parameters value.
+func (v *Link) WithParameters(val map[string]interface{}) *Link {
+	v.Parameters = val
+	return v
+}
+
+// WithParametersItem sets Parameters item value.
+func (v *Link) WithParametersItem(key string, val interface{}) *Link {
+	if v.Parameters == nil {
+		v.Parameters = make(map[string]interface{}, 1)
+	}
+
+	v.Parameters[key] = val
+
+	return v
+}
+
+// WithRequestBody sets RequestBody value.
+func (v *Link) WithRequestBody(val interface{}) *Link {
+	v.RequestBody = &val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *Link) WithDescription(val string) *Link {
+	v.Description = &val
+	return v
+}
+
+// WithServer sets Server value.
+func (v *Link) WithServer(val Server) *Link {
+	v.Server = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Link) WithMapOfAnything(val map[string]interface{}) *Link {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Link) WithMapOfAnythingItem(key string, val interface{}) *Link {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalLink Link
@@ -2598,12 +3914,12 @@ var ignoreKeysLink = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Link) UnmarshalJSON(data []byte) error {
+func (v *Link) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalLink(*i)
+	vv := marshalLink(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -2615,10 +3931,10 @@ func (i *Link) UnmarshalJSON(data []byte) error {
 		m = nil
 	}
 
-	if ii.RequestBody == nil {
+	if vv.RequestBody == nil {
 		if _, ok := m["requestBody"]; ok {
 			var v interface{}
-			ii.RequestBody = &v
+			vv.RequestBody = &v
 		}
 	}
 
@@ -2632,8 +3948,8 @@ func (i *Link) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2643,7 +3959,7 @@ func (i *Link) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2651,108 +3967,151 @@ func (i *Link) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Link(ii)
+	*v = Link(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Link) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalLink(i), i.MapOfAnything)
+func (v Link) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalLink(v), v.MapOfAnything)
 }
 
-// ResponseLinksAdditionalProperties structure is generated from "#/definitions/Response->links->additionalProperties".
-type ResponseLinksAdditionalProperties struct {
-	Link      *Link      `json:"-"`
-	Reference *Reference `json:"-"`
+// LinkOrRef structure is generated from "#/definitions/LinkOrRef".
+type LinkOrRef struct {
+	LinkReference *LinkReference `json:"-"`
+	Link          *Link          `json:"-"`
+}
+
+// WithLinkReference sets LinkReference value.
+func (v *LinkOrRef) WithLinkReference(val LinkReference) *LinkOrRef {
+	v.LinkReference = &val
+	return v
+}
+
+// WithLink sets Link value.
+func (v *LinkOrRef) WithLink(val Link) *LinkOrRef {
+	v.Link = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ResponseLinksAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (v *LinkOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Link)
+	err = json.Unmarshal(data, &v.LinkReference)
 	if err != nil {
-		i.Link = nil
+		v.LinkReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Link)
 	if err != nil {
-		i.Reference = nil
+		v.Link = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ResponseLinksAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Link, i.Reference)
+func (v LinkOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.LinkReference, v.Link)
 }
 
-// ResponsesDefault structure is generated from "#/definitions/Responses->default".
-type ResponsesDefault struct {
-	Response  *Response  `json:"-"`
-	Reference *Reference `json:"-"`
+// ResponseOrRef structure is generated from "#/definitions/ResponseOrRef".
+type ResponseOrRef struct {
+	ResponseReference *ResponseReference `json:"-"`
+	Response          *Response          `json:"-"`
+}
+
+// WithResponseReference sets ResponseReference value.
+func (v *ResponseOrRef) WithResponseReference(val ResponseReference) *ResponseOrRef {
+	v.ResponseReference = &val
+	return v
+}
+
+// WithResponse sets Response value.
+func (v *ResponseOrRef) WithResponse(val Response) *ResponseOrRef {
+	v.Response = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ResponsesDefault) UnmarshalJSON(data []byte) error {
+func (v *ResponseOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Response)
+	err = json.Unmarshal(data, &v.ResponseReference)
 	if err != nil {
-		i.Response = nil
+		v.ResponseReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Response)
 	if err != nil {
-		i.Reference = nil
+		v.Response = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ResponsesDefault) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Response, i.Reference)
+func (v ResponseOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.ResponseReference, v.Response)
 }
 
-// Responses15D2XX structure is generated from "#/definitions/Responses->^[1-5](?:\d{2}|XX)$".
-type Responses15D2XX struct {
-	Response  *Response  `json:"-"`
-	Reference *Reference `json:"-"`
+// CallbackReference structure is generated from "#/definitions/CallbackReference".
+type CallbackReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
 }
 
-// UnmarshalJSON decodes JSON.
-func (i *Responses15D2XX) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Response)
-	if err != nil {
-		i.Response = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i Responses15D2XX) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Response, i.Reference)
+// WithRef sets Ref value.
+func (v *CallbackReference) WithRef(val string) *CallbackReference {
+	v.Ref = val
+	return v
 }
 
 // Callback structure is generated from "#/definitions/Callback".
 type Callback struct {
-	MapOfAnything        map[string]interface{} `json:"-"` // Key must match pattern: ^x-
-	AdditionalProperties map[string]PathItem    `json:"-"` // All unmatched properties
+	MapOfAnything        map[string]interface{} `json:"-"` // Key must match pattern: `^x-`.
+	AdditionalProperties map[string]PathItem    `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Callback) WithMapOfAnything(val map[string]interface{}) *Callback {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Callback) WithMapOfAnythingItem(key string, val interface{}) *Callback {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *Callback) WithAdditionalProperties(val map[string]PathItem) *Callback {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *Callback) WithAdditionalPropertiesItem(key string, val PathItem) *Callback {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]PathItem, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Callback) UnmarshalJSON(data []byte) error {
+func (v *Callback) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -2768,8 +4127,8 @@ func (i *Callback) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if i.MapOfAnything == nil {
-				i.MapOfAnything = make(map[string]interface{}, 1)
+			if v.MapOfAnything == nil {
+				v.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2779,7 +4138,7 @@ func (i *Callback) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			i.MapOfAnything[key] = val
+			v.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2788,8 +4147,8 @@ func (i *Callback) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]PathItem, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]PathItem, 1)
 		}
 
 		var val PathItem
@@ -2799,53 +4158,99 @@ func (i *Callback) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Callback) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfAnything, i.AdditionalProperties)
+func (v Callback) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfAnything, v.AdditionalProperties)
 }
 
-// OperationCallbacksAdditionalProperties structure is generated from "#/definitions/Operation->callbacks->additionalProperties".
-type OperationCallbacksAdditionalProperties struct {
-	Callback  *Callback  `json:"-"`
-	Reference *Reference `json:"-"`
+// CallbackOrRef structure is generated from "#/definitions/CallbackOrRef".
+type CallbackOrRef struct {
+	CallbackReference *CallbackReference `json:"-"`
+	Callback          *Callback          `json:"-"`
+}
+
+// WithCallbackReference sets CallbackReference value.
+func (v *CallbackOrRef) WithCallbackReference(val CallbackReference) *CallbackOrRef {
+	v.CallbackReference = &val
+	return v
+}
+
+// WithCallback sets Callback value.
+func (v *CallbackOrRef) WithCallback(val Callback) *CallbackOrRef {
+	v.Callback = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *OperationCallbacksAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (v *CallbackOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Callback)
+	err = json.Unmarshal(data, &v.CallbackReference)
 	if err != nil {
-		i.Callback = nil
+		v.CallbackReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Callback)
 	if err != nil {
-		i.Reference = nil
+		v.Callback = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i OperationCallbacksAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Callback, i.Reference)
+func (v CallbackOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.CallbackReference, v.Callback)
 }
 
 // Paths structure is generated from "#/definitions/Paths".
 type Paths struct {
-	MapOfPathItemValues map[string]PathItem    `json:"-"` // Key must match pattern: ^\/
-	MapOfAnything       map[string]interface{} `json:"-"` // Key must match pattern: ^x-
+	MapOfPathItemValues map[string]PathItem    `json:"-"` // Key must match pattern: `^\/`.
+	MapOfAnything       map[string]interface{} `json:"-"` // Key must match pattern: `^x-`.
+}
+
+// WithMapOfPathItemValues sets MapOfPathItemValues value.
+func (v *Paths) WithMapOfPathItemValues(val map[string]PathItem) *Paths {
+	v.MapOfPathItemValues = val
+	return v
+}
+
+// WithMapOfPathItemValuesItem sets MapOfPathItemValues item value.
+func (v *Paths) WithMapOfPathItemValuesItem(key string, val PathItem) *Paths {
+	if v.MapOfPathItemValues == nil {
+		v.MapOfPathItemValues = make(map[string]PathItem, 1)
+	}
+
+	v.MapOfPathItemValues[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Paths) WithMapOfAnything(val map[string]interface{}) *Paths {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Paths) WithMapOfAnythingItem(key string, val interface{}) *Paths {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Paths) UnmarshalJSON(data []byte) error {
+func (v *Paths) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -2861,8 +4266,8 @@ func (i *Paths) UnmarshalJSON(data []byte) error {
 		if regex.MatchString(key) {
 			matched = true
 
-			if i.MapOfPathItemValues == nil {
-				i.MapOfPathItemValues = make(map[string]PathItem, 1)
+			if v.MapOfPathItemValues == nil {
+				v.MapOfPathItemValues = make(map[string]PathItem, 1)
 			}
 
 			var val PathItem
@@ -2872,14 +4277,14 @@ func (i *Paths) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			i.MapOfPathItemValues[key] = val
+			v.MapOfPathItemValues[key] = val
 		}
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if i.MapOfAnything == nil {
-				i.MapOfAnything = make(map[string]interface{}, 1)
+			if v.MapOfAnything == nil {
+				v.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2889,7 +4294,7 @@ func (i *Paths) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			i.MapOfAnything[key] = val
+			v.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2901,8 +4306,8 @@ func (i *Paths) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalJSON encodes JSON.
-func (i Paths) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfPathItemValues, i.MapOfAnything)
+func (v Paths) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfPathItemValues, v.MapOfAnything)
 }
 
 // Components structure is generated from "#/definitions/Components".
@@ -2916,7 +4321,78 @@ type Components struct {
 	SecuritySchemes *ComponentsSecuritySchemes `json:"securitySchemes,omitempty"`
 	Links           *ComponentsLinks           `json:"links,omitempty"`
 	Callbacks       *ComponentsCallbacks       `json:"callbacks,omitempty"`
-	MapOfAnything   map[string]interface{}     `json:"-"`                         // Key must match pattern: ^x-
+	MapOfAnything   map[string]interface{}     `json:"-"`                         // Key must match pattern: `^x-`.
+}
+
+// WithSchemas sets Schemas value.
+func (v *Components) WithSchemas(val ComponentsSchemas) *Components {
+	v.Schemas = &val
+	return v
+}
+
+// WithResponses sets Responses value.
+func (v *Components) WithResponses(val ComponentsResponses) *Components {
+	v.Responses = &val
+	return v
+}
+
+// WithParameters sets Parameters value.
+func (v *Components) WithParameters(val ComponentsParameters) *Components {
+	v.Parameters = &val
+	return v
+}
+
+// WithExamples sets Examples value.
+func (v *Components) WithExamples(val ComponentsExamples) *Components {
+	v.Examples = &val
+	return v
+}
+
+// WithRequestBodies sets RequestBodies value.
+func (v *Components) WithRequestBodies(val ComponentsRequestBodies) *Components {
+	v.RequestBodies = &val
+	return v
+}
+
+// WithHeaders sets Headers value.
+func (v *Components) WithHeaders(val ComponentsHeaders) *Components {
+	v.Headers = &val
+	return v
+}
+
+// WithSecuritySchemes sets SecuritySchemes value.
+func (v *Components) WithSecuritySchemes(val ComponentsSecuritySchemes) *Components {
+	v.SecuritySchemes = &val
+	return v
+}
+
+// WithLinks sets Links value.
+func (v *Components) WithLinks(val ComponentsLinks) *Components {
+	v.Links = &val
+	return v
+}
+
+// WithCallbacks sets Callbacks value.
+func (v *Components) WithCallbacks(val ComponentsCallbacks) *Components {
+	v.Callbacks = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *Components) WithMapOfAnything(val map[string]interface{}) *Components {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *Components) WithMapOfAnythingItem(key string, val interface{}) *Components {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalComponents Components
@@ -2934,12 +4410,12 @@ var ignoreKeysComponents = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Components) UnmarshalJSON(data []byte) error {
+func (v *Components) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalComponents(*i)
+	vv := marshalComponents(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -2961,8 +4437,8 @@ func (i *Components) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2972,7 +4448,7 @@ func (i *Components) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -2980,52 +4456,58 @@ func (i *Components) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = Components(ii)
+	*v = Components(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Components) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalComponents(i), i.MapOfAnything)
-}
-
-// ComponentsSchemasAZAZ09 structure is generated from "#/definitions/Components->schemas->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsSchemasAZAZ09 struct {
-	Schema    *Schema    `json:"-"`
-	Reference *Reference `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsSchemasAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Schema)
-	if err != nil {
-		i.Schema = nil
-	}
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsSchemasAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.Reference)
+func (v Components) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalComponents(v), v.MapOfAnything)
 }
 
 // ComponentsSchemas structure is generated from "#/definitions/Components->schemas".
 type ComponentsSchemas struct {
-	MapOfComponentsSchemasAZAZ09Values map[string]ComponentsSchemasAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties               map[string]interface{}             `json:"-"` // All unmatched properties
+	MapOfSchemaOrRefValues map[string]SchemaOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties   map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfSchemaOrRefValues sets MapOfSchemaOrRefValues value.
+func (v *ComponentsSchemas) WithMapOfSchemaOrRefValues(val map[string]SchemaOrRef) *ComponentsSchemas {
+	v.MapOfSchemaOrRefValues = val
+	return v
+}
+
+// WithMapOfSchemaOrRefValuesItem sets MapOfSchemaOrRefValues item value.
+func (v *ComponentsSchemas) WithMapOfSchemaOrRefValuesItem(key string, val SchemaOrRef) *ComponentsSchemas {
+	if v.MapOfSchemaOrRefValues == nil {
+		v.MapOfSchemaOrRefValues = make(map[string]SchemaOrRef, 1)
+	}
+
+	v.MapOfSchemaOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsSchemas) WithAdditionalProperties(val map[string]interface{}) *ComponentsSchemas {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsSchemas) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsSchemas {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsSchemas) UnmarshalJSON(data []byte) error {
+func (v *ComponentsSchemas) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -3041,18 +4523,18 @@ func (i *ComponentsSchemas) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsSchemasAZAZ09Values == nil {
-				i.MapOfComponentsSchemasAZAZ09Values = make(map[string]ComponentsSchemasAZAZ09, 1)
+			if v.MapOfSchemaOrRefValues == nil {
+				v.MapOfSchemaOrRefValues = make(map[string]SchemaOrRef, 1)
 			}
 
-			var val ComponentsSchemasAZAZ09
+			var val SchemaOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsSchemasAZAZ09Values[key] = val
+			v.MapOfSchemaOrRefValues[key] = val
 		}
 
 		if matched {
@@ -3061,8 +4543,8 @@ func (i *ComponentsSchemas) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3072,53 +4554,59 @@ func (i *ComponentsSchemas) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsSchemas) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsSchemasAZAZ09Values, i.AdditionalProperties)
-}
-
-// ComponentsResponsesAZAZ09 structure is generated from "#/definitions/Components->responses->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsResponsesAZAZ09 struct {
-	Reference *Reference `json:"-"`
-	Response  *Response  `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsResponsesAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.Response)
-	if err != nil {
-		i.Response = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsResponsesAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.Response)
+func (v ComponentsSchemas) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfSchemaOrRefValues, v.AdditionalProperties)
 }
 
 // ComponentsResponses structure is generated from "#/definitions/Components->responses".
 type ComponentsResponses struct {
-	MapOfComponentsResponsesAZAZ09Values map[string]ComponentsResponsesAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties                 map[string]interface{}               `json:"-"` // All unmatched properties
+	MapOfResponseOrRefValues map[string]ResponseOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties     map[string]interface{}   `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfResponseOrRefValues sets MapOfResponseOrRefValues value.
+func (v *ComponentsResponses) WithMapOfResponseOrRefValues(val map[string]ResponseOrRef) *ComponentsResponses {
+	v.MapOfResponseOrRefValues = val
+	return v
+}
+
+// WithMapOfResponseOrRefValuesItem sets MapOfResponseOrRefValues item value.
+func (v *ComponentsResponses) WithMapOfResponseOrRefValuesItem(key string, val ResponseOrRef) *ComponentsResponses {
+	if v.MapOfResponseOrRefValues == nil {
+		v.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
+	}
+
+	v.MapOfResponseOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsResponses) WithAdditionalProperties(val map[string]interface{}) *ComponentsResponses {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsResponses) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsResponses {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsResponses) UnmarshalJSON(data []byte) error {
+func (v *ComponentsResponses) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -3134,18 +4622,18 @@ func (i *ComponentsResponses) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsResponsesAZAZ09Values == nil {
-				i.MapOfComponentsResponsesAZAZ09Values = make(map[string]ComponentsResponsesAZAZ09, 1)
+			if v.MapOfResponseOrRefValues == nil {
+				v.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
 			}
 
-			var val ComponentsResponsesAZAZ09
+			var val ResponseOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsResponsesAZAZ09Values[key] = val
+			v.MapOfResponseOrRefValues[key] = val
 		}
 
 		if matched {
@@ -3154,8 +4642,8 @@ func (i *ComponentsResponses) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3165,53 +4653,59 @@ func (i *ComponentsResponses) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsResponses) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsResponsesAZAZ09Values, i.AdditionalProperties)
-}
-
-// ComponentsParametersAZAZ09 structure is generated from "#/definitions/Components->parameters->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsParametersAZAZ09 struct {
-	Reference *Reference `json:"-"`
-	Parameter *Parameter `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsParametersAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.Parameter)
-	if err != nil {
-		i.Parameter = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsParametersAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.Parameter)
+func (v ComponentsResponses) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfResponseOrRefValues, v.AdditionalProperties)
 }
 
 // ComponentsParameters structure is generated from "#/definitions/Components->parameters".
 type ComponentsParameters struct {
-	MapOfComponentsParametersAZAZ09Values map[string]ComponentsParametersAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties                  map[string]interface{}                `json:"-"` // All unmatched properties
+	MapOfParameterOrRefValues map[string]ParameterOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties      map[string]interface{}    `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfParameterOrRefValues sets MapOfParameterOrRefValues value.
+func (v *ComponentsParameters) WithMapOfParameterOrRefValues(val map[string]ParameterOrRef) *ComponentsParameters {
+	v.MapOfParameterOrRefValues = val
+	return v
+}
+
+// WithMapOfParameterOrRefValuesItem sets MapOfParameterOrRefValues item value.
+func (v *ComponentsParameters) WithMapOfParameterOrRefValuesItem(key string, val ParameterOrRef) *ComponentsParameters {
+	if v.MapOfParameterOrRefValues == nil {
+		v.MapOfParameterOrRefValues = make(map[string]ParameterOrRef, 1)
+	}
+
+	v.MapOfParameterOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsParameters) WithAdditionalProperties(val map[string]interface{}) *ComponentsParameters {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsParameters) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsParameters {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsParameters) UnmarshalJSON(data []byte) error {
+func (v *ComponentsParameters) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -3227,18 +4721,18 @@ func (i *ComponentsParameters) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsParametersAZAZ09Values == nil {
-				i.MapOfComponentsParametersAZAZ09Values = make(map[string]ComponentsParametersAZAZ09, 1)
+			if v.MapOfParameterOrRefValues == nil {
+				v.MapOfParameterOrRefValues = make(map[string]ParameterOrRef, 1)
 			}
 
-			var val ComponentsParametersAZAZ09
+			var val ParameterOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsParametersAZAZ09Values[key] = val
+			v.MapOfParameterOrRefValues[key] = val
 		}
 
 		if matched {
@@ -3247,8 +4741,8 @@ func (i *ComponentsParameters) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3258,53 +4752,59 @@ func (i *ComponentsParameters) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsParameters) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsParametersAZAZ09Values, i.AdditionalProperties)
-}
-
-// ComponentsExamplesAZAZ09 structure is generated from "#/definitions/Components->examples->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsExamplesAZAZ09 struct {
-	Reference *Reference `json:"-"`
-	Example   *Example   `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsExamplesAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.Example)
-	if err != nil {
-		i.Example = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsExamplesAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.Example)
+func (v ComponentsParameters) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfParameterOrRefValues, v.AdditionalProperties)
 }
 
 // ComponentsExamples structure is generated from "#/definitions/Components->examples".
 type ComponentsExamples struct {
-	MapOfComponentsExamplesAZAZ09Values map[string]ComponentsExamplesAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties                map[string]interface{}              `json:"-"` // All unmatched properties
+	MapOfExampleOrRefValues map[string]ExampleOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties    map[string]interface{}  `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfExampleOrRefValues sets MapOfExampleOrRefValues value.
+func (v *ComponentsExamples) WithMapOfExampleOrRefValues(val map[string]ExampleOrRef) *ComponentsExamples {
+	v.MapOfExampleOrRefValues = val
+	return v
+}
+
+// WithMapOfExampleOrRefValuesItem sets MapOfExampleOrRefValues item value.
+func (v *ComponentsExamples) WithMapOfExampleOrRefValuesItem(key string, val ExampleOrRef) *ComponentsExamples {
+	if v.MapOfExampleOrRefValues == nil {
+		v.MapOfExampleOrRefValues = make(map[string]ExampleOrRef, 1)
+	}
+
+	v.MapOfExampleOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsExamples) WithAdditionalProperties(val map[string]interface{}) *ComponentsExamples {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsExamples) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsExamples {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsExamples) UnmarshalJSON(data []byte) error {
+func (v *ComponentsExamples) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -3320,18 +4820,18 @@ func (i *ComponentsExamples) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsExamplesAZAZ09Values == nil {
-				i.MapOfComponentsExamplesAZAZ09Values = make(map[string]ComponentsExamplesAZAZ09, 1)
+			if v.MapOfExampleOrRefValues == nil {
+				v.MapOfExampleOrRefValues = make(map[string]ExampleOrRef, 1)
 			}
 
-			var val ComponentsExamplesAZAZ09
+			var val ExampleOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsExamplesAZAZ09Values[key] = val
+			v.MapOfExampleOrRefValues[key] = val
 		}
 
 		if matched {
@@ -3340,8 +4840,8 @@ func (i *ComponentsExamples) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3351,53 +4851,59 @@ func (i *ComponentsExamples) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsExamples) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsExamplesAZAZ09Values, i.AdditionalProperties)
-}
-
-// ComponentsRequestBodiesAZAZ09 structure is generated from "#/definitions/Components->requestBodies->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsRequestBodiesAZAZ09 struct {
-	Reference   *Reference   `json:"-"`
-	RequestBody *RequestBody `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsRequestBodiesAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.RequestBody)
-	if err != nil {
-		i.RequestBody = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsRequestBodiesAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.RequestBody)
+func (v ComponentsExamples) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfExampleOrRefValues, v.AdditionalProperties)
 }
 
 // ComponentsRequestBodies structure is generated from "#/definitions/Components->requestBodies".
 type ComponentsRequestBodies struct {
-	MapOfComponentsRequestBodiesAZAZ09Values map[string]ComponentsRequestBodiesAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties                     map[string]interface{}                   `json:"-"` // All unmatched properties
+	MapOfRequestBodyOrRefValues map[string]RequestBodyOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties        map[string]interface{}      `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfRequestBodyOrRefValues sets MapOfRequestBodyOrRefValues value.
+func (v *ComponentsRequestBodies) WithMapOfRequestBodyOrRefValues(val map[string]RequestBodyOrRef) *ComponentsRequestBodies {
+	v.MapOfRequestBodyOrRefValues = val
+	return v
+}
+
+// WithMapOfRequestBodyOrRefValuesItem sets MapOfRequestBodyOrRefValues item value.
+func (v *ComponentsRequestBodies) WithMapOfRequestBodyOrRefValuesItem(key string, val RequestBodyOrRef) *ComponentsRequestBodies {
+	if v.MapOfRequestBodyOrRefValues == nil {
+		v.MapOfRequestBodyOrRefValues = make(map[string]RequestBodyOrRef, 1)
+	}
+
+	v.MapOfRequestBodyOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsRequestBodies) WithAdditionalProperties(val map[string]interface{}) *ComponentsRequestBodies {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsRequestBodies) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsRequestBodies {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
+func (v *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -3413,18 +4919,18 @@ func (i *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsRequestBodiesAZAZ09Values == nil {
-				i.MapOfComponentsRequestBodiesAZAZ09Values = make(map[string]ComponentsRequestBodiesAZAZ09, 1)
+			if v.MapOfRequestBodyOrRefValues == nil {
+				v.MapOfRequestBodyOrRefValues = make(map[string]RequestBodyOrRef, 1)
 			}
 
-			var val ComponentsRequestBodiesAZAZ09
+			var val RequestBodyOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsRequestBodiesAZAZ09Values[key] = val
+			v.MapOfRequestBodyOrRefValues[key] = val
 		}
 
 		if matched {
@@ -3433,8 +4939,8 @@ func (i *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3444,53 +4950,59 @@ func (i *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsRequestBodies) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsRequestBodiesAZAZ09Values, i.AdditionalProperties)
-}
-
-// ComponentsHeadersAZAZ09 structure is generated from "#/definitions/Components->headers->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsHeadersAZAZ09 struct {
-	Reference *Reference `json:"-"`
-	Header    *Header    `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsHeadersAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.Header)
-	if err != nil {
-		i.Header = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsHeadersAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.Header)
+func (v ComponentsRequestBodies) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfRequestBodyOrRefValues, v.AdditionalProperties)
 }
 
 // ComponentsHeaders structure is generated from "#/definitions/Components->headers".
 type ComponentsHeaders struct {
-	MapOfComponentsHeadersAZAZ09Values map[string]ComponentsHeadersAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties               map[string]interface{}             `json:"-"` // All unmatched properties
+	MapOfHeaderOrRefValues map[string]HeaderOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties   map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfHeaderOrRefValues sets MapOfHeaderOrRefValues value.
+func (v *ComponentsHeaders) WithMapOfHeaderOrRefValues(val map[string]HeaderOrRef) *ComponentsHeaders {
+	v.MapOfHeaderOrRefValues = val
+	return v
+}
+
+// WithMapOfHeaderOrRefValuesItem sets MapOfHeaderOrRefValues item value.
+func (v *ComponentsHeaders) WithMapOfHeaderOrRefValuesItem(key string, val HeaderOrRef) *ComponentsHeaders {
+	if v.MapOfHeaderOrRefValues == nil {
+		v.MapOfHeaderOrRefValues = make(map[string]HeaderOrRef, 1)
+	}
+
+	v.MapOfHeaderOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsHeaders) WithAdditionalProperties(val map[string]interface{}) *ComponentsHeaders {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsHeaders) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsHeaders {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsHeaders) UnmarshalJSON(data []byte) error {
+func (v *ComponentsHeaders) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -3506,18 +5018,18 @@ func (i *ComponentsHeaders) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsHeadersAZAZ09Values == nil {
-				i.MapOfComponentsHeadersAZAZ09Values = make(map[string]ComponentsHeadersAZAZ09, 1)
+			if v.MapOfHeaderOrRefValues == nil {
+				v.MapOfHeaderOrRefValues = make(map[string]HeaderOrRef, 1)
 			}
 
-			var val ComponentsHeadersAZAZ09
+			var val HeaderOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsHeadersAZAZ09Values[key] = val
+			v.MapOfHeaderOrRefValues[key] = val
 		}
 
 		if matched {
@@ -3526,8 +5038,8 @@ func (i *ComponentsHeaders) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3537,23 +5049,71 @@ func (i *ComponentsHeaders) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsHeaders) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsHeadersAZAZ09Values, i.AdditionalProperties)
+func (v ComponentsHeaders) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfHeaderOrRefValues, v.AdditionalProperties)
+}
+
+// SecuritySchemeReference structure is generated from "#/definitions/SecuritySchemeReference".
+type SecuritySchemeReference struct {
+	// Format: uri-reference.
+	// Required.
+	Ref string `json:"$ref"`
+}
+
+// WithRef sets Ref value.
+func (v *SecuritySchemeReference) WithRef(val string) *SecuritySchemeReference {
+	v.Ref = val
+	return v
 }
 
 // APIKeySecurityScheme structure is generated from "#/definitions/APIKeySecurityScheme".
 type APIKeySecurityScheme struct {
-	Name          string                 `json:"name,omitempty"`
-	In            APIKeySecuritySchemeIn `json:"in,omitempty"`
-	Description   string                 `json:"description,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	Name          string                 `json:"name"`                  // Required.
+	In            APIKeySecuritySchemeIn `json:"in"`                    // Required.
+	Description   *string                `json:"description,omitempty"`
+	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithName sets Name value.
+func (v *APIKeySecurityScheme) WithName(val string) *APIKeySecurityScheme {
+	v.Name = val
+	return v
+}
+
+// WithIn sets In value.
+func (v *APIKeySecurityScheme) WithIn(val APIKeySecuritySchemeIn) *APIKeySecurityScheme {
+	v.In = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *APIKeySecurityScheme) WithDescription(val string) *APIKeySecurityScheme {
+	v.Description = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *APIKeySecurityScheme) WithMapOfAnything(val map[string]interface{}) *APIKeySecurityScheme {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *APIKeySecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *APIKeySecurityScheme {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalAPIKeySecurityScheme APIKeySecurityScheme
@@ -3566,12 +5126,12 @@ var ignoreKeysAPIKeySecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
+func (v *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalAPIKeySecurityScheme(*i)
+	vv := marshalAPIKeySecurityScheme(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -3599,8 +5159,8 @@ func (i *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3610,7 +5170,7 @@ func (i *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -3618,7 +5178,7 @@ func (i *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = APIKeySecurityScheme(ii)
+	*v = APIKeySecurityScheme(vv)
 
 	return nil
 }
@@ -3629,18 +5189,65 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i APIKeySecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constAPIKeySecurityScheme, marshalAPIKeySecurityScheme(i), i.MapOfAnything)
+func (v APIKeySecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constAPIKeySecurityScheme, marshalAPIKeySecurityScheme(v), v.MapOfAnything)
 }
 
 // HTTPSecurityScheme structure is generated from "#/definitions/HTTPSecurityScheme".
 type HTTPSecurityScheme struct {
-	Scheme        string                    `json:"scheme,omitempty"`
-	BearerFormat  string                    `json:"bearerFormat,omitempty"`
-	Description   string                    `json:"description,omitempty"`
+	Scheme        string                    `json:"scheme"`                 // Required.
+	BearerFormat  *string                   `json:"bearerFormat,omitempty"`
+	Description   *string                   `json:"description,omitempty"`
 	OneOf0        *HTTPSecuritySchemeOneOf0 `json:"-"`
 	OneOf1        *HTTPSecuritySchemeOneOf1 `json:"-"`
-	MapOfAnything map[string]interface{}    `json:"-"`                      // Key must match pattern: ^x-
+	MapOfAnything map[string]interface{}    `json:"-"`                      // Key must match pattern: `^x-`.
+}
+
+// WithScheme sets Scheme value.
+func (v *HTTPSecurityScheme) WithScheme(val string) *HTTPSecurityScheme {
+	v.Scheme = val
+	return v
+}
+
+// WithBearerFormat sets BearerFormat value.
+func (v *HTTPSecurityScheme) WithBearerFormat(val string) *HTTPSecurityScheme {
+	v.BearerFormat = &val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *HTTPSecurityScheme) WithDescription(val string) *HTTPSecurityScheme {
+	v.Description = &val
+	return v
+}
+
+// WithOneOf0 sets OneOf0 value.
+func (v *HTTPSecurityScheme) WithOneOf0(val HTTPSecuritySchemeOneOf0) *HTTPSecurityScheme {
+	v.OneOf0 = &val
+	return v
+}
+
+// WithOneOf1 sets OneOf1 value.
+func (v *HTTPSecurityScheme) WithOneOf1(val HTTPSecuritySchemeOneOf1) *HTTPSecurityScheme {
+	v.OneOf1 = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *HTTPSecurityScheme) WithMapOfAnything(val map[string]interface{}) *HTTPSecurityScheme {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *HTTPSecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *HTTPSecurityScheme {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalHTTPSecurityScheme HTTPSecurityScheme
@@ -3653,24 +5260,24 @@ var ignoreKeysHTTPSecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
+func (v *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalHTTPSecurityScheme(*i)
+	vv := marshalHTTPSecurityScheme(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &ii.OneOf0)
+	err = json.Unmarshal(data, &vv.OneOf0)
 	if err != nil {
-		ii.OneOf0 = nil
+		vv.OneOf0 = nil
 	}
 
-	err = json.Unmarshal(data, &ii.OneOf1)
+	err = json.Unmarshal(data, &vv.OneOf1)
 	if err != nil {
-		ii.OneOf1 = nil
+		vv.OneOf1 = nil
 	}
 
 	var m map[string]json.RawMessage
@@ -3696,8 +5303,8 @@ func (i *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3707,7 +5314,7 @@ func (i *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -3715,7 +5322,7 @@ func (i *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = HTTPSecurityScheme(ii)
+	*v = HTTPSecurityScheme(vv)
 
 	return nil
 }
@@ -3726,19 +5333,38 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constHTTPSecurityScheme, marshalHTTPSecurityScheme(i), i.MapOfAnything, i.OneOf0, i.OneOf1)
+func (v HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constHTTPSecurityScheme, marshalHTTPSecurityScheme(v), v.MapOfAnything, v.OneOf0, v.OneOf1)
 }
 
 // HTTPSecuritySchemeOneOf0 structure is generated from "#/definitions/HTTPSecurityScheme/oneOf/0".
 //
 // Bearer.
+//
+// Bearer.
 type HTTPSecuritySchemeOneOf0 struct {
-	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *HTTPSecuritySchemeOneOf0) WithAdditionalProperties(val map[string]interface{}) *HTTPSecuritySchemeOneOf0 {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *HTTPSecuritySchemeOneOf0) WithAdditionalPropertiesItem(key string, val interface{}) *HTTPSecuritySchemeOneOf0 {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
+func (v *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -3755,8 +5381,8 @@ func (i *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
 	delete(m, "scheme")
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3766,7 +5392,7 @@ func (i *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
@@ -3778,16 +5404,41 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i HTTPSecuritySchemeOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constHTTPSecuritySchemeOneOf0, i.AdditionalProperties)
+func (v HTTPSecuritySchemeOneOf0) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constHTTPSecuritySchemeOneOf0, v.AdditionalProperties)
 }
 
 // HTTPSecuritySchemeOneOf1 structure is generated from "#/definitions/HTTPSecurityScheme/oneOf/1".
 //
 // Non Bearer.
+//
+// Non Bearer.
 type HTTPSecuritySchemeOneOf1 struct {
 	Scheme               *interface{}           `json:"scheme,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"`                // All unmatched properties.
+}
+
+// WithScheme sets Scheme value.
+func (v *HTTPSecuritySchemeOneOf1) WithScheme(val interface{}) *HTTPSecuritySchemeOneOf1 {
+	v.Scheme = &val
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *HTTPSecuritySchemeOneOf1) WithAdditionalProperties(val map[string]interface{}) *HTTPSecuritySchemeOneOf1 {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *HTTPSecuritySchemeOneOf1) WithAdditionalPropertiesItem(key string, val interface{}) *HTTPSecuritySchemeOneOf1 {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 type marshalHTTPSecuritySchemeOneOf1 HTTPSecuritySchemeOneOf1
@@ -3797,12 +5448,12 @@ var ignoreKeysHTTPSecuritySchemeOneOf1 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
+func (v *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalHTTPSecuritySchemeOneOf1(*i)
+	vv := marshalHTTPSecuritySchemeOneOf1(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -3814,10 +5465,10 @@ func (i *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 		m = nil
 	}
 
-	if ii.Scheme == nil {
+	if vv.Scheme == nil {
 		if _, ok := m["scheme"]; ok {
 			var v interface{}
-			ii.Scheme = &v
+			vv.Scheme = &v
 		}
 	}
 
@@ -3826,8 +5477,8 @@ func (i *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -3837,27 +5488,57 @@ func (i *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = HTTPSecuritySchemeOneOf1(ii)
+	*v = HTTPSecuritySchemeOneOf1(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i HTTPSecuritySchemeOneOf1) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalHTTPSecuritySchemeOneOf1(i))
+func (v HTTPSecuritySchemeOneOf1) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalHTTPSecuritySchemeOneOf1(v))
 	}
-	return marshalUnion(marshalHTTPSecuritySchemeOneOf1(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalHTTPSecuritySchemeOneOf1(v), v.AdditionalProperties)
 }
 
 // OAuth2SecurityScheme structure is generated from "#/definitions/OAuth2SecurityScheme".
 type OAuth2SecurityScheme struct {
-	Flows         *OAuthFlows            `json:"flows,omitempty"`
-	Description   string                 `json:"description,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: ^x-
+	Flows         OAuthFlows             `json:"flows"`                 // Required.
+	Description   *string                `json:"description,omitempty"`
+	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithFlows sets Flows value.
+func (v *OAuth2SecurityScheme) WithFlows(val OAuthFlows) *OAuth2SecurityScheme {
+	v.Flows = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *OAuth2SecurityScheme) WithDescription(val string) *OAuth2SecurityScheme {
+	v.Description = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *OAuth2SecurityScheme) WithMapOfAnything(val map[string]interface{}) *OAuth2SecurityScheme {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *OAuth2SecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *OAuth2SecurityScheme {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalOAuth2SecurityScheme OAuth2SecurityScheme
@@ -3869,12 +5550,12 @@ var ignoreKeysOAuth2SecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
+func (v *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalOAuth2SecurityScheme(*i)
+	vv := marshalOAuth2SecurityScheme(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -3902,8 +5583,8 @@ func (i *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3913,7 +5594,7 @@ func (i *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -3921,7 +5602,7 @@ func (i *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = OAuth2SecurityScheme(ii)
+	*v = OAuth2SecurityScheme(vv)
 
 	return nil
 }
@@ -3932,8 +5613,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i OAuth2SecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constOAuth2SecurityScheme, marshalOAuth2SecurityScheme(i), i.MapOfAnything)
+func (v OAuth2SecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constOAuth2SecurityScheme, marshalOAuth2SecurityScheme(v), v.MapOfAnything)
 }
 
 // OAuthFlows structure is generated from "#/definitions/OAuthFlows".
@@ -3942,7 +5623,48 @@ type OAuthFlows struct {
 	Password          *PasswordOAuthFlow          `json:"password,omitempty"`
 	ClientCredentials *ClientCredentialsFlow      `json:"clientCredentials,omitempty"`
 	AuthorizationCode *AuthorizationCodeOAuthFlow `json:"authorizationCode,omitempty"`
-	MapOfAnything     map[string]interface{}      `json:"-"`                           // Key must match pattern: ^x-
+	MapOfAnything     map[string]interface{}      `json:"-"`                           // Key must match pattern: `^x-`.
+}
+
+// WithImplicit sets Implicit value.
+func (v *OAuthFlows) WithImplicit(val ImplicitOAuthFlow) *OAuthFlows {
+	v.Implicit = &val
+	return v
+}
+
+// WithPassword sets Password value.
+func (v *OAuthFlows) WithPassword(val PasswordOAuthFlow) *OAuthFlows {
+	v.Password = &val
+	return v
+}
+
+// WithClientCredentials sets ClientCredentials value.
+func (v *OAuthFlows) WithClientCredentials(val ClientCredentialsFlow) *OAuthFlows {
+	v.ClientCredentials = &val
+	return v
+}
+
+// WithAuthorizationCode sets AuthorizationCode value.
+func (v *OAuthFlows) WithAuthorizationCode(val AuthorizationCodeOAuthFlow) *OAuthFlows {
+	v.AuthorizationCode = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *OAuthFlows) WithMapOfAnything(val map[string]interface{}) *OAuthFlows {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *OAuthFlows) WithMapOfAnythingItem(key string, val interface{}) *OAuthFlows {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalOAuthFlows OAuthFlows
@@ -3955,12 +5677,12 @@ var ignoreKeysOAuthFlows = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *OAuthFlows) UnmarshalJSON(data []byte) error {
+func (v *OAuthFlows) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalOAuthFlows(*i)
+	vv := marshalOAuthFlows(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -3982,8 +5704,8 @@ func (i *OAuthFlows) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3993,7 +5715,7 @@ func (i *OAuthFlows) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -4001,22 +5723,70 @@ func (i *OAuthFlows) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = OAuthFlows(ii)
+	*v = OAuthFlows(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i OAuthFlows) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOAuthFlows(i), i.MapOfAnything)
+func (v OAuthFlows) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOAuthFlows(v), v.MapOfAnything)
 }
 
 // ImplicitOAuthFlow structure is generated from "#/definitions/ImplicitOAuthFlow".
 type ImplicitOAuthFlow struct {
-	AuthorizationURL string                 `json:"authorizationUrl,omitempty"`
-	RefreshURL       string                 `json:"refreshUrl,omitempty"`
-	Scopes           map[string]string      `json:"scopes,omitempty"`
-	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
+	// Format: uri-reference.
+	// Required.
+	AuthorizationURL string                 `json:"authorizationUrl"`
+	RefreshURL       *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
+	Scopes           map[string]string      `json:"scopes"`               // Required.
+	MapOfAnything    map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
+}
+
+// WithAuthorizationURL sets AuthorizationURL value.
+func (v *ImplicitOAuthFlow) WithAuthorizationURL(val string) *ImplicitOAuthFlow {
+	v.AuthorizationURL = val
+	return v
+}
+
+// WithRefreshURL sets RefreshURL value.
+func (v *ImplicitOAuthFlow) WithRefreshURL(val string) *ImplicitOAuthFlow {
+	v.RefreshURL = &val
+	return v
+}
+
+// WithScopes sets Scopes value.
+func (v *ImplicitOAuthFlow) WithScopes(val map[string]string) *ImplicitOAuthFlow {
+	v.Scopes = val
+	return v
+}
+
+// WithScopesItem sets Scopes item value.
+func (v *ImplicitOAuthFlow) WithScopesItem(key string, val string) *ImplicitOAuthFlow {
+	if v.Scopes == nil {
+		v.Scopes = make(map[string]string, 1)
+	}
+
+	v.Scopes[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *ImplicitOAuthFlow) WithMapOfAnything(val map[string]interface{}) *ImplicitOAuthFlow {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *ImplicitOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *ImplicitOAuthFlow {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalImplicitOAuthFlow ImplicitOAuthFlow
@@ -4028,12 +5798,12 @@ var ignoreKeysImplicitOAuthFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
+func (v *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalImplicitOAuthFlow(*i)
+	vv := marshalImplicitOAuthFlow(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -4055,8 +5825,8 @@ func (i *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4066,7 +5836,7 @@ func (i *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -4074,22 +5844,70 @@ func (i *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = ImplicitOAuthFlow(ii)
+	*v = ImplicitOAuthFlow(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ImplicitOAuthFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalImplicitOAuthFlow(i), i.MapOfAnything)
+func (v ImplicitOAuthFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalImplicitOAuthFlow(v), v.MapOfAnything)
 }
 
 // PasswordOAuthFlow structure is generated from "#/definitions/PasswordOAuthFlow".
 type PasswordOAuthFlow struct {
-	TokenURL      string                 `json:"tokenUrl,omitempty"`
-	RefreshURL    string                 `json:"refreshUrl,omitempty"`
+	// Format: uri-reference.
+	// Required.
+	TokenURL      string                 `json:"tokenUrl"`
+	RefreshURL    *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
 	Scopes        map[string]string      `json:"scopes,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                    // Key must match pattern: ^x-
+	MapOfAnything map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
+}
+
+// WithTokenURL sets TokenURL value.
+func (v *PasswordOAuthFlow) WithTokenURL(val string) *PasswordOAuthFlow {
+	v.TokenURL = val
+	return v
+}
+
+// WithRefreshURL sets RefreshURL value.
+func (v *PasswordOAuthFlow) WithRefreshURL(val string) *PasswordOAuthFlow {
+	v.RefreshURL = &val
+	return v
+}
+
+// WithScopes sets Scopes value.
+func (v *PasswordOAuthFlow) WithScopes(val map[string]string) *PasswordOAuthFlow {
+	v.Scopes = val
+	return v
+}
+
+// WithScopesItem sets Scopes item value.
+func (v *PasswordOAuthFlow) WithScopesItem(key string, val string) *PasswordOAuthFlow {
+	if v.Scopes == nil {
+		v.Scopes = make(map[string]string, 1)
+	}
+
+	v.Scopes[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *PasswordOAuthFlow) WithMapOfAnything(val map[string]interface{}) *PasswordOAuthFlow {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *PasswordOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *PasswordOAuthFlow {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalPasswordOAuthFlow PasswordOAuthFlow
@@ -4101,12 +5919,12 @@ var ignoreKeysPasswordOAuthFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
+func (v *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalPasswordOAuthFlow(*i)
+	vv := marshalPasswordOAuthFlow(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -4128,8 +5946,8 @@ func (i *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4139,7 +5957,7 @@ func (i *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -4147,22 +5965,70 @@ func (i *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = PasswordOAuthFlow(ii)
+	*v = PasswordOAuthFlow(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i PasswordOAuthFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPasswordOAuthFlow(i), i.MapOfAnything)
+func (v PasswordOAuthFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalPasswordOAuthFlow(v), v.MapOfAnything)
 }
 
 // ClientCredentialsFlow structure is generated from "#/definitions/ClientCredentialsFlow".
 type ClientCredentialsFlow struct {
-	TokenURL      string                 `json:"tokenUrl,omitempty"`
-	RefreshURL    string                 `json:"refreshUrl,omitempty"`
+	// Format: uri-reference.
+	// Required.
+	TokenURL      string                 `json:"tokenUrl"`
+	RefreshURL    *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
 	Scopes        map[string]string      `json:"scopes,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                    // Key must match pattern: ^x-
+	MapOfAnything map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
+}
+
+// WithTokenURL sets TokenURL value.
+func (v *ClientCredentialsFlow) WithTokenURL(val string) *ClientCredentialsFlow {
+	v.TokenURL = val
+	return v
+}
+
+// WithRefreshURL sets RefreshURL value.
+func (v *ClientCredentialsFlow) WithRefreshURL(val string) *ClientCredentialsFlow {
+	v.RefreshURL = &val
+	return v
+}
+
+// WithScopes sets Scopes value.
+func (v *ClientCredentialsFlow) WithScopes(val map[string]string) *ClientCredentialsFlow {
+	v.Scopes = val
+	return v
+}
+
+// WithScopesItem sets Scopes item value.
+func (v *ClientCredentialsFlow) WithScopesItem(key string, val string) *ClientCredentialsFlow {
+	if v.Scopes == nil {
+		v.Scopes = make(map[string]string, 1)
+	}
+
+	v.Scopes[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *ClientCredentialsFlow) WithMapOfAnything(val map[string]interface{}) *ClientCredentialsFlow {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *ClientCredentialsFlow) WithMapOfAnythingItem(key string, val interface{}) *ClientCredentialsFlow {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalClientCredentialsFlow ClientCredentialsFlow
@@ -4174,12 +6040,12 @@ var ignoreKeysClientCredentialsFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
+func (v *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalClientCredentialsFlow(*i)
+	vv := marshalClientCredentialsFlow(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -4201,8 +6067,8 @@ func (i *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4212,7 +6078,7 @@ func (i *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -4220,23 +6086,79 @@ func (i *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = ClientCredentialsFlow(ii)
+	*v = ClientCredentialsFlow(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ClientCredentialsFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalClientCredentialsFlow(i), i.MapOfAnything)
+func (v ClientCredentialsFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalClientCredentialsFlow(v), v.MapOfAnything)
 }
 
 // AuthorizationCodeOAuthFlow structure is generated from "#/definitions/AuthorizationCodeOAuthFlow".
 type AuthorizationCodeOAuthFlow struct {
-	AuthorizationURL string                 `json:"authorizationUrl,omitempty"`
-	TokenURL         string                 `json:"tokenUrl,omitempty"`
-	RefreshURL       string                 `json:"refreshUrl,omitempty"`
+	// Format: uri-reference.
+	// Required.
+	AuthorizationURL string                 `json:"authorizationUrl"`
+	// Format: uri-reference.
+	// Required.
+	TokenURL         string                 `json:"tokenUrl"`
+	RefreshURL       *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
 	Scopes           map[string]string      `json:"scopes,omitempty"`
-	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
+	MapOfAnything    map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
+}
+
+// WithAuthorizationURL sets AuthorizationURL value.
+func (v *AuthorizationCodeOAuthFlow) WithAuthorizationURL(val string) *AuthorizationCodeOAuthFlow {
+	v.AuthorizationURL = val
+	return v
+}
+
+// WithTokenURL sets TokenURL value.
+func (v *AuthorizationCodeOAuthFlow) WithTokenURL(val string) *AuthorizationCodeOAuthFlow {
+	v.TokenURL = val
+	return v
+}
+
+// WithRefreshURL sets RefreshURL value.
+func (v *AuthorizationCodeOAuthFlow) WithRefreshURL(val string) *AuthorizationCodeOAuthFlow {
+	v.RefreshURL = &val
+	return v
+}
+
+// WithScopes sets Scopes value.
+func (v *AuthorizationCodeOAuthFlow) WithScopes(val map[string]string) *AuthorizationCodeOAuthFlow {
+	v.Scopes = val
+	return v
+}
+
+// WithScopesItem sets Scopes item value.
+func (v *AuthorizationCodeOAuthFlow) WithScopesItem(key string, val string) *AuthorizationCodeOAuthFlow {
+	if v.Scopes == nil {
+		v.Scopes = make(map[string]string, 1)
+	}
+
+	v.Scopes[key] = val
+
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *AuthorizationCodeOAuthFlow) WithMapOfAnything(val map[string]interface{}) *AuthorizationCodeOAuthFlow {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *AuthorizationCodeOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *AuthorizationCodeOAuthFlow {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalAuthorizationCodeOAuthFlow AuthorizationCodeOAuthFlow
@@ -4249,12 +6171,12 @@ var ignoreKeysAuthorizationCodeOAuthFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
+func (v *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalAuthorizationCodeOAuthFlow(*i)
+	vv := marshalAuthorizationCodeOAuthFlow(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -4276,8 +6198,8 @@ func (i *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4287,7 +6209,7 @@ func (i *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -4295,21 +6217,52 @@ func (i *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = AuthorizationCodeOAuthFlow(ii)
+	*v = AuthorizationCodeOAuthFlow(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i AuthorizationCodeOAuthFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAuthorizationCodeOAuthFlow(i), i.MapOfAnything)
+func (v AuthorizationCodeOAuthFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAuthorizationCodeOAuthFlow(v), v.MapOfAnything)
 }
 
 // OpenIDConnectSecurityScheme structure is generated from "#/definitions/OpenIdConnectSecurityScheme".
 type OpenIDConnectSecurityScheme struct {
-	OpenIDConnectURL string                 `json:"openIdConnectUrl,omitempty"`
-	Description      string                 `json:"description,omitempty"`
-	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: ^x-
+	// Format: uri-reference.
+	// Required.
+	OpenIDConnectURL string                 `json:"openIdConnectUrl"`
+	Description      *string                `json:"description,omitempty"`
+	MapOfAnything    map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+}
+
+// WithOpenIDConnectURL sets OpenIDConnectURL value.
+func (v *OpenIDConnectSecurityScheme) WithOpenIDConnectURL(val string) *OpenIDConnectSecurityScheme {
+	v.OpenIDConnectURL = val
+	return v
+}
+
+// WithDescription sets Description value.
+func (v *OpenIDConnectSecurityScheme) WithDescription(val string) *OpenIDConnectSecurityScheme {
+	v.Description = &val
+	return v
+}
+
+// WithMapOfAnything sets MapOfAnything value.
+func (v *OpenIDConnectSecurityScheme) WithMapOfAnything(val map[string]interface{}) *OpenIDConnectSecurityScheme {
+	v.MapOfAnything = val
+	return v
+}
+
+// WithMapOfAnythingItem sets MapOfAnything item value.
+func (v *OpenIDConnectSecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *OpenIDConnectSecurityScheme {
+	if v.MapOfAnything == nil {
+		v.MapOfAnything = make(map[string]interface{}, 1)
+	}
+
+	v.MapOfAnything[key] = val
+
+	return v
 }
 
 type marshalOpenIDConnectSecurityScheme OpenIDConnectSecurityScheme
@@ -4321,12 +6274,12 @@ var ignoreKeysOpenIDConnectSecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
+func (v *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalOpenIDConnectSecurityScheme(*i)
+	vv := marshalOpenIDConnectSecurityScheme(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -4354,8 +6307,8 @@ func (i *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4365,7 +6318,7 @@ func (i *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -4373,7 +6326,7 @@ func (i *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	*i = OpenIDConnectSecurityScheme(ii)
+	*v = OpenIDConnectSecurityScheme(vv)
 
 	return nil
 }
@@ -4384,8 +6337,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i OpenIDConnectSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constOpenIDConnectSecurityScheme, marshalOpenIDConnectSecurityScheme(i), i.MapOfAnything)
+func (v OpenIDConnectSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constOpenIDConnectSecurityScheme, marshalOpenIDConnectSecurityScheme(v), v.MapOfAnything)
 }
 
 // SecurityScheme structure is generated from "#/definitions/SecurityScheme".
@@ -4396,74 +6349,144 @@ type SecurityScheme struct {
 	OpenIDConnectSecurityScheme *OpenIDConnectSecurityScheme `json:"-"`
 }
 
+// WithAPIKeySecurityScheme sets APIKeySecurityScheme value.
+func (v *SecurityScheme) WithAPIKeySecurityScheme(val APIKeySecurityScheme) *SecurityScheme {
+	v.APIKeySecurityScheme = &val
+	return v
+}
+
+// WithHTTPSecurityScheme sets HTTPSecurityScheme value.
+func (v *SecurityScheme) WithHTTPSecurityScheme(val HTTPSecurityScheme) *SecurityScheme {
+	v.HTTPSecurityScheme = &val
+	return v
+}
+
+// WithOAuth2SecurityScheme sets OAuth2SecurityScheme value.
+func (v *SecurityScheme) WithOAuth2SecurityScheme(val OAuth2SecurityScheme) *SecurityScheme {
+	v.OAuth2SecurityScheme = &val
+	return v
+}
+
+// WithOpenIDConnectSecurityScheme sets OpenIDConnectSecurityScheme value.
+func (v *SecurityScheme) WithOpenIDConnectSecurityScheme(val OpenIDConnectSecurityScheme) *SecurityScheme {
+	v.OpenIDConnectSecurityScheme = &val
+	return v
+}
+
 // UnmarshalJSON decodes JSON.
-func (i *SecurityScheme) UnmarshalJSON(data []byte) error {
+func (v *SecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.APIKeySecurityScheme)
+	err = json.Unmarshal(data, &v.APIKeySecurityScheme)
 	if err != nil {
-		i.APIKeySecurityScheme = nil
+		v.APIKeySecurityScheme = nil
 	}
 
-	err = json.Unmarshal(data, &i.HTTPSecurityScheme)
+	err = json.Unmarshal(data, &v.HTTPSecurityScheme)
 	if err != nil {
-		i.HTTPSecurityScheme = nil
+		v.HTTPSecurityScheme = nil
 	}
 
-	err = json.Unmarshal(data, &i.OAuth2SecurityScheme)
+	err = json.Unmarshal(data, &v.OAuth2SecurityScheme)
 	if err != nil {
-		i.OAuth2SecurityScheme = nil
+		v.OAuth2SecurityScheme = nil
 	}
 
-	err = json.Unmarshal(data, &i.OpenIDConnectSecurityScheme)
+	err = json.Unmarshal(data, &v.OpenIDConnectSecurityScheme)
 	if err != nil {
-		i.OpenIDConnectSecurityScheme = nil
+		v.OpenIDConnectSecurityScheme = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i SecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.APIKeySecurityScheme, i.HTTPSecurityScheme, i.OAuth2SecurityScheme, i.OpenIDConnectSecurityScheme)
+func (v SecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.APIKeySecurityScheme, v.HTTPSecurityScheme, v.OAuth2SecurityScheme, v.OpenIDConnectSecurityScheme)
 }
 
-// ComponentsSecuritySchemesAZAZ09 structure is generated from "#/definitions/Components->securitySchemes->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsSecuritySchemesAZAZ09 struct {
-	Reference      *Reference      `json:"-"`
-	SecurityScheme *SecurityScheme `json:"-"`
+// SecuritySchemeOrRef structure is generated from "#/definitions/SecuritySchemeOrRef".
+type SecuritySchemeOrRef struct {
+	SecuritySchemeReference *SecuritySchemeReference `json:"-"`
+	SecurityScheme          *SecurityScheme          `json:"-"`
+}
+
+// WithSecuritySchemeReference sets SecuritySchemeReference value.
+func (v *SecuritySchemeOrRef) WithSecuritySchemeReference(val SecuritySchemeReference) *SecuritySchemeOrRef {
+	v.SecuritySchemeReference = &val
+	return v
+}
+
+// WithSecurityScheme sets SecurityScheme value.
+func (v *SecuritySchemeOrRef) WithSecurityScheme(val SecurityScheme) *SecuritySchemeOrRef {
+	v.SecurityScheme = &val
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsSecuritySchemesAZAZ09) UnmarshalJSON(data []byte) error {
+func (v *SecuritySchemeOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.SecuritySchemeReference)
 	if err != nil {
-		i.Reference = nil
+		v.SecuritySchemeReference = nil
 	}
 
-	err = json.Unmarshal(data, &i.SecurityScheme)
+	err = json.Unmarshal(data, &v.SecurityScheme)
 	if err != nil {
-		i.SecurityScheme = nil
+		v.SecurityScheme = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsSecuritySchemesAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.SecurityScheme)
+func (v SecuritySchemeOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.SecuritySchemeReference, v.SecurityScheme)
 }
 
 // ComponentsSecuritySchemes structure is generated from "#/definitions/Components->securitySchemes".
 type ComponentsSecuritySchemes struct {
-	MapOfComponentsSecuritySchemesAZAZ09Values map[string]ComponentsSecuritySchemesAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties                       map[string]interface{}                     `json:"-"` // All unmatched properties
+	MapOfSecuritySchemeOrRefValues map[string]SecuritySchemeOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties           map[string]interface{}         `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfSecuritySchemeOrRefValues sets MapOfSecuritySchemeOrRefValues value.
+func (v *ComponentsSecuritySchemes) WithMapOfSecuritySchemeOrRefValues(val map[string]SecuritySchemeOrRef) *ComponentsSecuritySchemes {
+	v.MapOfSecuritySchemeOrRefValues = val
+	return v
+}
+
+// WithMapOfSecuritySchemeOrRefValuesItem sets MapOfSecuritySchemeOrRefValues item value.
+func (v *ComponentsSecuritySchemes) WithMapOfSecuritySchemeOrRefValuesItem(key string, val SecuritySchemeOrRef) *ComponentsSecuritySchemes {
+	if v.MapOfSecuritySchemeOrRefValues == nil {
+		v.MapOfSecuritySchemeOrRefValues = make(map[string]SecuritySchemeOrRef, 1)
+	}
+
+	v.MapOfSecuritySchemeOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsSecuritySchemes) WithAdditionalProperties(val map[string]interface{}) *ComponentsSecuritySchemes {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsSecuritySchemes) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsSecuritySchemes {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
+func (v *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -4479,18 +6502,18 @@ func (i *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsSecuritySchemesAZAZ09Values == nil {
-				i.MapOfComponentsSecuritySchemesAZAZ09Values = make(map[string]ComponentsSecuritySchemesAZAZ09, 1)
+			if v.MapOfSecuritySchemeOrRefValues == nil {
+				v.MapOfSecuritySchemeOrRefValues = make(map[string]SecuritySchemeOrRef, 1)
 			}
 
-			var val ComponentsSecuritySchemesAZAZ09
+			var val SecuritySchemeOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsSecuritySchemesAZAZ09Values[key] = val
+			v.MapOfSecuritySchemeOrRefValues[key] = val
 		}
 
 		if matched {
@@ -4499,8 +6522,8 @@ func (i *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4510,53 +6533,59 @@ func (i *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsSecuritySchemesAZAZ09Values, i.AdditionalProperties)
-}
-
-// ComponentsLinksAZAZ09 structure is generated from "#/definitions/Components->links->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsLinksAZAZ09 struct {
-	Reference *Reference `json:"-"`
-	Link      *Link      `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsLinksAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.Link)
-	if err != nil {
-		i.Link = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsLinksAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.Link)
+func (v ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfSecuritySchemeOrRefValues, v.AdditionalProperties)
 }
 
 // ComponentsLinks structure is generated from "#/definitions/Components->links".
 type ComponentsLinks struct {
-	MapOfComponentsLinksAZAZ09Values map[string]ComponentsLinksAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties             map[string]interface{}           `json:"-"` // All unmatched properties
+	MapOfLinkOrRefValues map[string]LinkOrRef   `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfLinkOrRefValues sets MapOfLinkOrRefValues value.
+func (v *ComponentsLinks) WithMapOfLinkOrRefValues(val map[string]LinkOrRef) *ComponentsLinks {
+	v.MapOfLinkOrRefValues = val
+	return v
+}
+
+// WithMapOfLinkOrRefValuesItem sets MapOfLinkOrRefValues item value.
+func (v *ComponentsLinks) WithMapOfLinkOrRefValuesItem(key string, val LinkOrRef) *ComponentsLinks {
+	if v.MapOfLinkOrRefValues == nil {
+		v.MapOfLinkOrRefValues = make(map[string]LinkOrRef, 1)
+	}
+
+	v.MapOfLinkOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsLinks) WithAdditionalProperties(val map[string]interface{}) *ComponentsLinks {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsLinks) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsLinks {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsLinks) UnmarshalJSON(data []byte) error {
+func (v *ComponentsLinks) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -4572,18 +6601,18 @@ func (i *ComponentsLinks) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsLinksAZAZ09Values == nil {
-				i.MapOfComponentsLinksAZAZ09Values = make(map[string]ComponentsLinksAZAZ09, 1)
+			if v.MapOfLinkOrRefValues == nil {
+				v.MapOfLinkOrRefValues = make(map[string]LinkOrRef, 1)
 			}
 
-			var val ComponentsLinksAZAZ09
+			var val LinkOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsLinksAZAZ09Values[key] = val
+			v.MapOfLinkOrRefValues[key] = val
 		}
 
 		if matched {
@@ -4592,8 +6621,8 @@ func (i *ComponentsLinks) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4603,53 +6632,59 @@ func (i *ComponentsLinks) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsLinks) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsLinksAZAZ09Values, i.AdditionalProperties)
-}
-
-// ComponentsCallbacksAZAZ09 structure is generated from "#/definitions/Components->callbacks->^[a-zA-Z0-9\.\-_]+$".
-type ComponentsCallbacksAZAZ09 struct {
-	Reference *Reference `json:"-"`
-	Callback  *Callback  `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (i *ComponentsCallbacksAZAZ09) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &i.Reference)
-	if err != nil {
-		i.Reference = nil
-	}
-
-	err = json.Unmarshal(data, &i.Callback)
-	if err != nil {
-		i.Callback = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (i ComponentsCallbacksAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.Callback)
+func (v ComponentsLinks) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfLinkOrRefValues, v.AdditionalProperties)
 }
 
 // ComponentsCallbacks structure is generated from "#/definitions/Components->callbacks".
 type ComponentsCallbacks struct {
-	MapOfComponentsCallbacksAZAZ09Values map[string]ComponentsCallbacksAZAZ09 `json:"-"` // Key must match pattern: ^[a-zA-Z0-9\.\-_]+$
-	AdditionalProperties                 map[string]interface{}               `json:"-"` // All unmatched properties
+	MapOfCallbackOrRefValues map[string]CallbackOrRef `json:"-"` // Key must match pattern: `^[a-zA-Z0-9\.\-_]+$`.
+	AdditionalProperties     map[string]interface{}   `json:"-"` // All unmatched properties.
+}
+
+// WithMapOfCallbackOrRefValues sets MapOfCallbackOrRefValues value.
+func (v *ComponentsCallbacks) WithMapOfCallbackOrRefValues(val map[string]CallbackOrRef) *ComponentsCallbacks {
+	v.MapOfCallbackOrRefValues = val
+	return v
+}
+
+// WithMapOfCallbackOrRefValuesItem sets MapOfCallbackOrRefValues item value.
+func (v *ComponentsCallbacks) WithMapOfCallbackOrRefValuesItem(key string, val CallbackOrRef) *ComponentsCallbacks {
+	if v.MapOfCallbackOrRefValues == nil {
+		v.MapOfCallbackOrRefValues = make(map[string]CallbackOrRef, 1)
+	}
+
+	v.MapOfCallbackOrRefValues[key] = val
+
+	return v
+}
+
+// WithAdditionalProperties sets AdditionalProperties value.
+func (v *ComponentsCallbacks) WithAdditionalProperties(val map[string]interface{}) *ComponentsCallbacks {
+	v.AdditionalProperties = val
+	return v
+}
+
+// WithAdditionalPropertiesItem sets AdditionalProperties item value.
+func (v *ComponentsCallbacks) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsCallbacks {
+	if v.AdditionalProperties == nil {
+		v.AdditionalProperties = make(map[string]interface{}, 1)
+	}
+
+	v.AdditionalProperties[key] = val
+
+	return v
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
+func (v *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
 	var err error
 
 	var m map[string]json.RawMessage
@@ -4665,18 +6700,18 @@ func (i *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if i.MapOfComponentsCallbacksAZAZ09Values == nil {
-				i.MapOfComponentsCallbacksAZAZ09Values = make(map[string]ComponentsCallbacksAZAZ09, 1)
+			if v.MapOfCallbackOrRefValues == nil {
+				v.MapOfCallbackOrRefValues = make(map[string]CallbackOrRef, 1)
 			}
 
-			var val ComponentsCallbacksAZAZ09
+			var val CallbackOrRef
 
 			err = json.Unmarshal(rawValue, &val)
 			if err != nil {
 				return err
 			}
 
-			i.MapOfComponentsCallbacksAZAZ09Values[key] = val
+			v.MapOfCallbackOrRefValues[key] = val
 		}
 
 		if matched {
@@ -4685,8 +6720,8 @@ func (i *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if i.AdditionalProperties == nil {
-			i.AdditionalProperties = make(map[string]interface{}, 1)
+		if v.AdditionalProperties == nil {
+			v.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4696,15 +6731,67 @@ func (i *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		i.AdditionalProperties[key] = val
+		v.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i ComponentsCallbacks) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.MapOfComponentsCallbacksAZAZ09Values, i.AdditionalProperties)
+func (v ComponentsCallbacks) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.MapOfCallbackOrRefValues, v.AdditionalProperties)
+}
+
+// ParameterIn is an enum type.
+type ParameterIn string
+
+// ParameterIn values enumeration.
+const (
+	ParameterInPath = ParameterIn("path")
+	ParameterInQuery = ParameterIn("query")
+	ParameterInHeader = ParameterIn("header")
+	ParameterInCookie = ParameterIn("cookie")
+)
+
+// MarshalJSON encodes JSON.
+func (i ParameterIn) MarshalJSON() ([]byte, error) {
+	switch i {
+	case ParameterInPath:
+	case ParameterInQuery:
+	case ParameterInHeader:
+	case ParameterInCookie:
+
+	default:
+		return nil, fmt.Errorf("unexpected ParameterIn value: %v", i)
+	}
+
+	return json.Marshal(string(i))
+}
+
+// UnmarshalJSON decodes JSON.
+func (i *ParameterIn) UnmarshalJSON(data []byte) error {
+	var ii string
+
+	err := json.Unmarshal(data, &ii)
+	if err != nil {
+		return err
+	}
+
+	v := ParameterIn(ii)
+
+	switch v {
+	case ParameterInPath:
+	case ParameterInQuery:
+	case ParameterInHeader:
+	case ParameterInCookie:
+
+	default:
+		return fmt.Errorf("unexpected ParameterIn value: %v", v)
+	}
+
+	*i = v
+
+	return nil
 }
 
 // SchemaType is an enum type.
@@ -5019,7 +7106,6 @@ func marshalUnion(maps ...interface{}) ([]byte, error) {
 var (
 	regexX = regexp.MustCompile("^x-")
 	regexGetPutPostDeleteOptionsHeadPatchTrace = regexp.MustCompile("^(get|put|post|delete|options|head|patch|trace)$")
-	regexRef = regexp.MustCompile(`^\$ref$`)
 	regex15D2XX = regexp.MustCompile(`^[1-5](?:\d{2}|XX)$`)
 	regex = regexp.MustCompile(`^\/`)
 	regexAZAZ09 = regexp.MustCompile(`^[a-zA-Z0-9\.\-_]+$`)

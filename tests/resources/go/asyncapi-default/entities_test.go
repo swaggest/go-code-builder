@@ -12,6 +12,10 @@ import (
 func Test_MarshalUnmarshal(t *testing.T) {
 	entity := AsyncAPI{
 		Asyncapi: AsyncAPIAsyncapi120,
+		Info: Info{
+			Title:   "Foo",
+			Version: "v1",
+		},
 		Components: &Components{
 			SecuritySchemes: &ComponentsSecuritySchemes{
 				MapOfComponentsSecuritySchemesAZAZ09Values: map[string]ComponentsSecuritySchemesAZAZ09{
@@ -35,6 +39,10 @@ func Test_MarshalUnmarshal(t *testing.T) {
 	assertjson.Equal(t,
 		[]byte(`{
   "asyncapi": "1.2.0",
+  "info": {
+    "title": "Foo",
+    "version": "v1"
+  },
   "components": {
     "securitySchemes": {
       "foo": {

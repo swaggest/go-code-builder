@@ -69,7 +69,8 @@
     },
     "ReferenceObject": {
       "type": "string",
-      "format": "uri-reference"
+      "format": "uri-reference",
+      "x-omitempty": true
     },
     "info": {
       "type": "object",
@@ -621,7 +622,8 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/definitions/message"
-                  }
+                  },
+                  "x-omitempty": true
                 }
               }
             },

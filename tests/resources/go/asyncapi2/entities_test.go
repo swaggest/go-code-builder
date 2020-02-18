@@ -13,6 +13,7 @@ import (
 
 func TestInfo_MarshalJSON(t *testing.T) {
 	i := Info{
+		Title:   "Foo",
 		Version: "v1",
 		MapOfAnything: map[string]interface{}{
 			"x-two": "two",
@@ -22,17 +23,18 @@ func TestInfo_MarshalJSON(t *testing.T) {
 
 	res, err := json.Marshal(i)
 	require.NoError(t, err)
-	assert.Equal(t, `{"version":"v1","x-one":1,"x-two":"two"}`, string(res))
+	assert.Equal(t, `{"title":"Foo","version":"v1","x-one":1,"x-two":"two"}`, string(res))
 }
 
 func TestInfo_MarshalJSON_Nil(t *testing.T) {
 	i := Info{
+		Title:   "Foo",
 		Version: "v1",
 	}
 
 	res, err := json.Marshal(i)
 	require.NoError(t, err)
-	assert.Equal(t, `{"version":"v1"}`, string(res))
+	assert.Equal(t, `{"title":"Foo","version":"v1"}`, string(res))
 }
 
 func TestAsyncAPI_MarshalJSON(t *testing.T) {

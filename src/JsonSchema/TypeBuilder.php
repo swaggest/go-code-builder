@@ -52,18 +52,24 @@ class TypeBuilder
     /** @var StructDef|null parent structure if available */
     private $parentStruct;
 
+    /** @var bool indicates type of required property */
+    private $isRequired = false;
+
     /**
      * TypeBuilder constructor.
      * @param Schema $schema
      * @param string $path
      * @param GoBuilder $goBuilder
+     * @param StructDef|null $parentStruct
+     * @param bool $isRequired
      */
-    public function __construct(Schema $schema, $path, GoBuilder $goBuilder, StructDef $parentStruct = null)
+    public function __construct(Schema $schema, $path, GoBuilder $goBuilder, StructDef $parentStruct = null, $isRequired = false)
     {
         $this->schema = $schema;
         $this->path = $path;
         $this->goBuilder = $goBuilder;
         $this->parentStruct = $parentStruct;
+        $this->isRequired = $isRequired;
     }
 
     private function makeName(AnyType $type)
@@ -272,7 +278,7 @@ class TypeBuilder
                     )
                 );
                 $structProperty->getTags()->setTag('json', '-');
-                $structProperty->setComment('Key must match pattern: ' . $pattern);
+                $structProperty->setComment('Key must match pattern: `' . $pattern . '`.');
 
                 $resultStruct = $this->makeResultStruct();
                 $resultStruct->addProperty($structProperty);
@@ -335,7 +341,7 @@ class TypeBuilder
                         $propName,
                         new Map(new GoType("string"), $goType)
                     );
-                    $structProperty->setComment('All unmatched properties');
+                    $structProperty->setComment('All unmatched properties.');
                     $structProperty->getTags()->setTag('json', '-');
                     $resultStruct->addProperty($structProperty);
 
@@ -751,6 +757,7 @@ GO
                     (!$type instanceof Pointer) &&
                     (!$type instanceof Map) &&
                     (!$type instanceof Slice) &&
+                    (!$this->isRequired) &&
                     ($type->getTypeString() !== 'interface{}')
                 ) {
                     $type = new Pointer($type);
