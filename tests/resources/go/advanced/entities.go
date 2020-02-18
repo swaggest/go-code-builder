@@ -28,8 +28,8 @@ type Properties struct {
 	Type                 *ShortStr              `json:"type,omitempty"`
 	UserID               *ShortStr              `json:"user-id,omitempty"`
 	AppID                *ShortStr              `json:"app-id,omitempty"`
-	MapOfAnything        map[string]interface{} `json:"-"`                            // Key must match pattern: ^x-
-	AdditionalProperties map[string]Property    `json:"-"`                            // All unmatched properties
+	MapOfAnything        map[string]interface{} `json:"-"`                            // Key must match pattern: `^x-`.
+	AdditionalProperties map[string]Property    `json:"-"`                            // All unmatched properties.
 }
 
 type marshalProperties Properties
@@ -55,12 +55,12 @@ var ignoreKeysProperties = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Properties) UnmarshalJSON(data []byte) error {
+func (v *Properties) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalProperties(*i)
+	vv := marshalProperties(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -82,8 +82,8 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 		if regexX.MatchString(key) {
 			matched = true
 
-			if ii.MapOfAnything == nil {
-				ii.MapOfAnything = make(map[string]interface{}, 1)
+			if vv.MapOfAnything == nil {
+				vv.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -93,7 +93,7 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			ii.MapOfAnything[key] = val
+			vv.MapOfAnything[key] = val
 		}
 
 		if matched {
@@ -102,8 +102,8 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]Property, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]Property, 1)
 		}
 
 		var val Property
@@ -113,23 +113,25 @@ func (i *Properties) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = Properties(ii)
+	*v = Properties(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Properties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalProperties(i), i.MapOfAnything, i.AdditionalProperties)
+func (v Properties) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalProperties(v), v.MapOfAnything, v.AdditionalProperties)
 }
 
 // Reference structure is generated from "#/definitions/reference".
 type Reference struct {
-	Ref                  string                 `json:"$ref,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`              // All unmatched properties
+	// Format: uri-reference.
+	// Required.
+	Ref                  string                 `json:"$ref"`
+	AdditionalProperties map[string]interface{} `json:"-"`    // All unmatched properties.
 }
 
 type marshalReference Reference
@@ -139,12 +141,12 @@ var ignoreKeysReference = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Reference) UnmarshalJSON(data []byte) error {
+func (v *Reference) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalReference(*i)
+	vv := marshalReference(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -161,8 +163,8 @@ func (i *Reference) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -172,20 +174,21 @@ func (i *Reference) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = Reference(ii)
+	*v = Reference(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Reference) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalReference(i))
+func (v Reference) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalReference(v))
 	}
-	return marshalUnion(marshalReference(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalReference(v), v.AdditionalProperties)
 }
 
 // RefOrSchema structure is generated from "#/definitions/refOrSchema".
@@ -195,25 +198,25 @@ type RefOrSchema struct {
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *RefOrSchema) UnmarshalJSON(data []byte) error {
+func (v *RefOrSchema) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Reference)
+	err = json.Unmarshal(data, &v.Reference)
 	if err != nil {
-		i.Reference = nil
+		v.Reference = nil
 	}
 
-	err = json.Unmarshal(data, &i.Schema)
+	err = json.Unmarshal(data, &v.Schema)
 	if err != nil {
-		i.Schema = nil
+		v.Schema = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i RefOrSchema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Reference, i.Schema)
+func (v RefOrSchema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.Reference, v.Schema)
 }
 
 // NoTypeWithExamples structure is generated from "#/definitions/noTypeWithExamples".
@@ -222,7 +225,7 @@ type NoTypeWithExamples struct {
 	LastName             string                 `json:"lastName,omitempty"`
 	Age                  *int64                 `json:"age"`
 	Gender               string                 `json:"gender,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties.
 }
 
 type marshalNoTypeWithExamples NoTypeWithExamples
@@ -235,12 +238,12 @@ var ignoreKeysNoTypeWithExamples = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *NoTypeWithExamples) UnmarshalJSON(data []byte) error {
+func (v *NoTypeWithExamples) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalNoTypeWithExamples(*i)
+	vv := marshalNoTypeWithExamples(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -257,8 +260,8 @@ func (i *NoTypeWithExamples) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -268,20 +271,21 @@ func (i *NoTypeWithExamples) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = NoTypeWithExamples(ii)
+	*v = NoTypeWithExamples(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i NoTypeWithExamples) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalNoTypeWithExamples(i))
+func (v NoTypeWithExamples) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalNoTypeWithExamples(v))
 	}
-	return marshalUnion(marshalNoTypeWithExamples(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalNoTypeWithExamples(v), v.AdditionalProperties)
 }
 
 // NoTypeWithExample structure is generated from "#/definitions/noTypeWithExample".
@@ -289,7 +293,7 @@ type NoTypeWithExample struct {
 	FirstName            string                 `json:"firstName,omitempty"`
 	LastName             string                 `json:"lastName,omitempty"`
 	Age                  int64                  `json:"age,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties.
 }
 
 type marshalNoTypeWithExample NoTypeWithExample
@@ -301,12 +305,12 @@ var ignoreKeysNoTypeWithExample = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *NoTypeWithExample) UnmarshalJSON(data []byte) error {
+func (v *NoTypeWithExample) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalNoTypeWithExample(*i)
+	vv := marshalNoTypeWithExample(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -323,8 +327,8 @@ func (i *NoTypeWithExample) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -334,20 +338,21 @@ func (i *NoTypeWithExample) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = NoTypeWithExample(ii)
+	*v = NoTypeWithExample(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i NoTypeWithExample) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalNoTypeWithExample(i))
+func (v NoTypeWithExample) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalNoTypeWithExample(v))
 	}
-	return marshalUnion(marshalNoTypeWithExample(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalNoTypeWithExample(v), v.AdditionalProperties)
 }
 
 // Address structure is generated from "#/definitions/address".
@@ -356,7 +361,7 @@ type Address struct {
 	Address1             string                 `json:"address1,omitempty"`
 	Address2             string                 `json:"address2,omitempty"`
 	City                 string                 `json:"city,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                         // All unmatched properties
+	AdditionalProperties map[string]interface{} `json:"-"`                         // All unmatched properties.
 }
 
 type marshalAddress Address
@@ -369,12 +374,12 @@ var ignoreKeysAddress = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Address) UnmarshalJSON(data []byte) error {
+func (v *Address) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalAddress(*i)
+	vv := marshalAddress(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -391,8 +396,8 @@ func (i *Address) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -402,36 +407,37 @@ func (i *Address) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = Address(ii)
+	*v = Address(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Address) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalAddress(i))
+func (v Address) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalAddress(v))
 	}
-	return marshalUnion(marshalAddress(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalAddress(v), v.AdditionalProperties)
 }
 
 // Table structure is generated from "#/definitions/table".
 type Table struct {
-	Value map[string]Property `json:"value,omitempty"`
+	Value map[string]Property `json:"value"` // Required.
 }
 
 type marshalTable Table
 
 // UnmarshalJSON decodes JSON.
-func (i *Table) UnmarshalJSON(data []byte) error {
+func (v *Table) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalTable(*i)
+	vv := marshalTable(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -449,7 +455,7 @@ func (i *Table) UnmarshalJSON(data []byte) error {
 
 	delete(m, "type")
 
-	*i = Table(ii)
+	*v = Table(vv)
 
 	return nil
 }
@@ -460,14 +466,14 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i Table) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constTable, marshalTable(i))
+func (v Table) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constTable, marshalTable(v))
 }
 
 // Scalar structure is generated from "#/definitions/scalar".
 type Scalar struct {
-	Type  StringedType `json:"type,omitempty"`
-	Value string       `json:"value,omitempty"`
+	Type  StringedType `json:"type"`  // Required.
+	Value string       `json:"value"` // Required.
 }
 
 // Property structure is generated from "#/definitions/property".
@@ -477,41 +483,41 @@ type Property struct {
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Property) UnmarshalJSON(data []byte) error {
+func (v *Property) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Scalar)
+	err = json.Unmarshal(data, &v.Scalar)
 	if err != nil {
-		i.Scalar = nil
+		v.Scalar = nil
 	}
 
-	err = json.Unmarshal(data, &i.Table)
+	err = json.Unmarshal(data, &v.Table)
 	if err != nil {
-		i.Table = nil
+		v.Table = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Property) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Scalar, i.Table)
+func (v Property) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.Scalar, v.Table)
 }
 
 // ShortStr structure is generated from "#/definitions/shortStr".
 type ShortStr struct {
-	Value string `json:"value,omitempty"`
+	Value string `json:"value"` // Required.
 }
 
 type marshalShortStr ShortStr
 
 // UnmarshalJSON decodes JSON.
-func (i *ShortStr) UnmarshalJSON(data []byte) error {
+func (v *ShortStr) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalShortStr(*i)
+	vv := marshalShortStr(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -529,7 +535,7 @@ func (i *ShortStr) UnmarshalJSON(data []byte) error {
 
 	delete(m, "type")
 
-	*i = ShortStr(ii)
+	*v = ShortStr(vv)
 
 	return nil
 }
@@ -540,24 +546,24 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i ShortStr) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constShortStr, marshalShortStr(i))
+func (v ShortStr) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constShortStr, marshalShortStr(v))
 }
 
 // PropertyOctet structure is generated from "#/definitions/propertyOctet".
 type PropertyOctet struct {
-	Value string `json:"value,omitempty"`
+	Value string `json:"value"` // Required.
 }
 
 type marshalPropertyOctet PropertyOctet
 
 // UnmarshalJSON decodes JSON.
-func (i *PropertyOctet) UnmarshalJSON(data []byte) error {
+func (v *PropertyOctet) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalPropertyOctet(*i)
+	vv := marshalPropertyOctet(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -575,7 +581,7 @@ func (i *PropertyOctet) UnmarshalJSON(data []byte) error {
 
 	delete(m, "type")
 
-	*i = PropertyOctet(ii)
+	*v = PropertyOctet(vv)
 
 	return nil
 }
@@ -586,24 +592,24 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i PropertyOctet) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constPropertyOctet, marshalPropertyOctet(i))
+func (v PropertyOctet) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constPropertyOctet, marshalPropertyOctet(v))
 }
 
 // Timestamp structure is generated from "#/definitions/timestamp".
 type Timestamp struct {
-	Value string `json:"value,omitempty"`
+	Value string `json:"value"` // Required.
 }
 
 type marshalTimestamp Timestamp
 
 // UnmarshalJSON decodes JSON.
-func (i *Timestamp) UnmarshalJSON(data []byte) error {
+func (v *Timestamp) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalTimestamp(*i)
+	vv := marshalTimestamp(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -621,7 +627,7 @@ func (i *Timestamp) UnmarshalJSON(data []byte) error {
 
 	delete(m, "type")
 
-	*i = Timestamp(ii)
+	*v = Timestamp(vv)
 
 	return nil
 }
@@ -632,8 +638,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i Timestamp) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constTimestamp, marshalTimestamp(i))
+func (v Timestamp) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constTimestamp, marshalTimestamp(v))
 }
 
 // StringedType is an enum type.

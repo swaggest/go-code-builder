@@ -10,11 +10,15 @@ import (
 // MessagingReaderReads structure is generated from "#/components/schemas/MessagingReaderReads".
 type MessagingReaderReads struct {
 	Reads                []Book                 `json:"reads,omitempty"`
-	Country              string                 `json:"country,omitempty"`         // Country
-	ReaderID             int64                  `json:"reader_id,omitempty"`
-	Week                 string                 `json:"week,omitempty"`            // Week
-	SubscriptionID       int64                  `json:"subscription_id,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                         // All unmatched properties
+	// Country.
+	// Value must match pattern: `^[a-zA-Z]{2}$`.
+	Country              string                 `json:"country,omitempty"`
+	ReaderID             int64                  `json:"reader_id,omitempty"`       // Format: int32.
+	// Week.
+	// Value must match pattern: `^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-2])$`.
+	Week                 string                 `json:"week,omitempty"`
+	SubscriptionID       int64                  `json:"subscription_id,omitempty"` // Format: int32.
+	AdditionalProperties map[string]interface{} `json:"-"`                         // All unmatched properties.
 }
 
 type marshalMessagingReaderReads MessagingReaderReads
@@ -28,12 +32,12 @@ var ignoreKeysMessagingReaderReads = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *MessagingReaderReads) UnmarshalJSON(data []byte) error {
+func (v *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalMessagingReaderReads(*i)
+	vv := marshalMessagingReaderReads(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -50,8 +54,8 @@ func (i *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -61,29 +65,30 @@ func (i *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = MessagingReaderReads(ii)
+	*v = MessagingReaderReads(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i MessagingReaderReads) MarshalJSON() ([]byte, error) {
-	if len(i.AdditionalProperties) == 0 {
-		return json.Marshal(marshalMessagingReaderReads(i))
+func (v MessagingReaderReads) MarshalJSON() ([]byte, error) {
+	if len(v.AdditionalProperties) == 0 {
+		return json.Marshal(marshalMessagingReaderReads(v))
 	}
-	return marshalUnion(marshalMessagingReaderReads(i), i.AdditionalProperties)
+
+	return marshalUnion(marshalMessagingReaderReads(v), v.AdditionalProperties)
 }
 
 // Book structure is generated from "#/components/schemas/Book".
 type Book struct {
-	Amount               int64                  `json:"amount,omitempty"`
-	EntityID             string                 `json:"entity_id,omitempty"` // ID of the charged entity
-	Strategy             PlotStrategy           `json:"strategy,omitempty"`  // Read strategy
-	Type                 ReadType               `json:"type,omitempty"`      // Read type
-	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties
+	Amount               int64                  `json:"amount,omitempty"`    // Format: int64.
+	EntityID             string                 `json:"entity_id,omitempty"` // ID of the charged entity.
+	Strategy             PlotStrategy           `json:"strategy,omitempty"`  // Read strategy.
+	Type                 ReadType               `json:"type,omitempty"`      // Read type.
+	AdditionalProperties map[string]interface{} `json:"-"`                   // All unmatched properties.
 }
 
 type marshalBook Book
@@ -98,12 +103,12 @@ var ignoreKeysBook = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Book) UnmarshalJSON(data []byte) error {
+func (v *Book) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalBook(*i)
+	vv := marshalBook(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -132,8 +137,8 @@ func (i *Book) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.AdditionalProperties == nil {
-			ii.AdditionalProperties = make(map[string]interface{}, 1)
+		if vv.AdditionalProperties == nil {
+			vv.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -143,10 +148,10 @@ func (i *Book) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.AdditionalProperties[key] = val
+		vv.AdditionalProperties[key] = val
 	}
 
-	*i = Book(ii)
+	*v = Book(vv)
 
 	return nil
 }
@@ -157,8 +162,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (i Book) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constBook, marshalBook(i), i.AdditionalProperties)
+func (v Book) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constBook, marshalBook(v), v.AdditionalProperties)
 }
 
 // PlotStrategy is an enum type.

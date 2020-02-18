@@ -20,6 +20,8 @@ class OpenApiTest extends \PHPUnit_Framework_TestCase
         $builder = new GoBuilder();
         $builder->options->hideConstProperties = true;
         $builder->options->trimParentFromPropertyNames = true;
+        $builder->options->withZeroValues = true;
+        $builder->options->fluentSetters = true;
         $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
             if ('#' === $path) {
                 $structDef->setName('OpenAPI');

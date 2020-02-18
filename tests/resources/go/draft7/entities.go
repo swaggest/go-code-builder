@@ -11,9 +11,9 @@ import (
 //
 // Core schema meta-schema.
 type CoreSchemaMetaSchema struct {
-	ID                   *string                                     `json:"$id,omitempty"`
-	Schema               *string                                     `json:"$schema,omitempty"`
-	Ref                  *string                                     `json:"$ref,omitempty"`
+	ID                   *string                                     `json:"$id,omitempty"`                  // Format: uri-reference.
+	Schema               *string                                     `json:"$schema,omitempty"`              // Format: uri.
+	Ref                  *string                                     `json:"$ref,omitempty"`                 // Format: uri-reference.
 	Comment              *string                                     `json:"$comment,omitempty"`
 	Title                *string                                     `json:"title,omitempty"`
 	Description          *string                                     `json:"description,omitempty"`
@@ -27,36 +27,36 @@ type CoreSchemaMetaSchema struct {
 	ExclusiveMinimum     *float64                                    `json:"exclusiveMinimum,omitempty"`
 	MaxLength            *int64                                      `json:"maxLength,omitempty"`
 	MinLength            int64                                       `json:"minLength,omitempty"`
-	Pattern              *string                                     `json:"pattern,omitempty"`
-	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema
+	Pattern              *string                                     `json:"pattern,omitempty"`              // Format: regex.
+	AdditionalItems      *Schema                                     `json:"additionalItems,omitempty"`      // Core schema meta-schema.
 	Items                *Items                                      `json:"items,omitempty"`
 	MaxItems             *int64                                      `json:"maxItems,omitempty"`
 	MinItems             int64                                       `json:"minItems,omitempty"`
 	UniqueItems          *bool                                       `json:"uniqueItems,omitempty"`
-	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema
+	Contains             *Schema                                     `json:"contains,omitempty"`             // Core schema meta-schema.
 	MaxProperties        *int64                                      `json:"maxProperties,omitempty"`
 	MinProperties        int64                                       `json:"minProperties,omitempty"`
 	Required             []string                                    `json:"required,omitempty"`
-	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema
+	AdditionalProperties *Schema                                     `json:"additionalProperties,omitempty"` // Core schema meta-schema.
 	Definitions          map[string]Schema                           `json:"definitions,omitempty"`
 	Properties           map[string]Schema                           `json:"properties,omitempty"`
 	PatternProperties    map[string]Schema                           `json:"patternProperties,omitempty"`
 	Dependencies         map[string]DependenciesAdditionalProperties `json:"dependencies,omitempty"`
-	PropertyNames        *Schema                                     `json:"propertyNames,omitempty"`        // Core schema meta-schema
+	PropertyNames        *Schema                                     `json:"propertyNames,omitempty"`        // Core schema meta-schema.
 	Const                *interface{}                                `json:"const,omitempty"`
 	Enum                 []interface{}                               `json:"enum,omitempty"`
 	Type                 *Type                                       `json:"type,omitempty"`
 	Format               *string                                     `json:"format,omitempty"`
 	ContentMediaType     *string                                     `json:"contentMediaType,omitempty"`
 	ContentEncoding      *string                                     `json:"contentEncoding,omitempty"`
-	If                   *Schema                                     `json:"if,omitempty"`                   // Core schema meta-schema
-	Then                 *Schema                                     `json:"then,omitempty"`                 // Core schema meta-schema
-	Else                 *Schema                                     `json:"else,omitempty"`                 // Core schema meta-schema
+	If                   *Schema                                     `json:"if,omitempty"`                   // Core schema meta-schema.
+	Then                 *Schema                                     `json:"then,omitempty"`                 // Core schema meta-schema.
+	Else                 *Schema                                     `json:"else,omitempty"`                 // Core schema meta-schema.
 	AllOf                []Schema                                    `json:"allOf,omitempty"`
 	AnyOf                []Schema                                    `json:"anyOf,omitempty"`
 	OneOf                []Schema                                    `json:"oneOf,omitempty"`
-	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema
-	ExtraProperties      map[string]interface{}                      `json:"-"`                              // All unmatched properties
+	Not                  *Schema                                     `json:"not,omitempty"`                  // Core schema meta-schema.
+	ExtraProperties      map[string]interface{}                      `json:"-"`                              // All unmatched properties.
 }
 
 // WithID sets ID value.
@@ -232,7 +232,9 @@ func (v *CoreSchemaMetaSchema) WithDefinitionsItem(key string, val Schema) *Core
 	if v.Definitions == nil {
 		v.Definitions = make(map[string]Schema, 1)
 	}
+
 	v.Definitions[key] = val
+
 	return v
 }
 
@@ -247,7 +249,9 @@ func (v *CoreSchemaMetaSchema) WithPropertiesItem(key string, val Schema) *CoreS
 	if v.Properties == nil {
 		v.Properties = make(map[string]Schema, 1)
 	}
+
 	v.Properties[key] = val
+
 	return v
 }
 
@@ -262,7 +266,9 @@ func (v *CoreSchemaMetaSchema) WithPatternPropertiesItem(key string, val Schema)
 	if v.PatternProperties == nil {
 		v.PatternProperties = make(map[string]Schema, 1)
 	}
+
 	v.PatternProperties[key] = val
+
 	return v
 }
 
@@ -277,7 +283,9 @@ func (v *CoreSchemaMetaSchema) WithDependenciesItem(key string, val Dependencies
 	if v.Dependencies == nil {
 		v.Dependencies = make(map[string]DependenciesAdditionalProperties, 1)
 	}
+
 	v.Dependencies[key] = val
+
 	return v
 }
 
@@ -376,7 +384,9 @@ func (v *CoreSchemaMetaSchema) WithExtraPropertiesItem(key string, val interface
 	if v.ExtraProperties == nil {
 		v.ExtraProperties = make(map[string]interface{}, 1)
 	}
+
 	v.ExtraProperties[key] = val
+
 	return v
 }
 
@@ -431,12 +441,12 @@ var ignoreKeysCoreSchemaMetaSchema = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
+func (v *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 	var err error
 
-	ii := marshalCoreSchemaMetaSchema(*i)
+	vv := marshalCoreSchemaMetaSchema(*v)
 
-	err = json.Unmarshal(data, &ii)
+	err = json.Unmarshal(data, &vv)
 	if err != nil {
 		return err
 	}
@@ -448,17 +458,17 @@ func (i *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 		m = nil
 	}
 
-	if ii.Default == nil {
+	if vv.Default == nil {
 		if _, ok := m["default"]; ok {
 			var v interface{}
-			ii.Default = &v
+			vv.Default = &v
 		}
 	}
 
-	if ii.Const == nil {
+	if vv.Const == nil {
 		if _, ok := m["const"]; ok {
 			var v interface{}
-			ii.Const = &v
+			vv.Const = &v
 		}
 	}
 
@@ -467,8 +477,8 @@ func (i *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, rawValue := range m {
-		if ii.ExtraProperties == nil {
-			ii.ExtraProperties = make(map[string]interface{}, 1)
+		if vv.ExtraProperties == nil {
+			vv.ExtraProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -478,20 +488,21 @@ func (i *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		ii.ExtraProperties[key] = val
+		vv.ExtraProperties[key] = val
 	}
 
-	*i = CoreSchemaMetaSchema(ii)
+	*v = CoreSchemaMetaSchema(vv)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i CoreSchemaMetaSchema) MarshalJSON() ([]byte, error) {
-	if len(i.ExtraProperties) == 0 {
-		return json.Marshal(marshalCoreSchemaMetaSchema(i))
+func (v CoreSchemaMetaSchema) MarshalJSON() ([]byte, error) {
+	if len(v.ExtraProperties) == 0 {
+		return json.Marshal(marshalCoreSchemaMetaSchema(v))
 	}
-	return marshalUnion(marshalCoreSchemaMetaSchema(i), i.ExtraProperties)
+
+	return marshalUnion(marshalCoreSchemaMetaSchema(v), v.ExtraProperties)
 }
 
 // Schema structure is generated from "#".
@@ -515,25 +526,25 @@ func (v *Schema) WithTypeBoolean(val bool) *Schema {
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Schema) UnmarshalJSON(data []byte) error {
+func (v *Schema) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.TypeObject)
+	err = json.Unmarshal(data, &v.TypeObject)
 	if err != nil {
-		i.TypeObject = nil
+		v.TypeObject = nil
 	}
 
-	err = json.Unmarshal(data, &i.TypeBoolean)
+	err = json.Unmarshal(data, &v.TypeBoolean)
 	if err != nil {
-		i.TypeBoolean = nil
+		v.TypeBoolean = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Schema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.TypeObject, i.TypeBoolean)
+func (v Schema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.TypeObject, v.TypeBoolean)
 }
 
 // Items structure is generated from "#[object]->items".
@@ -555,25 +566,25 @@ func (v *Items) WithSchemaArray(val ...Schema) *Items {
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Items) UnmarshalJSON(data []byte) error {
+func (v *Items) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Schema)
+	err = json.Unmarshal(data, &v.Schema)
 	if err != nil {
-		i.Schema = nil
+		v.Schema = nil
 	}
 
-	err = json.Unmarshal(data, &i.SchemaArray)
+	err = json.Unmarshal(data, &v.SchemaArray)
 	if err != nil {
-		i.SchemaArray = nil
+		v.SchemaArray = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Items) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.SchemaArray)
+func (v Items) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.Schema, v.SchemaArray)
 }
 
 // DependenciesAdditionalProperties structure is generated from "#[object]->dependencies->additionalProperties".
@@ -595,25 +606,25 @@ func (v *DependenciesAdditionalProperties) WithStringArray(val ...string) *Depen
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (v *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.Schema)
+	err = json.Unmarshal(data, &v.Schema)
 	if err != nil {
-		i.Schema = nil
+		v.Schema = nil
 	}
 
-	err = json.Unmarshal(data, &i.StringArray)
+	err = json.Unmarshal(data, &v.StringArray)
 	if err != nil {
-		i.StringArray = nil
+		v.StringArray = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.Schema, i.StringArray)
+func (v DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.Schema, v.StringArray)
 }
 
 // Type structure is generated from "#[object]->type".
@@ -635,25 +646,25 @@ func (v *Type) WithSliceOfSimpleTypesValues(val ...SimpleTypes) *Type {
 }
 
 // UnmarshalJSON decodes JSON.
-func (i *Type) UnmarshalJSON(data []byte) error {
+func (v *Type) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &i.SimpleTypes)
+	err = json.Unmarshal(data, &v.SimpleTypes)
 	if err != nil {
-		i.SimpleTypes = nil
+		v.SimpleTypes = nil
 	}
 
-	err = json.Unmarshal(data, &i.SliceOfSimpleTypesValues)
+	err = json.Unmarshal(data, &v.SliceOfSimpleTypesValues)
 	if err != nil {
-		i.SliceOfSimpleTypesValues = nil
+		v.SliceOfSimpleTypesValues = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (i Type) MarshalJSON() ([]byte, error) {
-	return marshalUnion(i.SimpleTypes, i.SliceOfSimpleTypesValues)
+func (v Type) MarshalJSON() ([]byte, error) {
+	return marshalUnion(v.SimpleTypes, v.SliceOfSimpleTypesValues)
 }
 
 // SimpleTypes is an enum type.
