@@ -757,7 +757,7 @@ GO
                     (!$type instanceof Pointer) &&
                     (!$type instanceof Map) &&
                     (!$type instanceof Slice) &&
-                    (!$this->isRequired) &&
+                    (!$this->isRequired || $this->goBuilder->options->ignoreRequired) &&
                     ($type->getTypeString() !== 'interface{}')
                 ) {
                     $type = new Pointer($type);

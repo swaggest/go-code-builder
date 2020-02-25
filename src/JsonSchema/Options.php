@@ -61,6 +61,12 @@ class Options extends ClassStructure
     public $withZeroValues = false;
 
     /**
+     * Ignore if property is required when deciding on pointer type or omitempty.
+     * @var bool
+     */
+    public $ignoreRequired = false;
+
+    /**
      * Add omitempty to nullable values.
      * @var bool
      */
