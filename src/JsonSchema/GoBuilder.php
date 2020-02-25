@@ -234,7 +234,7 @@ class GoBuilder
                 $isRequired = (null !== $schema->required) && in_array($name, $schema->required);
                 $goPropertyType = $this->getType($property, $path . '->' . $name, $structDef, $isRequired);
                 if ($goPropertyType instanceof StructType) {
-                    if (!$isRequired) {
+                    if (!$isRequired || $this->options->ignoreRequired) {
                         $goPropertyType = new Pointer($goPropertyType);
                     }
                 }
@@ -261,7 +261,7 @@ class GoBuilder
                         $goPropertyType->isNoOmitEmpty() &&
                         true !== $property->{TypeBuilder::X_OMIT_EMPTY}
                     ) ||
-                    ($isRequired && true !== $property->{TypeBuilder::X_OMIT_EMPTY})
+                    ($isRequired && !$this->options->ignoreRequired && true !== $property->{TypeBuilder::X_OMIT_EMPTY})
                 ) {
                     $goProperty->getTags()->setTag('json', $name);
                 } else {

@@ -14,26 +14,26 @@ import (
 type OpenAPI struct {
 	// Value must match pattern: `^3\.0\.\d(-.+)?$`.
 	// Required.
-	Openapi       string                 `json:"openapi"`
-	Info          Info                   `json:"info"`                   // Required.
+	Openapi       *string                `json:"openapi,omitempty"`
+	Info          *Info                  `json:"info,omitempty"`         // Required.
 	ExternalDocs  *ExternalDocumentation `json:"externalDocs,omitempty"`
 	Servers       []Server               `json:"servers,omitempty"`
 	Security      []map[string][]string  `json:"security,omitempty"`
 	Tags          []Tag                  `json:"tags,omitempty"`
-	Paths         Paths                  `json:"paths"`                  // Required.
+	Paths         *Paths                 `json:"paths,omitempty"`        // Required.
 	Components    *Components            `json:"components,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: `^x-`.
 }
 
 // WithOpenapi sets Openapi value.
 func (v *OpenAPI) WithOpenapi(val string) *OpenAPI {
-	v.Openapi = val
+	v.Openapi = &val
 	return v
 }
 
 // WithInfo sets Info value.
 func (v *OpenAPI) WithInfo(val Info) *OpenAPI {
-	v.Info = val
+	v.Info = &val
 	return v
 }
 
@@ -63,7 +63,7 @@ func (v *OpenAPI) WithTags(val ...Tag) *OpenAPI {
 
 // WithPaths sets Paths value.
 func (v *OpenAPI) WithPaths(val Paths) *OpenAPI {
-	v.Paths = val
+	v.Paths = &val
 	return v
 }
 
@@ -162,18 +162,18 @@ func (v OpenAPI) MarshalJSON() ([]byte, error) {
 
 // Info structure is generated from "#/definitions/Info".
 type Info struct {
-	Title          string                 `json:"title"`                    // Required.
+	Title          *string                `json:"title,omitempty"`          // Required.
 	Description    *string                `json:"description,omitempty"`
 	TermsOfService *string                `json:"termsOfService,omitempty"` // Format: uri-reference.
 	Contact        *Contact               `json:"contact,omitempty"`
 	License        *License               `json:"license,omitempty"`
-	Version        string                 `json:"version"`                  // Required.
+	Version        *string                `json:"version,omitempty"`        // Required.
 	MapOfAnything  map[string]interface{} `json:"-"`                        // Key must match pattern: `^x-`.
 }
 
 // WithTitle sets Title value.
 func (v *Info) WithTitle(val string) *Info {
-	v.Title = val
+	v.Title = &val
 	return v
 }
 
@@ -203,7 +203,7 @@ func (v *Info) WithLicense(val License) *Info {
 
 // WithVersion sets Version value.
 func (v *Info) WithVersion(val string) *Info {
-	v.Version = val
+	v.Version = &val
 	return v
 }
 
@@ -402,14 +402,14 @@ func (v Contact) MarshalJSON() ([]byte, error) {
 
 // License structure is generated from "#/definitions/License".
 type License struct {
-	Name          string                 `json:"name"`          // Required.
-	URL           *string                `json:"url,omitempty"` // Format: uri-reference.
-	MapOfAnything map[string]interface{} `json:"-"`             // Key must match pattern: `^x-`.
+	Name          *string                `json:"name,omitempty"` // Required.
+	URL           *string                `json:"url,omitempty"`  // Format: uri-reference.
+	MapOfAnything map[string]interface{} `json:"-"`              // Key must match pattern: `^x-`.
 }
 
 // WithName sets Name value.
 func (v *License) WithName(val string) *License {
-	v.Name = val
+	v.Name = &val
 	return v
 }
 
@@ -505,7 +505,7 @@ type ExternalDocumentation struct {
 	Description   *string                `json:"description,omitempty"`
 	// Format: uri-reference.
 	// Required.
-	URL           string                 `json:"url"`
+	URL           *string                `json:"url,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
 }
 
@@ -517,7 +517,7 @@ func (v *ExternalDocumentation) WithDescription(val string) *ExternalDocumentati
 
 // WithURL sets URL value.
 func (v *ExternalDocumentation) WithURL(val string) *ExternalDocumentation {
-	v.URL = val
+	v.URL = &val
 	return v
 }
 
@@ -604,7 +604,7 @@ func (v ExternalDocumentation) MarshalJSON() ([]byte, error) {
 
 // Server structure is generated from "#/definitions/Server".
 type Server struct {
-	URL           string                    `json:"url"`                   // Required.
+	URL           *string                   `json:"url,omitempty"`         // Required.
 	Description   *string                   `json:"description,omitempty"`
 	Variables     map[string]ServerVariable `json:"variables,omitempty"`
 	MapOfAnything map[string]interface{}    `json:"-"`                     // Key must match pattern: `^x-`.
@@ -612,7 +612,7 @@ type Server struct {
 
 // WithURL sets URL value.
 func (v *Server) WithURL(val string) *Server {
-	v.URL = val
+	v.URL = &val
 	return v
 }
 
@@ -724,7 +724,7 @@ func (v Server) MarshalJSON() ([]byte, error) {
 // ServerVariable structure is generated from "#/definitions/ServerVariable".
 type ServerVariable struct {
 	Enum          []string               `json:"enum,omitempty"`
-	Default       string                 `json:"default"`               // Required.
+	Default       *string                `json:"default,omitempty"`     // Required.
 	Description   *string                `json:"description,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
 }
@@ -737,7 +737,7 @@ func (v *ServerVariable) WithEnum(val ...string) *ServerVariable {
 
 // WithDefault sets Default value.
 func (v *ServerVariable) WithDefault(val string) *ServerVariable {
-	v.Default = val
+	v.Default = &val
 	return v
 }
 
@@ -831,7 +831,7 @@ func (v ServerVariable) MarshalJSON() ([]byte, error) {
 
 // Tag structure is generated from "#/definitions/Tag".
 type Tag struct {
-	Name          string                 `json:"name"`                   // Required.
+	Name          *string                `json:"name,omitempty"`         // Required.
 	Description   *string                `json:"description,omitempty"`
 	ExternalDocs  *ExternalDocumentation `json:"externalDocs,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                      // Key must match pattern: `^x-`.
@@ -839,7 +839,7 @@ type Tag struct {
 
 // WithName sets Name value.
 func (v *Tag) WithName(val string) *Tag {
-	v.Name = val
+	v.Name = &val
 	return v
 }
 
@@ -1100,19 +1100,19 @@ func (v PathItem) MarshalJSON() ([]byte, error) {
 type ParameterReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *ParameterReference) WithRef(val string) *ParameterReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
 // Parameter structure is generated from "#/definitions/Parameter".
 type Parameter struct {
-	Name             string                  `json:"name"`                      // Required.
-	In               ParameterIn             `json:"in"`                        // Required.
+	Name             *string                 `json:"name,omitempty"`            // Required.
+	In               *ParameterIn            `json:"in,omitempty"`              // Required.
 	Description      *string                 `json:"description,omitempty"`
 	Required         *bool                   `json:"required,omitempty"`
 	Deprecated       *bool                   `json:"deprecated,omitempty"`
@@ -1131,13 +1131,13 @@ type Parameter struct {
 
 // WithName sets Name value.
 func (v *Parameter) WithName(val string) *Parameter {
-	v.Name = val
+	v.Name = &val
 	return v
 }
 
 // WithIn sets In value.
 func (v *Parameter) WithIn(val ParameterIn) *Parameter {
-	v.In = val
+	v.In = &val
 	return v
 }
 
@@ -1743,12 +1743,12 @@ func (v Schema) MarshalJSON() ([]byte, error) {
 type SchemaReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *SchemaReference) WithRef(val string) *SchemaReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
@@ -1834,14 +1834,14 @@ func (v SchemaAdditionalProperties) MarshalJSON() ([]byte, error) {
 
 // Discriminator structure is generated from "#/definitions/Discriminator".
 type Discriminator struct {
-	PropertyName         string                 `json:"propertyName"`      // Required.
+	PropertyName         *string                `json:"propertyName,omitempty"` // Required.
 	Mapping              map[string]string      `json:"mapping,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                 // All unmatched properties.
+	AdditionalProperties map[string]interface{} `json:"-"`                      // All unmatched properties.
 }
 
 // WithPropertyName sets PropertyName value.
 func (v *Discriminator) WithPropertyName(val string) *Discriminator {
-	v.PropertyName = val
+	v.PropertyName = &val
 	return v
 }
 
@@ -2210,12 +2210,12 @@ func (v MediaType) MarshalJSON() ([]byte, error) {
 type ExampleReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *ExampleReference) WithRef(val string) *ExampleReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
@@ -3118,7 +3118,7 @@ type Operation struct {
 	ID            *string                  `json:"operationId,omitempty"`
 	Parameters    []ParameterOrRef         `json:"parameters,omitempty"`
 	RequestBody   *RequestBodyOrRef        `json:"requestBody,omitempty"`
-	Responses     Responses                `json:"responses"`              // Required.
+	Responses     *Responses               `json:"responses,omitempty"`    // Required.
 	Callbacks     map[string]CallbackOrRef `json:"callbacks,omitempty"`
 	Deprecated    *bool                    `json:"deprecated,omitempty"`
 	Security      []map[string][]string    `json:"security,omitempty"`
@@ -3170,7 +3170,7 @@ func (v *Operation) WithRequestBody(val RequestBodyOrRef) *Operation {
 
 // WithResponses sets Responses value.
 func (v *Operation) WithResponses(val Responses) *Operation {
-	v.Responses = val
+	v.Responses = &val
 	return v
 }
 
@@ -3304,19 +3304,19 @@ func (v Operation) MarshalJSON() ([]byte, error) {
 type RequestBodyReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *RequestBodyReference) WithRef(val string) *RequestBodyReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
 // RequestBody structure is generated from "#/definitions/RequestBody".
 type RequestBody struct {
 	Description   *string                `json:"description,omitempty"`
-	Content       map[string]MediaType   `json:"content"`               // Required.
+	Content       map[string]MediaType   `json:"content,omitempty"`     // Required.
 	Required      *bool                  `json:"required,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
 }
@@ -3603,27 +3603,27 @@ func (v Responses) MarshalJSON() ([]byte, error) {
 type ResponseReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *ResponseReference) WithRef(val string) *ResponseReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
 // Response structure is generated from "#/definitions/Response".
 type Response struct {
-	Description   string                 `json:"description"`       // Required.
+	Description   *string                `json:"description,omitempty"` // Required.
 	Headers       map[string]HeaderOrRef `json:"headers,omitempty"`
 	Content       map[string]MediaType   `json:"content,omitempty"`
 	Links         map[string]LinkOrRef   `json:"links,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                 // Key must match pattern: `^x-`.
+	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
 }
 
 // WithDescription sets Description value.
 func (v *Response) WithDescription(val string) *Response {
-	v.Description = val
+	v.Description = &val
 	return v
 }
 
@@ -3765,12 +3765,12 @@ func (v Response) MarshalJSON() ([]byte, error) {
 type HeaderReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *HeaderReference) WithRef(val string) *HeaderReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
@@ -3818,12 +3818,12 @@ func (v HeaderOrRef) MarshalJSON() ([]byte, error) {
 type LinkReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *LinkReference) WithRef(val string) *LinkReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
@@ -4061,12 +4061,12 @@ func (v ResponseOrRef) MarshalJSON() ([]byte, error) {
 type CallbackReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *CallbackReference) WithRef(val string) *CallbackReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
@@ -5064,32 +5064,32 @@ func (v ComponentsHeaders) MarshalJSON() ([]byte, error) {
 type SecuritySchemeReference struct {
 	// Format: uri-reference.
 	// Required.
-	Ref string `json:"$ref"`
+	Ref *string `json:"$ref,omitempty"`
 }
 
 // WithRef sets Ref value.
 func (v *SecuritySchemeReference) WithRef(val string) *SecuritySchemeReference {
-	v.Ref = val
+	v.Ref = &val
 	return v
 }
 
 // APIKeySecurityScheme structure is generated from "#/definitions/APIKeySecurityScheme".
 type APIKeySecurityScheme struct {
-	Name          string                 `json:"name"`                  // Required.
-	In            APIKeySecuritySchemeIn `json:"in"`                    // Required.
-	Description   *string                `json:"description,omitempty"`
-	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+	Name          *string                 `json:"name,omitempty"`        // Required.
+	In            *APIKeySecuritySchemeIn `json:"in,omitempty"`          // Required.
+	Description   *string                 `json:"description,omitempty"`
+	MapOfAnything map[string]interface{}  `json:"-"`                     // Key must match pattern: `^x-`.
 }
 
 // WithName sets Name value.
 func (v *APIKeySecurityScheme) WithName(val string) *APIKeySecurityScheme {
-	v.Name = val
+	v.Name = &val
 	return v
 }
 
 // WithIn sets In value.
 func (v *APIKeySecurityScheme) WithIn(val APIKeySecuritySchemeIn) *APIKeySecurityScheme {
-	v.In = val
+	v.In = &val
 	return v
 }
 
@@ -5195,7 +5195,7 @@ func (v APIKeySecurityScheme) MarshalJSON() ([]byte, error) {
 
 // HTTPSecurityScheme structure is generated from "#/definitions/HTTPSecurityScheme".
 type HTTPSecurityScheme struct {
-	Scheme        string                    `json:"scheme"`                 // Required.
+	Scheme        *string                   `json:"scheme,omitempty"`       // Required.
 	BearerFormat  *string                   `json:"bearerFormat,omitempty"`
 	Description   *string                   `json:"description,omitempty"`
 	OneOf0        *HTTPSecuritySchemeOneOf0 `json:"-"`
@@ -5205,7 +5205,7 @@ type HTTPSecurityScheme struct {
 
 // WithScheme sets Scheme value.
 func (v *HTTPSecurityScheme) WithScheme(val string) *HTTPSecurityScheme {
-	v.Scheme = val
+	v.Scheme = &val
 	return v
 }
 
@@ -5507,14 +5507,14 @@ func (v HTTPSecuritySchemeOneOf1) MarshalJSON() ([]byte, error) {
 
 // OAuth2SecurityScheme structure is generated from "#/definitions/OAuth2SecurityScheme".
 type OAuth2SecurityScheme struct {
-	Flows         OAuthFlows             `json:"flows"`                 // Required.
+	Flows         *OAuthFlows            `json:"flows,omitempty"`       // Required.
 	Description   *string                `json:"description,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
 }
 
 // WithFlows sets Flows value.
 func (v *OAuth2SecurityScheme) WithFlows(val OAuthFlows) *OAuth2SecurityScheme {
-	v.Flows = val
+	v.Flows = &val
 	return v
 }
 
@@ -5737,15 +5737,15 @@ func (v OAuthFlows) MarshalJSON() ([]byte, error) {
 type ImplicitOAuthFlow struct {
 	// Format: uri-reference.
 	// Required.
-	AuthorizationURL string                 `json:"authorizationUrl"`
-	RefreshURL       *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
-	Scopes           map[string]string      `json:"scopes"`               // Required.
-	MapOfAnything    map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
+	AuthorizationURL *string                `json:"authorizationUrl,omitempty"`
+	RefreshURL       *string                `json:"refreshUrl,omitempty"`       // Format: uri-reference.
+	Scopes           map[string]string      `json:"scopes,omitempty"`           // Required.
+	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: `^x-`.
 }
 
 // WithAuthorizationURL sets AuthorizationURL value.
 func (v *ImplicitOAuthFlow) WithAuthorizationURL(val string) *ImplicitOAuthFlow {
-	v.AuthorizationURL = val
+	v.AuthorizationURL = &val
 	return v
 }
 
@@ -5858,7 +5858,7 @@ func (v ImplicitOAuthFlow) MarshalJSON() ([]byte, error) {
 type PasswordOAuthFlow struct {
 	// Format: uri-reference.
 	// Required.
-	TokenURL      string                 `json:"tokenUrl"`
+	TokenURL      *string                `json:"tokenUrl,omitempty"`
 	RefreshURL    *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
 	Scopes        map[string]string      `json:"scopes,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
@@ -5866,7 +5866,7 @@ type PasswordOAuthFlow struct {
 
 // WithTokenURL sets TokenURL value.
 func (v *PasswordOAuthFlow) WithTokenURL(val string) *PasswordOAuthFlow {
-	v.TokenURL = val
+	v.TokenURL = &val
 	return v
 }
 
@@ -5979,7 +5979,7 @@ func (v PasswordOAuthFlow) MarshalJSON() ([]byte, error) {
 type ClientCredentialsFlow struct {
 	// Format: uri-reference.
 	// Required.
-	TokenURL      string                 `json:"tokenUrl"`
+	TokenURL      *string                `json:"tokenUrl,omitempty"`
 	RefreshURL    *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
 	Scopes        map[string]string      `json:"scopes,omitempty"`
 	MapOfAnything map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
@@ -5987,7 +5987,7 @@ type ClientCredentialsFlow struct {
 
 // WithTokenURL sets TokenURL value.
 func (v *ClientCredentialsFlow) WithTokenURL(val string) *ClientCredentialsFlow {
-	v.TokenURL = val
+	v.TokenURL = &val
 	return v
 }
 
@@ -6100,24 +6100,24 @@ func (v ClientCredentialsFlow) MarshalJSON() ([]byte, error) {
 type AuthorizationCodeOAuthFlow struct {
 	// Format: uri-reference.
 	// Required.
-	AuthorizationURL string                 `json:"authorizationUrl"`
+	AuthorizationURL *string                `json:"authorizationUrl,omitempty"`
 	// Format: uri-reference.
 	// Required.
-	TokenURL         string                 `json:"tokenUrl"`
-	RefreshURL       *string                `json:"refreshUrl,omitempty"` // Format: uri-reference.
+	TokenURL         *string                `json:"tokenUrl,omitempty"`
+	RefreshURL       *string                `json:"refreshUrl,omitempty"`       // Format: uri-reference.
 	Scopes           map[string]string      `json:"scopes,omitempty"`
-	MapOfAnything    map[string]interface{} `json:"-"`                    // Key must match pattern: `^x-`.
+	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: `^x-`.
 }
 
 // WithAuthorizationURL sets AuthorizationURL value.
 func (v *AuthorizationCodeOAuthFlow) WithAuthorizationURL(val string) *AuthorizationCodeOAuthFlow {
-	v.AuthorizationURL = val
+	v.AuthorizationURL = &val
 	return v
 }
 
 // WithTokenURL sets TokenURL value.
 func (v *AuthorizationCodeOAuthFlow) WithTokenURL(val string) *AuthorizationCodeOAuthFlow {
-	v.TokenURL = val
+	v.TokenURL = &val
 	return v
 }
 
@@ -6231,14 +6231,14 @@ func (v AuthorizationCodeOAuthFlow) MarshalJSON() ([]byte, error) {
 type OpenIDConnectSecurityScheme struct {
 	// Format: uri-reference.
 	// Required.
-	OpenIDConnectURL string                 `json:"openIdConnectUrl"`
+	OpenIDConnectURL *string                `json:"openIdConnectUrl,omitempty"`
 	Description      *string                `json:"description,omitempty"`
-	MapOfAnything    map[string]interface{} `json:"-"`                     // Key must match pattern: `^x-`.
+	MapOfAnything    map[string]interface{} `json:"-"`                          // Key must match pattern: `^x-`.
 }
 
 // WithOpenIDConnectURL sets OpenIDConnectURL value.
 func (v *OpenIDConnectSecurityScheme) WithOpenIDConnectURL(val string) *OpenIDConnectSecurityScheme {
-	v.OpenIDConnectURL = val
+	v.OpenIDConnectURL = &val
 	return v
 }
 
