@@ -34,8 +34,8 @@ type AsyncAPI struct {
 type marshalAsyncAPI AsyncAPI
 
 // MarshalJSON encodes JSON.
-func (v AsyncAPI) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAsyncAPI(v), v.MapOfAnything)
+func (a AsyncAPI) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAsyncAPI(a), a.MapOfAnything)
 }
 
 // Info structure is generated from "#/definitions/info".
@@ -60,8 +60,8 @@ type Info struct {
 type marshalInfo Info
 
 // MarshalJSON encodes JSON.
-func (v Info) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalInfo(v), v.MapOfAnything)
+func (i Info) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalInfo(i), i.MapOfAnything)
 }
 
 // Contact structure is generated from "#/definitions/contact".
@@ -81,8 +81,8 @@ type Contact struct {
 type marshalContact Contact
 
 // MarshalJSON encodes JSON.
-func (v Contact) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalContact(v), v.MapOfAnything)
+func (c Contact) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalContact(c), c.MapOfAnything)
 }
 
 // License structure is generated from "#/definitions/license".
@@ -99,8 +99,8 @@ type License struct {
 type marshalLicense License
 
 // MarshalJSON encodes JSON.
-func (v License) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalLicense(v), v.MapOfAnything)
+func (l License) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalLicense(l), l.MapOfAnything)
 }
 
 // Server structure is generated from "#/definitions/server".
@@ -120,8 +120,8 @@ type Server struct {
 type marshalServer Server
 
 // MarshalJSON encodes JSON.
-func (v Server) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalServer(v), v.MapOfAnything)
+func (s Server) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalServer(s), s.MapOfAnything)
 }
 
 // ServerVariable structure is generated from "#/definitions/serverVariable".
@@ -137,8 +137,8 @@ type ServerVariable struct {
 type marshalServerVariable ServerVariable
 
 // MarshalJSON encodes JSON.
-func (v ServerVariable) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalServerVariable(v), v.MapOfAnything)
+func (s ServerVariable) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalServerVariable(s), s.MapOfAnything)
 }
 
 // Topics structure is generated from "#/definitions/topics".
@@ -150,8 +150,8 @@ type Topics struct {
 }
 
 // MarshalJSON encodes JSON.
-func (v Topics) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfAnything, v.MapOfTopicItemValues)
+func (t Topics) MarshalJSON() ([]byte, error) {
+	return marshalUnion(t.MapOfAnything, t.MapOfTopicItemValues)
 }
 
 // TopicItem structure is generated from "#/definitions/topicItem".
@@ -167,8 +167,8 @@ type TopicItem struct {
 type marshalTopicItem TopicItem
 
 // MarshalJSON encodes JSON.
-func (v TopicItem) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalTopicItem(v), v.MapOfAnything)
+func (t TopicItem) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalTopicItem(t), t.MapOfAnything)
 }
 
 // Parameter structure is generated from "#/definitions/parameter".
@@ -183,8 +183,8 @@ type Parameter struct {
 type marshalParameter Parameter
 
 // MarshalJSON encodes JSON.
-func (v Parameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameter(v), v.MapOfAnything)
+func (p Parameter) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalParameter(p), p.MapOfAnything)
 }
 
 // Message structure is generated from "#/definitions/message".
@@ -204,8 +204,8 @@ type Message struct {
 type marshalMessage Message
 
 // MarshalJSON encodes JSON.
-func (v Message) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalMessage(v), v.MapOfAnything)
+func (m Message) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalMessage(m), m.MapOfAnything)
 }
 
 // Tag structure is generated from "#/definitions/tag".
@@ -219,8 +219,8 @@ type Tag struct {
 type marshalTag Tag
 
 // MarshalJSON encodes JSON.
-func (v Tag) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalTag(v), v.MapOfAnything)
+func (t Tag) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalTag(t), t.MapOfAnything)
 }
 
 // ExternalDocs structure is generated from "#/definitions/externalDocs".
@@ -237,8 +237,8 @@ type ExternalDocs struct {
 type marshalExternalDocs ExternalDocs
 
 // MarshalJSON encodes JSON.
-func (v ExternalDocs) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalExternalDocs(v), v.MapOfAnything)
+func (e ExternalDocs) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalExternalDocs(e), e.MapOfAnything)
 }
 
 // OperationOneOf1 structure is generated from "#/definitions/operation/oneOf/1".
@@ -250,8 +250,8 @@ type OperationOneOf1 struct {
 type marshalOperationOneOf1 OperationOneOf1
 
 // MarshalJSON encodes JSON.
-func (v OperationOneOf1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOperationOneOf1(v), v.MapOfAnything)
+func (o OperationOneOf1) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOperationOneOf1(o), o.MapOfAnything)
 }
 
 // Operation structure is generated from "#/definitions/operation".
@@ -261,8 +261,8 @@ type Operation struct {
 }
 
 // MarshalJSON encodes JSON.
-func (v Operation) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.Message, v.OneOf1)
+func (o Operation) MarshalJSON() ([]byte, error) {
+	return marshalUnion(o.Message, o.OneOf1)
 }
 
 // Stream structure is generated from "#/definitions/stream".
@@ -278,8 +278,8 @@ type Stream struct {
 type marshalStream Stream
 
 // MarshalJSON encodes JSON.
-func (v Stream) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalStream(v), v.MapOfAnything)
+func (s Stream) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalStream(s), s.MapOfAnything)
 }
 
 // StreamFramingOneOf0 structure is generated from "#/definitions/stream->framing/oneOf/0".
@@ -295,8 +295,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v StreamFramingOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constStreamFramingOneOf0, marshalStreamFramingOneOf0(v))
+func (s StreamFramingOneOf0) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constStreamFramingOneOf0, marshalStreamFramingOneOf0(s))
 }
 
 // StreamFramingOneOf1 structure is generated from "#/definitions/stream->framing/oneOf/1".
@@ -310,7 +310,7 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v StreamFramingOneOf1) MarshalJSON() ([]byte, error) {
+func (s StreamFramingOneOf1) MarshalJSON() ([]byte, error) {
 	return marshalUnion(constStreamFramingOneOf1)
 }
 
@@ -325,8 +325,8 @@ type StreamFraming struct {
 }
 
 // MarshalJSON encodes JSON.
-func (v StreamFraming) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfAnything, v.AdditionalProperties, v.OneOf0, v.OneOf1)
+func (s StreamFraming) MarshalJSON() ([]byte, error) {
+	return marshalUnion(s.MapOfAnything, s.AdditionalProperties, s.OneOf0, s.OneOf1)
 }
 
 // Events structure is generated from "#/definitions/events".
@@ -341,8 +341,8 @@ type Events struct {
 type marshalEvents Events
 
 // MarshalJSON encodes JSON.
-func (v Events) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalEvents(v), v.MapOfAnything)
+func (e Events) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalEvents(e), e.MapOfAnything)
 }
 
 // Components structure is generated from "#/definitions/components".
@@ -366,12 +366,12 @@ type Reference struct {
 type marshalReference Reference
 
 // MarshalJSON encodes JSON.
-func (v Reference) MarshalJSON() ([]byte, error) {
-	if len(v.AdditionalProperties) == 0 {
-		return json.Marshal(marshalReference(v))
+func (r Reference) MarshalJSON() ([]byte, error) {
+	if len(r.AdditionalProperties) == 0 {
+		return json.Marshal(marshalReference(r))
 	}
 
-	return marshalUnion(marshalReference(v), v.AdditionalProperties)
+	return marshalUnion(marshalReference(r), r.AdditionalProperties)
 }
 
 // UserPassword structure is generated from "#/definitions/userPassword".
@@ -388,8 +388,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v UserPassword) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constUserPassword, marshalUserPassword(v), v.MapOfAnything)
+func (u UserPassword) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constUserPassword, marshalUserPassword(u), u.MapOfAnything)
 }
 
 // APIKey structure is generated from "#/definitions/apiKey".
@@ -407,8 +407,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v APIKey) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constAPIKey, marshalAPIKey(v), v.MapOfAnything)
+func (a APIKey) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constAPIKey, marshalAPIKey(a), a.MapOfAnything)
 }
 
 // X509 structure is generated from "#/definitions/X509".
@@ -425,8 +425,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v X509) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constX509, marshalX509(v), v.MapOfAnything)
+func (x X509) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constX509, marshalX509(x), x.MapOfAnything)
 }
 
 // SymmetricEncryption structure is generated from "#/definitions/symmetricEncryption".
@@ -443,8 +443,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v SymmetricEncryption) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constSymmetricEncryption, marshalSymmetricEncryption(v), v.MapOfAnything)
+func (s SymmetricEncryption) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constSymmetricEncryption, marshalSymmetricEncryption(s), s.MapOfAnything)
 }
 
 // AsymmetricEncryption structure is generated from "#/definitions/asymmetricEncryption".
@@ -461,8 +461,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v AsymmetricEncryption) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constAsymmetricEncryption, marshalAsymmetricEncryption(v), v.MapOfAnything)
+func (a AsymmetricEncryption) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constAsymmetricEncryption, marshalAsymmetricEncryption(a), a.MapOfAnything)
 }
 
 // NonBearerHTTPSecurityScheme structure is generated from "#/definitions/NonBearerHTTPSecurityScheme".
@@ -480,8 +480,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v NonBearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constNonBearerHTTPSecurityScheme, marshalNonBearerHTTPSecurityScheme(v), v.MapOfAnything)
+func (n NonBearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constNonBearerHTTPSecurityScheme, marshalNonBearerHTTPSecurityScheme(n), n.MapOfAnything)
 }
 
 // BearerHTTPSecurityScheme structure is generated from "#/definitions/BearerHTTPSecurityScheme".
@@ -499,8 +499,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v BearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constBearerHTTPSecurityScheme, marshalBearerHTTPSecurityScheme(v), v.MapOfAnything)
+func (b BearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constBearerHTTPSecurityScheme, marshalBearerHTTPSecurityScheme(b), b.MapOfAnything)
 }
 
 // APIKeyHTTPSecurityScheme structure is generated from "#/definitions/APIKeyHTTPSecurityScheme".
@@ -519,8 +519,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v APIKeyHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constAPIKeyHTTPSecurityScheme, marshalAPIKeyHTTPSecurityScheme(v), v.MapOfAnything)
+func (a APIKeyHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constAPIKeyHTTPSecurityScheme, marshalAPIKeyHTTPSecurityScheme(a), a.MapOfAnything)
 }
 
 // HTTPSecurityScheme structure is generated from "#/definitions/HTTPSecurityScheme".
@@ -531,8 +531,8 @@ type HTTPSecurityScheme struct {
 }
 
 // MarshalJSON encodes JSON.
-func (v HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.NonBearerHTTPSecurityScheme, v.BearerHTTPSecurityScheme, v.APIKeyHTTPSecurityScheme)
+func (h HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(h.NonBearerHTTPSecurityScheme, h.BearerHTTPSecurityScheme, h.APIKeyHTTPSecurityScheme)
 }
 
 // SecurityScheme structure is generated from "#/definitions/SecurityScheme".
@@ -546,8 +546,8 @@ type SecurityScheme struct {
 }
 
 // MarshalJSON encodes JSON.
-func (v SecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.UserPassword, v.APIKey, v.X509, v.SymmetricEncryption, v.AsymmetricEncryption, v.HTTPSecurityScheme)
+func (s SecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(s.UserPassword, s.APIKey, s.X509, s.SymmetricEncryption, s.AsymmetricEncryption, s.HTTPSecurityScheme)
 }
 
 // ComponentsSecuritySchemesAZAZ09 structure is generated from "#/definitions/components->securitySchemes->^[a-zA-Z0-9\.\-_]+$".
@@ -557,8 +557,8 @@ type ComponentsSecuritySchemesAZAZ09 struct {
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsSecuritySchemesAZAZ09) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.Reference, v.SecurityScheme)
+func (c ComponentsSecuritySchemesAZAZ09) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.Reference, c.SecurityScheme)
 }
 
 // ComponentsSecuritySchemes structure is generated from "#/definitions/components->securitySchemes".
@@ -568,8 +568,8 @@ type ComponentsSecuritySchemes struct {
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfComponentsSecuritySchemesAZAZ09Values, v.AdditionalProperties)
+func (c ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfComponentsSecuritySchemesAZAZ09Values, c.AdditionalProperties)
 }
 
 // AsyncAPIAsyncapi is an enum type.

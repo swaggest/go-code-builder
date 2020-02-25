@@ -32,30 +32,30 @@ var ignoreKeysMessagingReaderReads = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *MessagingReaderReads) UnmarshalJSON(data []byte) error {
+func (m *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalMessagingReaderReads(*v)
+	mm := marshalMessagingReaderReads(*m)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mm)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysMessagingReaderReads {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if mm.AdditionalProperties == nil {
+			mm.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -65,21 +65,21 @@ func (v *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		mm.AdditionalProperties[key] = val
 	}
 
-	*v = MessagingReaderReads(vv)
+	*m = MessagingReaderReads(mm)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v MessagingReaderReads) MarshalJSON() ([]byte, error) {
-	if len(v.AdditionalProperties) == 0 {
-		return json.Marshal(marshalMessagingReaderReads(v))
+func (m MessagingReaderReads) MarshalJSON() ([]byte, error) {
+	if len(m.AdditionalProperties) == 0 {
+		return json.Marshal(marshalMessagingReaderReads(m))
 	}
 
-	return marshalUnion(marshalMessagingReaderReads(v), v.AdditionalProperties)
+	return marshalUnion(marshalMessagingReaderReads(m), m.AdditionalProperties)
 }
 
 // Book structure is generated from "#/components/schemas/Book".
@@ -103,42 +103,42 @@ var ignoreKeysBook = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Book) UnmarshalJSON(data []byte) error {
+func (b *Book) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalBook(*v)
+	mb := marshalBook(*b)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mb)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["entity_type"]; !ok || string(v) != `"book"` {
+	if v, ok := rawMap["entity_type"]; !ok || string(v) != `"book"` {
 		return fmt.Errorf(`bad or missing const value for "entity_type" ("book" expected, %s received)`, v)
 	}
 
-	delete(m, "entity_type")
+	delete(rawMap, "entity_type")
 
-	if v, ok := m["reason"]; !ok || string(v) != `"premium"` {
+	if v, ok := rawMap["reason"]; !ok || string(v) != `"premium"` {
 		return fmt.Errorf(`bad or missing const value for "reason" ("premium" expected, %s received)`, v)
 	}
 
-	delete(m, "reason")
+	delete(rawMap, "reason")
 
 	for _, key := range ignoreKeysBook {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if mb.AdditionalProperties == nil {
+			mb.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -148,10 +148,10 @@ func (v *Book) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		mb.AdditionalProperties[key] = val
 	}
 
-	*v = Book(vv)
+	*b = Book(mb)
 
 	return nil
 }
@@ -162,8 +162,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v Book) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constBook, marshalBook(v), v.AdditionalProperties)
+func (b Book) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constBook, marshalBook(b), b.AdditionalProperties)
 }
 
 // PlotStrategy is an enum type.

@@ -22,30 +22,30 @@ var ignoreKeysElement = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Element) UnmarshalJSON(data []byte) error {
+func (e *Element) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalElement(*v)
+	me := marshalElement(*e)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &me)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysElement {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if me.AdditionalProperties == nil {
+			me.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -55,21 +55,21 @@ func (v *Element) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		me.AdditionalProperties[key] = val
 	}
 
-	*v = Element(vv)
+	*e = Element(me)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Element) MarshalJSON() ([]byte, error) {
-	if len(v.AdditionalProperties) == 0 {
-		return json.Marshal(marshalElement(v))
+func (e Element) MarshalJSON() ([]byte, error) {
+	if len(e.AdditionalProperties) == 0 {
+		return json.Marshal(marshalElement(e))
 	}
 
-	return marshalUnion(marshalElement(v), v.AdditionalProperties)
+	return marshalUnion(marshalElement(e), e.AdditionalProperties)
 }
 
 // ElementConditional structure is generated from "#/definitions/element".
@@ -79,25 +79,25 @@ type ElementConditional struct {
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ElementConditional) UnmarshalJSON(data []byte) error {
+func (e *ElementConditional) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.Element)
+	err = json.Unmarshal(data, &e.Element)
 	if err != nil {
-		v.Element = nil
+		e.Element = nil
 	}
 
-	err = json.Unmarshal(data, &v.TypeString)
+	err = json.Unmarshal(data, &e.TypeString)
 	if err != nil {
-		v.TypeString = nil
+		e.TypeString = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ElementConditional) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.Element, v.TypeString)
+func (e ElementConditional) MarshalJSON() ([]byte, error) {
+	return marshalUnion(e.Element, e.TypeString)
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {

@@ -60,334 +60,334 @@ type CoreSchemaMetaSchema struct {
 }
 
 // WithID sets ID value.
-func (v *CoreSchemaMetaSchema) WithID(val string) *CoreSchemaMetaSchema {
-	v.ID = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithID(val string) *CoreSchemaMetaSchema {
+	c.ID = &val
+	return c
 }
 
 // WithSchema sets Schema value.
-func (v *CoreSchemaMetaSchema) WithSchema(val string) *CoreSchemaMetaSchema {
-	v.Schema = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithSchema(val string) *CoreSchemaMetaSchema {
+	c.Schema = &val
+	return c
 }
 
 // WithRef sets Ref value.
-func (v *CoreSchemaMetaSchema) WithRef(val string) *CoreSchemaMetaSchema {
-	v.Ref = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithRef(val string) *CoreSchemaMetaSchema {
+	c.Ref = &val
+	return c
 }
 
 // WithComment sets Comment value.
-func (v *CoreSchemaMetaSchema) WithComment(val string) *CoreSchemaMetaSchema {
-	v.Comment = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithComment(val string) *CoreSchemaMetaSchema {
+	c.Comment = &val
+	return c
 }
 
 // WithTitle sets Title value.
-func (v *CoreSchemaMetaSchema) WithTitle(val string) *CoreSchemaMetaSchema {
-	v.Title = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithTitle(val string) *CoreSchemaMetaSchema {
+	c.Title = &val
+	return c
 }
 
 // WithDescription sets Description value.
-func (v *CoreSchemaMetaSchema) WithDescription(val string) *CoreSchemaMetaSchema {
-	v.Description = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithDescription(val string) *CoreSchemaMetaSchema {
+	c.Description = &val
+	return c
 }
 
 // WithDefault sets Default value.
-func (v *CoreSchemaMetaSchema) WithDefault(val interface{}) *CoreSchemaMetaSchema {
-	v.Default = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithDefault(val interface{}) *CoreSchemaMetaSchema {
+	c.Default = &val
+	return c
 }
 
 // WithReadOnly sets ReadOnly value.
-func (v *CoreSchemaMetaSchema) WithReadOnly(val bool) *CoreSchemaMetaSchema {
-	v.ReadOnly = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithReadOnly(val bool) *CoreSchemaMetaSchema {
+	c.ReadOnly = &val
+	return c
 }
 
 // WithExamples sets Examples value.
-func (v *CoreSchemaMetaSchema) WithExamples(val ...interface{}) *CoreSchemaMetaSchema {
-	v.Examples = val
-	return v
+func (c *CoreSchemaMetaSchema) WithExamples(val ...interface{}) *CoreSchemaMetaSchema {
+	c.Examples = val
+	return c
 }
 
 // WithMultipleOf sets MultipleOf value.
-func (v *CoreSchemaMetaSchema) WithMultipleOf(val float64) *CoreSchemaMetaSchema {
-	v.MultipleOf = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithMultipleOf(val float64) *CoreSchemaMetaSchema {
+	c.MultipleOf = &val
+	return c
 }
 
 // WithMaximum sets Maximum value.
-func (v *CoreSchemaMetaSchema) WithMaximum(val float64) *CoreSchemaMetaSchema {
-	v.Maximum = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithMaximum(val float64) *CoreSchemaMetaSchema {
+	c.Maximum = &val
+	return c
 }
 
 // WithExclusiveMaximum sets ExclusiveMaximum value.
-func (v *CoreSchemaMetaSchema) WithExclusiveMaximum(val float64) *CoreSchemaMetaSchema {
-	v.ExclusiveMaximum = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithExclusiveMaximum(val float64) *CoreSchemaMetaSchema {
+	c.ExclusiveMaximum = &val
+	return c
 }
 
 // WithMinimum sets Minimum value.
-func (v *CoreSchemaMetaSchema) WithMinimum(val float64) *CoreSchemaMetaSchema {
-	v.Minimum = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithMinimum(val float64) *CoreSchemaMetaSchema {
+	c.Minimum = &val
+	return c
 }
 
 // WithExclusiveMinimum sets ExclusiveMinimum value.
-func (v *CoreSchemaMetaSchema) WithExclusiveMinimum(val float64) *CoreSchemaMetaSchema {
-	v.ExclusiveMinimum = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithExclusiveMinimum(val float64) *CoreSchemaMetaSchema {
+	c.ExclusiveMinimum = &val
+	return c
 }
 
 // WithMaxLength sets MaxLength value.
-func (v *CoreSchemaMetaSchema) WithMaxLength(val int64) *CoreSchemaMetaSchema {
-	v.MaxLength = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithMaxLength(val int64) *CoreSchemaMetaSchema {
+	c.MaxLength = &val
+	return c
 }
 
 // WithMinLength sets MinLength value.
-func (v *CoreSchemaMetaSchema) WithMinLength(val int64) *CoreSchemaMetaSchema {
-	v.MinLength = val
-	return v
+func (c *CoreSchemaMetaSchema) WithMinLength(val int64) *CoreSchemaMetaSchema {
+	c.MinLength = val
+	return c
 }
 
 // WithPattern sets Pattern value.
-func (v *CoreSchemaMetaSchema) WithPattern(val string) *CoreSchemaMetaSchema {
-	v.Pattern = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithPattern(val string) *CoreSchemaMetaSchema {
+	c.Pattern = &val
+	return c
 }
 
 // WithAdditionalItems sets AdditionalItems value.
-func (v *CoreSchemaMetaSchema) WithAdditionalItems(val Schema) *CoreSchemaMetaSchema {
-	v.AdditionalItems = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithAdditionalItems(val Schema) *CoreSchemaMetaSchema {
+	c.AdditionalItems = &val
+	return c
 }
 
 // WithItems sets Items value.
-func (v *CoreSchemaMetaSchema) WithItems(val Items) *CoreSchemaMetaSchema {
-	v.Items = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithItems(val Items) *CoreSchemaMetaSchema {
+	c.Items = &val
+	return c
 }
 
 // WithMaxItems sets MaxItems value.
-func (v *CoreSchemaMetaSchema) WithMaxItems(val int64) *CoreSchemaMetaSchema {
-	v.MaxItems = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithMaxItems(val int64) *CoreSchemaMetaSchema {
+	c.MaxItems = &val
+	return c
 }
 
 // WithMinItems sets MinItems value.
-func (v *CoreSchemaMetaSchema) WithMinItems(val int64) *CoreSchemaMetaSchema {
-	v.MinItems = val
-	return v
+func (c *CoreSchemaMetaSchema) WithMinItems(val int64) *CoreSchemaMetaSchema {
+	c.MinItems = val
+	return c
 }
 
 // WithUniqueItems sets UniqueItems value.
-func (v *CoreSchemaMetaSchema) WithUniqueItems(val bool) *CoreSchemaMetaSchema {
-	v.UniqueItems = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithUniqueItems(val bool) *CoreSchemaMetaSchema {
+	c.UniqueItems = &val
+	return c
 }
 
 // WithContains sets Contains value.
-func (v *CoreSchemaMetaSchema) WithContains(val Schema) *CoreSchemaMetaSchema {
-	v.Contains = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithContains(val Schema) *CoreSchemaMetaSchema {
+	c.Contains = &val
+	return c
 }
 
 // WithMaxProperties sets MaxProperties value.
-func (v *CoreSchemaMetaSchema) WithMaxProperties(val int64) *CoreSchemaMetaSchema {
-	v.MaxProperties = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithMaxProperties(val int64) *CoreSchemaMetaSchema {
+	c.MaxProperties = &val
+	return c
 }
 
 // WithMinProperties sets MinProperties value.
-func (v *CoreSchemaMetaSchema) WithMinProperties(val int64) *CoreSchemaMetaSchema {
-	v.MinProperties = val
-	return v
+func (c *CoreSchemaMetaSchema) WithMinProperties(val int64) *CoreSchemaMetaSchema {
+	c.MinProperties = val
+	return c
 }
 
 // WithRequired sets Required value.
-func (v *CoreSchemaMetaSchema) WithRequired(val ...string) *CoreSchemaMetaSchema {
-	v.Required = val
-	return v
+func (c *CoreSchemaMetaSchema) WithRequired(val ...string) *CoreSchemaMetaSchema {
+	c.Required = val
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *CoreSchemaMetaSchema) WithAdditionalProperties(val Schema) *CoreSchemaMetaSchema {
-	v.AdditionalProperties = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithAdditionalProperties(val Schema) *CoreSchemaMetaSchema {
+	c.AdditionalProperties = &val
+	return c
 }
 
 // WithDefinitions sets Definitions value.
-func (v *CoreSchemaMetaSchema) WithDefinitions(val map[string]Schema) *CoreSchemaMetaSchema {
-	v.Definitions = val
-	return v
+func (c *CoreSchemaMetaSchema) WithDefinitions(val map[string]Schema) *CoreSchemaMetaSchema {
+	c.Definitions = val
+	return c
 }
 
 // WithDefinitionsItem sets Definitions item value.
-func (v *CoreSchemaMetaSchema) WithDefinitionsItem(key string, val Schema) *CoreSchemaMetaSchema {
-	if v.Definitions == nil {
-		v.Definitions = make(map[string]Schema, 1)
+func (c *CoreSchemaMetaSchema) WithDefinitionsItem(key string, val Schema) *CoreSchemaMetaSchema {
+	if c.Definitions == nil {
+		c.Definitions = make(map[string]Schema, 1)
 	}
 
-	v.Definitions[key] = val
+	c.Definitions[key] = val
 
-	return v
+	return c
 }
 
 // WithProperties sets Properties value.
-func (v *CoreSchemaMetaSchema) WithProperties(val map[string]Schema) *CoreSchemaMetaSchema {
-	v.Properties = val
-	return v
+func (c *CoreSchemaMetaSchema) WithProperties(val map[string]Schema) *CoreSchemaMetaSchema {
+	c.Properties = val
+	return c
 }
 
 // WithPropertiesItem sets Properties item value.
-func (v *CoreSchemaMetaSchema) WithPropertiesItem(key string, val Schema) *CoreSchemaMetaSchema {
-	if v.Properties == nil {
-		v.Properties = make(map[string]Schema, 1)
+func (c *CoreSchemaMetaSchema) WithPropertiesItem(key string, val Schema) *CoreSchemaMetaSchema {
+	if c.Properties == nil {
+		c.Properties = make(map[string]Schema, 1)
 	}
 
-	v.Properties[key] = val
+	c.Properties[key] = val
 
-	return v
+	return c
 }
 
 // WithPatternProperties sets PatternProperties value.
-func (v *CoreSchemaMetaSchema) WithPatternProperties(val map[string]Schema) *CoreSchemaMetaSchema {
-	v.PatternProperties = val
-	return v
+func (c *CoreSchemaMetaSchema) WithPatternProperties(val map[string]Schema) *CoreSchemaMetaSchema {
+	c.PatternProperties = val
+	return c
 }
 
 // WithPatternPropertiesItem sets PatternProperties item value.
-func (v *CoreSchemaMetaSchema) WithPatternPropertiesItem(key string, val Schema) *CoreSchemaMetaSchema {
-	if v.PatternProperties == nil {
-		v.PatternProperties = make(map[string]Schema, 1)
+func (c *CoreSchemaMetaSchema) WithPatternPropertiesItem(key string, val Schema) *CoreSchemaMetaSchema {
+	if c.PatternProperties == nil {
+		c.PatternProperties = make(map[string]Schema, 1)
 	}
 
-	v.PatternProperties[key] = val
+	c.PatternProperties[key] = val
 
-	return v
+	return c
 }
 
 // WithDependencies sets Dependencies value.
-func (v *CoreSchemaMetaSchema) WithDependencies(val map[string]DependenciesAdditionalProperties) *CoreSchemaMetaSchema {
-	v.Dependencies = val
-	return v
+func (c *CoreSchemaMetaSchema) WithDependencies(val map[string]DependenciesAdditionalProperties) *CoreSchemaMetaSchema {
+	c.Dependencies = val
+	return c
 }
 
 // WithDependenciesItem sets Dependencies item value.
-func (v *CoreSchemaMetaSchema) WithDependenciesItem(key string, val DependenciesAdditionalProperties) *CoreSchemaMetaSchema {
-	if v.Dependencies == nil {
-		v.Dependencies = make(map[string]DependenciesAdditionalProperties, 1)
+func (c *CoreSchemaMetaSchema) WithDependenciesItem(key string, val DependenciesAdditionalProperties) *CoreSchemaMetaSchema {
+	if c.Dependencies == nil {
+		c.Dependencies = make(map[string]DependenciesAdditionalProperties, 1)
 	}
 
-	v.Dependencies[key] = val
+	c.Dependencies[key] = val
 
-	return v
+	return c
 }
 
 // WithPropertyNames sets PropertyNames value.
-func (v *CoreSchemaMetaSchema) WithPropertyNames(val Schema) *CoreSchemaMetaSchema {
-	v.PropertyNames = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithPropertyNames(val Schema) *CoreSchemaMetaSchema {
+	c.PropertyNames = &val
+	return c
 }
 
 // WithConst sets Const value.
-func (v *CoreSchemaMetaSchema) WithConst(val interface{}) *CoreSchemaMetaSchema {
-	v.Const = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithConst(val interface{}) *CoreSchemaMetaSchema {
+	c.Const = &val
+	return c
 }
 
 // WithEnum sets Enum value.
-func (v *CoreSchemaMetaSchema) WithEnum(val ...interface{}) *CoreSchemaMetaSchema {
-	v.Enum = val
-	return v
+func (c *CoreSchemaMetaSchema) WithEnum(val ...interface{}) *CoreSchemaMetaSchema {
+	c.Enum = val
+	return c
 }
 
 // WithType sets Type value.
-func (v *CoreSchemaMetaSchema) WithType(val Type) *CoreSchemaMetaSchema {
-	v.Type = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithType(val Type) *CoreSchemaMetaSchema {
+	c.Type = &val
+	return c
 }
 
 // WithFormat sets Format value.
-func (v *CoreSchemaMetaSchema) WithFormat(val string) *CoreSchemaMetaSchema {
-	v.Format = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithFormat(val string) *CoreSchemaMetaSchema {
+	c.Format = &val
+	return c
 }
 
 // WithContentMediaType sets ContentMediaType value.
-func (v *CoreSchemaMetaSchema) WithContentMediaType(val string) *CoreSchemaMetaSchema {
-	v.ContentMediaType = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithContentMediaType(val string) *CoreSchemaMetaSchema {
+	c.ContentMediaType = &val
+	return c
 }
 
 // WithContentEncoding sets ContentEncoding value.
-func (v *CoreSchemaMetaSchema) WithContentEncoding(val string) *CoreSchemaMetaSchema {
-	v.ContentEncoding = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithContentEncoding(val string) *CoreSchemaMetaSchema {
+	c.ContentEncoding = &val
+	return c
 }
 
 // WithIf sets If value.
-func (v *CoreSchemaMetaSchema) WithIf(val Schema) *CoreSchemaMetaSchema {
-	v.If = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithIf(val Schema) *CoreSchemaMetaSchema {
+	c.If = &val
+	return c
 }
 
 // WithThen sets Then value.
-func (v *CoreSchemaMetaSchema) WithThen(val Schema) *CoreSchemaMetaSchema {
-	v.Then = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithThen(val Schema) *CoreSchemaMetaSchema {
+	c.Then = &val
+	return c
 }
 
 // WithElse sets Else value.
-func (v *CoreSchemaMetaSchema) WithElse(val Schema) *CoreSchemaMetaSchema {
-	v.Else = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithElse(val Schema) *CoreSchemaMetaSchema {
+	c.Else = &val
+	return c
 }
 
 // WithAllOf sets AllOf value.
-func (v *CoreSchemaMetaSchema) WithAllOf(val ...Schema) *CoreSchemaMetaSchema {
-	v.AllOf = val
-	return v
+func (c *CoreSchemaMetaSchema) WithAllOf(val ...Schema) *CoreSchemaMetaSchema {
+	c.AllOf = val
+	return c
 }
 
 // WithAnyOf sets AnyOf value.
-func (v *CoreSchemaMetaSchema) WithAnyOf(val ...Schema) *CoreSchemaMetaSchema {
-	v.AnyOf = val
-	return v
+func (c *CoreSchemaMetaSchema) WithAnyOf(val ...Schema) *CoreSchemaMetaSchema {
+	c.AnyOf = val
+	return c
 }
 
 // WithOneOf sets OneOf value.
-func (v *CoreSchemaMetaSchema) WithOneOf(val ...Schema) *CoreSchemaMetaSchema {
-	v.OneOf = val
-	return v
+func (c *CoreSchemaMetaSchema) WithOneOf(val ...Schema) *CoreSchemaMetaSchema {
+	c.OneOf = val
+	return c
 }
 
 // WithNot sets Not value.
-func (v *CoreSchemaMetaSchema) WithNot(val Schema) *CoreSchemaMetaSchema {
-	v.Not = &val
-	return v
+func (c *CoreSchemaMetaSchema) WithNot(val Schema) *CoreSchemaMetaSchema {
+	c.Not = &val
+	return c
 }
 
 // WithExtraProperties sets ExtraProperties value.
-func (v *CoreSchemaMetaSchema) WithExtraProperties(val map[string]interface{}) *CoreSchemaMetaSchema {
-	v.ExtraProperties = val
-	return v
+func (c *CoreSchemaMetaSchema) WithExtraProperties(val map[string]interface{}) *CoreSchemaMetaSchema {
+	c.ExtraProperties = val
+	return c
 }
 
 // WithExtraPropertiesItem sets ExtraProperties item value.
-func (v *CoreSchemaMetaSchema) WithExtraPropertiesItem(key string, val interface{}) *CoreSchemaMetaSchema {
-	if v.ExtraProperties == nil {
-		v.ExtraProperties = make(map[string]interface{}, 1)
+func (c *CoreSchemaMetaSchema) WithExtraPropertiesItem(key string, val interface{}) *CoreSchemaMetaSchema {
+	if c.ExtraProperties == nil {
+		c.ExtraProperties = make(map[string]interface{}, 1)
 	}
 
-	v.ExtraProperties[key] = val
+	c.ExtraProperties[key] = val
 
-	return v
+	return c
 }
 
 type marshalCoreSchemaMetaSchema CoreSchemaMetaSchema
@@ -441,44 +441,44 @@ var ignoreKeysCoreSchemaMetaSchema = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
+func (c *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalCoreSchemaMetaSchema(*v)
+	mc := marshalCoreSchemaMetaSchema(*c)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mc)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if vv.Default == nil {
-		if _, ok := m["default"]; ok {
+	if mc.Default == nil {
+		if _, ok := rawMap["default"]; ok {
 			var v interface{}
-			vv.Default = &v
+			mc.Default = &v
 		}
 	}
 
-	if vv.Const == nil {
-		if _, ok := m["const"]; ok {
+	if mc.Const == nil {
+		if _, ok := rawMap["const"]; ok {
 			var v interface{}
-			vv.Const = &v
+			mc.Const = &v
 		}
 	}
 
 	for _, key := range ignoreKeysCoreSchemaMetaSchema {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.ExtraProperties == nil {
-			vv.ExtraProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if mc.ExtraProperties == nil {
+			mc.ExtraProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -488,21 +488,21 @@ func (v *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.ExtraProperties[key] = val
+		mc.ExtraProperties[key] = val
 	}
 
-	*v = CoreSchemaMetaSchema(vv)
+	*c = CoreSchemaMetaSchema(mc)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v CoreSchemaMetaSchema) MarshalJSON() ([]byte, error) {
-	if len(v.ExtraProperties) == 0 {
-		return json.Marshal(marshalCoreSchemaMetaSchema(v))
+func (c CoreSchemaMetaSchema) MarshalJSON() ([]byte, error) {
+	if len(c.ExtraProperties) == 0 {
+		return json.Marshal(marshalCoreSchemaMetaSchema(c))
 	}
 
-	return marshalUnion(marshalCoreSchemaMetaSchema(v), v.ExtraProperties)
+	return marshalUnion(marshalCoreSchemaMetaSchema(c), c.ExtraProperties)
 }
 
 // Schema structure is generated from "#".
@@ -514,37 +514,37 @@ type Schema struct {
 }
 
 // WithTypeObject sets TypeObject value.
-func (v *Schema) WithTypeObject(val CoreSchemaMetaSchema) *Schema {
-	v.TypeObject = &val
-	return v
+func (s *Schema) WithTypeObject(val CoreSchemaMetaSchema) *Schema {
+	s.TypeObject = &val
+	return s
 }
 
 // WithTypeBoolean sets TypeBoolean value.
-func (v *Schema) WithTypeBoolean(val bool) *Schema {
-	v.TypeBoolean = &val
-	return v
+func (s *Schema) WithTypeBoolean(val bool) *Schema {
+	s.TypeBoolean = &val
+	return s
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Schema) UnmarshalJSON(data []byte) error {
+func (s *Schema) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.TypeObject)
+	err = json.Unmarshal(data, &s.TypeObject)
 	if err != nil {
-		v.TypeObject = nil
+		s.TypeObject = nil
 	}
 
-	err = json.Unmarshal(data, &v.TypeBoolean)
+	err = json.Unmarshal(data, &s.TypeBoolean)
 	if err != nil {
-		v.TypeBoolean = nil
+		s.TypeBoolean = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Schema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.TypeObject, v.TypeBoolean)
+func (s Schema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(s.TypeObject, s.TypeBoolean)
 }
 
 // Items structure is generated from "#[object]->items".
@@ -554,37 +554,37 @@ type Items struct {
 }
 
 // WithSchema sets Schema value.
-func (v *Items) WithSchema(val Schema) *Items {
-	v.Schema = &val
-	return v
+func (i *Items) WithSchema(val Schema) *Items {
+	i.Schema = &val
+	return i
 }
 
 // WithSchemaArray sets SchemaArray value.
-func (v *Items) WithSchemaArray(val ...Schema) *Items {
-	v.SchemaArray = val
-	return v
+func (i *Items) WithSchemaArray(val ...Schema) *Items {
+	i.SchemaArray = val
+	return i
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Items) UnmarshalJSON(data []byte) error {
+func (i *Items) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.Schema)
+	err = json.Unmarshal(data, &i.Schema)
 	if err != nil {
-		v.Schema = nil
+		i.Schema = nil
 	}
 
-	err = json.Unmarshal(data, &v.SchemaArray)
+	err = json.Unmarshal(data, &i.SchemaArray)
 	if err != nil {
-		v.SchemaArray = nil
+		i.SchemaArray = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Items) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.Schema, v.SchemaArray)
+func (i Items) MarshalJSON() ([]byte, error) {
+	return marshalUnion(i.Schema, i.SchemaArray)
 }
 
 // DependenciesAdditionalProperties structure is generated from "#[object]->dependencies->additionalProperties".
@@ -594,37 +594,37 @@ type DependenciesAdditionalProperties struct {
 }
 
 // WithSchema sets Schema value.
-func (v *DependenciesAdditionalProperties) WithSchema(val Schema) *DependenciesAdditionalProperties {
-	v.Schema = &val
-	return v
+func (d *DependenciesAdditionalProperties) WithSchema(val Schema) *DependenciesAdditionalProperties {
+	d.Schema = &val
+	return d
 }
 
 // WithStringArray sets StringArray value.
-func (v *DependenciesAdditionalProperties) WithStringArray(val ...string) *DependenciesAdditionalProperties {
-	v.StringArray = val
-	return v
+func (d *DependenciesAdditionalProperties) WithStringArray(val ...string) *DependenciesAdditionalProperties {
+	d.StringArray = val
+	return d
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (d *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.Schema)
+	err = json.Unmarshal(data, &d.Schema)
 	if err != nil {
-		v.Schema = nil
+		d.Schema = nil
 	}
 
-	err = json.Unmarshal(data, &v.StringArray)
+	err = json.Unmarshal(data, &d.StringArray)
 	if err != nil {
-		v.StringArray = nil
+		d.StringArray = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.Schema, v.StringArray)
+func (d DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
+	return marshalUnion(d.Schema, d.StringArray)
 }
 
 // Type structure is generated from "#[object]->type".
@@ -634,37 +634,37 @@ type Type struct {
 }
 
 // WithSimpleTypes sets SimpleTypes value.
-func (v *Type) WithSimpleTypes(val SimpleTypes) *Type {
-	v.SimpleTypes = &val
-	return v
+func (t *Type) WithSimpleTypes(val SimpleTypes) *Type {
+	t.SimpleTypes = &val
+	return t
 }
 
 // WithSliceOfSimpleTypesValues sets SliceOfSimpleTypesValues value.
-func (v *Type) WithSliceOfSimpleTypesValues(val ...SimpleTypes) *Type {
-	v.SliceOfSimpleTypesValues = val
-	return v
+func (t *Type) WithSliceOfSimpleTypesValues(val ...SimpleTypes) *Type {
+	t.SliceOfSimpleTypesValues = val
+	return t
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Type) UnmarshalJSON(data []byte) error {
+func (t *Type) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.SimpleTypes)
+	err = json.Unmarshal(data, &t.SimpleTypes)
 	if err != nil {
-		v.SimpleTypes = nil
+		t.SimpleTypes = nil
 	}
 
-	err = json.Unmarshal(data, &v.SliceOfSimpleTypesValues)
+	err = json.Unmarshal(data, &t.SliceOfSimpleTypesValues)
 	if err != nil {
-		v.SliceOfSimpleTypesValues = nil
+		t.SliceOfSimpleTypesValues = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Type) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.SimpleTypes, v.SliceOfSimpleTypesValues)
+func (t Type) MarshalJSON() ([]byte, error) {
+	return marshalUnion(t.SimpleTypes, t.SliceOfSimpleTypesValues)
 }
 
 // SimpleTypes is an enum type.

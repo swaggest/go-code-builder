@@ -25,11 +25,13 @@ class FluentSetter
 
     public static function make(StructDef $structDef, StructProperty $goProperty)
     {
+        $receiver = strtolower($structDef->getType()->getName()[0]);
+
         $setter = new FuncDef(
             'With' . $goProperty->getName(),
             'With' . $goProperty->getName() . ' sets ' . $goProperty->getName() . ' value.'
         );
-        $setter->setSelf(new Argument('v', new Pointer($structDef->getType())));
+        $setter->setSelf(new Argument($receiver, new Pointer($structDef->getType())));
 
         $valType = $goProperty->getType();
         $valRef = '';
@@ -48,8 +50,8 @@ class FluentSetter
         $setter->setResult((new Result())->add(null, new Pointer($structDef->getType())));
 
         $setter->setBody(new Code(<<<GO
-v.{$goProperty->getName()} = {$valRef}val
-return v
+{$receiver}.{$goProperty->getName()} = {$valRef}val
+return {$receiver}
 GO
         ));
 
@@ -63,11 +65,13 @@ GO
             return null;
         }
 
+        $receiver = strtolower($structDef->getType()->getName()[0]);
+
         $setter = new FuncDef(
             'With' . $goProperty->getName() . 'Item',
             'With' . $goProperty->getName() . 'Item sets ' . $goProperty->getName() . ' item value.'
         );
-        $setter->setSelf(new Argument('v', new Pointer($structDef->getType())));
+        $setter->setSelf(new Argument($receiver, new Pointer($structDef->getType())));
 
         $setter->setArguments((new Arguments())
             ->add('key', $valType->getKeyType())
@@ -76,15 +80,15 @@ GO
         $setter->setResult((new Result())->add(null, new Pointer($structDef->getType())));
 
         $setter->setBody(new Code(new PlaceholderString(<<<GO
-if v.{$goProperty->getName()} == nil {
-    v.{$goProperty->getName()} = make(:type, 1)
+if :receiver.{$goProperty->getName()} == nil {
+    :receiver.{$goProperty->getName()} = make(:type, 1)
 }
 
-v.{$goProperty->getName()}[key] = val
+:receiver.{$goProperty->getName()}[key] = val
 
-return v
+return :receiver
 GO
-            , [':type' => $valType])));
+            , [':type' => $valType, ':receiver' => new Code($receiver)])));
 
         return $setter;
     }

@@ -54,30 +54,30 @@ var ignoreKeysUntitled1 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Untitled1) UnmarshalJSON(data []byte) error {
+func (u *Untitled1) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalUntitled1(*v)
+	mu := marshalUntitled1(*u)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mu)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysUntitled1 {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if mu.AdditionalProperties == nil {
+			mu.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -87,21 +87,21 @@ func (v *Untitled1) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		mu.AdditionalProperties[key] = val
 	}
 
-	*v = Untitled1(vv)
+	*u = Untitled1(mu)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Untitled1) MarshalJSON() ([]byte, error) {
-	if len(v.AdditionalProperties) == 0 {
-		return json.Marshal(marshalUntitled1(v))
+func (u Untitled1) MarshalJSON() ([]byte, error) {
+	if len(u.AdditionalProperties) == 0 {
+		return json.Marshal(marshalUntitled1(u))
 	}
 
-	return marshalUnion(marshalUntitled1(v), v.AdditionalProperties)
+	return marshalUnion(marshalUntitled1(u), u.AdditionalProperties)
 }
 
 // Another structure is generated from "#->another".

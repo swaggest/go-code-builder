@@ -26,68 +26,68 @@ type OpenAPI struct {
 }
 
 // WithOpenapi sets Openapi value.
-func (v *OpenAPI) WithOpenapi(val string) *OpenAPI {
-	v.Openapi = &val
-	return v
+func (o *OpenAPI) WithOpenapi(val string) *OpenAPI {
+	o.Openapi = &val
+	return o
 }
 
 // WithInfo sets Info value.
-func (v *OpenAPI) WithInfo(val Info) *OpenAPI {
-	v.Info = &val
-	return v
+func (o *OpenAPI) WithInfo(val Info) *OpenAPI {
+	o.Info = &val
+	return o
 }
 
 // WithExternalDocs sets ExternalDocs value.
-func (v *OpenAPI) WithExternalDocs(val ExternalDocumentation) *OpenAPI {
-	v.ExternalDocs = &val
-	return v
+func (o *OpenAPI) WithExternalDocs(val ExternalDocumentation) *OpenAPI {
+	o.ExternalDocs = &val
+	return o
 }
 
 // WithServers sets Servers value.
-func (v *OpenAPI) WithServers(val ...Server) *OpenAPI {
-	v.Servers = val
-	return v
+func (o *OpenAPI) WithServers(val ...Server) *OpenAPI {
+	o.Servers = val
+	return o
 }
 
 // WithSecurity sets Security value.
-func (v *OpenAPI) WithSecurity(val ...map[string][]string) *OpenAPI {
-	v.Security = val
-	return v
+func (o *OpenAPI) WithSecurity(val ...map[string][]string) *OpenAPI {
+	o.Security = val
+	return o
 }
 
 // WithTags sets Tags value.
-func (v *OpenAPI) WithTags(val ...Tag) *OpenAPI {
-	v.Tags = val
-	return v
+func (o *OpenAPI) WithTags(val ...Tag) *OpenAPI {
+	o.Tags = val
+	return o
 }
 
 // WithPaths sets Paths value.
-func (v *OpenAPI) WithPaths(val Paths) *OpenAPI {
-	v.Paths = &val
-	return v
+func (o *OpenAPI) WithPaths(val Paths) *OpenAPI {
+	o.Paths = &val
+	return o
 }
 
 // WithComponents sets Components value.
-func (v *OpenAPI) WithComponents(val Components) *OpenAPI {
-	v.Components = &val
-	return v
+func (o *OpenAPI) WithComponents(val Components) *OpenAPI {
+	o.Components = &val
+	return o
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *OpenAPI) WithMapOfAnything(val map[string]interface{}) *OpenAPI {
-	v.MapOfAnything = val
-	return v
+func (o *OpenAPI) WithMapOfAnything(val map[string]interface{}) *OpenAPI {
+	o.MapOfAnything = val
+	return o
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *OpenAPI) WithMapOfAnythingItem(key string, val interface{}) *OpenAPI {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (o *OpenAPI) WithMapOfAnythingItem(key string, val interface{}) *OpenAPI {
+	if o.MapOfAnything == nil {
+		o.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	o.MapOfAnything[key] = val
 
-	return v
+	return o
 }
 
 type marshalOpenAPI OpenAPI
@@ -104,35 +104,35 @@ var ignoreKeysOpenAPI = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *OpenAPI) UnmarshalJSON(data []byte) error {
+func (o *OpenAPI) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalOpenAPI(*v)
+	mo := marshalOpenAPI(*o)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mo)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysOpenAPI {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mo.MapOfAnything == nil {
+				mo.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -142,22 +142,22 @@ func (v *OpenAPI) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mo.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = OpenAPI(vv)
+	*o = OpenAPI(mo)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v OpenAPI) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOpenAPI(v), v.MapOfAnything)
+func (o OpenAPI) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOpenAPI(o), o.MapOfAnything)
 }
 
 // Info structure is generated from "#/definitions/Info".
@@ -172,56 +172,56 @@ type Info struct {
 }
 
 // WithTitle sets Title value.
-func (v *Info) WithTitle(val string) *Info {
-	v.Title = &val
-	return v
+func (i *Info) WithTitle(val string) *Info {
+	i.Title = &val
+	return i
 }
 
 // WithDescription sets Description value.
-func (v *Info) WithDescription(val string) *Info {
-	v.Description = &val
-	return v
+func (i *Info) WithDescription(val string) *Info {
+	i.Description = &val
+	return i
 }
 
 // WithTermsOfService sets TermsOfService value.
-func (v *Info) WithTermsOfService(val string) *Info {
-	v.TermsOfService = &val
-	return v
+func (i *Info) WithTermsOfService(val string) *Info {
+	i.TermsOfService = &val
+	return i
 }
 
 // WithContact sets Contact value.
-func (v *Info) WithContact(val Contact) *Info {
-	v.Contact = &val
-	return v
+func (i *Info) WithContact(val Contact) *Info {
+	i.Contact = &val
+	return i
 }
 
 // WithLicense sets License value.
-func (v *Info) WithLicense(val License) *Info {
-	v.License = &val
-	return v
+func (i *Info) WithLicense(val License) *Info {
+	i.License = &val
+	return i
 }
 
 // WithVersion sets Version value.
-func (v *Info) WithVersion(val string) *Info {
-	v.Version = &val
-	return v
+func (i *Info) WithVersion(val string) *Info {
+	i.Version = &val
+	return i
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Info) WithMapOfAnything(val map[string]interface{}) *Info {
-	v.MapOfAnything = val
-	return v
+func (i *Info) WithMapOfAnything(val map[string]interface{}) *Info {
+	i.MapOfAnything = val
+	return i
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Info) WithMapOfAnythingItem(key string, val interface{}) *Info {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (i *Info) WithMapOfAnythingItem(key string, val interface{}) *Info {
+	if i.MapOfAnything == nil {
+		i.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	i.MapOfAnything[key] = val
 
-	return v
+	return i
 }
 
 type marshalInfo Info
@@ -236,35 +236,35 @@ var ignoreKeysInfo = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Info) UnmarshalJSON(data []byte) error {
+func (i *Info) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalInfo(*v)
+	mi := marshalInfo(*i)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mi)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysInfo {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mi.MapOfAnything == nil {
+				mi.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -274,22 +274,22 @@ func (v *Info) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mi.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Info(vv)
+	*i = Info(mi)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Info) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalInfo(v), v.MapOfAnything)
+func (i Info) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalInfo(i), i.MapOfAnything)
 }
 
 // Contact structure is generated from "#/definitions/Contact".
@@ -301,38 +301,38 @@ type Contact struct {
 }
 
 // WithName sets Name value.
-func (v *Contact) WithName(val string) *Contact {
-	v.Name = &val
-	return v
+func (c *Contact) WithName(val string) *Contact {
+	c.Name = &val
+	return c
 }
 
 // WithURL sets URL value.
-func (v *Contact) WithURL(val string) *Contact {
-	v.URL = &val
-	return v
+func (c *Contact) WithURL(val string) *Contact {
+	c.URL = &val
+	return c
 }
 
 // WithEmail sets Email value.
-func (v *Contact) WithEmail(val string) *Contact {
-	v.Email = &val
-	return v
+func (c *Contact) WithEmail(val string) *Contact {
+	c.Email = &val
+	return c
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Contact) WithMapOfAnything(val map[string]interface{}) *Contact {
-	v.MapOfAnything = val
-	return v
+func (c *Contact) WithMapOfAnything(val map[string]interface{}) *Contact {
+	c.MapOfAnything = val
+	return c
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Contact) WithMapOfAnythingItem(key string, val interface{}) *Contact {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (c *Contact) WithMapOfAnythingItem(key string, val interface{}) *Contact {
+	if c.MapOfAnything == nil {
+		c.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	c.MapOfAnything[key] = val
 
-	return v
+	return c
 }
 
 type marshalContact Contact
@@ -344,35 +344,35 @@ var ignoreKeysContact = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Contact) UnmarshalJSON(data []byte) error {
+func (c *Contact) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalContact(*v)
+	mc := marshalContact(*c)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mc)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysContact {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mc.MapOfAnything == nil {
+				mc.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -382,22 +382,22 @@ func (v *Contact) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mc.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Contact(vv)
+	*c = Contact(mc)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Contact) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalContact(v), v.MapOfAnything)
+func (c Contact) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalContact(c), c.MapOfAnything)
 }
 
 // License structure is generated from "#/definitions/License".
@@ -408,32 +408,32 @@ type License struct {
 }
 
 // WithName sets Name value.
-func (v *License) WithName(val string) *License {
-	v.Name = &val
-	return v
+func (l *License) WithName(val string) *License {
+	l.Name = &val
+	return l
 }
 
 // WithURL sets URL value.
-func (v *License) WithURL(val string) *License {
-	v.URL = &val
-	return v
+func (l *License) WithURL(val string) *License {
+	l.URL = &val
+	return l
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *License) WithMapOfAnything(val map[string]interface{}) *License {
-	v.MapOfAnything = val
-	return v
+func (l *License) WithMapOfAnything(val map[string]interface{}) *License {
+	l.MapOfAnything = val
+	return l
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *License) WithMapOfAnythingItem(key string, val interface{}) *License {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (l *License) WithMapOfAnythingItem(key string, val interface{}) *License {
+	if l.MapOfAnything == nil {
+		l.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	l.MapOfAnything[key] = val
 
-	return v
+	return l
 }
 
 type marshalLicense License
@@ -444,35 +444,35 @@ var ignoreKeysLicense = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *License) UnmarshalJSON(data []byte) error {
+func (l *License) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalLicense(*v)
+	ml := marshalLicense(*l)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &ml)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysLicense {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if ml.MapOfAnything == nil {
+				ml.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -482,22 +482,22 @@ func (v *License) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			ml.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = License(vv)
+	*l = License(ml)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v License) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalLicense(v), v.MapOfAnything)
+func (l License) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalLicense(l), l.MapOfAnything)
 }
 
 // ExternalDocumentation structure is generated from "#/definitions/ExternalDocumentation".
@@ -510,32 +510,32 @@ type ExternalDocumentation struct {
 }
 
 // WithDescription sets Description value.
-func (v *ExternalDocumentation) WithDescription(val string) *ExternalDocumentation {
-	v.Description = &val
-	return v
+func (e *ExternalDocumentation) WithDescription(val string) *ExternalDocumentation {
+	e.Description = &val
+	return e
 }
 
 // WithURL sets URL value.
-func (v *ExternalDocumentation) WithURL(val string) *ExternalDocumentation {
-	v.URL = &val
-	return v
+func (e *ExternalDocumentation) WithURL(val string) *ExternalDocumentation {
+	e.URL = &val
+	return e
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *ExternalDocumentation) WithMapOfAnything(val map[string]interface{}) *ExternalDocumentation {
-	v.MapOfAnything = val
-	return v
+func (e *ExternalDocumentation) WithMapOfAnything(val map[string]interface{}) *ExternalDocumentation {
+	e.MapOfAnything = val
+	return e
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *ExternalDocumentation) WithMapOfAnythingItem(key string, val interface{}) *ExternalDocumentation {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (e *ExternalDocumentation) WithMapOfAnythingItem(key string, val interface{}) *ExternalDocumentation {
+	if e.MapOfAnything == nil {
+		e.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	e.MapOfAnything[key] = val
 
-	return v
+	return e
 }
 
 type marshalExternalDocumentation ExternalDocumentation
@@ -546,35 +546,35 @@ var ignoreKeysExternalDocumentation = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ExternalDocumentation) UnmarshalJSON(data []byte) error {
+func (e *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalExternalDocumentation(*v)
+	me := marshalExternalDocumentation(*e)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &me)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysExternalDocumentation {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if me.MapOfAnything == nil {
+				me.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -584,22 +584,22 @@ func (v *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			me.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = ExternalDocumentation(vv)
+	*e = ExternalDocumentation(me)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ExternalDocumentation) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalExternalDocumentation(v), v.MapOfAnything)
+func (e ExternalDocumentation) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalExternalDocumentation(e), e.MapOfAnything)
 }
 
 // Server structure is generated from "#/definitions/Server".
@@ -611,49 +611,49 @@ type Server struct {
 }
 
 // WithURL sets URL value.
-func (v *Server) WithURL(val string) *Server {
-	v.URL = &val
-	return v
+func (s *Server) WithURL(val string) *Server {
+	s.URL = &val
+	return s
 }
 
 // WithDescription sets Description value.
-func (v *Server) WithDescription(val string) *Server {
-	v.Description = &val
-	return v
+func (s *Server) WithDescription(val string) *Server {
+	s.Description = &val
+	return s
 }
 
 // WithVariables sets Variables value.
-func (v *Server) WithVariables(val map[string]ServerVariable) *Server {
-	v.Variables = val
-	return v
+func (s *Server) WithVariables(val map[string]ServerVariable) *Server {
+	s.Variables = val
+	return s
 }
 
 // WithVariablesItem sets Variables item value.
-func (v *Server) WithVariablesItem(key string, val ServerVariable) *Server {
-	if v.Variables == nil {
-		v.Variables = make(map[string]ServerVariable, 1)
+func (s *Server) WithVariablesItem(key string, val ServerVariable) *Server {
+	if s.Variables == nil {
+		s.Variables = make(map[string]ServerVariable, 1)
 	}
 
-	v.Variables[key] = val
+	s.Variables[key] = val
 
-	return v
+	return s
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Server) WithMapOfAnything(val map[string]interface{}) *Server {
-	v.MapOfAnything = val
-	return v
+func (s *Server) WithMapOfAnything(val map[string]interface{}) *Server {
+	s.MapOfAnything = val
+	return s
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Server) WithMapOfAnythingItem(key string, val interface{}) *Server {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (s *Server) WithMapOfAnythingItem(key string, val interface{}) *Server {
+	if s.MapOfAnything == nil {
+		s.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	s.MapOfAnything[key] = val
 
-	return v
+	return s
 }
 
 type marshalServer Server
@@ -665,35 +665,35 @@ var ignoreKeysServer = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Server) UnmarshalJSON(data []byte) error {
+func (s *Server) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalServer(*v)
+	ms := marshalServer(*s)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &ms)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysServer {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if ms.MapOfAnything == nil {
+				ms.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -703,22 +703,22 @@ func (v *Server) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			ms.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Server(vv)
+	*s = Server(ms)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Server) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalServer(v), v.MapOfAnything)
+func (s Server) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalServer(s), s.MapOfAnything)
 }
 
 // ServerVariable structure is generated from "#/definitions/ServerVariable".
@@ -730,38 +730,38 @@ type ServerVariable struct {
 }
 
 // WithEnum sets Enum value.
-func (v *ServerVariable) WithEnum(val ...string) *ServerVariable {
-	v.Enum = val
-	return v
+func (s *ServerVariable) WithEnum(val ...string) *ServerVariable {
+	s.Enum = val
+	return s
 }
 
 // WithDefault sets Default value.
-func (v *ServerVariable) WithDefault(val string) *ServerVariable {
-	v.Default = &val
-	return v
+func (s *ServerVariable) WithDefault(val string) *ServerVariable {
+	s.Default = &val
+	return s
 }
 
 // WithDescription sets Description value.
-func (v *ServerVariable) WithDescription(val string) *ServerVariable {
-	v.Description = &val
-	return v
+func (s *ServerVariable) WithDescription(val string) *ServerVariable {
+	s.Description = &val
+	return s
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *ServerVariable) WithMapOfAnything(val map[string]interface{}) *ServerVariable {
-	v.MapOfAnything = val
-	return v
+func (s *ServerVariable) WithMapOfAnything(val map[string]interface{}) *ServerVariable {
+	s.MapOfAnything = val
+	return s
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *ServerVariable) WithMapOfAnythingItem(key string, val interface{}) *ServerVariable {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (s *ServerVariable) WithMapOfAnythingItem(key string, val interface{}) *ServerVariable {
+	if s.MapOfAnything == nil {
+		s.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	s.MapOfAnything[key] = val
 
-	return v
+	return s
 }
 
 type marshalServerVariable ServerVariable
@@ -773,35 +773,35 @@ var ignoreKeysServerVariable = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ServerVariable) UnmarshalJSON(data []byte) error {
+func (s *ServerVariable) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalServerVariable(*v)
+	ms := marshalServerVariable(*s)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &ms)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysServerVariable {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if ms.MapOfAnything == nil {
+				ms.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -811,22 +811,22 @@ func (v *ServerVariable) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			ms.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = ServerVariable(vv)
+	*s = ServerVariable(ms)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ServerVariable) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalServerVariable(v), v.MapOfAnything)
+func (s ServerVariable) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalServerVariable(s), s.MapOfAnything)
 }
 
 // Tag structure is generated from "#/definitions/Tag".
@@ -838,38 +838,38 @@ type Tag struct {
 }
 
 // WithName sets Name value.
-func (v *Tag) WithName(val string) *Tag {
-	v.Name = &val
-	return v
+func (t *Tag) WithName(val string) *Tag {
+	t.Name = &val
+	return t
 }
 
 // WithDescription sets Description value.
-func (v *Tag) WithDescription(val string) *Tag {
-	v.Description = &val
-	return v
+func (t *Tag) WithDescription(val string) *Tag {
+	t.Description = &val
+	return t
 }
 
 // WithExternalDocs sets ExternalDocs value.
-func (v *Tag) WithExternalDocs(val ExternalDocumentation) *Tag {
-	v.ExternalDocs = &val
-	return v
+func (t *Tag) WithExternalDocs(val ExternalDocumentation) *Tag {
+	t.ExternalDocs = &val
+	return t
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Tag) WithMapOfAnything(val map[string]interface{}) *Tag {
-	v.MapOfAnything = val
-	return v
+func (t *Tag) WithMapOfAnything(val map[string]interface{}) *Tag {
+	t.MapOfAnything = val
+	return t
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Tag) WithMapOfAnythingItem(key string, val interface{}) *Tag {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (t *Tag) WithMapOfAnythingItem(key string, val interface{}) *Tag {
+	if t.MapOfAnything == nil {
+		t.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	t.MapOfAnything[key] = val
 
-	return v
+	return t
 }
 
 type marshalTag Tag
@@ -881,35 +881,35 @@ var ignoreKeysTag = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Tag) UnmarshalJSON(data []byte) error {
+func (t *Tag) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalTag(*v)
+	mt := marshalTag(*t)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mt)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysTag {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mt.MapOfAnything == nil {
+				mt.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -919,22 +919,22 @@ func (v *Tag) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mt.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Tag(vv)
+	*t = Tag(mt)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Tag) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalTag(v), v.MapOfAnything)
+func (t Tag) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalTag(t), t.MapOfAnything)
 }
 
 // PathItem structure is generated from "#/definitions/PathItem".
@@ -949,67 +949,67 @@ type PathItem struct {
 }
 
 // WithRef sets Ref value.
-func (v *PathItem) WithRef(val string) *PathItem {
-	v.Ref = &val
-	return v
+func (p *PathItem) WithRef(val string) *PathItem {
+	p.Ref = &val
+	return p
 }
 
 // WithSummary sets Summary value.
-func (v *PathItem) WithSummary(val string) *PathItem {
-	v.Summary = &val
-	return v
+func (p *PathItem) WithSummary(val string) *PathItem {
+	p.Summary = &val
+	return p
 }
 
 // WithDescription sets Description value.
-func (v *PathItem) WithDescription(val string) *PathItem {
-	v.Description = &val
-	return v
+func (p *PathItem) WithDescription(val string) *PathItem {
+	p.Description = &val
+	return p
 }
 
 // WithServers sets Servers value.
-func (v *PathItem) WithServers(val ...Server) *PathItem {
-	v.Servers = val
-	return v
+func (p *PathItem) WithServers(val ...Server) *PathItem {
+	p.Servers = val
+	return p
 }
 
 // WithParameters sets Parameters value.
-func (v *PathItem) WithParameters(val ...ParameterOrRef) *PathItem {
-	v.Parameters = val
-	return v
+func (p *PathItem) WithParameters(val ...ParameterOrRef) *PathItem {
+	p.Parameters = val
+	return p
 }
 
 // WithMapOfOperationValues sets MapOfOperationValues value.
-func (v *PathItem) WithMapOfOperationValues(val map[string]Operation) *PathItem {
-	v.MapOfOperationValues = val
-	return v
+func (p *PathItem) WithMapOfOperationValues(val map[string]Operation) *PathItem {
+	p.MapOfOperationValues = val
+	return p
 }
 
 // WithMapOfOperationValuesItem sets MapOfOperationValues item value.
-func (v *PathItem) WithMapOfOperationValuesItem(key string, val Operation) *PathItem {
-	if v.MapOfOperationValues == nil {
-		v.MapOfOperationValues = make(map[string]Operation, 1)
+func (p *PathItem) WithMapOfOperationValuesItem(key string, val Operation) *PathItem {
+	if p.MapOfOperationValues == nil {
+		p.MapOfOperationValues = make(map[string]Operation, 1)
 	}
 
-	v.MapOfOperationValues[key] = val
+	p.MapOfOperationValues[key] = val
 
-	return v
+	return p
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *PathItem) WithMapOfAnything(val map[string]interface{}) *PathItem {
-	v.MapOfAnything = val
-	return v
+func (p *PathItem) WithMapOfAnything(val map[string]interface{}) *PathItem {
+	p.MapOfAnything = val
+	return p
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *PathItem) WithMapOfAnythingItem(key string, val interface{}) *PathItem {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (p *PathItem) WithMapOfAnythingItem(key string, val interface{}) *PathItem {
+	if p.MapOfAnything == nil {
+		p.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	p.MapOfAnything[key] = val
 
-	return v
+	return p
 }
 
 type marshalPathItem PathItem
@@ -1023,35 +1023,35 @@ var ignoreKeysPathItem = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *PathItem) UnmarshalJSON(data []byte) error {
+func (p *PathItem) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalPathItem(*v)
+	mp := marshalPathItem(*p)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mp)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysPathItem {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexGetPutPostDeleteOptionsHeadPatchTrace.MatchString(key) {
 			matched = true
 
-			if vv.MapOfOperationValues == nil {
-				vv.MapOfOperationValues = make(map[string]Operation, 1)
+			if mp.MapOfOperationValues == nil {
+				mp.MapOfOperationValues = make(map[string]Operation, 1)
 			}
 
 			var val Operation
@@ -1061,14 +1061,14 @@ func (v *PathItem) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfOperationValues[key] = val
+			mp.MapOfOperationValues[key] = val
 		}
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mp.MapOfAnything == nil {
+				mp.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -1078,22 +1078,22 @@ func (v *PathItem) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mp.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = PathItem(vv)
+	*p = PathItem(mp)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v PathItem) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPathItem(v), v.MapOfOperationValues, v.MapOfAnything)
+func (p PathItem) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalPathItem(p), p.MapOfOperationValues, p.MapOfAnything)
 }
 
 // ParameterReference structure is generated from "#/definitions/ParameterReference".
@@ -1104,9 +1104,9 @@ type ParameterReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *ParameterReference) WithRef(val string) *ParameterReference {
-	v.Ref = &val
-	return v
+func (p *ParameterReference) WithRef(val string) *ParameterReference {
+	p.Ref = &val
+	return p
 }
 
 // Parameter structure is generated from "#/definitions/Parameter".
@@ -1130,132 +1130,132 @@ type Parameter struct {
 }
 
 // WithName sets Name value.
-func (v *Parameter) WithName(val string) *Parameter {
-	v.Name = &val
-	return v
+func (p *Parameter) WithName(val string) *Parameter {
+	p.Name = &val
+	return p
 }
 
 // WithIn sets In value.
-func (v *Parameter) WithIn(val ParameterIn) *Parameter {
-	v.In = &val
-	return v
+func (p *Parameter) WithIn(val ParameterIn) *Parameter {
+	p.In = &val
+	return p
 }
 
 // WithDescription sets Description value.
-func (v *Parameter) WithDescription(val string) *Parameter {
-	v.Description = &val
-	return v
+func (p *Parameter) WithDescription(val string) *Parameter {
+	p.Description = &val
+	return p
 }
 
 // WithRequired sets Required value.
-func (v *Parameter) WithRequired(val bool) *Parameter {
-	v.Required = &val
-	return v
+func (p *Parameter) WithRequired(val bool) *Parameter {
+	p.Required = &val
+	return p
 }
 
 // WithDeprecated sets Deprecated value.
-func (v *Parameter) WithDeprecated(val bool) *Parameter {
-	v.Deprecated = &val
-	return v
+func (p *Parameter) WithDeprecated(val bool) *Parameter {
+	p.Deprecated = &val
+	return p
 }
 
 // WithAllowEmptyValue sets AllowEmptyValue value.
-func (v *Parameter) WithAllowEmptyValue(val bool) *Parameter {
-	v.AllowEmptyValue = &val
-	return v
+func (p *Parameter) WithAllowEmptyValue(val bool) *Parameter {
+	p.AllowEmptyValue = &val
+	return p
 }
 
 // WithStyle sets Style value.
-func (v *Parameter) WithStyle(val string) *Parameter {
-	v.Style = &val
-	return v
+func (p *Parameter) WithStyle(val string) *Parameter {
+	p.Style = &val
+	return p
 }
 
 // WithExplode sets Explode value.
-func (v *Parameter) WithExplode(val bool) *Parameter {
-	v.Explode = &val
-	return v
+func (p *Parameter) WithExplode(val bool) *Parameter {
+	p.Explode = &val
+	return p
 }
 
 // WithAllowReserved sets AllowReserved value.
-func (v *Parameter) WithAllowReserved(val bool) *Parameter {
-	v.AllowReserved = &val
-	return v
+func (p *Parameter) WithAllowReserved(val bool) *Parameter {
+	p.AllowReserved = &val
+	return p
 }
 
 // WithSchema sets Schema value.
-func (v *Parameter) WithSchema(val SchemaOrRef) *Parameter {
-	v.Schema = &val
-	return v
+func (p *Parameter) WithSchema(val SchemaOrRef) *Parameter {
+	p.Schema = &val
+	return p
 }
 
 // WithContent sets Content value.
-func (v *Parameter) WithContent(val map[string]MediaType) *Parameter {
-	v.Content = val
-	return v
+func (p *Parameter) WithContent(val map[string]MediaType) *Parameter {
+	p.Content = val
+	return p
 }
 
 // WithContentItem sets Content item value.
-func (v *Parameter) WithContentItem(key string, val MediaType) *Parameter {
-	if v.Content == nil {
-		v.Content = make(map[string]MediaType, 1)
+func (p *Parameter) WithContentItem(key string, val MediaType) *Parameter {
+	if p.Content == nil {
+		p.Content = make(map[string]MediaType, 1)
 	}
 
-	v.Content[key] = val
+	p.Content[key] = val
 
-	return v
+	return p
 }
 
 // WithExample sets Example value.
-func (v *Parameter) WithExample(val interface{}) *Parameter {
-	v.Example = &val
-	return v
+func (p *Parameter) WithExample(val interface{}) *Parameter {
+	p.Example = &val
+	return p
 }
 
 // WithExamples sets Examples value.
-func (v *Parameter) WithExamples(val map[string]ExampleOrRef) *Parameter {
-	v.Examples = val
-	return v
+func (p *Parameter) WithExamples(val map[string]ExampleOrRef) *Parameter {
+	p.Examples = val
+	return p
 }
 
 // WithExamplesItem sets Examples item value.
-func (v *Parameter) WithExamplesItem(key string, val ExampleOrRef) *Parameter {
-	if v.Examples == nil {
-		v.Examples = make(map[string]ExampleOrRef, 1)
+func (p *Parameter) WithExamplesItem(key string, val ExampleOrRef) *Parameter {
+	if p.Examples == nil {
+		p.Examples = make(map[string]ExampleOrRef, 1)
 	}
 
-	v.Examples[key] = val
+	p.Examples[key] = val
 
-	return v
+	return p
 }
 
 // WithSchemaXORContent sets SchemaXORContent value.
-func (v *Parameter) WithSchemaXORContent(val SchemaXORContentOneOf1) *Parameter {
-	v.SchemaXORContent = &val
-	return v
+func (p *Parameter) WithSchemaXORContent(val SchemaXORContentOneOf1) *Parameter {
+	p.SchemaXORContent = &val
+	return p
 }
 
 // WithLocation sets Location value.
-func (v *Parameter) WithLocation(val ParameterLocation) *Parameter {
-	v.Location = &val
-	return v
+func (p *Parameter) WithLocation(val ParameterLocation) *Parameter {
+	p.Location = &val
+	return p
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Parameter) WithMapOfAnything(val map[string]interface{}) *Parameter {
-	v.MapOfAnything = val
-	return v
+func (p *Parameter) WithMapOfAnything(val map[string]interface{}) *Parameter {
+	p.MapOfAnything = val
+	return p
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Parameter) WithMapOfAnythingItem(key string, val interface{}) *Parameter {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (p *Parameter) WithMapOfAnythingItem(key string, val interface{}) *Parameter {
+	if p.MapOfAnything == nil {
+		p.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	p.MapOfAnything[key] = val
 
-	return v
+	return p
 }
 
 type marshalParameter Parameter
@@ -1277,52 +1277,52 @@ var ignoreKeysParameter = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Parameter) UnmarshalJSON(data []byte) error {
+func (p *Parameter) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalParameter(*v)
+	mp := marshalParameter(*p)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mp)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &vv.SchemaXORContent)
+	err = json.Unmarshal(data, &mp.SchemaXORContent)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &vv.Location)
+	err = json.Unmarshal(data, &mp.Location)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if vv.Example == nil {
-		if _, ok := m["example"]; ok {
+	if mp.Example == nil {
+		if _, ok := rawMap["example"]; ok {
 			var v interface{}
-			vv.Example = &v
+			mp.Example = &v
 		}
 	}
 
 	for _, key := range ignoreKeysParameter {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mp.MapOfAnything == nil {
+				mp.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -1332,22 +1332,22 @@ func (v *Parameter) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mp.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Parameter(vv)
+	*p = Parameter(mp)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Parameter) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameter(v), v.MapOfAnything, v.SchemaXORContent, v.Location)
+func (p Parameter) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalParameter(p), p.MapOfAnything, p.SchemaXORContent, p.Location)
 }
 
 // Schema structure is generated from "#/definitions/Schema".
@@ -1391,241 +1391,241 @@ type Schema struct {
 }
 
 // WithTitle sets Title value.
-func (v *Schema) WithTitle(val string) *Schema {
-	v.Title = &val
-	return v
+func (s *Schema) WithTitle(val string) *Schema {
+	s.Title = &val
+	return s
 }
 
 // WithMultipleOf sets MultipleOf value.
-func (v *Schema) WithMultipleOf(val float64) *Schema {
-	v.MultipleOf = &val
-	return v
+func (s *Schema) WithMultipleOf(val float64) *Schema {
+	s.MultipleOf = &val
+	return s
 }
 
 // WithMaximum sets Maximum value.
-func (v *Schema) WithMaximum(val float64) *Schema {
-	v.Maximum = &val
-	return v
+func (s *Schema) WithMaximum(val float64) *Schema {
+	s.Maximum = &val
+	return s
 }
 
 // WithExclusiveMaximum sets ExclusiveMaximum value.
-func (v *Schema) WithExclusiveMaximum(val bool) *Schema {
-	v.ExclusiveMaximum = &val
-	return v
+func (s *Schema) WithExclusiveMaximum(val bool) *Schema {
+	s.ExclusiveMaximum = &val
+	return s
 }
 
 // WithMinimum sets Minimum value.
-func (v *Schema) WithMinimum(val float64) *Schema {
-	v.Minimum = &val
-	return v
+func (s *Schema) WithMinimum(val float64) *Schema {
+	s.Minimum = &val
+	return s
 }
 
 // WithExclusiveMinimum sets ExclusiveMinimum value.
-func (v *Schema) WithExclusiveMinimum(val bool) *Schema {
-	v.ExclusiveMinimum = &val
-	return v
+func (s *Schema) WithExclusiveMinimum(val bool) *Schema {
+	s.ExclusiveMinimum = &val
+	return s
 }
 
 // WithMaxLength sets MaxLength value.
-func (v *Schema) WithMaxLength(val int64) *Schema {
-	v.MaxLength = &val
-	return v
+func (s *Schema) WithMaxLength(val int64) *Schema {
+	s.MaxLength = &val
+	return s
 }
 
 // WithMinLength sets MinLength value.
-func (v *Schema) WithMinLength(val int64) *Schema {
-	v.MinLength = &val
-	return v
+func (s *Schema) WithMinLength(val int64) *Schema {
+	s.MinLength = &val
+	return s
 }
 
 // WithPattern sets Pattern value.
-func (v *Schema) WithPattern(val string) *Schema {
-	v.Pattern = &val
-	return v
+func (s *Schema) WithPattern(val string) *Schema {
+	s.Pattern = &val
+	return s
 }
 
 // WithMaxItems sets MaxItems value.
-func (v *Schema) WithMaxItems(val int64) *Schema {
-	v.MaxItems = &val
-	return v
+func (s *Schema) WithMaxItems(val int64) *Schema {
+	s.MaxItems = &val
+	return s
 }
 
 // WithMinItems sets MinItems value.
-func (v *Schema) WithMinItems(val int64) *Schema {
-	v.MinItems = &val
-	return v
+func (s *Schema) WithMinItems(val int64) *Schema {
+	s.MinItems = &val
+	return s
 }
 
 // WithUniqueItems sets UniqueItems value.
-func (v *Schema) WithUniqueItems(val bool) *Schema {
-	v.UniqueItems = &val
-	return v
+func (s *Schema) WithUniqueItems(val bool) *Schema {
+	s.UniqueItems = &val
+	return s
 }
 
 // WithMaxProperties sets MaxProperties value.
-func (v *Schema) WithMaxProperties(val int64) *Schema {
-	v.MaxProperties = &val
-	return v
+func (s *Schema) WithMaxProperties(val int64) *Schema {
+	s.MaxProperties = &val
+	return s
 }
 
 // WithMinProperties sets MinProperties value.
-func (v *Schema) WithMinProperties(val int64) *Schema {
-	v.MinProperties = &val
-	return v
+func (s *Schema) WithMinProperties(val int64) *Schema {
+	s.MinProperties = &val
+	return s
 }
 
 // WithRequired sets Required value.
-func (v *Schema) WithRequired(val ...string) *Schema {
-	v.Required = val
-	return v
+func (s *Schema) WithRequired(val ...string) *Schema {
+	s.Required = val
+	return s
 }
 
 // WithEnum sets Enum value.
-func (v *Schema) WithEnum(val ...interface{}) *Schema {
-	v.Enum = val
-	return v
+func (s *Schema) WithEnum(val ...interface{}) *Schema {
+	s.Enum = val
+	return s
 }
 
 // WithType sets Type value.
-func (v *Schema) WithType(val SchemaType) *Schema {
-	v.Type = &val
-	return v
+func (s *Schema) WithType(val SchemaType) *Schema {
+	s.Type = &val
+	return s
 }
 
 // WithNot sets Not value.
-func (v *Schema) WithNot(val SchemaOrRef) *Schema {
-	v.Not = &val
-	return v
+func (s *Schema) WithNot(val SchemaOrRef) *Schema {
+	s.Not = &val
+	return s
 }
 
 // WithAllOf sets AllOf value.
-func (v *Schema) WithAllOf(val ...SchemaOrRef) *Schema {
-	v.AllOf = val
-	return v
+func (s *Schema) WithAllOf(val ...SchemaOrRef) *Schema {
+	s.AllOf = val
+	return s
 }
 
 // WithOneOf sets OneOf value.
-func (v *Schema) WithOneOf(val ...SchemaOrRef) *Schema {
-	v.OneOf = val
-	return v
+func (s *Schema) WithOneOf(val ...SchemaOrRef) *Schema {
+	s.OneOf = val
+	return s
 }
 
 // WithAnyOf sets AnyOf value.
-func (v *Schema) WithAnyOf(val ...SchemaOrRef) *Schema {
-	v.AnyOf = val
-	return v
+func (s *Schema) WithAnyOf(val ...SchemaOrRef) *Schema {
+	s.AnyOf = val
+	return s
 }
 
 // WithItems sets Items value.
-func (v *Schema) WithItems(val SchemaOrRef) *Schema {
-	v.Items = &val
-	return v
+func (s *Schema) WithItems(val SchemaOrRef) *Schema {
+	s.Items = &val
+	return s
 }
 
 // WithProperties sets Properties value.
-func (v *Schema) WithProperties(val map[string]SchemaOrRef) *Schema {
-	v.Properties = val
-	return v
+func (s *Schema) WithProperties(val map[string]SchemaOrRef) *Schema {
+	s.Properties = val
+	return s
 }
 
 // WithPropertiesItem sets Properties item value.
-func (v *Schema) WithPropertiesItem(key string, val SchemaOrRef) *Schema {
-	if v.Properties == nil {
-		v.Properties = make(map[string]SchemaOrRef, 1)
+func (s *Schema) WithPropertiesItem(key string, val SchemaOrRef) *Schema {
+	if s.Properties == nil {
+		s.Properties = make(map[string]SchemaOrRef, 1)
 	}
 
-	v.Properties[key] = val
+	s.Properties[key] = val
 
-	return v
+	return s
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *Schema) WithAdditionalProperties(val SchemaAdditionalProperties) *Schema {
-	v.AdditionalProperties = &val
-	return v
+func (s *Schema) WithAdditionalProperties(val SchemaAdditionalProperties) *Schema {
+	s.AdditionalProperties = &val
+	return s
 }
 
 // WithDescription sets Description value.
-func (v *Schema) WithDescription(val string) *Schema {
-	v.Description = &val
-	return v
+func (s *Schema) WithDescription(val string) *Schema {
+	s.Description = &val
+	return s
 }
 
 // WithFormat sets Format value.
-func (v *Schema) WithFormat(val string) *Schema {
-	v.Format = &val
-	return v
+func (s *Schema) WithFormat(val string) *Schema {
+	s.Format = &val
+	return s
 }
 
 // WithDefault sets Default value.
-func (v *Schema) WithDefault(val interface{}) *Schema {
-	v.Default = &val
-	return v
+func (s *Schema) WithDefault(val interface{}) *Schema {
+	s.Default = &val
+	return s
 }
 
 // WithNullable sets Nullable value.
-func (v *Schema) WithNullable(val bool) *Schema {
-	v.Nullable = &val
-	return v
+func (s *Schema) WithNullable(val bool) *Schema {
+	s.Nullable = &val
+	return s
 }
 
 // WithDiscriminator sets Discriminator value.
-func (v *Schema) WithDiscriminator(val Discriminator) *Schema {
-	v.Discriminator = &val
-	return v
+func (s *Schema) WithDiscriminator(val Discriminator) *Schema {
+	s.Discriminator = &val
+	return s
 }
 
 // WithReadOnly sets ReadOnly value.
-func (v *Schema) WithReadOnly(val bool) *Schema {
-	v.ReadOnly = &val
-	return v
+func (s *Schema) WithReadOnly(val bool) *Schema {
+	s.ReadOnly = &val
+	return s
 }
 
 // WithWriteOnly sets WriteOnly value.
-func (v *Schema) WithWriteOnly(val bool) *Schema {
-	v.WriteOnly = &val
-	return v
+func (s *Schema) WithWriteOnly(val bool) *Schema {
+	s.WriteOnly = &val
+	return s
 }
 
 // WithExample sets Example value.
-func (v *Schema) WithExample(val interface{}) *Schema {
-	v.Example = &val
-	return v
+func (s *Schema) WithExample(val interface{}) *Schema {
+	s.Example = &val
+	return s
 }
 
 // WithExternalDocs sets ExternalDocs value.
-func (v *Schema) WithExternalDocs(val ExternalDocumentation) *Schema {
-	v.ExternalDocs = &val
-	return v
+func (s *Schema) WithExternalDocs(val ExternalDocumentation) *Schema {
+	s.ExternalDocs = &val
+	return s
 }
 
 // WithDeprecated sets Deprecated value.
-func (v *Schema) WithDeprecated(val bool) *Schema {
-	v.Deprecated = &val
-	return v
+func (s *Schema) WithDeprecated(val bool) *Schema {
+	s.Deprecated = &val
+	return s
 }
 
 // WithXML sets XML value.
-func (v *Schema) WithXML(val XML) *Schema {
-	v.XML = &val
-	return v
+func (s *Schema) WithXML(val XML) *Schema {
+	s.XML = &val
+	return s
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Schema) WithMapOfAnything(val map[string]interface{}) *Schema {
-	v.MapOfAnything = val
-	return v
+func (s *Schema) WithMapOfAnything(val map[string]interface{}) *Schema {
+	s.MapOfAnything = val
+	return s
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Schema) WithMapOfAnythingItem(key string, val interface{}) *Schema {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (s *Schema) WithMapOfAnythingItem(key string, val interface{}) *Schema {
+	if s.MapOfAnything == nil {
+		s.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	s.MapOfAnything[key] = val
 
-	return v
+	return s
 }
 
 type marshalSchema Schema
@@ -1669,49 +1669,49 @@ var ignoreKeysSchema = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Schema) UnmarshalJSON(data []byte) error {
+func (s *Schema) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalSchema(*v)
+	ms := marshalSchema(*s)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &ms)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if vv.Default == nil {
-		if _, ok := m["default"]; ok {
+	if ms.Default == nil {
+		if _, ok := rawMap["default"]; ok {
 			var v interface{}
-			vv.Default = &v
+			ms.Default = &v
 		}
 	}
 
-	if vv.Example == nil {
-		if _, ok := m["example"]; ok {
+	if ms.Example == nil {
+		if _, ok := rawMap["example"]; ok {
 			var v interface{}
-			vv.Example = &v
+			ms.Example = &v
 		}
 	}
 
 	for _, key := range ignoreKeysSchema {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if ms.MapOfAnything == nil {
+				ms.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -1721,22 +1721,22 @@ func (v *Schema) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			ms.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Schema(vv)
+	*s = Schema(ms)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Schema) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchema(v), v.MapOfAnything)
+func (s Schema) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalSchema(s), s.MapOfAnything)
 }
 
 // SchemaReference structure is generated from "#/definitions/SchemaReference".
@@ -1747,9 +1747,9 @@ type SchemaReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *SchemaReference) WithRef(val string) *SchemaReference {
-	v.Ref = &val
-	return v
+func (s *SchemaReference) WithRef(val string) *SchemaReference {
+	s.Ref = &val
+	return s
 }
 
 // SchemaOrRef structure is generated from "#/definitions/SchemaOrRef".
@@ -1759,37 +1759,37 @@ type SchemaOrRef struct {
 }
 
 // WithSchema sets Schema value.
-func (v *SchemaOrRef) WithSchema(val Schema) *SchemaOrRef {
-	v.Schema = &val
-	return v
+func (s *SchemaOrRef) WithSchema(val Schema) *SchemaOrRef {
+	s.Schema = &val
+	return s
 }
 
 // WithSchemaReference sets SchemaReference value.
-func (v *SchemaOrRef) WithSchemaReference(val SchemaReference) *SchemaOrRef {
-	v.SchemaReference = &val
-	return v
+func (s *SchemaOrRef) WithSchemaReference(val SchemaReference) *SchemaOrRef {
+	s.SchemaReference = &val
+	return s
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *SchemaOrRef) UnmarshalJSON(data []byte) error {
+func (s *SchemaOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.Schema)
+	err = json.Unmarshal(data, &s.Schema)
 	if err != nil {
-		v.Schema = nil
+		s.Schema = nil
 	}
 
-	err = json.Unmarshal(data, &v.SchemaReference)
+	err = json.Unmarshal(data, &s.SchemaReference)
 	if err != nil {
-		v.SchemaReference = nil
+		s.SchemaReference = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v SchemaOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.Schema, v.SchemaReference)
+func (s SchemaOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(s.Schema, s.SchemaReference)
 }
 
 // SchemaAdditionalProperties structure is generated from "#/definitions/Schema->additionalProperties".
@@ -1799,37 +1799,37 @@ type SchemaAdditionalProperties struct {
 }
 
 // WithSchemaOrRef sets SchemaOrRef value.
-func (v *SchemaAdditionalProperties) WithSchemaOrRef(val SchemaOrRef) *SchemaAdditionalProperties {
-	v.SchemaOrRef = &val
-	return v
+func (s *SchemaAdditionalProperties) WithSchemaOrRef(val SchemaOrRef) *SchemaAdditionalProperties {
+	s.SchemaOrRef = &val
+	return s
 }
 
 // WithBool sets Bool value.
-func (v *SchemaAdditionalProperties) WithBool(val bool) *SchemaAdditionalProperties {
-	v.Bool = &val
-	return v
+func (s *SchemaAdditionalProperties) WithBool(val bool) *SchemaAdditionalProperties {
+	s.Bool = &val
+	return s
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
+func (s *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.SchemaOrRef)
+	err = json.Unmarshal(data, &s.SchemaOrRef)
 	if err != nil {
-		v.SchemaOrRef = nil
+		s.SchemaOrRef = nil
 	}
 
-	err = json.Unmarshal(data, &v.Bool)
+	err = json.Unmarshal(data, &s.Bool)
 	if err != nil {
-		v.Bool = nil
+		s.Bool = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v SchemaAdditionalProperties) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.SchemaOrRef, v.Bool)
+func (s SchemaAdditionalProperties) MarshalJSON() ([]byte, error) {
+	return marshalUnion(s.SchemaOrRef, s.Bool)
 }
 
 // Discriminator structure is generated from "#/definitions/Discriminator".
@@ -1840,43 +1840,43 @@ type Discriminator struct {
 }
 
 // WithPropertyName sets PropertyName value.
-func (v *Discriminator) WithPropertyName(val string) *Discriminator {
-	v.PropertyName = &val
-	return v
+func (d *Discriminator) WithPropertyName(val string) *Discriminator {
+	d.PropertyName = &val
+	return d
 }
 
 // WithMapping sets Mapping value.
-func (v *Discriminator) WithMapping(val map[string]string) *Discriminator {
-	v.Mapping = val
-	return v
+func (d *Discriminator) WithMapping(val map[string]string) *Discriminator {
+	d.Mapping = val
+	return d
 }
 
 // WithMappingItem sets Mapping item value.
-func (v *Discriminator) WithMappingItem(key string, val string) *Discriminator {
-	if v.Mapping == nil {
-		v.Mapping = make(map[string]string, 1)
+func (d *Discriminator) WithMappingItem(key string, val string) *Discriminator {
+	if d.Mapping == nil {
+		d.Mapping = make(map[string]string, 1)
 	}
 
-	v.Mapping[key] = val
+	d.Mapping[key] = val
 
-	return v
+	return d
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *Discriminator) WithAdditionalProperties(val map[string]interface{}) *Discriminator {
-	v.AdditionalProperties = val
-	return v
+func (d *Discriminator) WithAdditionalProperties(val map[string]interface{}) *Discriminator {
+	d.AdditionalProperties = val
+	return d
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *Discriminator) WithAdditionalPropertiesItem(key string, val interface{}) *Discriminator {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (d *Discriminator) WithAdditionalPropertiesItem(key string, val interface{}) *Discriminator {
+	if d.AdditionalProperties == nil {
+		d.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	d.AdditionalProperties[key] = val
 
-	return v
+	return d
 }
 
 type marshalDiscriminator Discriminator
@@ -1887,30 +1887,30 @@ var ignoreKeysDiscriminator = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Discriminator) UnmarshalJSON(data []byte) error {
+func (d *Discriminator) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalDiscriminator(*v)
+	md := marshalDiscriminator(*d)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &md)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysDiscriminator {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if md.AdditionalProperties == nil {
+			md.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -1920,21 +1920,21 @@ func (v *Discriminator) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		md.AdditionalProperties[key] = val
 	}
 
-	*v = Discriminator(vv)
+	*d = Discriminator(md)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Discriminator) MarshalJSON() ([]byte, error) {
-	if len(v.AdditionalProperties) == 0 {
-		return json.Marshal(marshalDiscriminator(v))
+func (d Discriminator) MarshalJSON() ([]byte, error) {
+	if len(d.AdditionalProperties) == 0 {
+		return json.Marshal(marshalDiscriminator(d))
 	}
 
-	return marshalUnion(marshalDiscriminator(v), v.AdditionalProperties)
+	return marshalUnion(marshalDiscriminator(d), d.AdditionalProperties)
 }
 
 // XML structure is generated from "#/definitions/XML".
@@ -1948,50 +1948,50 @@ type XML struct {
 }
 
 // WithName sets Name value.
-func (v *XML) WithName(val string) *XML {
-	v.Name = &val
-	return v
+func (x *XML) WithName(val string) *XML {
+	x.Name = &val
+	return x
 }
 
 // WithNamespace sets Namespace value.
-func (v *XML) WithNamespace(val string) *XML {
-	v.Namespace = &val
-	return v
+func (x *XML) WithNamespace(val string) *XML {
+	x.Namespace = &val
+	return x
 }
 
 // WithPrefix sets Prefix value.
-func (v *XML) WithPrefix(val string) *XML {
-	v.Prefix = &val
-	return v
+func (x *XML) WithPrefix(val string) *XML {
+	x.Prefix = &val
+	return x
 }
 
 // WithAttribute sets Attribute value.
-func (v *XML) WithAttribute(val bool) *XML {
-	v.Attribute = &val
-	return v
+func (x *XML) WithAttribute(val bool) *XML {
+	x.Attribute = &val
+	return x
 }
 
 // WithWrapped sets Wrapped value.
-func (v *XML) WithWrapped(val bool) *XML {
-	v.Wrapped = &val
-	return v
+func (x *XML) WithWrapped(val bool) *XML {
+	x.Wrapped = &val
+	return x
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *XML) WithMapOfAnything(val map[string]interface{}) *XML {
-	v.MapOfAnything = val
-	return v
+func (x *XML) WithMapOfAnything(val map[string]interface{}) *XML {
+	x.MapOfAnything = val
+	return x
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *XML) WithMapOfAnythingItem(key string, val interface{}) *XML {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (x *XML) WithMapOfAnythingItem(key string, val interface{}) *XML {
+	if x.MapOfAnything == nil {
+		x.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	x.MapOfAnything[key] = val
 
-	return v
+	return x
 }
 
 type marshalXML XML
@@ -2005,35 +2005,35 @@ var ignoreKeysXML = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *XML) UnmarshalJSON(data []byte) error {
+func (x *XML) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalXML(*v)
+	mx := marshalXML(*x)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mx)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysXML {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mx.MapOfAnything == nil {
+				mx.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2043,22 +2043,22 @@ func (v *XML) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mx.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = XML(vv)
+	*x = XML(mx)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v XML) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalXML(v), v.MapOfAnything)
+func (x XML) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalXML(x), x.MapOfAnything)
 }
 
 // MediaType structure is generated from "#/definitions/MediaType".
@@ -2071,66 +2071,66 @@ type MediaType struct {
 }
 
 // WithSchema sets Schema value.
-func (v *MediaType) WithSchema(val SchemaOrRef) *MediaType {
-	v.Schema = &val
-	return v
+func (m *MediaType) WithSchema(val SchemaOrRef) *MediaType {
+	m.Schema = &val
+	return m
 }
 
 // WithExample sets Example value.
-func (v *MediaType) WithExample(val interface{}) *MediaType {
-	v.Example = &val
-	return v
+func (m *MediaType) WithExample(val interface{}) *MediaType {
+	m.Example = &val
+	return m
 }
 
 // WithExamples sets Examples value.
-func (v *MediaType) WithExamples(val map[string]ExampleOrRef) *MediaType {
-	v.Examples = val
-	return v
+func (m *MediaType) WithExamples(val map[string]ExampleOrRef) *MediaType {
+	m.Examples = val
+	return m
 }
 
 // WithExamplesItem sets Examples item value.
-func (v *MediaType) WithExamplesItem(key string, val ExampleOrRef) *MediaType {
-	if v.Examples == nil {
-		v.Examples = make(map[string]ExampleOrRef, 1)
+func (m *MediaType) WithExamplesItem(key string, val ExampleOrRef) *MediaType {
+	if m.Examples == nil {
+		m.Examples = make(map[string]ExampleOrRef, 1)
 	}
 
-	v.Examples[key] = val
+	m.Examples[key] = val
 
-	return v
+	return m
 }
 
 // WithEncoding sets Encoding value.
-func (v *MediaType) WithEncoding(val map[string]Encoding) *MediaType {
-	v.Encoding = val
-	return v
+func (m *MediaType) WithEncoding(val map[string]Encoding) *MediaType {
+	m.Encoding = val
+	return m
 }
 
 // WithEncodingItem sets Encoding item value.
-func (v *MediaType) WithEncodingItem(key string, val Encoding) *MediaType {
-	if v.Encoding == nil {
-		v.Encoding = make(map[string]Encoding, 1)
+func (m *MediaType) WithEncodingItem(key string, val Encoding) *MediaType {
+	if m.Encoding == nil {
+		m.Encoding = make(map[string]Encoding, 1)
 	}
 
-	v.Encoding[key] = val
+	m.Encoding[key] = val
 
-	return v
+	return m
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *MediaType) WithMapOfAnything(val map[string]interface{}) *MediaType {
-	v.MapOfAnything = val
-	return v
+func (m *MediaType) WithMapOfAnything(val map[string]interface{}) *MediaType {
+	m.MapOfAnything = val
+	return m
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *MediaType) WithMapOfAnythingItem(key string, val interface{}) *MediaType {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (m *MediaType) WithMapOfAnythingItem(key string, val interface{}) *MediaType {
+	if m.MapOfAnything == nil {
+		m.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	m.MapOfAnything[key] = val
 
-	return v
+	return m
 }
 
 type marshalMediaType MediaType
@@ -2143,42 +2143,42 @@ var ignoreKeysMediaType = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *MediaType) UnmarshalJSON(data []byte) error {
+func (m *MediaType) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalMediaType(*v)
+	mm := marshalMediaType(*m)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mm)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if vv.Example == nil {
-		if _, ok := m["example"]; ok {
+	if mm.Example == nil {
+		if _, ok := rawMap["example"]; ok {
 			var v interface{}
-			vv.Example = &v
+			mm.Example = &v
 		}
 	}
 
 	for _, key := range ignoreKeysMediaType {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mm.MapOfAnything == nil {
+				mm.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2188,22 +2188,22 @@ func (v *MediaType) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mm.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = MediaType(vv)
+	*m = MediaType(mm)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v MediaType) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalMediaType(v), v.MapOfAnything)
+func (m MediaType) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalMediaType(m), m.MapOfAnything)
 }
 
 // ExampleReference structure is generated from "#/definitions/ExampleReference".
@@ -2214,9 +2214,9 @@ type ExampleReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *ExampleReference) WithRef(val string) *ExampleReference {
-	v.Ref = &val
-	return v
+func (e *ExampleReference) WithRef(val string) *ExampleReference {
+	e.Ref = &val
+	return e
 }
 
 // Example structure is generated from "#/definitions/Example".
@@ -2229,44 +2229,44 @@ type Example struct {
 }
 
 // WithSummary sets Summary value.
-func (v *Example) WithSummary(val string) *Example {
-	v.Summary = &val
-	return v
+func (e *Example) WithSummary(val string) *Example {
+	e.Summary = &val
+	return e
 }
 
 // WithDescription sets Description value.
-func (v *Example) WithDescription(val string) *Example {
-	v.Description = &val
-	return v
+func (e *Example) WithDescription(val string) *Example {
+	e.Description = &val
+	return e
 }
 
 // WithValue sets Value value.
-func (v *Example) WithValue(val interface{}) *Example {
-	v.Value = &val
-	return v
+func (e *Example) WithValue(val interface{}) *Example {
+	e.Value = &val
+	return e
 }
 
 // WithExternalValue sets ExternalValue value.
-func (v *Example) WithExternalValue(val string) *Example {
-	v.ExternalValue = &val
-	return v
+func (e *Example) WithExternalValue(val string) *Example {
+	e.ExternalValue = &val
+	return e
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Example) WithMapOfAnything(val map[string]interface{}) *Example {
-	v.MapOfAnything = val
-	return v
+func (e *Example) WithMapOfAnything(val map[string]interface{}) *Example {
+	e.MapOfAnything = val
+	return e
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Example) WithMapOfAnythingItem(key string, val interface{}) *Example {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (e *Example) WithMapOfAnythingItem(key string, val interface{}) *Example {
+	if e.MapOfAnything == nil {
+		e.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	e.MapOfAnything[key] = val
 
-	return v
+	return e
 }
 
 type marshalExample Example
@@ -2279,42 +2279,42 @@ var ignoreKeysExample = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Example) UnmarshalJSON(data []byte) error {
+func (e *Example) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalExample(*v)
+	me := marshalExample(*e)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &me)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if vv.Value == nil {
-		if _, ok := m["value"]; ok {
+	if me.Value == nil {
+		if _, ok := rawMap["value"]; ok {
 			var v interface{}
-			vv.Value = &v
+			me.Value = &v
 		}
 	}
 
 	for _, key := range ignoreKeysExample {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if me.MapOfAnything == nil {
+				me.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2324,22 +2324,22 @@ func (v *Example) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			me.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Example(vv)
+	*e = Example(me)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Example) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalExample(v), v.MapOfAnything)
+func (e Example) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalExample(e), e.MapOfAnything)
 }
 
 // ExampleOrRef structure is generated from "#/definitions/ExampleOrRef".
@@ -2349,37 +2349,37 @@ type ExampleOrRef struct {
 }
 
 // WithExampleReference sets ExampleReference value.
-func (v *ExampleOrRef) WithExampleReference(val ExampleReference) *ExampleOrRef {
-	v.ExampleReference = &val
-	return v
+func (e *ExampleOrRef) WithExampleReference(val ExampleReference) *ExampleOrRef {
+	e.ExampleReference = &val
+	return e
 }
 
 // WithExample sets Example value.
-func (v *ExampleOrRef) WithExample(val Example) *ExampleOrRef {
-	v.Example = &val
-	return v
+func (e *ExampleOrRef) WithExample(val Example) *ExampleOrRef {
+	e.Example = &val
+	return e
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ExampleOrRef) UnmarshalJSON(data []byte) error {
+func (e *ExampleOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.ExampleReference)
+	err = json.Unmarshal(data, &e.ExampleReference)
 	if err != nil {
-		v.ExampleReference = nil
+		e.ExampleReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.Example)
+	err = json.Unmarshal(data, &e.Example)
 	if err != nil {
-		v.Example = nil
+		e.Example = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ExampleOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.ExampleReference, v.Example)
+func (e ExampleOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(e.ExampleReference, e.Example)
 }
 
 // Encoding structure is generated from "#/definitions/Encoding".
@@ -2392,44 +2392,44 @@ type Encoding struct {
 }
 
 // WithContentType sets ContentType value.
-func (v *Encoding) WithContentType(val string) *Encoding {
-	v.ContentType = &val
-	return v
+func (e *Encoding) WithContentType(val string) *Encoding {
+	e.ContentType = &val
+	return e
 }
 
 // WithHeaders sets Headers value.
-func (v *Encoding) WithHeaders(val map[string]Header) *Encoding {
-	v.Headers = val
-	return v
+func (e *Encoding) WithHeaders(val map[string]Header) *Encoding {
+	e.Headers = val
+	return e
 }
 
 // WithHeadersItem sets Headers item value.
-func (v *Encoding) WithHeadersItem(key string, val Header) *Encoding {
-	if v.Headers == nil {
-		v.Headers = make(map[string]Header, 1)
+func (e *Encoding) WithHeadersItem(key string, val Header) *Encoding {
+	if e.Headers == nil {
+		e.Headers = make(map[string]Header, 1)
 	}
 
-	v.Headers[key] = val
+	e.Headers[key] = val
 
-	return v
+	return e
 }
 
 // WithStyle sets Style value.
-func (v *Encoding) WithStyle(val EncodingStyle) *Encoding {
-	v.Style = &val
-	return v
+func (e *Encoding) WithStyle(val EncodingStyle) *Encoding {
+	e.Style = &val
+	return e
 }
 
 // WithExplode sets Explode value.
-func (v *Encoding) WithExplode(val bool) *Encoding {
-	v.Explode = &val
-	return v
+func (e *Encoding) WithExplode(val bool) *Encoding {
+	e.Explode = &val
+	return e
 }
 
 // WithAllowReserved sets AllowReserved value.
-func (v *Encoding) WithAllowReserved(val bool) *Encoding {
-	v.AllowReserved = &val
-	return v
+func (e *Encoding) WithAllowReserved(val bool) *Encoding {
+	e.AllowReserved = &val
+	return e
 }
 
 // Header structure is generated from "#/definitions/Header".
@@ -2448,102 +2448,102 @@ type Header struct {
 }
 
 // WithDescription sets Description value.
-func (v *Header) WithDescription(val string) *Header {
-	v.Description = &val
-	return v
+func (h *Header) WithDescription(val string) *Header {
+	h.Description = &val
+	return h
 }
 
 // WithRequired sets Required value.
-func (v *Header) WithRequired(val bool) *Header {
-	v.Required = &val
-	return v
+func (h *Header) WithRequired(val bool) *Header {
+	h.Required = &val
+	return h
 }
 
 // WithDeprecated sets Deprecated value.
-func (v *Header) WithDeprecated(val bool) *Header {
-	v.Deprecated = &val
-	return v
+func (h *Header) WithDeprecated(val bool) *Header {
+	h.Deprecated = &val
+	return h
 }
 
 // WithAllowEmptyValue sets AllowEmptyValue value.
-func (v *Header) WithAllowEmptyValue(val bool) *Header {
-	v.AllowEmptyValue = &val
-	return v
+func (h *Header) WithAllowEmptyValue(val bool) *Header {
+	h.AllowEmptyValue = &val
+	return h
 }
 
 // WithExplode sets Explode value.
-func (v *Header) WithExplode(val bool) *Header {
-	v.Explode = &val
-	return v
+func (h *Header) WithExplode(val bool) *Header {
+	h.Explode = &val
+	return h
 }
 
 // WithAllowReserved sets AllowReserved value.
-func (v *Header) WithAllowReserved(val bool) *Header {
-	v.AllowReserved = &val
-	return v
+func (h *Header) WithAllowReserved(val bool) *Header {
+	h.AllowReserved = &val
+	return h
 }
 
 // WithSchema sets Schema value.
-func (v *Header) WithSchema(val SchemaOrRef) *Header {
-	v.Schema = &val
-	return v
+func (h *Header) WithSchema(val SchemaOrRef) *Header {
+	h.Schema = &val
+	return h
 }
 
 // WithContent sets Content value.
-func (v *Header) WithContent(val map[string]MediaType) *Header {
-	v.Content = val
-	return v
+func (h *Header) WithContent(val map[string]MediaType) *Header {
+	h.Content = val
+	return h
 }
 
 // WithContentItem sets Content item value.
-func (v *Header) WithContentItem(key string, val MediaType) *Header {
-	if v.Content == nil {
-		v.Content = make(map[string]MediaType, 1)
+func (h *Header) WithContentItem(key string, val MediaType) *Header {
+	if h.Content == nil {
+		h.Content = make(map[string]MediaType, 1)
 	}
 
-	v.Content[key] = val
+	h.Content[key] = val
 
-	return v
+	return h
 }
 
 // WithExample sets Example value.
-func (v *Header) WithExample(val interface{}) *Header {
-	v.Example = &val
-	return v
+func (h *Header) WithExample(val interface{}) *Header {
+	h.Example = &val
+	return h
 }
 
 // WithExamples sets Examples value.
-func (v *Header) WithExamples(val map[string]ExampleOrRef) *Header {
-	v.Examples = val
-	return v
+func (h *Header) WithExamples(val map[string]ExampleOrRef) *Header {
+	h.Examples = val
+	return h
 }
 
 // WithExamplesItem sets Examples item value.
-func (v *Header) WithExamplesItem(key string, val ExampleOrRef) *Header {
-	if v.Examples == nil {
-		v.Examples = make(map[string]ExampleOrRef, 1)
+func (h *Header) WithExamplesItem(key string, val ExampleOrRef) *Header {
+	if h.Examples == nil {
+		h.Examples = make(map[string]ExampleOrRef, 1)
 	}
 
-	v.Examples[key] = val
+	h.Examples[key] = val
 
-	return v
+	return h
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Header) WithMapOfAnything(val map[string]interface{}) *Header {
-	v.MapOfAnything = val
-	return v
+func (h *Header) WithMapOfAnything(val map[string]interface{}) *Header {
+	h.MapOfAnything = val
+	return h
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Header) WithMapOfAnythingItem(key string, val interface{}) *Header {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (h *Header) WithMapOfAnythingItem(key string, val interface{}) *Header {
+	if h.MapOfAnything == nil {
+		h.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	h.MapOfAnything[key] = val
 
-	return v
+	return h
 }
 
 type marshalHeader Header
@@ -2563,48 +2563,48 @@ var ignoreKeysHeader = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Header) UnmarshalJSON(data []byte) error {
+func (h *Header) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalHeader(*v)
+	mh := marshalHeader(*h)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mh)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["style"]; !ok || string(v) != `"simple"` {
+	if v, ok := rawMap["style"]; !ok || string(v) != `"simple"` {
 		return fmt.Errorf(`bad or missing const value for "style" ("simple" expected, %s received)`, v)
 	}
 
-	delete(m, "style")
+	delete(rawMap, "style")
 
-	if vv.Example == nil {
-		if _, ok := m["example"]; ok {
+	if mh.Example == nil {
+		if _, ok := rawMap["example"]; ok {
 			var v interface{}
-			vv.Example = &v
+			mh.Example = &v
 		}
 	}
 
 	for _, key := range ignoreKeysHeader {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mh.MapOfAnything == nil {
+				mh.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -2614,15 +2614,15 @@ func (v *Header) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mh.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Header(vv)
+	*h = Header(mh)
 
 	return nil
 }
@@ -2633,8 +2633,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v Header) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constHeader, marshalHeader(v), v.MapOfAnything)
+func (h Header) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constHeader, marshalHeader(h), h.MapOfAnything)
 }
 
 // SchemaXORContentOneOf1 structure is generated from "#/definitions/SchemaXORContent/oneOf/1".
@@ -2657,26 +2657,26 @@ type ParameterLocationOneOf0 struct {
 }
 
 // WithStyle sets Style value.
-func (v *ParameterLocationOneOf0) WithStyle(val ParameterLocationOneOf0Style) *ParameterLocationOneOf0 {
-	v.Style = &val
-	return v
+func (p *ParameterLocationOneOf0) WithStyle(val ParameterLocationOneOf0Style) *ParameterLocationOneOf0 {
+	p.Style = &val
+	return p
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ParameterLocationOneOf0) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf0 {
-	v.AdditionalProperties = val
-	return v
+func (p *ParameterLocationOneOf0) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf0 {
+	p.AdditionalProperties = val
+	return p
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ParameterLocationOneOf0) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf0 {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (p *ParameterLocationOneOf0) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf0 {
+	if p.AdditionalProperties == nil {
+		p.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	p.AdditionalProperties[key] = val
 
-	return v
+	return p
 }
 
 type marshalParameterLocationOneOf0 ParameterLocationOneOf0
@@ -2688,42 +2688,42 @@ var ignoreKeysParameterLocationOneOf0 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
+func (p *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalParameterLocationOneOf0(*v)
+	mp := marshalParameterLocationOneOf0(*p)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mp)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["in"]; !ok || string(v) != `"path"` {
+	if v, ok := rawMap["in"]; !ok || string(v) != `"path"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("path" expected, %s received)`, v)
 	}
 
-	delete(m, "in")
+	delete(rawMap, "in")
 
-	if v, ok := m["required"]; !ok || string(v) != "true" {
+	if v, ok := rawMap["required"]; !ok || string(v) != "true" {
 		return fmt.Errorf(`bad or missing const value for "required" (true expected, %s received)`, v)
 	}
 
-	delete(m, "required")
+	delete(rawMap, "required")
 
 	for _, key := range ignoreKeysParameterLocationOneOf0 {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if mp.AdditionalProperties == nil {
+			mp.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -2733,10 +2733,10 @@ func (v *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		mp.AdditionalProperties[key] = val
 	}
 
-	*v = ParameterLocationOneOf0(vv)
+	*p = ParameterLocationOneOf0(mp)
 
 	return nil
 }
@@ -2747,8 +2747,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v ParameterLocationOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf0, marshalParameterLocationOneOf0(v), v.AdditionalProperties)
+func (p ParameterLocationOneOf0) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf0, marshalParameterLocationOneOf0(p), p.AdditionalProperties)
 }
 
 // ParameterLocationOneOf1 structure is generated from "#/definitions/ParameterLocation/oneOf/1".
@@ -2762,26 +2762,26 @@ type ParameterLocationOneOf1 struct {
 }
 
 // WithStyle sets Style value.
-func (v *ParameterLocationOneOf1) WithStyle(val ParameterLocationOneOf1Style) *ParameterLocationOneOf1 {
-	v.Style = &val
-	return v
+func (p *ParameterLocationOneOf1) WithStyle(val ParameterLocationOneOf1Style) *ParameterLocationOneOf1 {
+	p.Style = &val
+	return p
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ParameterLocationOneOf1) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf1 {
-	v.AdditionalProperties = val
-	return v
+func (p *ParameterLocationOneOf1) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf1 {
+	p.AdditionalProperties = val
+	return p
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ParameterLocationOneOf1) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf1 {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (p *ParameterLocationOneOf1) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf1 {
+	if p.AdditionalProperties == nil {
+		p.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	p.AdditionalProperties[key] = val
 
-	return v
+	return p
 }
 
 type marshalParameterLocationOneOf1 ParameterLocationOneOf1
@@ -2792,36 +2792,36 @@ var ignoreKeysParameterLocationOneOf1 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
+func (p *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalParameterLocationOneOf1(*v)
+	mp := marshalParameterLocationOneOf1(*p)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mp)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["in"]; !ok || string(v) != `"query"` {
+	if v, ok := rawMap["in"]; !ok || string(v) != `"query"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("query" expected, %s received)`, v)
 	}
 
-	delete(m, "in")
+	delete(rawMap, "in")
 
 	for _, key := range ignoreKeysParameterLocationOneOf1 {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if mp.AdditionalProperties == nil {
+			mp.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -2831,10 +2831,10 @@ func (v *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		mp.AdditionalProperties[key] = val
 	}
 
-	*v = ParameterLocationOneOf1(vv)
+	*p = ParameterLocationOneOf1(mp)
 
 	return nil
 }
@@ -2845,8 +2845,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v ParameterLocationOneOf1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf1, marshalParameterLocationOneOf1(v), v.AdditionalProperties)
+func (p ParameterLocationOneOf1) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf1, marshalParameterLocationOneOf1(p), p.AdditionalProperties)
 }
 
 // ParameterLocationOneOf2 structure is generated from "#/definitions/ParameterLocation/oneOf/2".
@@ -2859,48 +2859,48 @@ type ParameterLocationOneOf2 struct {
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ParameterLocationOneOf2) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf2 {
-	v.AdditionalProperties = val
-	return v
+func (p *ParameterLocationOneOf2) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf2 {
+	p.AdditionalProperties = val
+	return p
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ParameterLocationOneOf2) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf2 {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (p *ParameterLocationOneOf2) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf2 {
+	if p.AdditionalProperties == nil {
+		p.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	p.AdditionalProperties[key] = val
 
-	return v
+	return p
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
+func (p *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["in"]; !ok || string(v) != `"header"` {
+	if v, ok := rawMap["in"]; !ok || string(v) != `"header"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("header" expected, %s received)`, v)
 	}
 
-	delete(m, "in")
+	delete(rawMap, "in")
 
-	if v, ok := m["style"]; !ok || string(v) != `"simple"` {
+	if v, ok := rawMap["style"]; !ok || string(v) != `"simple"` {
 		return fmt.Errorf(`bad or missing const value for "style" ("simple" expected, %s received)`, v)
 	}
 
-	delete(m, "style")
+	delete(rawMap, "style")
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if p.AdditionalProperties == nil {
+			p.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -2910,7 +2910,7 @@ func (v *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		p.AdditionalProperties[key] = val
 	}
 
 	return nil
@@ -2922,8 +2922,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v ParameterLocationOneOf2) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf2, v.AdditionalProperties)
+func (p ParameterLocationOneOf2) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf2, p.AdditionalProperties)
 }
 
 // ParameterLocationOneOf3 structure is generated from "#/definitions/ParameterLocation/oneOf/3".
@@ -2936,48 +2936,48 @@ type ParameterLocationOneOf3 struct {
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ParameterLocationOneOf3) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf3 {
-	v.AdditionalProperties = val
-	return v
+func (p *ParameterLocationOneOf3) WithAdditionalProperties(val map[string]interface{}) *ParameterLocationOneOf3 {
+	p.AdditionalProperties = val
+	return p
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ParameterLocationOneOf3) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf3 {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (p *ParameterLocationOneOf3) WithAdditionalPropertiesItem(key string, val interface{}) *ParameterLocationOneOf3 {
+	if p.AdditionalProperties == nil {
+		p.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	p.AdditionalProperties[key] = val
 
-	return v
+	return p
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
+func (p *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["in"]; !ok || string(v) != `"cookie"` {
+	if v, ok := rawMap["in"]; !ok || string(v) != `"cookie"` {
 		return fmt.Errorf(`bad or missing const value for "in" ("cookie" expected, %s received)`, v)
 	}
 
-	delete(m, "in")
+	delete(rawMap, "in")
 
-	if v, ok := m["style"]; !ok || string(v) != `"form"` {
+	if v, ok := rawMap["style"]; !ok || string(v) != `"form"` {
 		return fmt.Errorf(`bad or missing const value for "style" ("form" expected, %s received)`, v)
 	}
 
-	delete(m, "style")
+	delete(rawMap, "style")
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if p.AdditionalProperties == nil {
+			p.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -2987,7 +2987,7 @@ func (v *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		p.AdditionalProperties[key] = val
 	}
 
 	return nil
@@ -2999,8 +2999,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v ParameterLocationOneOf3) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constParameterLocationOneOf3, v.AdditionalProperties)
+func (p ParameterLocationOneOf3) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constParameterLocationOneOf3, p.AdditionalProperties)
 }
 
 // ParameterLocation structure is generated from "#/definitions/ParameterLocation".
@@ -3014,59 +3014,59 @@ type ParameterLocation struct {
 }
 
 // WithOneOf0 sets OneOf0 value.
-func (v *ParameterLocation) WithOneOf0(val ParameterLocationOneOf0) *ParameterLocation {
-	v.OneOf0 = &val
-	return v
+func (p *ParameterLocation) WithOneOf0(val ParameterLocationOneOf0) *ParameterLocation {
+	p.OneOf0 = &val
+	return p
 }
 
 // WithOneOf1 sets OneOf1 value.
-func (v *ParameterLocation) WithOneOf1(val ParameterLocationOneOf1) *ParameterLocation {
-	v.OneOf1 = &val
-	return v
+func (p *ParameterLocation) WithOneOf1(val ParameterLocationOneOf1) *ParameterLocation {
+	p.OneOf1 = &val
+	return p
 }
 
 // WithOneOf2 sets OneOf2 value.
-func (v *ParameterLocation) WithOneOf2(val ParameterLocationOneOf2) *ParameterLocation {
-	v.OneOf2 = &val
-	return v
+func (p *ParameterLocation) WithOneOf2(val ParameterLocationOneOf2) *ParameterLocation {
+	p.OneOf2 = &val
+	return p
 }
 
 // WithOneOf3 sets OneOf3 value.
-func (v *ParameterLocation) WithOneOf3(val ParameterLocationOneOf3) *ParameterLocation {
-	v.OneOf3 = &val
-	return v
+func (p *ParameterLocation) WithOneOf3(val ParameterLocationOneOf3) *ParameterLocation {
+	p.OneOf3 = &val
+	return p
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ParameterLocation) UnmarshalJSON(data []byte) error {
+func (p *ParameterLocation) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.OneOf0)
+	err = json.Unmarshal(data, &p.OneOf0)
 	if err != nil {
-		v.OneOf0 = nil
+		p.OneOf0 = nil
 	}
 
-	err = json.Unmarshal(data, &v.OneOf1)
+	err = json.Unmarshal(data, &p.OneOf1)
 	if err != nil {
-		v.OneOf1 = nil
+		p.OneOf1 = nil
 	}
 
-	err = json.Unmarshal(data, &v.OneOf2)
+	err = json.Unmarshal(data, &p.OneOf2)
 	if err != nil {
-		v.OneOf2 = nil
+		p.OneOf2 = nil
 	}
 
-	err = json.Unmarshal(data, &v.OneOf3)
+	err = json.Unmarshal(data, &p.OneOf3)
 	if err != nil {
-		v.OneOf3 = nil
+		p.OneOf3 = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ParameterLocation) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.OneOf0, v.OneOf1, v.OneOf2, v.OneOf3)
+func (p ParameterLocation) MarshalJSON() ([]byte, error) {
+	return marshalUnion(p.OneOf0, p.OneOf1, p.OneOf2, p.OneOf3)
 }
 
 // ParameterOrRef structure is generated from "#/definitions/ParameterOrRef".
@@ -3076,37 +3076,37 @@ type ParameterOrRef struct {
 }
 
 // WithParameterReference sets ParameterReference value.
-func (v *ParameterOrRef) WithParameterReference(val ParameterReference) *ParameterOrRef {
-	v.ParameterReference = &val
-	return v
+func (p *ParameterOrRef) WithParameterReference(val ParameterReference) *ParameterOrRef {
+	p.ParameterReference = &val
+	return p
 }
 
 // WithParameter sets Parameter value.
-func (v *ParameterOrRef) WithParameter(val Parameter) *ParameterOrRef {
-	v.Parameter = &val
-	return v
+func (p *ParameterOrRef) WithParameter(val Parameter) *ParameterOrRef {
+	p.Parameter = &val
+	return p
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ParameterOrRef) UnmarshalJSON(data []byte) error {
+func (p *ParameterOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.ParameterReference)
+	err = json.Unmarshal(data, &p.ParameterReference)
 	if err != nil {
-		v.ParameterReference = nil
+		p.ParameterReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.Parameter)
+	err = json.Unmarshal(data, &p.Parameter)
 	if err != nil {
-		v.Parameter = nil
+		p.Parameter = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ParameterOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.ParameterReference, v.Parameter)
+func (p ParameterOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(p.ParameterReference, p.Parameter)
 }
 
 // Operation structure is generated from "#/definitions/Operation".
@@ -3127,103 +3127,103 @@ type Operation struct {
 }
 
 // WithTags sets Tags value.
-func (v *Operation) WithTags(val ...string) *Operation {
-	v.Tags = val
-	return v
+func (o *Operation) WithTags(val ...string) *Operation {
+	o.Tags = val
+	return o
 }
 
 // WithSummary sets Summary value.
-func (v *Operation) WithSummary(val string) *Operation {
-	v.Summary = &val
-	return v
+func (o *Operation) WithSummary(val string) *Operation {
+	o.Summary = &val
+	return o
 }
 
 // WithDescription sets Description value.
-func (v *Operation) WithDescription(val string) *Operation {
-	v.Description = &val
-	return v
+func (o *Operation) WithDescription(val string) *Operation {
+	o.Description = &val
+	return o
 }
 
 // WithExternalDocs sets ExternalDocs value.
-func (v *Operation) WithExternalDocs(val ExternalDocumentation) *Operation {
-	v.ExternalDocs = &val
-	return v
+func (o *Operation) WithExternalDocs(val ExternalDocumentation) *Operation {
+	o.ExternalDocs = &val
+	return o
 }
 
 // WithID sets ID value.
-func (v *Operation) WithID(val string) *Operation {
-	v.ID = &val
-	return v
+func (o *Operation) WithID(val string) *Operation {
+	o.ID = &val
+	return o
 }
 
 // WithParameters sets Parameters value.
-func (v *Operation) WithParameters(val ...ParameterOrRef) *Operation {
-	v.Parameters = val
-	return v
+func (o *Operation) WithParameters(val ...ParameterOrRef) *Operation {
+	o.Parameters = val
+	return o
 }
 
 // WithRequestBody sets RequestBody value.
-func (v *Operation) WithRequestBody(val RequestBodyOrRef) *Operation {
-	v.RequestBody = &val
-	return v
+func (o *Operation) WithRequestBody(val RequestBodyOrRef) *Operation {
+	o.RequestBody = &val
+	return o
 }
 
 // WithResponses sets Responses value.
-func (v *Operation) WithResponses(val Responses) *Operation {
-	v.Responses = &val
-	return v
+func (o *Operation) WithResponses(val Responses) *Operation {
+	o.Responses = &val
+	return o
 }
 
 // WithCallbacks sets Callbacks value.
-func (v *Operation) WithCallbacks(val map[string]CallbackOrRef) *Operation {
-	v.Callbacks = val
-	return v
+func (o *Operation) WithCallbacks(val map[string]CallbackOrRef) *Operation {
+	o.Callbacks = val
+	return o
 }
 
 // WithCallbacksItem sets Callbacks item value.
-func (v *Operation) WithCallbacksItem(key string, val CallbackOrRef) *Operation {
-	if v.Callbacks == nil {
-		v.Callbacks = make(map[string]CallbackOrRef, 1)
+func (o *Operation) WithCallbacksItem(key string, val CallbackOrRef) *Operation {
+	if o.Callbacks == nil {
+		o.Callbacks = make(map[string]CallbackOrRef, 1)
 	}
 
-	v.Callbacks[key] = val
+	o.Callbacks[key] = val
 
-	return v
+	return o
 }
 
 // WithDeprecated sets Deprecated value.
-func (v *Operation) WithDeprecated(val bool) *Operation {
-	v.Deprecated = &val
-	return v
+func (o *Operation) WithDeprecated(val bool) *Operation {
+	o.Deprecated = &val
+	return o
 }
 
 // WithSecurity sets Security value.
-func (v *Operation) WithSecurity(val ...map[string][]string) *Operation {
-	v.Security = val
-	return v
+func (o *Operation) WithSecurity(val ...map[string][]string) *Operation {
+	o.Security = val
+	return o
 }
 
 // WithServers sets Servers value.
-func (v *Operation) WithServers(val ...Server) *Operation {
-	v.Servers = val
-	return v
+func (o *Operation) WithServers(val ...Server) *Operation {
+	o.Servers = val
+	return o
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Operation) WithMapOfAnything(val map[string]interface{}) *Operation {
-	v.MapOfAnything = val
-	return v
+func (o *Operation) WithMapOfAnything(val map[string]interface{}) *Operation {
+	o.MapOfAnything = val
+	return o
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Operation) WithMapOfAnythingItem(key string, val interface{}) *Operation {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (o *Operation) WithMapOfAnythingItem(key string, val interface{}) *Operation {
+	if o.MapOfAnything == nil {
+		o.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	o.MapOfAnything[key] = val
 
-	return v
+	return o
 }
 
 type marshalOperation Operation
@@ -3244,35 +3244,35 @@ var ignoreKeysOperation = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Operation) UnmarshalJSON(data []byte) error {
+func (o *Operation) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalOperation(*v)
+	mo := marshalOperation(*o)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mo)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysOperation {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mo.MapOfAnything == nil {
+				mo.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3282,22 +3282,22 @@ func (v *Operation) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mo.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Operation(vv)
+	*o = Operation(mo)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Operation) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOperation(v), v.MapOfAnything)
+func (o Operation) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOperation(o), o.MapOfAnything)
 }
 
 // RequestBodyReference structure is generated from "#/definitions/RequestBodyReference".
@@ -3308,9 +3308,9 @@ type RequestBodyReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *RequestBodyReference) WithRef(val string) *RequestBodyReference {
-	v.Ref = &val
-	return v
+func (r *RequestBodyReference) WithRef(val string) *RequestBodyReference {
+	r.Ref = &val
+	return r
 }
 
 // RequestBody structure is generated from "#/definitions/RequestBody".
@@ -3322,49 +3322,49 @@ type RequestBody struct {
 }
 
 // WithDescription sets Description value.
-func (v *RequestBody) WithDescription(val string) *RequestBody {
-	v.Description = &val
-	return v
+func (r *RequestBody) WithDescription(val string) *RequestBody {
+	r.Description = &val
+	return r
 }
 
 // WithContent sets Content value.
-func (v *RequestBody) WithContent(val map[string]MediaType) *RequestBody {
-	v.Content = val
-	return v
+func (r *RequestBody) WithContent(val map[string]MediaType) *RequestBody {
+	r.Content = val
+	return r
 }
 
 // WithContentItem sets Content item value.
-func (v *RequestBody) WithContentItem(key string, val MediaType) *RequestBody {
-	if v.Content == nil {
-		v.Content = make(map[string]MediaType, 1)
+func (r *RequestBody) WithContentItem(key string, val MediaType) *RequestBody {
+	if r.Content == nil {
+		r.Content = make(map[string]MediaType, 1)
 	}
 
-	v.Content[key] = val
+	r.Content[key] = val
 
-	return v
+	return r
 }
 
 // WithRequired sets Required value.
-func (v *RequestBody) WithRequired(val bool) *RequestBody {
-	v.Required = &val
-	return v
+func (r *RequestBody) WithRequired(val bool) *RequestBody {
+	r.Required = &val
+	return r
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *RequestBody) WithMapOfAnything(val map[string]interface{}) *RequestBody {
-	v.MapOfAnything = val
-	return v
+func (r *RequestBody) WithMapOfAnything(val map[string]interface{}) *RequestBody {
+	r.MapOfAnything = val
+	return r
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *RequestBody) WithMapOfAnythingItem(key string, val interface{}) *RequestBody {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (r *RequestBody) WithMapOfAnythingItem(key string, val interface{}) *RequestBody {
+	if r.MapOfAnything == nil {
+		r.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	r.MapOfAnything[key] = val
 
-	return v
+	return r
 }
 
 type marshalRequestBody RequestBody
@@ -3376,35 +3376,35 @@ var ignoreKeysRequestBody = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *RequestBody) UnmarshalJSON(data []byte) error {
+func (r *RequestBody) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalRequestBody(*v)
+	mr := marshalRequestBody(*r)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mr)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysRequestBody {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mr.MapOfAnything == nil {
+				mr.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3414,22 +3414,22 @@ func (v *RequestBody) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mr.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = RequestBody(vv)
+	*r = RequestBody(mr)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v RequestBody) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalRequestBody(v), v.MapOfAnything)
+func (r RequestBody) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalRequestBody(r), r.MapOfAnything)
 }
 
 // RequestBodyOrRef structure is generated from "#/definitions/RequestBodyOrRef".
@@ -3439,37 +3439,37 @@ type RequestBodyOrRef struct {
 }
 
 // WithRequestBodyReference sets RequestBodyReference value.
-func (v *RequestBodyOrRef) WithRequestBodyReference(val RequestBodyReference) *RequestBodyOrRef {
-	v.RequestBodyReference = &val
-	return v
+func (r *RequestBodyOrRef) WithRequestBodyReference(val RequestBodyReference) *RequestBodyOrRef {
+	r.RequestBodyReference = &val
+	return r
 }
 
 // WithRequestBody sets RequestBody value.
-func (v *RequestBodyOrRef) WithRequestBody(val RequestBody) *RequestBodyOrRef {
-	v.RequestBody = &val
-	return v
+func (r *RequestBodyOrRef) WithRequestBody(val RequestBody) *RequestBodyOrRef {
+	r.RequestBody = &val
+	return r
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *RequestBodyOrRef) UnmarshalJSON(data []byte) error {
+func (r *RequestBodyOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.RequestBodyReference)
+	err = json.Unmarshal(data, &r.RequestBodyReference)
 	if err != nil {
-		v.RequestBodyReference = nil
+		r.RequestBodyReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.RequestBody)
+	err = json.Unmarshal(data, &r.RequestBody)
 	if err != nil {
-		v.RequestBody = nil
+		r.RequestBody = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v RequestBodyOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.RequestBodyReference, v.RequestBody)
+func (r RequestBodyOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(r.RequestBodyReference, r.RequestBody)
 }
 
 // Responses structure is generated from "#/definitions/Responses".
@@ -3480,43 +3480,43 @@ type Responses struct {
 }
 
 // WithDefault sets Default value.
-func (v *Responses) WithDefault(val ResponseOrRef) *Responses {
-	v.Default = &val
-	return v
+func (r *Responses) WithDefault(val ResponseOrRef) *Responses {
+	r.Default = &val
+	return r
 }
 
 // WithMapOfResponseOrRefValues sets MapOfResponseOrRefValues value.
-func (v *Responses) WithMapOfResponseOrRefValues(val map[string]ResponseOrRef) *Responses {
-	v.MapOfResponseOrRefValues = val
-	return v
+func (r *Responses) WithMapOfResponseOrRefValues(val map[string]ResponseOrRef) *Responses {
+	r.MapOfResponseOrRefValues = val
+	return r
 }
 
 // WithMapOfResponseOrRefValuesItem sets MapOfResponseOrRefValues item value.
-func (v *Responses) WithMapOfResponseOrRefValuesItem(key string, val ResponseOrRef) *Responses {
-	if v.MapOfResponseOrRefValues == nil {
-		v.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
+func (r *Responses) WithMapOfResponseOrRefValuesItem(key string, val ResponseOrRef) *Responses {
+	if r.MapOfResponseOrRefValues == nil {
+		r.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
 	}
 
-	v.MapOfResponseOrRefValues[key] = val
+	r.MapOfResponseOrRefValues[key] = val
 
-	return v
+	return r
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Responses) WithMapOfAnything(val map[string]interface{}) *Responses {
-	v.MapOfAnything = val
-	return v
+func (r *Responses) WithMapOfAnything(val map[string]interface{}) *Responses {
+	r.MapOfAnything = val
+	return r
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Responses) WithMapOfAnythingItem(key string, val interface{}) *Responses {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (r *Responses) WithMapOfAnythingItem(key string, val interface{}) *Responses {
+	if r.MapOfAnything == nil {
+		r.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	r.MapOfAnything[key] = val
 
-	return v
+	return r
 }
 
 type marshalResponses Responses
@@ -3526,35 +3526,35 @@ var ignoreKeysResponses = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Responses) UnmarshalJSON(data []byte) error {
+func (r *Responses) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalResponses(*v)
+	mr := marshalResponses(*r)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mr)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysResponses {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regex15D2XX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfResponseOrRefValues == nil {
-				vv.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
+			if mr.MapOfResponseOrRefValues == nil {
+				mr.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
 			}
 
 			var val ResponseOrRef
@@ -3564,14 +3564,14 @@ func (v *Responses) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfResponseOrRefValues[key] = val
+			mr.MapOfResponseOrRefValues[key] = val
 		}
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mr.MapOfAnything == nil {
+				mr.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3581,22 +3581,22 @@ func (v *Responses) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mr.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Responses(vv)
+	*r = Responses(mr)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Responses) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponses(v), v.MapOfResponseOrRefValues, v.MapOfAnything)
+func (r Responses) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalResponses(r), r.MapOfResponseOrRefValues, r.MapOfAnything)
 }
 
 // ResponseReference structure is generated from "#/definitions/ResponseReference".
@@ -3607,9 +3607,9 @@ type ResponseReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *ResponseReference) WithRef(val string) *ResponseReference {
-	v.Ref = &val
-	return v
+func (r *ResponseReference) WithRef(val string) *ResponseReference {
+	r.Ref = &val
+	return r
 }
 
 // Response structure is generated from "#/definitions/Response".
@@ -3622,77 +3622,77 @@ type Response struct {
 }
 
 // WithDescription sets Description value.
-func (v *Response) WithDescription(val string) *Response {
-	v.Description = &val
-	return v
+func (r *Response) WithDescription(val string) *Response {
+	r.Description = &val
+	return r
 }
 
 // WithHeaders sets Headers value.
-func (v *Response) WithHeaders(val map[string]HeaderOrRef) *Response {
-	v.Headers = val
-	return v
+func (r *Response) WithHeaders(val map[string]HeaderOrRef) *Response {
+	r.Headers = val
+	return r
 }
 
 // WithHeadersItem sets Headers item value.
-func (v *Response) WithHeadersItem(key string, val HeaderOrRef) *Response {
-	if v.Headers == nil {
-		v.Headers = make(map[string]HeaderOrRef, 1)
+func (r *Response) WithHeadersItem(key string, val HeaderOrRef) *Response {
+	if r.Headers == nil {
+		r.Headers = make(map[string]HeaderOrRef, 1)
 	}
 
-	v.Headers[key] = val
+	r.Headers[key] = val
 
-	return v
+	return r
 }
 
 // WithContent sets Content value.
-func (v *Response) WithContent(val map[string]MediaType) *Response {
-	v.Content = val
-	return v
+func (r *Response) WithContent(val map[string]MediaType) *Response {
+	r.Content = val
+	return r
 }
 
 // WithContentItem sets Content item value.
-func (v *Response) WithContentItem(key string, val MediaType) *Response {
-	if v.Content == nil {
-		v.Content = make(map[string]MediaType, 1)
+func (r *Response) WithContentItem(key string, val MediaType) *Response {
+	if r.Content == nil {
+		r.Content = make(map[string]MediaType, 1)
 	}
 
-	v.Content[key] = val
+	r.Content[key] = val
 
-	return v
+	return r
 }
 
 // WithLinks sets Links value.
-func (v *Response) WithLinks(val map[string]LinkOrRef) *Response {
-	v.Links = val
-	return v
+func (r *Response) WithLinks(val map[string]LinkOrRef) *Response {
+	r.Links = val
+	return r
 }
 
 // WithLinksItem sets Links item value.
-func (v *Response) WithLinksItem(key string, val LinkOrRef) *Response {
-	if v.Links == nil {
-		v.Links = make(map[string]LinkOrRef, 1)
+func (r *Response) WithLinksItem(key string, val LinkOrRef) *Response {
+	if r.Links == nil {
+		r.Links = make(map[string]LinkOrRef, 1)
 	}
 
-	v.Links[key] = val
+	r.Links[key] = val
 
-	return v
+	return r
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Response) WithMapOfAnything(val map[string]interface{}) *Response {
-	v.MapOfAnything = val
-	return v
+func (r *Response) WithMapOfAnything(val map[string]interface{}) *Response {
+	r.MapOfAnything = val
+	return r
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Response) WithMapOfAnythingItem(key string, val interface{}) *Response {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (r *Response) WithMapOfAnythingItem(key string, val interface{}) *Response {
+	if r.MapOfAnything == nil {
+		r.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	r.MapOfAnything[key] = val
 
-	return v
+	return r
 }
 
 type marshalResponse Response
@@ -3705,35 +3705,35 @@ var ignoreKeysResponse = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Response) UnmarshalJSON(data []byte) error {
+func (r *Response) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalResponse(*v)
+	mr := marshalResponse(*r)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mr)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysResponse {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mr.MapOfAnything == nil {
+				mr.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3743,22 +3743,22 @@ func (v *Response) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mr.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Response(vv)
+	*r = Response(mr)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Response) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponse(v), v.MapOfAnything)
+func (r Response) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalResponse(r), r.MapOfAnything)
 }
 
 // HeaderReference structure is generated from "#/definitions/HeaderReference".
@@ -3769,9 +3769,9 @@ type HeaderReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *HeaderReference) WithRef(val string) *HeaderReference {
-	v.Ref = &val
-	return v
+func (h *HeaderReference) WithRef(val string) *HeaderReference {
+	h.Ref = &val
+	return h
 }
 
 // HeaderOrRef structure is generated from "#/definitions/HeaderOrRef".
@@ -3781,37 +3781,37 @@ type HeaderOrRef struct {
 }
 
 // WithHeaderReference sets HeaderReference value.
-func (v *HeaderOrRef) WithHeaderReference(val HeaderReference) *HeaderOrRef {
-	v.HeaderReference = &val
-	return v
+func (h *HeaderOrRef) WithHeaderReference(val HeaderReference) *HeaderOrRef {
+	h.HeaderReference = &val
+	return h
 }
 
 // WithHeader sets Header value.
-func (v *HeaderOrRef) WithHeader(val Header) *HeaderOrRef {
-	v.Header = &val
-	return v
+func (h *HeaderOrRef) WithHeader(val Header) *HeaderOrRef {
+	h.Header = &val
+	return h
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *HeaderOrRef) UnmarshalJSON(data []byte) error {
+func (h *HeaderOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.HeaderReference)
+	err = json.Unmarshal(data, &h.HeaderReference)
 	if err != nil {
-		v.HeaderReference = nil
+		h.HeaderReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.Header)
+	err = json.Unmarshal(data, &h.Header)
 	if err != nil {
-		v.Header = nil
+		h.Header = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v HeaderOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.HeaderReference, v.Header)
+func (h HeaderOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(h.HeaderReference, h.Header)
 }
 
 // LinkReference structure is generated from "#/definitions/LinkReference".
@@ -3822,9 +3822,9 @@ type LinkReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *LinkReference) WithRef(val string) *LinkReference {
-	v.Ref = &val
-	return v
+func (l *LinkReference) WithRef(val string) *LinkReference {
+	l.Ref = &val
+	return l
 }
 
 // Link structure is generated from "#/definitions/Link".
@@ -3839,67 +3839,67 @@ type Link struct {
 }
 
 // WithOperationID sets OperationID value.
-func (v *Link) WithOperationID(val string) *Link {
-	v.OperationID = &val
-	return v
+func (l *Link) WithOperationID(val string) *Link {
+	l.OperationID = &val
+	return l
 }
 
 // WithOperationRef sets OperationRef value.
-func (v *Link) WithOperationRef(val string) *Link {
-	v.OperationRef = &val
-	return v
+func (l *Link) WithOperationRef(val string) *Link {
+	l.OperationRef = &val
+	return l
 }
 
 // WithParameters sets Parameters value.
-func (v *Link) WithParameters(val map[string]interface{}) *Link {
-	v.Parameters = val
-	return v
+func (l *Link) WithParameters(val map[string]interface{}) *Link {
+	l.Parameters = val
+	return l
 }
 
 // WithParametersItem sets Parameters item value.
-func (v *Link) WithParametersItem(key string, val interface{}) *Link {
-	if v.Parameters == nil {
-		v.Parameters = make(map[string]interface{}, 1)
+func (l *Link) WithParametersItem(key string, val interface{}) *Link {
+	if l.Parameters == nil {
+		l.Parameters = make(map[string]interface{}, 1)
 	}
 
-	v.Parameters[key] = val
+	l.Parameters[key] = val
 
-	return v
+	return l
 }
 
 // WithRequestBody sets RequestBody value.
-func (v *Link) WithRequestBody(val interface{}) *Link {
-	v.RequestBody = &val
-	return v
+func (l *Link) WithRequestBody(val interface{}) *Link {
+	l.RequestBody = &val
+	return l
 }
 
 // WithDescription sets Description value.
-func (v *Link) WithDescription(val string) *Link {
-	v.Description = &val
-	return v
+func (l *Link) WithDescription(val string) *Link {
+	l.Description = &val
+	return l
 }
 
 // WithServer sets Server value.
-func (v *Link) WithServer(val Server) *Link {
-	v.Server = &val
-	return v
+func (l *Link) WithServer(val Server) *Link {
+	l.Server = &val
+	return l
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Link) WithMapOfAnything(val map[string]interface{}) *Link {
-	v.MapOfAnything = val
-	return v
+func (l *Link) WithMapOfAnything(val map[string]interface{}) *Link {
+	l.MapOfAnything = val
+	return l
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Link) WithMapOfAnythingItem(key string, val interface{}) *Link {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (l *Link) WithMapOfAnythingItem(key string, val interface{}) *Link {
+	if l.MapOfAnything == nil {
+		l.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	l.MapOfAnything[key] = val
 
-	return v
+	return l
 }
 
 type marshalLink Link
@@ -3914,42 +3914,42 @@ var ignoreKeysLink = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Link) UnmarshalJSON(data []byte) error {
+func (l *Link) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalLink(*v)
+	ml := marshalLink(*l)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &ml)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if vv.RequestBody == nil {
-		if _, ok := m["requestBody"]; ok {
+	if ml.RequestBody == nil {
+		if _, ok := rawMap["requestBody"]; ok {
 			var v interface{}
-			vv.RequestBody = &v
+			ml.RequestBody = &v
 		}
 	}
 
 	for _, key := range ignoreKeysLink {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if ml.MapOfAnything == nil {
+				ml.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -3959,22 +3959,22 @@ func (v *Link) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			ml.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Link(vv)
+	*l = Link(ml)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Link) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalLink(v), v.MapOfAnything)
+func (l Link) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalLink(l), l.MapOfAnything)
 }
 
 // LinkOrRef structure is generated from "#/definitions/LinkOrRef".
@@ -3984,37 +3984,37 @@ type LinkOrRef struct {
 }
 
 // WithLinkReference sets LinkReference value.
-func (v *LinkOrRef) WithLinkReference(val LinkReference) *LinkOrRef {
-	v.LinkReference = &val
-	return v
+func (l *LinkOrRef) WithLinkReference(val LinkReference) *LinkOrRef {
+	l.LinkReference = &val
+	return l
 }
 
 // WithLink sets Link value.
-func (v *LinkOrRef) WithLink(val Link) *LinkOrRef {
-	v.Link = &val
-	return v
+func (l *LinkOrRef) WithLink(val Link) *LinkOrRef {
+	l.Link = &val
+	return l
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *LinkOrRef) UnmarshalJSON(data []byte) error {
+func (l *LinkOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.LinkReference)
+	err = json.Unmarshal(data, &l.LinkReference)
 	if err != nil {
-		v.LinkReference = nil
+		l.LinkReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.Link)
+	err = json.Unmarshal(data, &l.Link)
 	if err != nil {
-		v.Link = nil
+		l.Link = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v LinkOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.LinkReference, v.Link)
+func (l LinkOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(l.LinkReference, l.Link)
 }
 
 // ResponseOrRef structure is generated from "#/definitions/ResponseOrRef".
@@ -4024,37 +4024,37 @@ type ResponseOrRef struct {
 }
 
 // WithResponseReference sets ResponseReference value.
-func (v *ResponseOrRef) WithResponseReference(val ResponseReference) *ResponseOrRef {
-	v.ResponseReference = &val
-	return v
+func (r *ResponseOrRef) WithResponseReference(val ResponseReference) *ResponseOrRef {
+	r.ResponseReference = &val
+	return r
 }
 
 // WithResponse sets Response value.
-func (v *ResponseOrRef) WithResponse(val Response) *ResponseOrRef {
-	v.Response = &val
-	return v
+func (r *ResponseOrRef) WithResponse(val Response) *ResponseOrRef {
+	r.Response = &val
+	return r
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ResponseOrRef) UnmarshalJSON(data []byte) error {
+func (r *ResponseOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.ResponseReference)
+	err = json.Unmarshal(data, &r.ResponseReference)
 	if err != nil {
-		v.ResponseReference = nil
+		r.ResponseReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.Response)
+	err = json.Unmarshal(data, &r.Response)
 	if err != nil {
-		v.Response = nil
+		r.Response = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ResponseOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.ResponseReference, v.Response)
+func (r ResponseOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(r.ResponseReference, r.Response)
 }
 
 // CallbackReference structure is generated from "#/definitions/CallbackReference".
@@ -4065,9 +4065,9 @@ type CallbackReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *CallbackReference) WithRef(val string) *CallbackReference {
-	v.Ref = &val
-	return v
+func (c *CallbackReference) WithRef(val string) *CallbackReference {
+	c.Ref = &val
+	return c
 }
 
 // Callback structure is generated from "#/definitions/Callback".
@@ -4077,58 +4077,58 @@ type Callback struct {
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Callback) WithMapOfAnything(val map[string]interface{}) *Callback {
-	v.MapOfAnything = val
-	return v
+func (c *Callback) WithMapOfAnything(val map[string]interface{}) *Callback {
+	c.MapOfAnything = val
+	return c
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Callback) WithMapOfAnythingItem(key string, val interface{}) *Callback {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (c *Callback) WithMapOfAnythingItem(key string, val interface{}) *Callback {
+	if c.MapOfAnything == nil {
+		c.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	c.MapOfAnything[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *Callback) WithAdditionalProperties(val map[string]PathItem) *Callback {
-	v.AdditionalProperties = val
-	return v
+func (c *Callback) WithAdditionalProperties(val map[string]PathItem) *Callback {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *Callback) WithAdditionalPropertiesItem(key string, val PathItem) *Callback {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]PathItem, 1)
+func (c *Callback) WithAdditionalPropertiesItem(key string, val PathItem) *Callback {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]PathItem, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Callback) UnmarshalJSON(data []byte) error {
+func (c *Callback) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if v.MapOfAnything == nil {
-				v.MapOfAnything = make(map[string]interface{}, 1)
+			if c.MapOfAnything == nil {
+				c.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4138,17 +4138,17 @@ func (v *Callback) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfAnything[key] = val
+			c.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]PathItem, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]PathItem, 1)
 		}
 
 		var val PathItem
@@ -4158,15 +4158,15 @@ func (v *Callback) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Callback) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfAnything, v.AdditionalProperties)
+func (c Callback) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfAnything, c.AdditionalProperties)
 }
 
 // CallbackOrRef structure is generated from "#/definitions/CallbackOrRef".
@@ -4176,37 +4176,37 @@ type CallbackOrRef struct {
 }
 
 // WithCallbackReference sets CallbackReference value.
-func (v *CallbackOrRef) WithCallbackReference(val CallbackReference) *CallbackOrRef {
-	v.CallbackReference = &val
-	return v
+func (c *CallbackOrRef) WithCallbackReference(val CallbackReference) *CallbackOrRef {
+	c.CallbackReference = &val
+	return c
 }
 
 // WithCallback sets Callback value.
-func (v *CallbackOrRef) WithCallback(val Callback) *CallbackOrRef {
-	v.Callback = &val
-	return v
+func (c *CallbackOrRef) WithCallback(val Callback) *CallbackOrRef {
+	c.Callback = &val
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *CallbackOrRef) UnmarshalJSON(data []byte) error {
+func (c *CallbackOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.CallbackReference)
+	err = json.Unmarshal(data, &c.CallbackReference)
 	if err != nil {
-		v.CallbackReference = nil
+		c.CallbackReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.Callback)
+	err = json.Unmarshal(data, &c.Callback)
 	if err != nil {
-		v.Callback = nil
+		c.Callback = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v CallbackOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.CallbackReference, v.Callback)
+func (c CallbackOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.CallbackReference, c.Callback)
 }
 
 // Paths structure is generated from "#/definitions/Paths".
@@ -4216,58 +4216,58 @@ type Paths struct {
 }
 
 // WithMapOfPathItemValues sets MapOfPathItemValues value.
-func (v *Paths) WithMapOfPathItemValues(val map[string]PathItem) *Paths {
-	v.MapOfPathItemValues = val
-	return v
+func (p *Paths) WithMapOfPathItemValues(val map[string]PathItem) *Paths {
+	p.MapOfPathItemValues = val
+	return p
 }
 
 // WithMapOfPathItemValuesItem sets MapOfPathItemValues item value.
-func (v *Paths) WithMapOfPathItemValuesItem(key string, val PathItem) *Paths {
-	if v.MapOfPathItemValues == nil {
-		v.MapOfPathItemValues = make(map[string]PathItem, 1)
+func (p *Paths) WithMapOfPathItemValuesItem(key string, val PathItem) *Paths {
+	if p.MapOfPathItemValues == nil {
+		p.MapOfPathItemValues = make(map[string]PathItem, 1)
 	}
 
-	v.MapOfPathItemValues[key] = val
+	p.MapOfPathItemValues[key] = val
 
-	return v
+	return p
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Paths) WithMapOfAnything(val map[string]interface{}) *Paths {
-	v.MapOfAnything = val
-	return v
+func (p *Paths) WithMapOfAnything(val map[string]interface{}) *Paths {
+	p.MapOfAnything = val
+	return p
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Paths) WithMapOfAnythingItem(key string, val interface{}) *Paths {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (p *Paths) WithMapOfAnythingItem(key string, val interface{}) *Paths {
+	if p.MapOfAnything == nil {
+		p.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	p.MapOfAnything[key] = val
 
-	return v
+	return p
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Paths) UnmarshalJSON(data []byte) error {
+func (p *Paths) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regex.MatchString(key) {
 			matched = true
 
-			if v.MapOfPathItemValues == nil {
-				v.MapOfPathItemValues = make(map[string]PathItem, 1)
+			if p.MapOfPathItemValues == nil {
+				p.MapOfPathItemValues = make(map[string]PathItem, 1)
 			}
 
 			var val PathItem
@@ -4277,14 +4277,14 @@ func (v *Paths) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfPathItemValues[key] = val
+			p.MapOfPathItemValues[key] = val
 		}
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if v.MapOfAnything == nil {
-				v.MapOfAnything = make(map[string]interface{}, 1)
+			if p.MapOfAnything == nil {
+				p.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4294,11 +4294,11 @@ func (v *Paths) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfAnything[key] = val
+			p.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
@@ -4306,8 +4306,8 @@ func (v *Paths) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalJSON encodes JSON.
-func (v Paths) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfPathItemValues, v.MapOfAnything)
+func (p Paths) MarshalJSON() ([]byte, error) {
+	return marshalUnion(p.MapOfPathItemValues, p.MapOfAnything)
 }
 
 // Components structure is generated from "#/definitions/Components".
@@ -4325,74 +4325,74 @@ type Components struct {
 }
 
 // WithSchemas sets Schemas value.
-func (v *Components) WithSchemas(val ComponentsSchemas) *Components {
-	v.Schemas = &val
-	return v
+func (c *Components) WithSchemas(val ComponentsSchemas) *Components {
+	c.Schemas = &val
+	return c
 }
 
 // WithResponses sets Responses value.
-func (v *Components) WithResponses(val ComponentsResponses) *Components {
-	v.Responses = &val
-	return v
+func (c *Components) WithResponses(val ComponentsResponses) *Components {
+	c.Responses = &val
+	return c
 }
 
 // WithParameters sets Parameters value.
-func (v *Components) WithParameters(val ComponentsParameters) *Components {
-	v.Parameters = &val
-	return v
+func (c *Components) WithParameters(val ComponentsParameters) *Components {
+	c.Parameters = &val
+	return c
 }
 
 // WithExamples sets Examples value.
-func (v *Components) WithExamples(val ComponentsExamples) *Components {
-	v.Examples = &val
-	return v
+func (c *Components) WithExamples(val ComponentsExamples) *Components {
+	c.Examples = &val
+	return c
 }
 
 // WithRequestBodies sets RequestBodies value.
-func (v *Components) WithRequestBodies(val ComponentsRequestBodies) *Components {
-	v.RequestBodies = &val
-	return v
+func (c *Components) WithRequestBodies(val ComponentsRequestBodies) *Components {
+	c.RequestBodies = &val
+	return c
 }
 
 // WithHeaders sets Headers value.
-func (v *Components) WithHeaders(val ComponentsHeaders) *Components {
-	v.Headers = &val
-	return v
+func (c *Components) WithHeaders(val ComponentsHeaders) *Components {
+	c.Headers = &val
+	return c
 }
 
 // WithSecuritySchemes sets SecuritySchemes value.
-func (v *Components) WithSecuritySchemes(val ComponentsSecuritySchemes) *Components {
-	v.SecuritySchemes = &val
-	return v
+func (c *Components) WithSecuritySchemes(val ComponentsSecuritySchemes) *Components {
+	c.SecuritySchemes = &val
+	return c
 }
 
 // WithLinks sets Links value.
-func (v *Components) WithLinks(val ComponentsLinks) *Components {
-	v.Links = &val
-	return v
+func (c *Components) WithLinks(val ComponentsLinks) *Components {
+	c.Links = &val
+	return c
 }
 
 // WithCallbacks sets Callbacks value.
-func (v *Components) WithCallbacks(val ComponentsCallbacks) *Components {
-	v.Callbacks = &val
-	return v
+func (c *Components) WithCallbacks(val ComponentsCallbacks) *Components {
+	c.Callbacks = &val
+	return c
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *Components) WithMapOfAnything(val map[string]interface{}) *Components {
-	v.MapOfAnything = val
-	return v
+func (c *Components) WithMapOfAnything(val map[string]interface{}) *Components {
+	c.MapOfAnything = val
+	return c
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *Components) WithMapOfAnythingItem(key string, val interface{}) *Components {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (c *Components) WithMapOfAnythingItem(key string, val interface{}) *Components {
+	if c.MapOfAnything == nil {
+		c.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	c.MapOfAnything[key] = val
 
-	return v
+	return c
 }
 
 type marshalComponents Components
@@ -4410,35 +4410,35 @@ var ignoreKeysComponents = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *Components) UnmarshalJSON(data []byte) error {
+func (c *Components) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalComponents(*v)
+	mc := marshalComponents(*c)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mc)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysComponents {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mc.MapOfAnything == nil {
+				mc.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -4448,22 +4448,22 @@ func (v *Components) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mc.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = Components(vv)
+	*c = Components(mc)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v Components) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalComponents(v), v.MapOfAnything)
+func (c Components) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalComponents(c), c.MapOfAnything)
 }
 
 // ComponentsSchemas structure is generated from "#/definitions/Components->schemas".
@@ -4473,58 +4473,58 @@ type ComponentsSchemas struct {
 }
 
 // WithMapOfSchemaOrRefValues sets MapOfSchemaOrRefValues value.
-func (v *ComponentsSchemas) WithMapOfSchemaOrRefValues(val map[string]SchemaOrRef) *ComponentsSchemas {
-	v.MapOfSchemaOrRefValues = val
-	return v
+func (c *ComponentsSchemas) WithMapOfSchemaOrRefValues(val map[string]SchemaOrRef) *ComponentsSchemas {
+	c.MapOfSchemaOrRefValues = val
+	return c
 }
 
 // WithMapOfSchemaOrRefValuesItem sets MapOfSchemaOrRefValues item value.
-func (v *ComponentsSchemas) WithMapOfSchemaOrRefValuesItem(key string, val SchemaOrRef) *ComponentsSchemas {
-	if v.MapOfSchemaOrRefValues == nil {
-		v.MapOfSchemaOrRefValues = make(map[string]SchemaOrRef, 1)
+func (c *ComponentsSchemas) WithMapOfSchemaOrRefValuesItem(key string, val SchemaOrRef) *ComponentsSchemas {
+	if c.MapOfSchemaOrRefValues == nil {
+		c.MapOfSchemaOrRefValues = make(map[string]SchemaOrRef, 1)
 	}
 
-	v.MapOfSchemaOrRefValues[key] = val
+	c.MapOfSchemaOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsSchemas) WithAdditionalProperties(val map[string]interface{}) *ComponentsSchemas {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsSchemas) WithAdditionalProperties(val map[string]interface{}) *ComponentsSchemas {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsSchemas) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsSchemas {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsSchemas) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsSchemas {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsSchemas) UnmarshalJSON(data []byte) error {
+func (c *ComponentsSchemas) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfSchemaOrRefValues == nil {
-				v.MapOfSchemaOrRefValues = make(map[string]SchemaOrRef, 1)
+			if c.MapOfSchemaOrRefValues == nil {
+				c.MapOfSchemaOrRefValues = make(map[string]SchemaOrRef, 1)
 			}
 
 			var val SchemaOrRef
@@ -4534,17 +4534,17 @@ func (v *ComponentsSchemas) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfSchemaOrRefValues[key] = val
+			c.MapOfSchemaOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4554,15 +4554,15 @@ func (v *ComponentsSchemas) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsSchemas) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfSchemaOrRefValues, v.AdditionalProperties)
+func (c ComponentsSchemas) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfSchemaOrRefValues, c.AdditionalProperties)
 }
 
 // ComponentsResponses structure is generated from "#/definitions/Components->responses".
@@ -4572,58 +4572,58 @@ type ComponentsResponses struct {
 }
 
 // WithMapOfResponseOrRefValues sets MapOfResponseOrRefValues value.
-func (v *ComponentsResponses) WithMapOfResponseOrRefValues(val map[string]ResponseOrRef) *ComponentsResponses {
-	v.MapOfResponseOrRefValues = val
-	return v
+func (c *ComponentsResponses) WithMapOfResponseOrRefValues(val map[string]ResponseOrRef) *ComponentsResponses {
+	c.MapOfResponseOrRefValues = val
+	return c
 }
 
 // WithMapOfResponseOrRefValuesItem sets MapOfResponseOrRefValues item value.
-func (v *ComponentsResponses) WithMapOfResponseOrRefValuesItem(key string, val ResponseOrRef) *ComponentsResponses {
-	if v.MapOfResponseOrRefValues == nil {
-		v.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
+func (c *ComponentsResponses) WithMapOfResponseOrRefValuesItem(key string, val ResponseOrRef) *ComponentsResponses {
+	if c.MapOfResponseOrRefValues == nil {
+		c.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
 	}
 
-	v.MapOfResponseOrRefValues[key] = val
+	c.MapOfResponseOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsResponses) WithAdditionalProperties(val map[string]interface{}) *ComponentsResponses {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsResponses) WithAdditionalProperties(val map[string]interface{}) *ComponentsResponses {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsResponses) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsResponses {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsResponses) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsResponses {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsResponses) UnmarshalJSON(data []byte) error {
+func (c *ComponentsResponses) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfResponseOrRefValues == nil {
-				v.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
+			if c.MapOfResponseOrRefValues == nil {
+				c.MapOfResponseOrRefValues = make(map[string]ResponseOrRef, 1)
 			}
 
 			var val ResponseOrRef
@@ -4633,17 +4633,17 @@ func (v *ComponentsResponses) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfResponseOrRefValues[key] = val
+			c.MapOfResponseOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4653,15 +4653,15 @@ func (v *ComponentsResponses) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsResponses) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfResponseOrRefValues, v.AdditionalProperties)
+func (c ComponentsResponses) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfResponseOrRefValues, c.AdditionalProperties)
 }
 
 // ComponentsParameters structure is generated from "#/definitions/Components->parameters".
@@ -4671,58 +4671,58 @@ type ComponentsParameters struct {
 }
 
 // WithMapOfParameterOrRefValues sets MapOfParameterOrRefValues value.
-func (v *ComponentsParameters) WithMapOfParameterOrRefValues(val map[string]ParameterOrRef) *ComponentsParameters {
-	v.MapOfParameterOrRefValues = val
-	return v
+func (c *ComponentsParameters) WithMapOfParameterOrRefValues(val map[string]ParameterOrRef) *ComponentsParameters {
+	c.MapOfParameterOrRefValues = val
+	return c
 }
 
 // WithMapOfParameterOrRefValuesItem sets MapOfParameterOrRefValues item value.
-func (v *ComponentsParameters) WithMapOfParameterOrRefValuesItem(key string, val ParameterOrRef) *ComponentsParameters {
-	if v.MapOfParameterOrRefValues == nil {
-		v.MapOfParameterOrRefValues = make(map[string]ParameterOrRef, 1)
+func (c *ComponentsParameters) WithMapOfParameterOrRefValuesItem(key string, val ParameterOrRef) *ComponentsParameters {
+	if c.MapOfParameterOrRefValues == nil {
+		c.MapOfParameterOrRefValues = make(map[string]ParameterOrRef, 1)
 	}
 
-	v.MapOfParameterOrRefValues[key] = val
+	c.MapOfParameterOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsParameters) WithAdditionalProperties(val map[string]interface{}) *ComponentsParameters {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsParameters) WithAdditionalProperties(val map[string]interface{}) *ComponentsParameters {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsParameters) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsParameters {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsParameters) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsParameters {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsParameters) UnmarshalJSON(data []byte) error {
+func (c *ComponentsParameters) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfParameterOrRefValues == nil {
-				v.MapOfParameterOrRefValues = make(map[string]ParameterOrRef, 1)
+			if c.MapOfParameterOrRefValues == nil {
+				c.MapOfParameterOrRefValues = make(map[string]ParameterOrRef, 1)
 			}
 
 			var val ParameterOrRef
@@ -4732,17 +4732,17 @@ func (v *ComponentsParameters) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfParameterOrRefValues[key] = val
+			c.MapOfParameterOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4752,15 +4752,15 @@ func (v *ComponentsParameters) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsParameters) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfParameterOrRefValues, v.AdditionalProperties)
+func (c ComponentsParameters) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfParameterOrRefValues, c.AdditionalProperties)
 }
 
 // ComponentsExamples structure is generated from "#/definitions/Components->examples".
@@ -4770,58 +4770,58 @@ type ComponentsExamples struct {
 }
 
 // WithMapOfExampleOrRefValues sets MapOfExampleOrRefValues value.
-func (v *ComponentsExamples) WithMapOfExampleOrRefValues(val map[string]ExampleOrRef) *ComponentsExamples {
-	v.MapOfExampleOrRefValues = val
-	return v
+func (c *ComponentsExamples) WithMapOfExampleOrRefValues(val map[string]ExampleOrRef) *ComponentsExamples {
+	c.MapOfExampleOrRefValues = val
+	return c
 }
 
 // WithMapOfExampleOrRefValuesItem sets MapOfExampleOrRefValues item value.
-func (v *ComponentsExamples) WithMapOfExampleOrRefValuesItem(key string, val ExampleOrRef) *ComponentsExamples {
-	if v.MapOfExampleOrRefValues == nil {
-		v.MapOfExampleOrRefValues = make(map[string]ExampleOrRef, 1)
+func (c *ComponentsExamples) WithMapOfExampleOrRefValuesItem(key string, val ExampleOrRef) *ComponentsExamples {
+	if c.MapOfExampleOrRefValues == nil {
+		c.MapOfExampleOrRefValues = make(map[string]ExampleOrRef, 1)
 	}
 
-	v.MapOfExampleOrRefValues[key] = val
+	c.MapOfExampleOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsExamples) WithAdditionalProperties(val map[string]interface{}) *ComponentsExamples {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsExamples) WithAdditionalProperties(val map[string]interface{}) *ComponentsExamples {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsExamples) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsExamples {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsExamples) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsExamples {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsExamples) UnmarshalJSON(data []byte) error {
+func (c *ComponentsExamples) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfExampleOrRefValues == nil {
-				v.MapOfExampleOrRefValues = make(map[string]ExampleOrRef, 1)
+			if c.MapOfExampleOrRefValues == nil {
+				c.MapOfExampleOrRefValues = make(map[string]ExampleOrRef, 1)
 			}
 
 			var val ExampleOrRef
@@ -4831,17 +4831,17 @@ func (v *ComponentsExamples) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfExampleOrRefValues[key] = val
+			c.MapOfExampleOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4851,15 +4851,15 @@ func (v *ComponentsExamples) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsExamples) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfExampleOrRefValues, v.AdditionalProperties)
+func (c ComponentsExamples) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfExampleOrRefValues, c.AdditionalProperties)
 }
 
 // ComponentsRequestBodies structure is generated from "#/definitions/Components->requestBodies".
@@ -4869,58 +4869,58 @@ type ComponentsRequestBodies struct {
 }
 
 // WithMapOfRequestBodyOrRefValues sets MapOfRequestBodyOrRefValues value.
-func (v *ComponentsRequestBodies) WithMapOfRequestBodyOrRefValues(val map[string]RequestBodyOrRef) *ComponentsRequestBodies {
-	v.MapOfRequestBodyOrRefValues = val
-	return v
+func (c *ComponentsRequestBodies) WithMapOfRequestBodyOrRefValues(val map[string]RequestBodyOrRef) *ComponentsRequestBodies {
+	c.MapOfRequestBodyOrRefValues = val
+	return c
 }
 
 // WithMapOfRequestBodyOrRefValuesItem sets MapOfRequestBodyOrRefValues item value.
-func (v *ComponentsRequestBodies) WithMapOfRequestBodyOrRefValuesItem(key string, val RequestBodyOrRef) *ComponentsRequestBodies {
-	if v.MapOfRequestBodyOrRefValues == nil {
-		v.MapOfRequestBodyOrRefValues = make(map[string]RequestBodyOrRef, 1)
+func (c *ComponentsRequestBodies) WithMapOfRequestBodyOrRefValuesItem(key string, val RequestBodyOrRef) *ComponentsRequestBodies {
+	if c.MapOfRequestBodyOrRefValues == nil {
+		c.MapOfRequestBodyOrRefValues = make(map[string]RequestBodyOrRef, 1)
 	}
 
-	v.MapOfRequestBodyOrRefValues[key] = val
+	c.MapOfRequestBodyOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsRequestBodies) WithAdditionalProperties(val map[string]interface{}) *ComponentsRequestBodies {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsRequestBodies) WithAdditionalProperties(val map[string]interface{}) *ComponentsRequestBodies {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsRequestBodies) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsRequestBodies {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsRequestBodies) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsRequestBodies {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
+func (c *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfRequestBodyOrRefValues == nil {
-				v.MapOfRequestBodyOrRefValues = make(map[string]RequestBodyOrRef, 1)
+			if c.MapOfRequestBodyOrRefValues == nil {
+				c.MapOfRequestBodyOrRefValues = make(map[string]RequestBodyOrRef, 1)
 			}
 
 			var val RequestBodyOrRef
@@ -4930,17 +4930,17 @@ func (v *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfRequestBodyOrRefValues[key] = val
+			c.MapOfRequestBodyOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -4950,15 +4950,15 @@ func (v *ComponentsRequestBodies) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsRequestBodies) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfRequestBodyOrRefValues, v.AdditionalProperties)
+func (c ComponentsRequestBodies) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfRequestBodyOrRefValues, c.AdditionalProperties)
 }
 
 // ComponentsHeaders structure is generated from "#/definitions/Components->headers".
@@ -4968,58 +4968,58 @@ type ComponentsHeaders struct {
 }
 
 // WithMapOfHeaderOrRefValues sets MapOfHeaderOrRefValues value.
-func (v *ComponentsHeaders) WithMapOfHeaderOrRefValues(val map[string]HeaderOrRef) *ComponentsHeaders {
-	v.MapOfHeaderOrRefValues = val
-	return v
+func (c *ComponentsHeaders) WithMapOfHeaderOrRefValues(val map[string]HeaderOrRef) *ComponentsHeaders {
+	c.MapOfHeaderOrRefValues = val
+	return c
 }
 
 // WithMapOfHeaderOrRefValuesItem sets MapOfHeaderOrRefValues item value.
-func (v *ComponentsHeaders) WithMapOfHeaderOrRefValuesItem(key string, val HeaderOrRef) *ComponentsHeaders {
-	if v.MapOfHeaderOrRefValues == nil {
-		v.MapOfHeaderOrRefValues = make(map[string]HeaderOrRef, 1)
+func (c *ComponentsHeaders) WithMapOfHeaderOrRefValuesItem(key string, val HeaderOrRef) *ComponentsHeaders {
+	if c.MapOfHeaderOrRefValues == nil {
+		c.MapOfHeaderOrRefValues = make(map[string]HeaderOrRef, 1)
 	}
 
-	v.MapOfHeaderOrRefValues[key] = val
+	c.MapOfHeaderOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsHeaders) WithAdditionalProperties(val map[string]interface{}) *ComponentsHeaders {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsHeaders) WithAdditionalProperties(val map[string]interface{}) *ComponentsHeaders {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsHeaders) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsHeaders {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsHeaders) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsHeaders {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsHeaders) UnmarshalJSON(data []byte) error {
+func (c *ComponentsHeaders) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfHeaderOrRefValues == nil {
-				v.MapOfHeaderOrRefValues = make(map[string]HeaderOrRef, 1)
+			if c.MapOfHeaderOrRefValues == nil {
+				c.MapOfHeaderOrRefValues = make(map[string]HeaderOrRef, 1)
 			}
 
 			var val HeaderOrRef
@@ -5029,17 +5029,17 @@ func (v *ComponentsHeaders) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfHeaderOrRefValues[key] = val
+			c.MapOfHeaderOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -5049,15 +5049,15 @@ func (v *ComponentsHeaders) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsHeaders) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfHeaderOrRefValues, v.AdditionalProperties)
+func (c ComponentsHeaders) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfHeaderOrRefValues, c.AdditionalProperties)
 }
 
 // SecuritySchemeReference structure is generated from "#/definitions/SecuritySchemeReference".
@@ -5068,9 +5068,9 @@ type SecuritySchemeReference struct {
 }
 
 // WithRef sets Ref value.
-func (v *SecuritySchemeReference) WithRef(val string) *SecuritySchemeReference {
-	v.Ref = &val
-	return v
+func (s *SecuritySchemeReference) WithRef(val string) *SecuritySchemeReference {
+	s.Ref = &val
+	return s
 }
 
 // APIKeySecurityScheme structure is generated from "#/definitions/APIKeySecurityScheme".
@@ -5082,38 +5082,38 @@ type APIKeySecurityScheme struct {
 }
 
 // WithName sets Name value.
-func (v *APIKeySecurityScheme) WithName(val string) *APIKeySecurityScheme {
-	v.Name = &val
-	return v
+func (a *APIKeySecurityScheme) WithName(val string) *APIKeySecurityScheme {
+	a.Name = &val
+	return a
 }
 
 // WithIn sets In value.
-func (v *APIKeySecurityScheme) WithIn(val APIKeySecuritySchemeIn) *APIKeySecurityScheme {
-	v.In = &val
-	return v
+func (a *APIKeySecurityScheme) WithIn(val APIKeySecuritySchemeIn) *APIKeySecurityScheme {
+	a.In = &val
+	return a
 }
 
 // WithDescription sets Description value.
-func (v *APIKeySecurityScheme) WithDescription(val string) *APIKeySecurityScheme {
-	v.Description = &val
-	return v
+func (a *APIKeySecurityScheme) WithDescription(val string) *APIKeySecurityScheme {
+	a.Description = &val
+	return a
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *APIKeySecurityScheme) WithMapOfAnything(val map[string]interface{}) *APIKeySecurityScheme {
-	v.MapOfAnything = val
-	return v
+func (a *APIKeySecurityScheme) WithMapOfAnything(val map[string]interface{}) *APIKeySecurityScheme {
+	a.MapOfAnything = val
+	return a
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *APIKeySecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *APIKeySecurityScheme {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (a *APIKeySecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *APIKeySecurityScheme {
+	if a.MapOfAnything == nil {
+		a.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	a.MapOfAnything[key] = val
 
-	return v
+	return a
 }
 
 type marshalAPIKeySecurityScheme APIKeySecurityScheme
@@ -5126,41 +5126,41 @@ var ignoreKeysAPIKeySecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
+func (a *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalAPIKeySecurityScheme(*v)
+	ma := marshalAPIKeySecurityScheme(*a)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &ma)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["type"]; !ok || string(v) != `"apiKey"` {
+	if v, ok := rawMap["type"]; !ok || string(v) != `"apiKey"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("apiKey" expected, %s received)`, v)
 	}
 
-	delete(m, "type")
+	delete(rawMap, "type")
 
 	for _, key := range ignoreKeysAPIKeySecurityScheme {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if ma.MapOfAnything == nil {
+				ma.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -5170,15 +5170,15 @@ func (v *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			ma.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = APIKeySecurityScheme(vv)
+	*a = APIKeySecurityScheme(ma)
 
 	return nil
 }
@@ -5189,8 +5189,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v APIKeySecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constAPIKeySecurityScheme, marshalAPIKeySecurityScheme(v), v.MapOfAnything)
+func (a APIKeySecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constAPIKeySecurityScheme, marshalAPIKeySecurityScheme(a), a.MapOfAnything)
 }
 
 // HTTPSecurityScheme structure is generated from "#/definitions/HTTPSecurityScheme".
@@ -5204,50 +5204,50 @@ type HTTPSecurityScheme struct {
 }
 
 // WithScheme sets Scheme value.
-func (v *HTTPSecurityScheme) WithScheme(val string) *HTTPSecurityScheme {
-	v.Scheme = &val
-	return v
+func (h *HTTPSecurityScheme) WithScheme(val string) *HTTPSecurityScheme {
+	h.Scheme = &val
+	return h
 }
 
 // WithBearerFormat sets BearerFormat value.
-func (v *HTTPSecurityScheme) WithBearerFormat(val string) *HTTPSecurityScheme {
-	v.BearerFormat = &val
-	return v
+func (h *HTTPSecurityScheme) WithBearerFormat(val string) *HTTPSecurityScheme {
+	h.BearerFormat = &val
+	return h
 }
 
 // WithDescription sets Description value.
-func (v *HTTPSecurityScheme) WithDescription(val string) *HTTPSecurityScheme {
-	v.Description = &val
-	return v
+func (h *HTTPSecurityScheme) WithDescription(val string) *HTTPSecurityScheme {
+	h.Description = &val
+	return h
 }
 
 // WithOneOf0 sets OneOf0 value.
-func (v *HTTPSecurityScheme) WithOneOf0(val HTTPSecuritySchemeOneOf0) *HTTPSecurityScheme {
-	v.OneOf0 = &val
-	return v
+func (h *HTTPSecurityScheme) WithOneOf0(val HTTPSecuritySchemeOneOf0) *HTTPSecurityScheme {
+	h.OneOf0 = &val
+	return h
 }
 
 // WithOneOf1 sets OneOf1 value.
-func (v *HTTPSecurityScheme) WithOneOf1(val HTTPSecuritySchemeOneOf1) *HTTPSecurityScheme {
-	v.OneOf1 = &val
-	return v
+func (h *HTTPSecurityScheme) WithOneOf1(val HTTPSecuritySchemeOneOf1) *HTTPSecurityScheme {
+	h.OneOf1 = &val
+	return h
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *HTTPSecurityScheme) WithMapOfAnything(val map[string]interface{}) *HTTPSecurityScheme {
-	v.MapOfAnything = val
-	return v
+func (h *HTTPSecurityScheme) WithMapOfAnything(val map[string]interface{}) *HTTPSecurityScheme {
+	h.MapOfAnything = val
+	return h
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *HTTPSecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *HTTPSecurityScheme {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (h *HTTPSecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *HTTPSecurityScheme {
+	if h.MapOfAnything == nil {
+		h.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	h.MapOfAnything[key] = val
 
-	return v
+	return h
 }
 
 type marshalHTTPSecurityScheme HTTPSecurityScheme
@@ -5260,51 +5260,51 @@ var ignoreKeysHTTPSecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
+func (h *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalHTTPSecurityScheme(*v)
+	mh := marshalHTTPSecurityScheme(*h)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mh)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &vv.OneOf0)
+	err = json.Unmarshal(data, &mh.OneOf0)
 	if err != nil {
-		vv.OneOf0 = nil
+		mh.OneOf0 = nil
 	}
 
-	err = json.Unmarshal(data, &vv.OneOf1)
+	err = json.Unmarshal(data, &mh.OneOf1)
 	if err != nil {
-		vv.OneOf1 = nil
+		mh.OneOf1 = nil
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["type"]; !ok || string(v) != `"http"` {
+	if v, ok := rawMap["type"]; !ok || string(v) != `"http"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("http" expected, %s received)`, v)
 	}
 
-	delete(m, "type")
+	delete(rawMap, "type")
 
 	for _, key := range ignoreKeysHTTPSecurityScheme {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mh.MapOfAnything == nil {
+				mh.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -5314,15 +5314,15 @@ func (v *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mh.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = HTTPSecurityScheme(vv)
+	*h = HTTPSecurityScheme(mh)
 
 	return nil
 }
@@ -5333,8 +5333,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constHTTPSecurityScheme, marshalHTTPSecurityScheme(v), v.MapOfAnything, v.OneOf0, v.OneOf1)
+func (h HTTPSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constHTTPSecurityScheme, marshalHTTPSecurityScheme(h), h.MapOfAnything, h.OneOf0, h.OneOf1)
 }
 
 // HTTPSecuritySchemeOneOf0 structure is generated from "#/definitions/HTTPSecurityScheme/oneOf/0".
@@ -5347,42 +5347,42 @@ type HTTPSecuritySchemeOneOf0 struct {
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *HTTPSecuritySchemeOneOf0) WithAdditionalProperties(val map[string]interface{}) *HTTPSecuritySchemeOneOf0 {
-	v.AdditionalProperties = val
-	return v
+func (h *HTTPSecuritySchemeOneOf0) WithAdditionalProperties(val map[string]interface{}) *HTTPSecuritySchemeOneOf0 {
+	h.AdditionalProperties = val
+	return h
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *HTTPSecuritySchemeOneOf0) WithAdditionalPropertiesItem(key string, val interface{}) *HTTPSecuritySchemeOneOf0 {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (h *HTTPSecuritySchemeOneOf0) WithAdditionalPropertiesItem(key string, val interface{}) *HTTPSecuritySchemeOneOf0 {
+	if h.AdditionalProperties == nil {
+		h.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	h.AdditionalProperties[key] = val
 
-	return v
+	return h
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
+func (h *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["scheme"]; !ok || string(v) != `"bearer"` {
+	if v, ok := rawMap["scheme"]; !ok || string(v) != `"bearer"` {
 		return fmt.Errorf(`bad or missing const value for "scheme" ("bearer" expected, %s received)`, v)
 	}
 
-	delete(m, "scheme")
+	delete(rawMap, "scheme")
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if h.AdditionalProperties == nil {
+			h.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -5392,7 +5392,7 @@ func (v *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		h.AdditionalProperties[key] = val
 	}
 
 	return nil
@@ -5404,8 +5404,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v HTTPSecuritySchemeOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constHTTPSecuritySchemeOneOf0, v.AdditionalProperties)
+func (h HTTPSecuritySchemeOneOf0) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constHTTPSecuritySchemeOneOf0, h.AdditionalProperties)
 }
 
 // HTTPSecuritySchemeOneOf1 structure is generated from "#/definitions/HTTPSecurityScheme/oneOf/1".
@@ -5419,26 +5419,26 @@ type HTTPSecuritySchemeOneOf1 struct {
 }
 
 // WithScheme sets Scheme value.
-func (v *HTTPSecuritySchemeOneOf1) WithScheme(val interface{}) *HTTPSecuritySchemeOneOf1 {
-	v.Scheme = &val
-	return v
+func (h *HTTPSecuritySchemeOneOf1) WithScheme(val interface{}) *HTTPSecuritySchemeOneOf1 {
+	h.Scheme = &val
+	return h
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *HTTPSecuritySchemeOneOf1) WithAdditionalProperties(val map[string]interface{}) *HTTPSecuritySchemeOneOf1 {
-	v.AdditionalProperties = val
-	return v
+func (h *HTTPSecuritySchemeOneOf1) WithAdditionalProperties(val map[string]interface{}) *HTTPSecuritySchemeOneOf1 {
+	h.AdditionalProperties = val
+	return h
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *HTTPSecuritySchemeOneOf1) WithAdditionalPropertiesItem(key string, val interface{}) *HTTPSecuritySchemeOneOf1 {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (h *HTTPSecuritySchemeOneOf1) WithAdditionalPropertiesItem(key string, val interface{}) *HTTPSecuritySchemeOneOf1 {
+	if h.AdditionalProperties == nil {
+		h.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	h.AdditionalProperties[key] = val
 
-	return v
+	return h
 }
 
 type marshalHTTPSecuritySchemeOneOf1 HTTPSecuritySchemeOneOf1
@@ -5448,37 +5448,37 @@ var ignoreKeysHTTPSecuritySchemeOneOf1 = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
+func (h *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalHTTPSecuritySchemeOneOf1(*v)
+	mh := marshalHTTPSecuritySchemeOneOf1(*h)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mh)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if vv.Scheme == nil {
-		if _, ok := m["scheme"]; ok {
+	if mh.Scheme == nil {
+		if _, ok := rawMap["scheme"]; ok {
 			var v interface{}
-			vv.Scheme = &v
+			mh.Scheme = &v
 		}
 	}
 
 	for _, key := range ignoreKeysHTTPSecuritySchemeOneOf1 {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
-		if vv.AdditionalProperties == nil {
-			vv.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if mh.AdditionalProperties == nil {
+			mh.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -5488,21 +5488,21 @@ func (v *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		vv.AdditionalProperties[key] = val
+		mh.AdditionalProperties[key] = val
 	}
 
-	*v = HTTPSecuritySchemeOneOf1(vv)
+	*h = HTTPSecuritySchemeOneOf1(mh)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v HTTPSecuritySchemeOneOf1) MarshalJSON() ([]byte, error) {
-	if len(v.AdditionalProperties) == 0 {
-		return json.Marshal(marshalHTTPSecuritySchemeOneOf1(v))
+func (h HTTPSecuritySchemeOneOf1) MarshalJSON() ([]byte, error) {
+	if len(h.AdditionalProperties) == 0 {
+		return json.Marshal(marshalHTTPSecuritySchemeOneOf1(h))
 	}
 
-	return marshalUnion(marshalHTTPSecuritySchemeOneOf1(v), v.AdditionalProperties)
+	return marshalUnion(marshalHTTPSecuritySchemeOneOf1(h), h.AdditionalProperties)
 }
 
 // OAuth2SecurityScheme structure is generated from "#/definitions/OAuth2SecurityScheme".
@@ -5513,32 +5513,32 @@ type OAuth2SecurityScheme struct {
 }
 
 // WithFlows sets Flows value.
-func (v *OAuth2SecurityScheme) WithFlows(val OAuthFlows) *OAuth2SecurityScheme {
-	v.Flows = &val
-	return v
+func (o *OAuth2SecurityScheme) WithFlows(val OAuthFlows) *OAuth2SecurityScheme {
+	o.Flows = &val
+	return o
 }
 
 // WithDescription sets Description value.
-func (v *OAuth2SecurityScheme) WithDescription(val string) *OAuth2SecurityScheme {
-	v.Description = &val
-	return v
+func (o *OAuth2SecurityScheme) WithDescription(val string) *OAuth2SecurityScheme {
+	o.Description = &val
+	return o
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *OAuth2SecurityScheme) WithMapOfAnything(val map[string]interface{}) *OAuth2SecurityScheme {
-	v.MapOfAnything = val
-	return v
+func (o *OAuth2SecurityScheme) WithMapOfAnything(val map[string]interface{}) *OAuth2SecurityScheme {
+	o.MapOfAnything = val
+	return o
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *OAuth2SecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *OAuth2SecurityScheme {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (o *OAuth2SecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *OAuth2SecurityScheme {
+	if o.MapOfAnything == nil {
+		o.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	o.MapOfAnything[key] = val
 
-	return v
+	return o
 }
 
 type marshalOAuth2SecurityScheme OAuth2SecurityScheme
@@ -5550,41 +5550,41 @@ var ignoreKeysOAuth2SecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
+func (o *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalOAuth2SecurityScheme(*v)
+	mo := marshalOAuth2SecurityScheme(*o)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mo)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["type"]; !ok || string(v) != `"oauth2"` {
+	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
-	delete(m, "type")
+	delete(rawMap, "type")
 
 	for _, key := range ignoreKeysOAuth2SecurityScheme {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mo.MapOfAnything == nil {
+				mo.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -5594,15 +5594,15 @@ func (v *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mo.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = OAuth2SecurityScheme(vv)
+	*o = OAuth2SecurityScheme(mo)
 
 	return nil
 }
@@ -5613,8 +5613,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v OAuth2SecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constOAuth2SecurityScheme, marshalOAuth2SecurityScheme(v), v.MapOfAnything)
+func (o OAuth2SecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constOAuth2SecurityScheme, marshalOAuth2SecurityScheme(o), o.MapOfAnything)
 }
 
 // OAuthFlows structure is generated from "#/definitions/OAuthFlows".
@@ -5627,44 +5627,44 @@ type OAuthFlows struct {
 }
 
 // WithImplicit sets Implicit value.
-func (v *OAuthFlows) WithImplicit(val ImplicitOAuthFlow) *OAuthFlows {
-	v.Implicit = &val
-	return v
+func (o *OAuthFlows) WithImplicit(val ImplicitOAuthFlow) *OAuthFlows {
+	o.Implicit = &val
+	return o
 }
 
 // WithPassword sets Password value.
-func (v *OAuthFlows) WithPassword(val PasswordOAuthFlow) *OAuthFlows {
-	v.Password = &val
-	return v
+func (o *OAuthFlows) WithPassword(val PasswordOAuthFlow) *OAuthFlows {
+	o.Password = &val
+	return o
 }
 
 // WithClientCredentials sets ClientCredentials value.
-func (v *OAuthFlows) WithClientCredentials(val ClientCredentialsFlow) *OAuthFlows {
-	v.ClientCredentials = &val
-	return v
+func (o *OAuthFlows) WithClientCredentials(val ClientCredentialsFlow) *OAuthFlows {
+	o.ClientCredentials = &val
+	return o
 }
 
 // WithAuthorizationCode sets AuthorizationCode value.
-func (v *OAuthFlows) WithAuthorizationCode(val AuthorizationCodeOAuthFlow) *OAuthFlows {
-	v.AuthorizationCode = &val
-	return v
+func (o *OAuthFlows) WithAuthorizationCode(val AuthorizationCodeOAuthFlow) *OAuthFlows {
+	o.AuthorizationCode = &val
+	return o
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *OAuthFlows) WithMapOfAnything(val map[string]interface{}) *OAuthFlows {
-	v.MapOfAnything = val
-	return v
+func (o *OAuthFlows) WithMapOfAnything(val map[string]interface{}) *OAuthFlows {
+	o.MapOfAnything = val
+	return o
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *OAuthFlows) WithMapOfAnythingItem(key string, val interface{}) *OAuthFlows {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (o *OAuthFlows) WithMapOfAnythingItem(key string, val interface{}) *OAuthFlows {
+	if o.MapOfAnything == nil {
+		o.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	o.MapOfAnything[key] = val
 
-	return v
+	return o
 }
 
 type marshalOAuthFlows OAuthFlows
@@ -5677,35 +5677,35 @@ var ignoreKeysOAuthFlows = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *OAuthFlows) UnmarshalJSON(data []byte) error {
+func (o *OAuthFlows) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalOAuthFlows(*v)
+	mo := marshalOAuthFlows(*o)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mo)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysOAuthFlows {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mo.MapOfAnything == nil {
+				mo.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -5715,22 +5715,22 @@ func (v *OAuthFlows) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mo.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = OAuthFlows(vv)
+	*o = OAuthFlows(mo)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v OAuthFlows) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOAuthFlows(v), v.MapOfAnything)
+func (o OAuthFlows) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOAuthFlows(o), o.MapOfAnything)
 }
 
 // ImplicitOAuthFlow structure is generated from "#/definitions/ImplicitOAuthFlow".
@@ -5744,49 +5744,49 @@ type ImplicitOAuthFlow struct {
 }
 
 // WithAuthorizationURL sets AuthorizationURL value.
-func (v *ImplicitOAuthFlow) WithAuthorizationURL(val string) *ImplicitOAuthFlow {
-	v.AuthorizationURL = &val
-	return v
+func (i *ImplicitOAuthFlow) WithAuthorizationURL(val string) *ImplicitOAuthFlow {
+	i.AuthorizationURL = &val
+	return i
 }
 
 // WithRefreshURL sets RefreshURL value.
-func (v *ImplicitOAuthFlow) WithRefreshURL(val string) *ImplicitOAuthFlow {
-	v.RefreshURL = &val
-	return v
+func (i *ImplicitOAuthFlow) WithRefreshURL(val string) *ImplicitOAuthFlow {
+	i.RefreshURL = &val
+	return i
 }
 
 // WithScopes sets Scopes value.
-func (v *ImplicitOAuthFlow) WithScopes(val map[string]string) *ImplicitOAuthFlow {
-	v.Scopes = val
-	return v
+func (i *ImplicitOAuthFlow) WithScopes(val map[string]string) *ImplicitOAuthFlow {
+	i.Scopes = val
+	return i
 }
 
 // WithScopesItem sets Scopes item value.
-func (v *ImplicitOAuthFlow) WithScopesItem(key string, val string) *ImplicitOAuthFlow {
-	if v.Scopes == nil {
-		v.Scopes = make(map[string]string, 1)
+func (i *ImplicitOAuthFlow) WithScopesItem(key string, val string) *ImplicitOAuthFlow {
+	if i.Scopes == nil {
+		i.Scopes = make(map[string]string, 1)
 	}
 
-	v.Scopes[key] = val
+	i.Scopes[key] = val
 
-	return v
+	return i
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *ImplicitOAuthFlow) WithMapOfAnything(val map[string]interface{}) *ImplicitOAuthFlow {
-	v.MapOfAnything = val
-	return v
+func (i *ImplicitOAuthFlow) WithMapOfAnything(val map[string]interface{}) *ImplicitOAuthFlow {
+	i.MapOfAnything = val
+	return i
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *ImplicitOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *ImplicitOAuthFlow {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (i *ImplicitOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *ImplicitOAuthFlow {
+	if i.MapOfAnything == nil {
+		i.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	i.MapOfAnything[key] = val
 
-	return v
+	return i
 }
 
 type marshalImplicitOAuthFlow ImplicitOAuthFlow
@@ -5798,35 +5798,35 @@ var ignoreKeysImplicitOAuthFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
+func (i *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalImplicitOAuthFlow(*v)
+	mi := marshalImplicitOAuthFlow(*i)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mi)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysImplicitOAuthFlow {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mi.MapOfAnything == nil {
+				mi.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -5836,22 +5836,22 @@ func (v *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mi.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = ImplicitOAuthFlow(vv)
+	*i = ImplicitOAuthFlow(mi)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ImplicitOAuthFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalImplicitOAuthFlow(v), v.MapOfAnything)
+func (i ImplicitOAuthFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalImplicitOAuthFlow(i), i.MapOfAnything)
 }
 
 // PasswordOAuthFlow structure is generated from "#/definitions/PasswordOAuthFlow".
@@ -5865,49 +5865,49 @@ type PasswordOAuthFlow struct {
 }
 
 // WithTokenURL sets TokenURL value.
-func (v *PasswordOAuthFlow) WithTokenURL(val string) *PasswordOAuthFlow {
-	v.TokenURL = &val
-	return v
+func (p *PasswordOAuthFlow) WithTokenURL(val string) *PasswordOAuthFlow {
+	p.TokenURL = &val
+	return p
 }
 
 // WithRefreshURL sets RefreshURL value.
-func (v *PasswordOAuthFlow) WithRefreshURL(val string) *PasswordOAuthFlow {
-	v.RefreshURL = &val
-	return v
+func (p *PasswordOAuthFlow) WithRefreshURL(val string) *PasswordOAuthFlow {
+	p.RefreshURL = &val
+	return p
 }
 
 // WithScopes sets Scopes value.
-func (v *PasswordOAuthFlow) WithScopes(val map[string]string) *PasswordOAuthFlow {
-	v.Scopes = val
-	return v
+func (p *PasswordOAuthFlow) WithScopes(val map[string]string) *PasswordOAuthFlow {
+	p.Scopes = val
+	return p
 }
 
 // WithScopesItem sets Scopes item value.
-func (v *PasswordOAuthFlow) WithScopesItem(key string, val string) *PasswordOAuthFlow {
-	if v.Scopes == nil {
-		v.Scopes = make(map[string]string, 1)
+func (p *PasswordOAuthFlow) WithScopesItem(key string, val string) *PasswordOAuthFlow {
+	if p.Scopes == nil {
+		p.Scopes = make(map[string]string, 1)
 	}
 
-	v.Scopes[key] = val
+	p.Scopes[key] = val
 
-	return v
+	return p
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *PasswordOAuthFlow) WithMapOfAnything(val map[string]interface{}) *PasswordOAuthFlow {
-	v.MapOfAnything = val
-	return v
+func (p *PasswordOAuthFlow) WithMapOfAnything(val map[string]interface{}) *PasswordOAuthFlow {
+	p.MapOfAnything = val
+	return p
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *PasswordOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *PasswordOAuthFlow {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (p *PasswordOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *PasswordOAuthFlow {
+	if p.MapOfAnything == nil {
+		p.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	p.MapOfAnything[key] = val
 
-	return v
+	return p
 }
 
 type marshalPasswordOAuthFlow PasswordOAuthFlow
@@ -5919,35 +5919,35 @@ var ignoreKeysPasswordOAuthFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
+func (p *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalPasswordOAuthFlow(*v)
+	mp := marshalPasswordOAuthFlow(*p)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mp)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysPasswordOAuthFlow {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mp.MapOfAnything == nil {
+				mp.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -5957,22 +5957,22 @@ func (v *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mp.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = PasswordOAuthFlow(vv)
+	*p = PasswordOAuthFlow(mp)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v PasswordOAuthFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalPasswordOAuthFlow(v), v.MapOfAnything)
+func (p PasswordOAuthFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalPasswordOAuthFlow(p), p.MapOfAnything)
 }
 
 // ClientCredentialsFlow structure is generated from "#/definitions/ClientCredentialsFlow".
@@ -5986,49 +5986,49 @@ type ClientCredentialsFlow struct {
 }
 
 // WithTokenURL sets TokenURL value.
-func (v *ClientCredentialsFlow) WithTokenURL(val string) *ClientCredentialsFlow {
-	v.TokenURL = &val
-	return v
+func (c *ClientCredentialsFlow) WithTokenURL(val string) *ClientCredentialsFlow {
+	c.TokenURL = &val
+	return c
 }
 
 // WithRefreshURL sets RefreshURL value.
-func (v *ClientCredentialsFlow) WithRefreshURL(val string) *ClientCredentialsFlow {
-	v.RefreshURL = &val
-	return v
+func (c *ClientCredentialsFlow) WithRefreshURL(val string) *ClientCredentialsFlow {
+	c.RefreshURL = &val
+	return c
 }
 
 // WithScopes sets Scopes value.
-func (v *ClientCredentialsFlow) WithScopes(val map[string]string) *ClientCredentialsFlow {
-	v.Scopes = val
-	return v
+func (c *ClientCredentialsFlow) WithScopes(val map[string]string) *ClientCredentialsFlow {
+	c.Scopes = val
+	return c
 }
 
 // WithScopesItem sets Scopes item value.
-func (v *ClientCredentialsFlow) WithScopesItem(key string, val string) *ClientCredentialsFlow {
-	if v.Scopes == nil {
-		v.Scopes = make(map[string]string, 1)
+func (c *ClientCredentialsFlow) WithScopesItem(key string, val string) *ClientCredentialsFlow {
+	if c.Scopes == nil {
+		c.Scopes = make(map[string]string, 1)
 	}
 
-	v.Scopes[key] = val
+	c.Scopes[key] = val
 
-	return v
+	return c
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *ClientCredentialsFlow) WithMapOfAnything(val map[string]interface{}) *ClientCredentialsFlow {
-	v.MapOfAnything = val
-	return v
+func (c *ClientCredentialsFlow) WithMapOfAnything(val map[string]interface{}) *ClientCredentialsFlow {
+	c.MapOfAnything = val
+	return c
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *ClientCredentialsFlow) WithMapOfAnythingItem(key string, val interface{}) *ClientCredentialsFlow {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (c *ClientCredentialsFlow) WithMapOfAnythingItem(key string, val interface{}) *ClientCredentialsFlow {
+	if c.MapOfAnything == nil {
+		c.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	c.MapOfAnything[key] = val
 
-	return v
+	return c
 }
 
 type marshalClientCredentialsFlow ClientCredentialsFlow
@@ -6040,35 +6040,35 @@ var ignoreKeysClientCredentialsFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
+func (c *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalClientCredentialsFlow(*v)
+	mc := marshalClientCredentialsFlow(*c)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mc)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysClientCredentialsFlow {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mc.MapOfAnything == nil {
+				mc.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -6078,22 +6078,22 @@ func (v *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mc.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = ClientCredentialsFlow(vv)
+	*c = ClientCredentialsFlow(mc)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ClientCredentialsFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalClientCredentialsFlow(v), v.MapOfAnything)
+func (c ClientCredentialsFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalClientCredentialsFlow(c), c.MapOfAnything)
 }
 
 // AuthorizationCodeOAuthFlow structure is generated from "#/definitions/AuthorizationCodeOAuthFlow".
@@ -6110,55 +6110,55 @@ type AuthorizationCodeOAuthFlow struct {
 }
 
 // WithAuthorizationURL sets AuthorizationURL value.
-func (v *AuthorizationCodeOAuthFlow) WithAuthorizationURL(val string) *AuthorizationCodeOAuthFlow {
-	v.AuthorizationURL = &val
-	return v
+func (a *AuthorizationCodeOAuthFlow) WithAuthorizationURL(val string) *AuthorizationCodeOAuthFlow {
+	a.AuthorizationURL = &val
+	return a
 }
 
 // WithTokenURL sets TokenURL value.
-func (v *AuthorizationCodeOAuthFlow) WithTokenURL(val string) *AuthorizationCodeOAuthFlow {
-	v.TokenURL = &val
-	return v
+func (a *AuthorizationCodeOAuthFlow) WithTokenURL(val string) *AuthorizationCodeOAuthFlow {
+	a.TokenURL = &val
+	return a
 }
 
 // WithRefreshURL sets RefreshURL value.
-func (v *AuthorizationCodeOAuthFlow) WithRefreshURL(val string) *AuthorizationCodeOAuthFlow {
-	v.RefreshURL = &val
-	return v
+func (a *AuthorizationCodeOAuthFlow) WithRefreshURL(val string) *AuthorizationCodeOAuthFlow {
+	a.RefreshURL = &val
+	return a
 }
 
 // WithScopes sets Scopes value.
-func (v *AuthorizationCodeOAuthFlow) WithScopes(val map[string]string) *AuthorizationCodeOAuthFlow {
-	v.Scopes = val
-	return v
+func (a *AuthorizationCodeOAuthFlow) WithScopes(val map[string]string) *AuthorizationCodeOAuthFlow {
+	a.Scopes = val
+	return a
 }
 
 // WithScopesItem sets Scopes item value.
-func (v *AuthorizationCodeOAuthFlow) WithScopesItem(key string, val string) *AuthorizationCodeOAuthFlow {
-	if v.Scopes == nil {
-		v.Scopes = make(map[string]string, 1)
+func (a *AuthorizationCodeOAuthFlow) WithScopesItem(key string, val string) *AuthorizationCodeOAuthFlow {
+	if a.Scopes == nil {
+		a.Scopes = make(map[string]string, 1)
 	}
 
-	v.Scopes[key] = val
+	a.Scopes[key] = val
 
-	return v
+	return a
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *AuthorizationCodeOAuthFlow) WithMapOfAnything(val map[string]interface{}) *AuthorizationCodeOAuthFlow {
-	v.MapOfAnything = val
-	return v
+func (a *AuthorizationCodeOAuthFlow) WithMapOfAnything(val map[string]interface{}) *AuthorizationCodeOAuthFlow {
+	a.MapOfAnything = val
+	return a
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *AuthorizationCodeOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *AuthorizationCodeOAuthFlow {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (a *AuthorizationCodeOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *AuthorizationCodeOAuthFlow {
+	if a.MapOfAnything == nil {
+		a.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	a.MapOfAnything[key] = val
 
-	return v
+	return a
 }
 
 type marshalAuthorizationCodeOAuthFlow AuthorizationCodeOAuthFlow
@@ -6171,35 +6171,35 @@ var ignoreKeysAuthorizationCodeOAuthFlow = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
+func (a *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalAuthorizationCodeOAuthFlow(*v)
+	ma := marshalAuthorizationCodeOAuthFlow(*a)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &ma)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
 	for _, key := range ignoreKeysAuthorizationCodeOAuthFlow {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if ma.MapOfAnything == nil {
+				ma.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -6209,22 +6209,22 @@ func (v *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			ma.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = AuthorizationCodeOAuthFlow(vv)
+	*a = AuthorizationCodeOAuthFlow(ma)
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v AuthorizationCodeOAuthFlow) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAuthorizationCodeOAuthFlow(v), v.MapOfAnything)
+func (a AuthorizationCodeOAuthFlow) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAuthorizationCodeOAuthFlow(a), a.MapOfAnything)
 }
 
 // OpenIDConnectSecurityScheme structure is generated from "#/definitions/OpenIdConnectSecurityScheme".
@@ -6237,32 +6237,32 @@ type OpenIDConnectSecurityScheme struct {
 }
 
 // WithOpenIDConnectURL sets OpenIDConnectURL value.
-func (v *OpenIDConnectSecurityScheme) WithOpenIDConnectURL(val string) *OpenIDConnectSecurityScheme {
-	v.OpenIDConnectURL = &val
-	return v
+func (o *OpenIDConnectSecurityScheme) WithOpenIDConnectURL(val string) *OpenIDConnectSecurityScheme {
+	o.OpenIDConnectURL = &val
+	return o
 }
 
 // WithDescription sets Description value.
-func (v *OpenIDConnectSecurityScheme) WithDescription(val string) *OpenIDConnectSecurityScheme {
-	v.Description = &val
-	return v
+func (o *OpenIDConnectSecurityScheme) WithDescription(val string) *OpenIDConnectSecurityScheme {
+	o.Description = &val
+	return o
 }
 
 // WithMapOfAnything sets MapOfAnything value.
-func (v *OpenIDConnectSecurityScheme) WithMapOfAnything(val map[string]interface{}) *OpenIDConnectSecurityScheme {
-	v.MapOfAnything = val
-	return v
+func (o *OpenIDConnectSecurityScheme) WithMapOfAnything(val map[string]interface{}) *OpenIDConnectSecurityScheme {
+	o.MapOfAnything = val
+	return o
 }
 
 // WithMapOfAnythingItem sets MapOfAnything item value.
-func (v *OpenIDConnectSecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *OpenIDConnectSecurityScheme {
-	if v.MapOfAnything == nil {
-		v.MapOfAnything = make(map[string]interface{}, 1)
+func (o *OpenIDConnectSecurityScheme) WithMapOfAnythingItem(key string, val interface{}) *OpenIDConnectSecurityScheme {
+	if o.MapOfAnything == nil {
+		o.MapOfAnything = make(map[string]interface{}, 1)
 	}
 
-	v.MapOfAnything[key] = val
+	o.MapOfAnything[key] = val
 
-	return v
+	return o
 }
 
 type marshalOpenIDConnectSecurityScheme OpenIDConnectSecurityScheme
@@ -6274,41 +6274,41 @@ var ignoreKeysOpenIDConnectSecurityScheme = []string{
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
+func (o *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	vv := marshalOpenIDConnectSecurityScheme(*v)
+	mo := marshalOpenIDConnectSecurityScheme(*o)
 
-	err = json.Unmarshal(data, &vv)
+	err = json.Unmarshal(data, &mo)
 	if err != nil {
 		return err
 	}
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	if v, ok := m["type"]; !ok || string(v) != `"openIdConnect"` {
+	if v, ok := rawMap["type"]; !ok || string(v) != `"openIdConnect"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("openIdConnect" expected, %s received)`, v)
 	}
 
-	delete(m, "type")
+	delete(rawMap, "type")
 
 	for _, key := range ignoreKeysOpenIDConnectSecurityScheme {
-		delete(m, key)
+		delete(rawMap, key)
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexX.MatchString(key) {
 			matched = true
 
-			if vv.MapOfAnything == nil {
-				vv.MapOfAnything = make(map[string]interface{}, 1)
+			if mo.MapOfAnything == nil {
+				mo.MapOfAnything = make(map[string]interface{}, 1)
 			}
 
 			var val interface{}
@@ -6318,15 +6318,15 @@ func (v *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			vv.MapOfAnything[key] = val
+			mo.MapOfAnything[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	*v = OpenIDConnectSecurityScheme(vv)
+	*o = OpenIDConnectSecurityScheme(mo)
 
 	return nil
 }
@@ -6337,8 +6337,8 @@ var (
 )
 
 // MarshalJSON encodes JSON.
-func (v OpenIDConnectSecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(constOpenIDConnectSecurityScheme, marshalOpenIDConnectSecurityScheme(v), v.MapOfAnything)
+func (o OpenIDConnectSecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constOpenIDConnectSecurityScheme, marshalOpenIDConnectSecurityScheme(o), o.MapOfAnything)
 }
 
 // SecurityScheme structure is generated from "#/definitions/SecurityScheme".
@@ -6350,59 +6350,59 @@ type SecurityScheme struct {
 }
 
 // WithAPIKeySecurityScheme sets APIKeySecurityScheme value.
-func (v *SecurityScheme) WithAPIKeySecurityScheme(val APIKeySecurityScheme) *SecurityScheme {
-	v.APIKeySecurityScheme = &val
-	return v
+func (s *SecurityScheme) WithAPIKeySecurityScheme(val APIKeySecurityScheme) *SecurityScheme {
+	s.APIKeySecurityScheme = &val
+	return s
 }
 
 // WithHTTPSecurityScheme sets HTTPSecurityScheme value.
-func (v *SecurityScheme) WithHTTPSecurityScheme(val HTTPSecurityScheme) *SecurityScheme {
-	v.HTTPSecurityScheme = &val
-	return v
+func (s *SecurityScheme) WithHTTPSecurityScheme(val HTTPSecurityScheme) *SecurityScheme {
+	s.HTTPSecurityScheme = &val
+	return s
 }
 
 // WithOAuth2SecurityScheme sets OAuth2SecurityScheme value.
-func (v *SecurityScheme) WithOAuth2SecurityScheme(val OAuth2SecurityScheme) *SecurityScheme {
-	v.OAuth2SecurityScheme = &val
-	return v
+func (s *SecurityScheme) WithOAuth2SecurityScheme(val OAuth2SecurityScheme) *SecurityScheme {
+	s.OAuth2SecurityScheme = &val
+	return s
 }
 
 // WithOpenIDConnectSecurityScheme sets OpenIDConnectSecurityScheme value.
-func (v *SecurityScheme) WithOpenIDConnectSecurityScheme(val OpenIDConnectSecurityScheme) *SecurityScheme {
-	v.OpenIDConnectSecurityScheme = &val
-	return v
+func (s *SecurityScheme) WithOpenIDConnectSecurityScheme(val OpenIDConnectSecurityScheme) *SecurityScheme {
+	s.OpenIDConnectSecurityScheme = &val
+	return s
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *SecurityScheme) UnmarshalJSON(data []byte) error {
+func (s *SecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.APIKeySecurityScheme)
+	err = json.Unmarshal(data, &s.APIKeySecurityScheme)
 	if err != nil {
-		v.APIKeySecurityScheme = nil
+		s.APIKeySecurityScheme = nil
 	}
 
-	err = json.Unmarshal(data, &v.HTTPSecurityScheme)
+	err = json.Unmarshal(data, &s.HTTPSecurityScheme)
 	if err != nil {
-		v.HTTPSecurityScheme = nil
+		s.HTTPSecurityScheme = nil
 	}
 
-	err = json.Unmarshal(data, &v.OAuth2SecurityScheme)
+	err = json.Unmarshal(data, &s.OAuth2SecurityScheme)
 	if err != nil {
-		v.OAuth2SecurityScheme = nil
+		s.OAuth2SecurityScheme = nil
 	}
 
-	err = json.Unmarshal(data, &v.OpenIDConnectSecurityScheme)
+	err = json.Unmarshal(data, &s.OpenIDConnectSecurityScheme)
 	if err != nil {
-		v.OpenIDConnectSecurityScheme = nil
+		s.OpenIDConnectSecurityScheme = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v SecurityScheme) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.APIKeySecurityScheme, v.HTTPSecurityScheme, v.OAuth2SecurityScheme, v.OpenIDConnectSecurityScheme)
+func (s SecurityScheme) MarshalJSON() ([]byte, error) {
+	return marshalUnion(s.APIKeySecurityScheme, s.HTTPSecurityScheme, s.OAuth2SecurityScheme, s.OpenIDConnectSecurityScheme)
 }
 
 // SecuritySchemeOrRef structure is generated from "#/definitions/SecuritySchemeOrRef".
@@ -6412,37 +6412,37 @@ type SecuritySchemeOrRef struct {
 }
 
 // WithSecuritySchemeReference sets SecuritySchemeReference value.
-func (v *SecuritySchemeOrRef) WithSecuritySchemeReference(val SecuritySchemeReference) *SecuritySchemeOrRef {
-	v.SecuritySchemeReference = &val
-	return v
+func (s *SecuritySchemeOrRef) WithSecuritySchemeReference(val SecuritySchemeReference) *SecuritySchemeOrRef {
+	s.SecuritySchemeReference = &val
+	return s
 }
 
 // WithSecurityScheme sets SecurityScheme value.
-func (v *SecuritySchemeOrRef) WithSecurityScheme(val SecurityScheme) *SecuritySchemeOrRef {
-	v.SecurityScheme = &val
-	return v
+func (s *SecuritySchemeOrRef) WithSecurityScheme(val SecurityScheme) *SecuritySchemeOrRef {
+	s.SecurityScheme = &val
+	return s
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *SecuritySchemeOrRef) UnmarshalJSON(data []byte) error {
+func (s *SecuritySchemeOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
-	err = json.Unmarshal(data, &v.SecuritySchemeReference)
+	err = json.Unmarshal(data, &s.SecuritySchemeReference)
 	if err != nil {
-		v.SecuritySchemeReference = nil
+		s.SecuritySchemeReference = nil
 	}
 
-	err = json.Unmarshal(data, &v.SecurityScheme)
+	err = json.Unmarshal(data, &s.SecurityScheme)
 	if err != nil {
-		v.SecurityScheme = nil
+		s.SecurityScheme = nil
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v SecuritySchemeOrRef) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.SecuritySchemeReference, v.SecurityScheme)
+func (s SecuritySchemeOrRef) MarshalJSON() ([]byte, error) {
+	return marshalUnion(s.SecuritySchemeReference, s.SecurityScheme)
 }
 
 // ComponentsSecuritySchemes structure is generated from "#/definitions/Components->securitySchemes".
@@ -6452,58 +6452,58 @@ type ComponentsSecuritySchemes struct {
 }
 
 // WithMapOfSecuritySchemeOrRefValues sets MapOfSecuritySchemeOrRefValues value.
-func (v *ComponentsSecuritySchemes) WithMapOfSecuritySchemeOrRefValues(val map[string]SecuritySchemeOrRef) *ComponentsSecuritySchemes {
-	v.MapOfSecuritySchemeOrRefValues = val
-	return v
+func (c *ComponentsSecuritySchemes) WithMapOfSecuritySchemeOrRefValues(val map[string]SecuritySchemeOrRef) *ComponentsSecuritySchemes {
+	c.MapOfSecuritySchemeOrRefValues = val
+	return c
 }
 
 // WithMapOfSecuritySchemeOrRefValuesItem sets MapOfSecuritySchemeOrRefValues item value.
-func (v *ComponentsSecuritySchemes) WithMapOfSecuritySchemeOrRefValuesItem(key string, val SecuritySchemeOrRef) *ComponentsSecuritySchemes {
-	if v.MapOfSecuritySchemeOrRefValues == nil {
-		v.MapOfSecuritySchemeOrRefValues = make(map[string]SecuritySchemeOrRef, 1)
+func (c *ComponentsSecuritySchemes) WithMapOfSecuritySchemeOrRefValuesItem(key string, val SecuritySchemeOrRef) *ComponentsSecuritySchemes {
+	if c.MapOfSecuritySchemeOrRefValues == nil {
+		c.MapOfSecuritySchemeOrRefValues = make(map[string]SecuritySchemeOrRef, 1)
 	}
 
-	v.MapOfSecuritySchemeOrRefValues[key] = val
+	c.MapOfSecuritySchemeOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsSecuritySchemes) WithAdditionalProperties(val map[string]interface{}) *ComponentsSecuritySchemes {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsSecuritySchemes) WithAdditionalProperties(val map[string]interface{}) *ComponentsSecuritySchemes {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsSecuritySchemes) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsSecuritySchemes {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsSecuritySchemes) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsSecuritySchemes {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
+func (c *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfSecuritySchemeOrRefValues == nil {
-				v.MapOfSecuritySchemeOrRefValues = make(map[string]SecuritySchemeOrRef, 1)
+			if c.MapOfSecuritySchemeOrRefValues == nil {
+				c.MapOfSecuritySchemeOrRefValues = make(map[string]SecuritySchemeOrRef, 1)
 			}
 
 			var val SecuritySchemeOrRef
@@ -6513,17 +6513,17 @@ func (v *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfSecuritySchemeOrRefValues[key] = val
+			c.MapOfSecuritySchemeOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -6533,15 +6533,15 @@ func (v *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfSecuritySchemeOrRefValues, v.AdditionalProperties)
+func (c ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfSecuritySchemeOrRefValues, c.AdditionalProperties)
 }
 
 // ComponentsLinks structure is generated from "#/definitions/Components->links".
@@ -6551,58 +6551,58 @@ type ComponentsLinks struct {
 }
 
 // WithMapOfLinkOrRefValues sets MapOfLinkOrRefValues value.
-func (v *ComponentsLinks) WithMapOfLinkOrRefValues(val map[string]LinkOrRef) *ComponentsLinks {
-	v.MapOfLinkOrRefValues = val
-	return v
+func (c *ComponentsLinks) WithMapOfLinkOrRefValues(val map[string]LinkOrRef) *ComponentsLinks {
+	c.MapOfLinkOrRefValues = val
+	return c
 }
 
 // WithMapOfLinkOrRefValuesItem sets MapOfLinkOrRefValues item value.
-func (v *ComponentsLinks) WithMapOfLinkOrRefValuesItem(key string, val LinkOrRef) *ComponentsLinks {
-	if v.MapOfLinkOrRefValues == nil {
-		v.MapOfLinkOrRefValues = make(map[string]LinkOrRef, 1)
+func (c *ComponentsLinks) WithMapOfLinkOrRefValuesItem(key string, val LinkOrRef) *ComponentsLinks {
+	if c.MapOfLinkOrRefValues == nil {
+		c.MapOfLinkOrRefValues = make(map[string]LinkOrRef, 1)
 	}
 
-	v.MapOfLinkOrRefValues[key] = val
+	c.MapOfLinkOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsLinks) WithAdditionalProperties(val map[string]interface{}) *ComponentsLinks {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsLinks) WithAdditionalProperties(val map[string]interface{}) *ComponentsLinks {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsLinks) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsLinks {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsLinks) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsLinks {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsLinks) UnmarshalJSON(data []byte) error {
+func (c *ComponentsLinks) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfLinkOrRefValues == nil {
-				v.MapOfLinkOrRefValues = make(map[string]LinkOrRef, 1)
+			if c.MapOfLinkOrRefValues == nil {
+				c.MapOfLinkOrRefValues = make(map[string]LinkOrRef, 1)
 			}
 
 			var val LinkOrRef
@@ -6612,17 +6612,17 @@ func (v *ComponentsLinks) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfLinkOrRefValues[key] = val
+			c.MapOfLinkOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -6632,15 +6632,15 @@ func (v *ComponentsLinks) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsLinks) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfLinkOrRefValues, v.AdditionalProperties)
+func (c ComponentsLinks) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfLinkOrRefValues, c.AdditionalProperties)
 }
 
 // ComponentsCallbacks structure is generated from "#/definitions/Components->callbacks".
@@ -6650,58 +6650,58 @@ type ComponentsCallbacks struct {
 }
 
 // WithMapOfCallbackOrRefValues sets MapOfCallbackOrRefValues value.
-func (v *ComponentsCallbacks) WithMapOfCallbackOrRefValues(val map[string]CallbackOrRef) *ComponentsCallbacks {
-	v.MapOfCallbackOrRefValues = val
-	return v
+func (c *ComponentsCallbacks) WithMapOfCallbackOrRefValues(val map[string]CallbackOrRef) *ComponentsCallbacks {
+	c.MapOfCallbackOrRefValues = val
+	return c
 }
 
 // WithMapOfCallbackOrRefValuesItem sets MapOfCallbackOrRefValues item value.
-func (v *ComponentsCallbacks) WithMapOfCallbackOrRefValuesItem(key string, val CallbackOrRef) *ComponentsCallbacks {
-	if v.MapOfCallbackOrRefValues == nil {
-		v.MapOfCallbackOrRefValues = make(map[string]CallbackOrRef, 1)
+func (c *ComponentsCallbacks) WithMapOfCallbackOrRefValuesItem(key string, val CallbackOrRef) *ComponentsCallbacks {
+	if c.MapOfCallbackOrRefValues == nil {
+		c.MapOfCallbackOrRefValues = make(map[string]CallbackOrRef, 1)
 	}
 
-	v.MapOfCallbackOrRefValues[key] = val
+	c.MapOfCallbackOrRefValues[key] = val
 
-	return v
+	return c
 }
 
 // WithAdditionalProperties sets AdditionalProperties value.
-func (v *ComponentsCallbacks) WithAdditionalProperties(val map[string]interface{}) *ComponentsCallbacks {
-	v.AdditionalProperties = val
-	return v
+func (c *ComponentsCallbacks) WithAdditionalProperties(val map[string]interface{}) *ComponentsCallbacks {
+	c.AdditionalProperties = val
+	return c
 }
 
 // WithAdditionalPropertiesItem sets AdditionalProperties item value.
-func (v *ComponentsCallbacks) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsCallbacks {
-	if v.AdditionalProperties == nil {
-		v.AdditionalProperties = make(map[string]interface{}, 1)
+func (c *ComponentsCallbacks) WithAdditionalPropertiesItem(key string, val interface{}) *ComponentsCallbacks {
+	if c.AdditionalProperties == nil {
+		c.AdditionalProperties = make(map[string]interface{}, 1)
 	}
 
-	v.AdditionalProperties[key] = val
+	c.AdditionalProperties[key] = val
 
-	return v
+	return c
 }
 
 // UnmarshalJSON decodes JSON.
-func (v *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
+func (c *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
 	var err error
 
-	var m map[string]json.RawMessage
+	var rawMap map[string]json.RawMessage
 
-	err = json.Unmarshal(data, &m)
+	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
-		m = nil
+		rawMap = nil
 	}
 
-	for key, rawValue := range m {
+	for key, rawValue := range rawMap {
 		matched := false
 
 		if regexAZAZ09.MatchString(key) {
 			matched = true
 
-			if v.MapOfCallbackOrRefValues == nil {
-				v.MapOfCallbackOrRefValues = make(map[string]CallbackOrRef, 1)
+			if c.MapOfCallbackOrRefValues == nil {
+				c.MapOfCallbackOrRefValues = make(map[string]CallbackOrRef, 1)
 			}
 
 			var val CallbackOrRef
@@ -6711,17 +6711,17 @@ func (v *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
 				return err
 			}
 
-			v.MapOfCallbackOrRefValues[key] = val
+			c.MapOfCallbackOrRefValues[key] = val
 		}
 
 		if matched {
-			delete(m, key)
+			delete(rawMap, key)
 		}
 	}
 
-	for key, rawValue := range m {
-		if v.AdditionalProperties == nil {
-			v.AdditionalProperties = make(map[string]interface{}, 1)
+	for key, rawValue := range rawMap {
+		if c.AdditionalProperties == nil {
+			c.AdditionalProperties = make(map[string]interface{}, 1)
 		}
 
 		var val interface{}
@@ -6731,15 +6731,15 @@ func (v *ComponentsCallbacks) UnmarshalJSON(data []byte) error {
 			return err
 		}
 
-		v.AdditionalProperties[key] = val
+		c.AdditionalProperties[key] = val
 	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
-func (v ComponentsCallbacks) MarshalJSON() ([]byte, error) {
-	return marshalUnion(v.MapOfCallbackOrRefValues, v.AdditionalProperties)
+func (c ComponentsCallbacks) MarshalJSON() ([]byte, error) {
+	return marshalUnion(c.MapOfCallbackOrRefValues, c.AdditionalProperties)
 }
 
 // ParameterIn is an enum type.
