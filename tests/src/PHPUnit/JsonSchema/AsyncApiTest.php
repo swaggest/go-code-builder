@@ -24,28 +24,11 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         $builder = new GoBuilder();
         $builder->options->hideConstProperties = false;
         $builder->options->trimParentFromPropertyNames = false;
-        $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
-            if ('#' === $path) {
-                $structDef->setName('AsyncAPI');
-            } elseif (0 === strpos($path, '#/definitions/')) {
-                $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
-                $structDef->setName($name);
-            }
-        });
-        $builder->getType($schema);
 
-        $goFile = new GoFile('entities');
-        $goFile->fileComment = '';
-        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
-            $goFile->getCode()->addSnippet($generatedStruct->structDef);
-        }
-        $goFile->getCode()->addSnippet($builder->getCode());
+        $path = __DIR__ . '/../../../resources/go/asyncapi';
+        Helper::buildEntities($builder, $schema, $path, 'AsyncAPI');
 
-
-        $filePath = __DIR__ . '/../../../resources/go/asyncapi/entities.go';
-        file_put_contents($filePath, $goFile->render());
-
-        exec('git diff ' . $filePath, $out);
+        exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
@@ -61,27 +44,11 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
         $builder = new GoBuilder();
         $builder->options->hideConstProperties = true;
         $builder->options->trimParentFromPropertyNames = true;
-        $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
-            if ('#' === $path) {
-                $structDef->setName('AsyncAPI');
-            } elseif (0 === strpos($path, '#/definitions/')) {
-                $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
-                $structDef->setName($name);
-            }
-        });
-        $builder->getType($schema);
 
-        $goFile = new GoFile('entities');
-        $goFile->fileComment = '';
-        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
-            $goFile->getCode()->addSnippet($generatedStruct->structDef);
-        }
-        $goFile->getCode()->addSnippet($builder->getCode());
+        $path = __DIR__ . '/../../../resources/go/asyncapi-default';
+        Helper::buildEntities($builder, $schema, $path, 'AsyncAPI');
 
-        $filePath = __DIR__ . '/../../../resources/go/asyncapi-default/entities.go';
-        file_put_contents($filePath, $goFile->render());
-
-        exec('git diff ' . $filePath, $out);
+        exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
@@ -96,27 +63,11 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
 
         $builder = new GoBuilder();
         $builder->options->skipMarshal = true;
-        $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
-            if ('#' === $path) {
-                $structDef->setName('AsyncAPI');
-            } elseif (0 === strpos($path, '#/definitions/')) {
-                $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
-                $structDef->setName($name);
-            }
-        });
-        $builder->getType($schema);
 
-        $goFile = new GoFile('entities');
-        $goFile->fileComment = '';
-        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
-            $goFile->getCode()->addSnippet($generatedStruct->structDef);
-        }
-        $goFile->getCode()->addSnippet($builder->getCode());
+        $path = __DIR__ . '/../../../resources/go/asyncapi-skip-marshal';
+        Helper::buildEntities($builder, $schema, $path, 'AsyncAPI');
 
-        $filePath = __DIR__ . '/../../../resources/go/asyncapi-skip-marshal/entities.go';
-        file_put_contents($filePath, $goFile->render());
-
-        exec('git diff ' . $filePath, $out);
+        exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
@@ -132,27 +83,11 @@ class AsyncApiTest extends \PHPUnit_Framework_TestCase
 
         $builder = new GoBuilder();
         $builder->options->skipUnmarshal = true;
-        $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
-            if ('#' === $path) {
-                $structDef->setName('AsyncAPI');
-            } elseif (0 === strpos($path, '#/definitions/')) {
-                $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
-                $structDef->setName($name);
-            }
-        });
-        $builder->getType($schema);
 
-        $goFile = new GoFile('entities');
-        $goFile->fileComment = '';
-        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
-            $goFile->getCode()->addSnippet($generatedStruct->structDef);
-        }
-        $goFile->getCode()->addSnippet($builder->getCode());
+        $path = __DIR__ . '/../../../resources/go/asyncapi-skip-unmarshal';
+        Helper::buildEntities($builder, $schema, $path, 'AsyncAPI');
 
-        $filePath = __DIR__ . '/../../../resources/go/asyncapi-skip-unmarshal/entities.go';
-        file_put_contents($filePath,$goFile->render());
-
-        exec('git diff ' . $filePath, $out);
+        exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }

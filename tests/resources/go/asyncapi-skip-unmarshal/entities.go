@@ -1,3 +1,4 @@
+// Package entities contains generated structures.
 package entities
 
 import (
@@ -355,6 +356,13 @@ type Components struct {
 	Parameters      map[string]Parameter              `json:"parameters,omitempty"`      // JSON objects describing re-usable topic parameters.
 }
 
+type marshalComponents Components
+
+// MarshalJSON encodes JSON.
+func (c Components) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalComponents(c))
+}
+
 // Reference structure is generated from "#/definitions/Reference".
 type Reference struct {
 	// Format: uri.
@@ -482,6 +490,21 @@ var (
 // MarshalJSON encodes JSON.
 func (n NonBearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
 	return marshalUnion(constNonBearerHTTPSecurityScheme, marshalNonBearerHTTPSecurityScheme(n), n.MapOfAnything)
+}
+
+// NonBearerHTTPSecuritySchemeNot structure is generated from "#/definitions/NonBearerHTTPSecurityScheme->not".
+type NonBearerHTTPSecuritySchemeNot struct {
+	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+var (
+	// constNonBearerHTTPSecuritySchemeNot is unconditionally added to JSON.
+	constNonBearerHTTPSecuritySchemeNot = json.RawMessage(`{"scheme":"bearer"}`)
+)
+
+// MarshalJSON encodes JSON.
+func (n NonBearerHTTPSecuritySchemeNot) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constNonBearerHTTPSecuritySchemeNot, n.AdditionalProperties)
 }
 
 // BearerHTTPSecurityScheme structure is generated from "#/definitions/BearerHTTPSecurityScheme".

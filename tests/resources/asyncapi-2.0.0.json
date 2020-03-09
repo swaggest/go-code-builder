@@ -274,7 +274,8 @@
                 }
               ]
             }
-          }
+          },
+          "additionalProperties": false
         },
         "parameters": {
           "$ref": "#/definitions/parameters"
@@ -292,7 +293,8 @@
                 }
               ]
             }
-          }
+          },
+          "additionalProperties": false
         },
         "operationTraits": {
           "type": "object",
@@ -356,6 +358,9 @@
     "schema": {
       "x-go-type": "map[string]interface{}",
       "allOf": [
+        {
+          "type": "object"
+        },
         {
           "$ref": "http://json-schema.org/draft-07/schema#"
         },

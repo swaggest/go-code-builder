@@ -1,4 +1,5 @@
-package jsonschema
+// Package entities contains generated structures.
+package entities
 
 import (
 	"bytes"
@@ -392,7 +393,7 @@ func (c *CoreSchemaMetaSchema) WithExtraPropertiesItem(key string, val interface
 
 type marshalCoreSchemaMetaSchema CoreSchemaMetaSchema
 
-var ignoreKeysCoreSchemaMetaSchema = []string{
+var knownKeysCoreSchemaMetaSchema = []string{
 	"$id",
 	"$schema",
 	"$ref",
@@ -472,7 +473,7 @@ func (c *CoreSchemaMetaSchema) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysCoreSchemaMetaSchema {
+	for _, key := range knownKeysCoreSchemaMetaSchema {
 		delete(rawMap, key)
 	}
 
@@ -569,14 +570,27 @@ func (i *Items) WithSchemaArray(val ...Schema) *Items {
 func (i *Items) UnmarshalJSON(data []byte) error {
 	var err error
 
+	anyOfErrors := make(map[string]error, 2)
+	anyOfValid := 0
+
 	err = json.Unmarshal(data, &i.Schema)
 	if err != nil {
+		anyOfErrors["Schema"] = err
 		i.Schema = nil
+	} else {
+		anyOfValid++
 	}
 
 	err = json.Unmarshal(data, &i.SchemaArray)
 	if err != nil {
+		anyOfErrors["SchemaArray"] = err
 		i.SchemaArray = nil
+	} else {
+		anyOfValid++
+	}
+
+	if anyOfValid == 0 {
+		return fmt.Errorf("anyOf constraint for Items failed with %d valid results: %v", anyOfValid, anyOfErrors)
 	}
 
 	return nil
@@ -609,14 +623,27 @@ func (d *DependenciesAdditionalProperties) WithStringArray(val ...string) *Depen
 func (d *DependenciesAdditionalProperties) UnmarshalJSON(data []byte) error {
 	var err error
 
+	anyOfErrors := make(map[string]error, 2)
+	anyOfValid := 0
+
 	err = json.Unmarshal(data, &d.Schema)
 	if err != nil {
+		anyOfErrors["Schema"] = err
 		d.Schema = nil
+	} else {
+		anyOfValid++
 	}
 
 	err = json.Unmarshal(data, &d.StringArray)
 	if err != nil {
+		anyOfErrors["StringArray"] = err
 		d.StringArray = nil
+	} else {
+		anyOfValid++
+	}
+
+	if anyOfValid == 0 {
+		return fmt.Errorf("anyOf constraint for DependenciesAdditionalProperties failed with %d valid results: %v", anyOfValid, anyOfErrors)
 	}
 
 	return nil
@@ -649,14 +676,27 @@ func (t *Type) WithSliceOfSimpleTypesValues(val ...SimpleTypes) *Type {
 func (t *Type) UnmarshalJSON(data []byte) error {
 	var err error
 
+	anyOfErrors := make(map[string]error, 2)
+	anyOfValid := 0
+
 	err = json.Unmarshal(data, &t.SimpleTypes)
 	if err != nil {
+		anyOfErrors["SimpleTypes"] = err
 		t.SimpleTypes = nil
+	} else {
+		anyOfValid++
 	}
 
 	err = json.Unmarshal(data, &t.SliceOfSimpleTypesValues)
 	if err != nil {
+		anyOfErrors["SliceOfSimpleTypesValues"] = err
 		t.SliceOfSimpleTypesValues = nil
+	} else {
+		anyOfValid++
+	}
+
+	if anyOfValid == 0 {
+		return fmt.Errorf("anyOf constraint for Type failed with %d valid results: %v", anyOfValid, anyOfErrors)
 	}
 
 	return nil

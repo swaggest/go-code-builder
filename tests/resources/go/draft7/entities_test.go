@@ -1,169 +1,79 @@
-package jsonschema_test
+package entities
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	entities "test/draft7"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
-	"github.com/yudai/gojsondiff/formatter"
 )
 
-func TestSchema_MarshalJSON_roundtrip_asyncapi2(t *testing.T) {
-	data, err := ioutil.ReadFile("../../asyncapi-2.0.0.json")
+func TestCoreSchemaMetaSchema_MarshalJSON_roundtrip(t *testing.T) {
+	var (
+		jsonValue = []byte(`{"$id":"cbbfff","$schema":"cdef","$ref":"aadce","$comment":"dc","title":"daecfe","description":"cddbd","readOnly":true,"examples":["accdf"],"multipleOf":9682.616,"maximum":8027.575,"exclusiveMaximum":3134.242,"minimum":928.008,"exclusiveMinimum":6923.226,"maxLength":5182,"minLength":8764,"pattern":"adeadb","additionalItems":{"$id":"cda","$schema":"bdc","$ref":"dbfee","$comment":"fcceaf","title":"fedacd","description":"ab","readOnly":true,"examples":["edc"],"multipleOf":4692.385,"maximum":9085.955,"exclusiveMaximum":961.723,"minimum":2936.141,"exclusiveMinimum":9033.702,"maxLength":2878,"minLength":1195,"pattern":"bffd","additionalItems":{"$id":"eae","$schema":"db","$ref":"bfdbc","$comment":"ec","title":"eb","description":"fffbce","readOnly":true,"examples":["dca"],"multipleOf":1399.661,"maximum":5148.891,"exclusiveMaximum":7924.036,"minimum":9445.948,"exclusiveMinimum":298.014,"maxLength":5866,"minLength":8831,"pattern":"bcf","items":{"$id":"fa","$schema":"abdfad","$ref":"aeab","$comment":"bafd","title":"eaceae","description":"cc","readOnly":true,"examples":["eadf"],"multipleOf":737.92,"maximum":1147.46,"exclusiveMaximum":7869.515,"minimum":9494.893,"exclusiveMinimum":640.673,"maxLength":4499,"minLength":3553,"pattern":"bcacc","additionalItems":{"$id":"fcadff","$schema":"eca","$ref":"bdb","$comment":"dfe","title":"cfdcf","description":"baf","readOnly":true,"examples":["dda"],"multipleOf":1919.561,"maximum":6968.182,"exclusiveMaximum":4643.115,"minimum":660.002,"exclusiveMinimum":2303.628,"maxLength":7555,"pattern":"bdef","items":true,"maxItems":7115,"uniqueItems":true,"contains":{"fdf":"dcba"},"bffbb":"cdf"},"caf":"eeacab"},"bd":"db"},"ebae":"fcbcf"},"items":{"$id":"ce","$schema":"bb","$ref":"eabafb","$comment":"ab","title":"daac","description":"cba","readOnly":true,"examples":["df"],"multipleOf":1954.295,"maximum":9387.117,"exclusiveMaximum":5813.589,"minimum":3711.339,"exclusiveMinimum":9700.2,"maxLength":500,"minLength":8468,"pattern":"efc","additionalItems":{"$id":"ec","$schema":"babfe","$ref":"bffb","$comment":"bdea","title":"aaead","description":"ac","readOnly":true,"examples":["abdb"],"multipleOf":663.348,"maximum":7642.416,"exclusiveMaximum":3700.842,"minimum":2127.337,"exclusiveMinimum":6297.175,"maxLength":743,"minLength":2102,"pattern":"dececa","items":{"$id":"fe","$schema":"af","$ref":"fdeeb","$comment":"afcfaf","title":"ec","description":"eaeeaf","readOnly":true,"examples":["ccb"],"multipleOf":2035.103,"maximum":9156.064,"exclusiveMaximum":80.027,"minimum":6415.662,"exclusiveMinimum":9263.507,"maxLength":3900,"pattern":"cab","additionalItems":{"dafe":"ce"},"cef":"bdfec"},"fcf":"afd"},"adbcdf":"debec"},"maxItems":5820,"minItems":8963,"uniqueItems":true,"contains":{"$id":"bceeab","$schema":"efefda","$ref":"ad","$comment":"dc","title":"aadabb","description":"fbadeb","readOnly":true,"examples":["eccf"],"multipleOf":158.73,"maximum":4201.937,"exclusiveMaximum":497.11,"minimum":6790.688,"exclusiveMinimum":3994.153,"maxLength":9186,"minLength":5769,"pattern":"ffd","additionalItems":{"$id":"cd","$schema":"afa","$ref":"fcac","$comment":"ddd","title":"aceba","description":"bc","readOnly":true,"examples":["dfa"],"multipleOf":4673.773,"maximum":4508.739,"exclusiveMaximum":3598.162,"minimum":3821.028,"exclusiveMinimum":2402.176,"maxLength":4108,"minLength":232,"pattern":"ae","items":{"$id":"feb","$schema":"adfd","$ref":"efe","$comment":"ec","title":"dff","description":"facf","readOnly":true,"examples":["eeea"],"multipleOf":8598.836,"maximum":8021.611,"exclusiveMaximum":1851.143,"minimum":5724.885,"exclusiveMinimum":835.463,"maxLength":7331,"minLength":443,"pattern":"acaf","additionalItems":{"$id":"cfd","$schema":"ddb","$ref":"fa","$comment":"ccacec","title":"ece","description":"abe","readOnly":true,"examples":["eadbf"],"multipleOf":8387.794,"maximum":3122.698,"exclusiveMaximum":1392.8,"minimum":9163.056,"exclusiveMinimum":5403.046,"maxLength":9096,"pattern":"eedcf","items":true,"maxItems":4803,"uniqueItems":true,"contains":{"eefdcd":"ceeebc"},"ba":"ce"},"cdbcc":"ecabba"},"ccfc":"dfce"},"dbbfd":"fabcce"},"maxProperties":8541,"minProperties":3215,"required":["eee"],"additionalProperties":{"$id":"bedce","$schema":"beab","$ref":"dcddeb","$comment":"bbab","title":"ddf","description":"ebdb","readOnly":true,"examples":["cbe"],"multipleOf":9747.404,"maximum":9660.466,"exclusiveMaximum":6366.044,"minimum":2030.578,"exclusiveMinimum":9939.13,"maxLength":9928,"minLength":5461,"pattern":"aaab","additionalItems":{"$id":"fe","$schema":"da","$ref":"ce","$comment":"bfcfa","title":"af","description":"bfe","readOnly":true,"examples":["cf"],"multipleOf":4867.427,"maximum":2039.062,"exclusiveMaximum":2758.459,"minimum":2477.329,"exclusiveMinimum":2253.905,"maxLength":2622,"minLength":6468,"pattern":"ddfbac","items":{"$id":"baac","$schema":"faceb","$ref":"cffd","$comment":"bbeffa","title":"bfd","description":"dde","readOnly":true,"examples":["ecf"],"multipleOf":2670.72,"maximum":6944.069,"exclusiveMaximum":814.74,"minimum":4569.779,"exclusiveMinimum":4286.188,"maxLength":3613,"minLength":1090,"pattern":"fdeadf","additionalItems":{"$id":"aeedb","$schema":"ccafeb","$ref":"eea","$comment":"efaabe","title":"cbe","description":"caa","readOnly":true,"examples":["bf"],"multipleOf":5853.53,"maximum":4780.725,"exclusiveMaximum":6709.32,"minimum":4740.039,"exclusiveMinimum":862.565,"maxLength":8032,"pattern":"ebdcbe","items":true,"maxItems":7739,"uniqueItems":true,"contains":{"ebbeb":"eda"},"fc":"eb"},"bfddfd":"ea"},"ba":"dbebb"},"aac":"cfd"},"definitions":{"ad":{"$id":"aebd","$schema":"dea","$ref":"ac","$comment":"baed","title":"bdfeda","description":"ef","readOnly":true,"examples":["dd"],"multipleOf":4843.216,"maximum":8910.19,"exclusiveMaximum":6500.536,"minimum":272.872,"exclusiveMinimum":1439.428,"maxLength":5221,"minLength":3058,"pattern":"fe","additionalItems":{"$id":"dbbf","$schema":"bdd","$ref":"dfabb","$comment":"eeaa","title":"ceb","description":"daedb","readOnly":true,"examples":["ccce"],"multipleOf":2279.003,"maximum":1278.07,"exclusiveMaximum":874.822,"minimum":4067.029,"exclusiveMinimum":2273.097,"maxLength":3564,"minLength":3144,"pattern":"ad","items":{"$id":"cb","$schema":"dded","$ref":"fdfd","$comment":"defaa","title":"df","description":"cf","readOnly":true,"examples":["ec"],"multipleOf":5707.158,"maximum":9281.238,"exclusiveMaximum":9967.534,"minimum":1076.639,"exclusiveMinimum":8168.351,"maxLength":4526,"pattern":"cebddc","additionalItems":{"efba":"abbc"},"fedf":"dccf"},"bfc":"efaae"},"adbedd":"ffe"}},"properties":{"bfd":{"$id":"decaab","$schema":"cec","$ref":"ededcf","$comment":"caf","title":"ddfdfe","description":"ccefda","readOnly":true,"examples":["cd"],"multipleOf":5777.744,"maximum":9147.887,"exclusiveMaximum":1346.062,"minimum":6443.611,"exclusiveMinimum":8076.99,"maxLength":52,"minLength":1047,"pattern":"cfbada","additionalItems":{"$id":"fbe","$schema":"aeab","$ref":"ffdefc","$comment":"fb","title":"bbbd","description":"ccdfa","readOnly":true,"examples":["fb"],"multipleOf":3086.419,"maximum":9764.81,"exclusiveMaximum":7332.451,"minimum":574.472,"exclusiveMinimum":7444.732,"maxLength":1631,"minLength":2214,"pattern":"fbeaf","items":{"$id":"cdd","$schema":"cea","$ref":"bbac","$comment":"faf","title":"beda","description":"fdc","readOnly":true,"examples":["bdbb"],"multipleOf":7060.518,"maximum":282.695,"exclusiveMaximum":4780.313,"minimum":679.686,"exclusiveMinimum":1262.101,"maxLength":3759,"pattern":"cdaef","additionalItems":{"dc":"cfeca"},"edfcbd":"aaa"},"bbbb":"aebbfb"},"efbafb":"befffe"}},"patternProperties":{"decac":{"$id":"fbd","$schema":"bdcbf","$ref":"eafece","$comment":"bbccdf","title":"dcb","description":"fbdff","readOnly":true,"examples":["cadd"],"multipleOf":4493.156,"maximum":2166.172,"exclusiveMaximum":5475.914,"minimum":7591.96,"exclusiveMinimum":8459.231,"maxLength":7229,"minLength":8158,"pattern":"fd","additionalItems":{"$id":"cab","$schema":"cfe","$ref":"aadade","$comment":"fbfdc","title":"dffeda","description":"cdcfdf","readOnly":true,"examples":["ba"],"multipleOf":5975.979,"maximum":4018.659,"exclusiveMaximum":2755.839,"minimum":6973.08,"exclusiveMinimum":618.401,"maxLength":31,"minLength":7049,"pattern":"aeac","items":{"$id":"decdf","$schema":"bdeed","$ref":"ab","$comment":"dd","title":"faafe","description":"db","readOnly":true,"examples":["fbaab"],"multipleOf":2214.821,"maximum":3133.236,"exclusiveMaximum":4672.458,"minimum":9049.101,"exclusiveMinimum":3147.657,"maxLength":4050,"pattern":"feaabc","additionalItems":{"dedbac":"ceccca"},"eedcc":"decb"},"cdbc":"fff"},"fedcff":"abcbdd"}},"dependencies":{"aedc":{"$id":"fafe","$schema":"bfabe","$ref":"cfefbb","$comment":"ea","title":"ef","description":"bc","readOnly":true,"examples":["accfeb"],"multipleOf":1895.517,"maximum":8929.009,"exclusiveMaximum":9649.889,"minimum":9393.313,"exclusiveMinimum":2942.157,"maxLength":2181,"minLength":1035,"pattern":"ceba","additionalItems":{"$id":"ec","$schema":"daf","$ref":"fececc","$comment":"ad","title":"faccdc","description":"fbdeaf","readOnly":true,"examples":["fadffe"],"multipleOf":3750.91,"maximum":2820.37,"exclusiveMaximum":8574.845,"minimum":2622.184,"exclusiveMinimum":6195.867,"maxLength":4570,"minLength":2520,"pattern":"def","items":{"aecaaa":"ed"},"bdb":"bfacb"},"fccc":"bdcddb"}},"propertyNames":{"$id":"ccd","$schema":"ceefb","$ref":"abaad","$comment":"de","title":"fdddef","description":"cab","readOnly":true,"examples":["ad"],"multipleOf":2272.975,"maximum":5217.258,"exclusiveMaximum":4246.491,"minimum":5375.13,"exclusiveMinimum":3719.221,"maxLength":1632,"minLength":3553,"pattern":"dff","additionalItems":{"$id":"dbddbf","$schema":"deebeb","$ref":"ffc","$comment":"fcf","title":"cdffb","description":"aeabef","readOnly":true,"examples":["bc"],"multipleOf":7120.655,"maximum":5096.133,"exclusiveMaximum":5084.763,"minimum":2969.471,"exclusiveMinimum":1905.394,"maxLength":8597,"minLength":8611,"pattern":"ced","items":{"$id":"edbadd","$schema":"cebffe","$ref":"aab","$comment":"caa","title":"ceeffd","description":"bc","readOnly":true,"examples":["bbaeb"],"multipleOf":4227.527,"maximum":7518.857,"exclusiveMaximum":1075.089,"minimum":1014.065,"exclusiveMinimum":6236.704,"maxLength":5849,"minLength":480,"pattern":"beaeaa","additionalItems":{"$id":"abc","$schema":"bc","$ref":"fe","$comment":"efb","title":"fcffcd","description":"db","readOnly":true,"examples":["aca"],"multipleOf":4697.89,"maximum":5996.922,"exclusiveMaximum":9794.834,"minimum":4118.329,"exclusiveMinimum":3643.781,"maxLength":7378,"pattern":"af","items":true,"maxItems":9209,"uniqueItems":true,"contains":{"dbeea":"efbada"},"cfecef":"fdea"},"bcaceb":"bbed"},"bef":"ccff"},"fbedff":"bdfa"},"enum":["ccb"],"type":"integer","format":"fadfa","contentMediaType":"ffecaf","contentEncoding":"dfaaf","if":{"$id":"adfa","$schema":"ffebcf","$ref":"ecb","$comment":"ec","title":"ceb","description":"cf","readOnly":true,"examples":["cabe"],"multipleOf":3425.574,"maximum":1137.964,"exclusiveMaximum":4170.491,"minimum":6517.893,"exclusiveMinimum":7608.392,"maxLength":4027,"minLength":8625,"pattern":"eebe","additionalItems":{"$id":"dfddca","$schema":"eebb","$ref":"eccc","$comment":"eb","title":"bb","description":"fab","readOnly":true,"examples":["faaf"],"multipleOf":7404.781,"maximum":5475.643,"exclusiveMaximum":3179.31,"minimum":2201.287,"exclusiveMinimum":4955.54,"maxLength":6714,"minLength":8555,"pattern":"cdac","items":{"$id":"cfac","$schema":"bfe","$ref":"bfaea","$comment":"affeea","title":"bc","description":"ebf","readOnly":true,"examples":["ad"],"multipleOf":9675.171,"maximum":7744.773,"exclusiveMaximum":321.956,"minimum":3258.1,"exclusiveMinimum":4785.802,"maxLength":8898,"minLength":813,"pattern":"edaddd","additionalItems":{"$id":"bdab","$schema":"cdadb","$ref":"ecbacf","$comment":"caeae","title":"ce","description":"de","readOnly":true,"examples":["eaca"],"multipleOf":8477.005,"maximum":8713.651,"exclusiveMaximum":4540.591,"minimum":8820.839,"exclusiveMinimum":154.035,"maxLength":4297,"pattern":"dcbd","items":true,"maxItems":2529,"uniqueItems":true,"contains":{"ddb":"dbdbf"},"ebdf":"ed"},"bdfeb":"cfba"},"dacee":"eecae"},"db":"cef"},"then":{"$id":"eaedbf","$schema":"dfc","$ref":"decc","$comment":"bfeed","title":"ac","description":"ea","readOnly":true,"examples":["cecbeb"],"multipleOf":5183.542,"maximum":8969.851,"exclusiveMaximum":792.298,"minimum":2033.808,"exclusiveMinimum":3003.92,"maxLength":8262,"minLength":6248,"pattern":"ad","additionalItems":{"$id":"bdbdc","$schema":"cfbfac","$ref":"eedf","$comment":"bc","title":"ccb","description":"ddcb","readOnly":true,"examples":["acde"],"multipleOf":5956.251,"maximum":4114.5,"exclusiveMaximum":5989.853,"minimum":5914.359,"exclusiveMinimum":6157.043,"maxLength":5484,"minLength":592,"pattern":"fcdea","items":{"$id":"ccebac","$schema":"eedbfc","$ref":"ecb","$comment":"edd","title":"caafcb","description":"ef","readOnly":true,"examples":["bfab"],"multipleOf":7883.012,"maximum":6569.319,"exclusiveMaximum":120.968,"minimum":6454.226,"exclusiveMinimum":3033.457,"maxLength":8554,"minLength":214,"pattern":"ab","additionalItems":{"$id":"febfcc","$schema":"fc","$ref":"ef","$comment":"cfbb","title":"dafcaf","description":"eefe","readOnly":true,"examples":["aafddd"],"multipleOf":6931.474,"maximum":4456.73,"exclusiveMaximum":6392.733,"minimum":6724.727,"exclusiveMinimum":2955.941,"maxLength":4487,"pattern":"aecfea","items":true,"maxItems":6186,"uniqueItems":true,"contains":{"fbe":"aff"},"babebb":"ca"},"beadb":"bf"},"cfb":"dfe"},"fbbdc":"eebb"},"else":{"$id":"bdbf","$schema":"cfe","$ref":"cdfaeb","$comment":"dcc","title":"ccd","description":"eca","readOnly":true,"examples":["fafe"],"multipleOf":3298.446,"maximum":7963.158,"exclusiveMaximum":6830.744,"minimum":5047.333,"exclusiveMinimum":8992.209,"maxLength":8207,"minLength":757,"pattern":"cabb","additionalItems":{"$id":"aafcb","$schema":"deed","$ref":"cce","$comment":"cf","title":"babb","description":"eaefb","readOnly":true,"examples":["bc"],"multipleOf":5188.042,"maximum":8101.812,"exclusiveMaximum":1722.797,"minimum":1127.78,"exclusiveMinimum":745.741,"maxLength":4111,"minLength":3703,"pattern":"fff","items":{"$id":"ae","$schema":"ecc","$ref":"befdb","$comment":"ccaef","title":"fecc","description":"aea","readOnly":true,"examples":["ebada"],"multipleOf":2014.344,"maximum":9742.126,"exclusiveMaximum":5049.886,"minimum":1227.721,"exclusiveMinimum":2764.23,"maxLength":1876,"minLength":8283,"pattern":"bced","additionalItems":{"$id":"ec","$schema":"afc","$ref":"bdcc","$comment":"adbe","title":"deadae","description":"fdc","readOnly":true,"examples":["dfd"],"multipleOf":92.733,"maximum":8849.665,"exclusiveMaximum":5145.141,"minimum":3832.635,"exclusiveMinimum":3978.317,"maxLength":2976,"pattern":"fcbee","items":true,"maxItems":1773,"uniqueItems":true,"contains":{"af":"aac"},"dcfefc":"fcfa"},"ebb":"dfca"},"dffab":"bc"},"fc":"af"},"allOf":[{"$id":"eefed","$schema":"ece","$ref":"cedfbd","$comment":"aabdec","title":"df","description":"cbebf","readOnly":true,"examples":["dafa"],"multipleOf":2758.374,"maximum":6043.068,"exclusiveMaximum":5720.872,"minimum":9588.025,"exclusiveMinimum":2494.827,"maxLength":3928,"minLength":1838,"pattern":"ca","additionalItems":{"$id":"ccbde","$schema":"dcae","$ref":"dba","$comment":"ebfd","title":"ad","description":"fe","readOnly":true,"examples":["cedb"],"multipleOf":8626.167,"maximum":8713.61,"exclusiveMaximum":1674.419,"minimum":6866.25,"exclusiveMinimum":2631.39,"maxLength":9392,"minLength":716,"pattern":"abdabc","items":{"$id":"cccb","$schema":"ccdead","$ref":"dcad","$comment":"ebe","title":"fbba","description":"ccdd","readOnly":true,"examples":["cbabc"],"multipleOf":5736.459,"maximum":4410.066,"exclusiveMaximum":6242.371,"minimum":7396.12,"exclusiveMinimum":2093.841,"maxLength":376,"pattern":"eeeccb","additionalItems":{"fbdde":"abafa"},"efff":"cf"},"beecee":"bbccef"},"fabfcb":"cf"}],"anyOf":[{"$id":"fbae","$schema":"ccac","$ref":"abdafa","$comment":"fec","title":"fcddbe","description":"cbc","readOnly":true,"examples":["eb"],"multipleOf":278.182,"maximum":3078.824,"exclusiveMaximum":1002.922,"minimum":9281.091,"exclusiveMinimum":8525.411,"maxLength":9769,"minLength":7029,"pattern":"ed","additionalItems":{"$id":"edcfd","$schema":"ab","$ref":"ab","$comment":"aea","title":"dacb","description":"ead","readOnly":true,"examples":["fde"],"multipleOf":9332.023,"maximum":5957.041,"exclusiveMaximum":1778.647,"minimum":3613.227,"exclusiveMinimum":8600.668,"maxLength":9153,"minLength":9574,"pattern":"eabbe","items":{"$id":"dcbecb","$schema":"ffb","$ref":"bc","$comment":"febbcd","title":"caeb","description":"fbb","readOnly":true,"examples":["da"],"multipleOf":4438.052,"maximum":3993.434,"exclusiveMaximum":1015.815,"minimum":9083.811,"exclusiveMinimum":2258.069,"maxLength":954,"pattern":"eaa","additionalItems":{"cbede":"edde"},"daea":"bfcfc"},"facbd":"bd"},"fdceb":"ea"}],"oneOf":[{"$id":"ab","$schema":"ddc","$ref":"dbb","$comment":"cfccc","title":"fdef","description":"fafa","readOnly":true,"examples":["ebfcf"],"multipleOf":5431.391,"maximum":6332.093,"exclusiveMaximum":50.935,"minimum":3533.943,"exclusiveMinimum":3426.023,"maxLength":2870,"minLength":2891,"pattern":"cefcd","additionalItems":{"$id":"cabbe","$schema":"ecda","$ref":"ca","$comment":"ebc","title":"ebac","description":"bdb","readOnly":true,"examples":["ea"],"multipleOf":9676.952,"maximum":3093.131,"exclusiveMaximum":1431.898,"minimum":1737.661,"exclusiveMinimum":6323.299,"maxLength":1243,"minLength":6619,"pattern":"ee","items":{"$id":"feaff","$schema":"acd","$ref":"fad","$comment":"ccfa","title":"acab","description":"afbfad","readOnly":true,"examples":["eda"],"multipleOf":6321.995,"maximum":8499.305,"exclusiveMaximum":3965.85,"minimum":4346.548,"exclusiveMinimum":9246.079,"maxLength":4680,"pattern":"badee","additionalItems":{"acdf":"ddb"},"ddcc":"efdb"},"efae":"ecf"},"dd":"eaeac"}],"not":{"$id":"efeba","$schema":"deec","$ref":"acaab","$comment":"aecce","title":"dcbbf","description":"eda","readOnly":true,"examples":["ceb"],"multipleOf":3785.458,"maximum":1784.948,"exclusiveMaximum":9419.78,"minimum":9698.706,"exclusiveMinimum":4057.317,"maxLength":7419,"minLength":4201,"pattern":"deceb","additionalItems":{"$id":"dd","$schema":"dcadb","$ref":"fbbc","$comment":"ceccf","title":"ba","description":"eeef","readOnly":true,"examples":["de"],"multipleOf":8501.881,"maximum":9498.464,"exclusiveMaximum":2644.898,"minimum":9615.725,"exclusiveMinimum":9527.467,"maxLength":7301,"minLength":1523,"pattern":"cffd","items":{"$id":"af","$schema":"ffe","$ref":"eb","$comment":"cad","title":"cfb","description":"cc","readOnly":true,"examples":["cfaca"],"multipleOf":3643.655,"maximum":8680.401,"exclusiveMaximum":8922.739,"minimum":5410.806,"exclusiveMinimum":277.117,"maxLength":7982,"minLength":854,"pattern":"aef","additionalItems":{"$id":"edfca","$schema":"edcf","$ref":"efbf","$comment":"ecc","title":"ba","description":"bfbed","readOnly":true,"examples":["df"],"multipleOf":8195.923,"maximum":3110.131,"exclusiveMaximum":3498.132,"minimum":5484.891,"exclusiveMinimum":4477.728,"maxLength":6821,"pattern":"dad","items":true,"maxItems":7697,"uniqueItems":true,"contains":{"afad":"debee"},"faa":"adee"},"efad":"eea"},"ea":"ae"},"eeb":"ebcda"},"ffdbed":"ddad"}`)
+		v CoreSchemaMetaSchema
+	)
+
+	require.NoError(t, json.Unmarshal(jsonValue, &v))
+
+	marshaled, err := json.Marshal(v)
+
 	require.NoError(t, err)
+	assertjson.Equal(t, jsonValue, marshaled)
+}
 
-	s := entities.Schema{}
-	require.NoError(t, json.Unmarshal(data, &s))
+func TestSchema_MarshalJSON_roundtrip(t *testing.T) {
+	var (
+		jsonValue = []byte(`{"$id":"ebef","$schema":"feb","$ref":"ec","$comment":"ac","title":"aefb","description":"da","readOnly":true,"examples":["fbdeeb"],"multipleOf":9699.469,"maximum":7598.254,"exclusiveMaximum":4239.333,"minimum":9029.359,"exclusiveMinimum":3124.063,"maxLength":5874,"minLength":3638,"pattern":"ded","additionalItems":{"$id":"fbdffc","$schema":"fbcfeb","$ref":"edeccc","$comment":"daccfa","title":"cdfb","description":"fddbe","readOnly":true,"examples":["bf"],"multipleOf":9854.449,"maximum":5530.484,"exclusiveMaximum":326.439,"minimum":5226.357,"exclusiveMinimum":7251.667,"maxLength":3699,"minLength":5656,"pattern":"ea","additionalItems":{"$id":"fcfa","$schema":"decf","$ref":"ea","$comment":"debfa","title":"cacbca","description":"ff","readOnly":true,"examples":["ae"],"multipleOf":3909.187,"maximum":2904.132,"exclusiveMaximum":2144.649,"minimum":7393.27,"exclusiveMinimum":6192.133,"maxLength":9960,"minLength":1780,"pattern":"dcdd","items":{"$id":"efdcb","$schema":"ebab","$ref":"eecec","$comment":"bcdccd","title":"eedbbb","description":"bbbc","readOnly":true,"examples":["cfbadf"],"multipleOf":2171.303,"maximum":3964.627,"exclusiveMaximum":4956.314,"minimum":6280.232,"exclusiveMinimum":2974.042,"maxLength":3006,"minLength":7291,"pattern":"afe","additionalItems":{"$id":"ddfae","$schema":"cdadb","$ref":"eedeaa","$comment":"bc","title":"cc","description":"fefffd","readOnly":true,"examples":["aff"],"multipleOf":8476.267,"maximum":1062.272,"exclusiveMaximum":6590.357,"minimum":9113.361,"exclusiveMinimum":3788.312,"maxLength":7534,"pattern":"cbff","items":true,"maxItems":6456,"uniqueItems":true,"contains":{"aea":"ccbed"},"bb":"dbdbd"},"fccd":"dcb"},"beccda":"fbaeda"},"da":"ccfdd"},"dbbccd":"ad"}`)
+		v Schema
+	)
 
-	marshaled, err := json.Marshal(s)
+	require.NoError(t, json.Unmarshal(jsonValue, &v))
+
+	marshaled, err := json.Marshal(v)
+
 	require.NoError(t, err)
-	assertjson.Comparer{
-		FormatterConfig: formatter.AsciiFormatterConfig{
-			Coloring: true,
-		},
-	}.Equal(t, data, marshaled)
+	assertjson.Equal(t, jsonValue, marshaled)
 }
 
-func TestSchema_MarshalJSON_roundtrip_draft7(t *testing.T) {
-	data, err := ioutil.ReadFile("../../../../vendor/swaggest/json-schema/spec/json-schema-draft7.json")
+func TestItems_MarshalJSON_roundtrip(t *testing.T) {
+	var (
+		jsonValue = []byte(`{"$id":"ddadff","$schema":"abff","$ref":"eeced","$comment":"bb","title":"baaad","description":"fdbdf","readOnly":true,"examples":["ffb"],"multipleOf":6223.125,"maximum":7069.238,"exclusiveMaximum":2316.947,"minimum":686.793,"exclusiveMinimum":7701.322,"maxLength":4793,"minLength":1055,"pattern":"ffbdad","additionalItems":{"$id":"baccc","$schema":"cabe","$ref":"fe","$comment":"fdadfa","title":"dc","description":"bedbc","readOnly":true,"examples":["edfb"],"multipleOf":5288.428,"maximum":4993.411,"exclusiveMaximum":1132.132,"minimum":375.839,"exclusiveMinimum":1559.005,"maxLength":1475,"minLength":1487,"pattern":"cddfb","items":{"$id":"fdc","$schema":"ad","$ref":"fd","$comment":"dcc","title":"aabf","description":"efddf","readOnly":true,"examples":["edfcbd"],"multipleOf":1811.954,"maximum":4899.395,"exclusiveMaximum":7880.496,"minimum":3097.668,"exclusiveMinimum":6028.653,"maxLength":8944,"minLength":9803,"pattern":"fcdec","additionalItems":{"$id":"eaabe","$schema":"dc","$ref":"bcedff","$comment":"ea","title":"bbaf","description":"cbdd","readOnly":true,"examples":["dea"],"multipleOf":1885.776,"maximum":4933.834,"exclusiveMaximum":4408.722,"minimum":9985.099,"exclusiveMinimum":8448.118,"maxLength":9346,"pattern":"ee","items":true,"maxItems":7147,"uniqueItems":true,"contains":{"ddcf":"bc"},"baf":"db"},"add":"de"},"feadef":"bfc"},"dab":"ef"}`)
+		v Items
+	)
+
+	require.NoError(t, json.Unmarshal(jsonValue, &v))
+
+	marshaled, err := json.Marshal(v)
+
 	require.NoError(t, err)
+	assertjson.Equal(t, jsonValue, marshaled)
+}
 
-	s := entities.Schema{}
-	require.NoError(t, json.Unmarshal(data, &s))
+func TestDependenciesAdditionalProperties_MarshalJSON_roundtrip(t *testing.T) {
+	var (
+		jsonValue = []byte(`{"$id":"ccbcb","$schema":"dfcfc","$ref":"eb","$comment":"eeba","title":"fcff","description":"cf","readOnly":true,"examples":["aee"],"multipleOf":454.982,"maximum":1850.23,"exclusiveMaximum":4635.571,"minimum":5458.281,"exclusiveMinimum":3347.513,"maxLength":7982,"minLength":5322,"pattern":"cbee","additionalItems":{"$id":"ccd","$schema":"edddc","$ref":"abdc","$comment":"cef","title":"fffa","description":"fcfbd","readOnly":true,"examples":["debf"],"multipleOf":6952.868,"maximum":9640.361,"exclusiveMaximum":5266.766,"minimum":6065.443,"exclusiveMinimum":3534.185,"maxLength":6039,"minLength":6384,"pattern":"fadcee","items":{"$id":"dcbfe","$schema":"bbdebf","$ref":"ffeef","$comment":"fbea","title":"aebcf","description":"fde","readOnly":true,"examples":["eba"],"multipleOf":638.444,"maximum":4478.989,"exclusiveMaximum":8282.177,"minimum":5617.863,"exclusiveMinimum":5206.866,"maxLength":7367,"minLength":9343,"pattern":"faeeea","additionalItems":{"$id":"bde","$schema":"dbfbd","$ref":"eddd","$comment":"adcfab","title":"bbcda","description":"eb","readOnly":true,"examples":["cd"],"multipleOf":9380.851,"maximum":1986.483,"exclusiveMaximum":7216.71,"minimum":2724.009,"exclusiveMinimum":2096.342,"maxLength":5988,"pattern":"aacacf","items":true,"maxItems":6832,"uniqueItems":true,"contains":{"dfabd":"ca"},"ceecf":"efcdc"},"efdbd":"ccffd"},"afbd":"da"},"cab":"caf"}`)
+		v DependenciesAdditionalProperties
+	)
 
-	marshaled, err := json.Marshal(s)
+	require.NoError(t, json.Unmarshal(jsonValue, &v))
+
+	marshaled, err := json.Marshal(v)
+
 	require.NoError(t, err)
-	assertjson.Comparer{
-		FormatterConfig: formatter.AsciiFormatterConfig{
-			Coloring: true,
-		},
-	}.Equal(t, data, marshaled)
+	assertjson.Equal(t, jsonValue, marshaled)
 }
 
-func TestSchema_MarshalJSON_roundtrip_sample(t *testing.T) {
-	data, err := ioutil.ReadFile("sample.json")
+func TestType_MarshalJSON_roundtrip(t *testing.T) {
+	var (
+		jsonValue = []byte(`"array"`)
+		v Type
+	)
+
+	require.NoError(t, json.Unmarshal(jsonValue, &v))
+
+	marshaled, err := json.Marshal(v)
+
 	require.NoError(t, err)
-
-	s := entities.Schema{}
-	require.NoError(t, json.Unmarshal(data, &s))
-
-	//if s.TypeObject.Default != nil {
-	//	val := (*s.TypeObject.Default).(string)
-	//	println(val)
-	//}
-
-	marshaled, err := json.Marshal(s)
-	require.NoError(t, err)
-	assertjson.Comparer{
-		FormatterConfig: formatter.AsciiFormatterConfig{
-			Coloring: true,
-		},
-	}.Equal(t, data, marshaled)
-}
-
-func BenchmarkSchema_MarshalJSON_roundtrip_sample(b *testing.B) {
-	data, err := ioutil.ReadFile("sample.json")
-	require.NoError(b, err)
-
-	s := entities.Schema{}
-	require.NoError(b, json.Unmarshal(data, &s))
-
-	marshaled, err := json.Marshal(s)
-	require.NoError(b, err)
-	assertjson.Comparer{
-		FormatterConfig: formatter.AsciiFormatterConfig{
-			Coloring: true,
-		},
-	}.Equal(b, data, marshaled)
-
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		_ = json.Unmarshal(data, &s)
-		_, _ = json.Marshal(s)
-	}
-}
-
-// Pointers:
-// BenchmarkSchema_UnmarshalJSON-4   	    3699	    311725 ns/op	   98225 B/op	    1256 allocs/op
-// BenchmarkSchema_MarshalJSON-4     	    5398	    216649 ns/op	   45012 B/op	     931 allocs/op
-
-// Values:
-// BenchmarkSchema_UnmarshalJSON-4   	    3667	    315218 ns/op	  104194 B/op	    1217 allocs/op
-// BenchmarkSchema_MarshalJSON-4     	    5157	    212650 ns/op	   44995 B/op	     931 allocs/op
-
-func BenchmarkSchema_UnmarshalJSON_map(b *testing.B) {
-	data, err := ioutil.ReadFile("../../../../vendor/swaggest/json-schema/spec/json-schema-draft7.json")
-	require.NoError(b, err)
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	s := map[string]interface{}{}
-
-	for i := 0; i < b.N; i++ {
-		_ = json.Unmarshal(data, &s)
-	}
-}
-
-func BenchmarkSchema_UnmarshalJSON(b *testing.B) {
-	data, err := ioutil.ReadFile("../../../../vendor/swaggest/json-schema/spec/json-schema-draft7.json")
-	require.NoError(b, err)
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	s := entities.Schema{}
-
-	//js := jsoniter.ConfigCompatibleWithStandardLibrary
-
-	for i := 0; i < b.N; i++ {
-		_ = json.Unmarshal(data, &s)
-	}
-}
-
-func BenchmarkSchema_UnmarshalJSON_asyncapi(b *testing.B) {
-	data, err := ioutil.ReadFile("../../asyncapi-2.0.0.json")
-	require.NoError(b, err)
-
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	s := entities.Schema{}
-
-	for i := 0; i < b.N; i++ {
-		_ = json.Unmarshal(data, &s)
-	}
-}
-
-func BenchmarkSchema_MarshalJSON_map(b *testing.B) {
-	data, err := ioutil.ReadFile("../../../../vendor/swaggest/json-schema/spec/json-schema-draft7.json")
-	require.NoError(b, err)
-
-	s := map[string]interface{}{}
-	require.NoError(b, json.Unmarshal(data, &s))
-
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		_, _ = json.Marshal(&s)
-	}
-}
-
-func BenchmarkSchema_MarshalJSON(b *testing.B) {
-	data, err := ioutil.ReadFile("../../../../vendor/swaggest/json-schema/spec/json-schema-draft7.json")
-	require.NoError(b, err)
-
-	s := entities.Schema{}
-	require.NoError(b, json.Unmarshal(data, &s))
-
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		_, _ = json.Marshal(&s)
-	}
+	assertjson.Equal(t, jsonValue, marshaled)
 }

@@ -8,21 +8,30 @@ import (
 	"github.com/swaggest/assertjson"
 )
 
-func Test_MarshalUnmarshalRoundtrip(t *testing.T) {
-	jsonPayload := []byte(`[
-  "abc",
-  {
-    "id": "def",
-    "val": 1
-  }
-]
-`)
+func TestElementObject_MarshalJSON_roundtrip(t *testing.T) {
+	var (
+		jsonValue = []byte(`{"id":"fa","val":9326,"bfffa":"defba"}`)
+		v ElementObject
+	)
 
-	var v []ElementConditional
-	err := json.Unmarshal(jsonPayload, &v)
-	require.NoError(t, err)
+	require.NoError(t, json.Unmarshal(jsonValue, &v))
 
 	marshaled, err := json.Marshal(v)
+
 	require.NoError(t, err)
-	assertjson.Equal(t, jsonPayload, marshaled)
+	assertjson.Equal(t, jsonValue, marshaled)
+}
+
+func TestElement_MarshalJSON_roundtrip(t *testing.T) {
+	var (
+		jsonValue = []byte(`"dcea"`)
+		v Element
+	)
+
+	require.NoError(t, json.Unmarshal(jsonValue, &v))
+
+	marshaled, err := json.Marshal(v)
+
+	require.NoError(t, err)
+	assertjson.Equal(t, jsonValue, marshaled)
 }

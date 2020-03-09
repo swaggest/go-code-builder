@@ -324,6 +324,14 @@ class GoBuilder
             }
         }
 
+        if ($processProperties && !empty($schema->required)) {
+            $marshalJson->required = $schema->required;
+        }
+
+        if (!empty($schema->not)) {
+            $marshalJson->not = $this->getType($schema->not, $path . '->not', $structDef);
+        }
+
         $structDef->getCode()->addSnippet($marshalJson);
 
         if ($this->structPreparedHook !== null) {

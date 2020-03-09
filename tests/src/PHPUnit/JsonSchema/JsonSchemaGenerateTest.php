@@ -26,27 +26,11 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         $builder->options->ignoreNullable = false;
         $builder->options->defaultAdditionalProperties = true;
         $builder->options->fluentSetters = true;
-        $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
-            if ('#' === $path) {
-                $structDef->setName('Schema');
-            } elseif (0 === strpos($path, '#/definitions/')) {
-                $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
-                $structDef->setName($name);
-            }
-        });
-        $builder->getType($schema);
 
-        $goFile = new GoFile('jsonschema');
-        $goFile->fileComment = '';
-        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
-            $goFile->getCode()->addSnippet($generatedStruct->structDef);
-        }
-        $goFile->getCode()->addSnippet($builder->getCode());
+        $path = __DIR__ . '/../../../resources/go/draft7';
+        Helper::buildEntities($builder, $schema, $path, 'Schema');
 
-        $filePath = __DIR__ . '/../../../resources/go/draft7/entities.go';
-        file_put_contents($filePath, $goFile->render());
-
-        exec('git diff ' . $filePath, $out);
+        exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }

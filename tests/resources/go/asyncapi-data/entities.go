@@ -23,7 +23,7 @@ type MessagingReaderReads struct {
 
 type marshalMessagingReaderReads MessagingReaderReads
 
-var ignoreKeysMessagingReaderReads = []string{
+var knownKeysMessagingReaderReads = []string{
 	"reads",
 	"country",
 	"reader_id",
@@ -49,7 +49,7 @@ func (m *MessagingReaderReads) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysMessagingReaderReads {
+	for _, key := range knownKeysMessagingReaderReads {
 		delete(rawMap, key)
 	}
 
@@ -93,7 +93,7 @@ type Book struct {
 
 type marshalBook Book
 
-var ignoreKeysBook = []string{
+var knownKeysBook = []string{
 	"amount",
 	"entity_id",
 	"strategy",
@@ -132,7 +132,7 @@ func (b *Book) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "reason")
 
-	for _, key := range ignoreKeysBook {
+	for _, key := range knownKeysBook {
 		delete(rawMap, key)
 	}
 
