@@ -15,7 +15,11 @@ class Helper
 {
     public static function buildEntities(GoBuilder $builder, SchemaContract $schema, $path, $rootName)
     {
-        mt_srand(1, 1);
+        if (PHP_VERSION_ID < 70100) {
+            mt_srand(1);
+        } else {
+            mt_srand(1, 1);
+        }
 
         $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder, $rootName) {
             if ('#' === $path) {

@@ -242,7 +242,6 @@ class GoBuilder
                     $fieldName,
                     $goPropertyType
                 );
-                $comment = '';
                 $property = self::unboolSchema($property);
 
                 if ($property instanceof Wrapper) {
