@@ -10,7 +10,7 @@ import (
 
 func TestElementObject_MarshalJSON_roundtrip(t *testing.T) {
 	var (
-		jsonValue = []byte(`{"id":"fa","val":9326,"bfffa":"defba"}`)
+		jsonValue = []byte(`{"id":"aeff","val":8686,"ffefd":"dd"}`)
 		v ElementObject
 	)
 
@@ -24,7 +24,7 @@ func TestElementObject_MarshalJSON_roundtrip(t *testing.T) {
 
 func TestElement_MarshalJSON_roundtrip(t *testing.T) {
 	var (
-		jsonValue = []byte(`{"id":"dcea","val":3133,"eda":"cfeccd"}`)
+		jsonValue = []byte(`{"id":"cfc","val":8463,"bbdb":"fefc"}`)
 		v Element
 	)
 
