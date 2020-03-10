@@ -7,25 +7,25 @@ import (
 	"errors"
 )
 
-// Element structure is generated from "#/definitions/element[object]".
-type Element struct {
+// ElementObject structure is generated from "#/definitions/element[object]".
+type ElementObject struct {
 	ID                   string                 `json:"id,omitempty"`
 	Val                  int64                  `json:"val,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`             // All unmatched properties.
 }
 
-type marshalElement Element
+type marshalElementObject ElementObject
 
-var ignoreKeysElement = []string{
+var knownKeysElementObject = []string{
 	"id",
 	"val",
 }
 
 // UnmarshalJSON decodes JSON.
-func (e *Element) UnmarshalJSON(data []byte) error {
+func (e *ElementObject) UnmarshalJSON(data []byte) error {
 	var err error
 
-	me := marshalElement(*e)
+	me := marshalElementObject(*e)
 
 	err = json.Unmarshal(data, &me)
 	if err != nil {
@@ -39,7 +39,7 @@ func (e *Element) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysElement {
+	for _, key := range knownKeysElementObject {
 		delete(rawMap, key)
 	}
 
@@ -58,45 +58,59 @@ func (e *Element) UnmarshalJSON(data []byte) error {
 		me.AdditionalProperties[key] = val
 	}
 
-	*e = Element(me)
+	*e = ElementObject(me)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (e ElementObject) MarshalJSON() ([]byte, error) {
+	if len(e.AdditionalProperties) == 0 {
+		return json.Marshal(marshalElementObject(e))
+	}
+
+	return marshalUnion(marshalElementObject(e), e.AdditionalProperties)
+}
+
+// Element structure is generated from "#/definitions/element".
+type Element struct {
+	TypeString *string        `json:"-"`
+	Element    *ElementObject `json:"-"`
+}
+
+// UnmarshalJSON decodes JSON.
+func (e *Element) UnmarshalJSON(data []byte) error {
+	var err error
+
+	typeValid := false
+
+	if !typeValid {
+		err = json.Unmarshal(data, &e.TypeString)
+		if err != nil {
+			e.TypeString = nil
+		} else {
+			typeValid = true
+		}
+	}
+
+	if !typeValid {
+		err = json.Unmarshal(data, &e.Element)
+		if err != nil {
+			e.Element = nil
+		} else {
+			typeValid = true
+		}
+	}
+
+	if !typeValid {
+		return err
+	}
 
 	return nil
 }
 
 // MarshalJSON encodes JSON.
 func (e Element) MarshalJSON() ([]byte, error) {
-	if len(e.AdditionalProperties) == 0 {
-		return json.Marshal(marshalElement(e))
-	}
-
-	return marshalUnion(marshalElement(e), e.AdditionalProperties)
-}
-
-// ElementConditional structure is generated from "#/definitions/element".
-type ElementConditional struct {
-	TypeString *string  `json:"-"`
-	Element    *Element `json:"-"`
-}
-
-// UnmarshalJSON decodes JSON.
-func (e *ElementConditional) UnmarshalJSON(data []byte) error {
-	var err error
-
-	err = json.Unmarshal(data, &e.TypeString)
-	if err != nil {
-		e.TypeString = nil
-	}
-
-	err = json.Unmarshal(data, &e.Element)
-	if err != nil {
-		e.Element = nil
-	}
-
-	return nil
-}
-
-// MarshalJSON encodes JSON.
-func (e ElementConditional) MarshalJSON() ([]byte, error) {
 	return marshalUnion(e.TypeString, e.Element)
 }
 

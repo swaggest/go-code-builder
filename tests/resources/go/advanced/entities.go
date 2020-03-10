@@ -34,7 +34,7 @@ type Properties struct {
 
 type marshalProperties Properties
 
-var ignoreKeysProperties = []string{
+var knownKeysProperties = []string{
 	"refOrSchema",
 	"noTypeWithExamples",
 	"noTypeWithExample",
@@ -72,7 +72,7 @@ func (p *Properties) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysProperties {
+	for _, key := range knownKeysProperties {
 		delete(rawMap, key)
 	}
 
@@ -136,7 +136,11 @@ type Reference struct {
 
 type marshalReference Reference
 
-var ignoreKeysReference = []string{
+var knownKeysReference = []string{
+	"$ref",
+}
+
+var requireKeysReference = []string{
 	"$ref",
 }
 
@@ -158,7 +162,13 @@ func (r *Reference) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysReference {
+	for _, key := range requireKeysReference {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysReference {
 		delete(rawMap, key)
 	}
 
@@ -201,14 +211,27 @@ type RefOrSchema struct {
 func (r *RefOrSchema) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &r.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		r.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &r.Schema)
 	if err != nil {
+		oneOfErrors["Schema"] = err
 		r.Schema = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for RefOrSchema with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -230,7 +253,7 @@ type NoTypeWithExamples struct {
 
 type marshalNoTypeWithExamples NoTypeWithExamples
 
-var ignoreKeysNoTypeWithExamples = []string{
+var knownKeysNoTypeWithExamples = []string{
 	"firstName",
 	"lastName",
 	"age",
@@ -255,7 +278,7 @@ func (n *NoTypeWithExamples) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysNoTypeWithExamples {
+	for _, key := range knownKeysNoTypeWithExamples {
 		delete(rawMap, key)
 	}
 
@@ -298,7 +321,7 @@ type NoTypeWithExample struct {
 
 type marshalNoTypeWithExample NoTypeWithExample
 
-var ignoreKeysNoTypeWithExample = []string{
+var knownKeysNoTypeWithExample = []string{
 	"firstName",
 	"lastName",
 	"age",
@@ -322,7 +345,7 @@ func (n *NoTypeWithExample) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysNoTypeWithExample {
+	for _, key := range knownKeysNoTypeWithExample {
 		delete(rawMap, key)
 	}
 
@@ -366,7 +389,7 @@ type Address struct {
 
 type marshalAddress Address
 
-var ignoreKeysAddress = []string{
+var knownKeysAddress = []string{
 	"addressStripped",
 	"address1",
 	"address2",
@@ -391,7 +414,7 @@ func (a *Address) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysAddress {
+	for _, key := range knownKeysAddress {
 		delete(rawMap, key)
 	}
 
@@ -431,6 +454,16 @@ type Table struct {
 
 type marshalTable Table
 
+var knownKeysTable = []string{
+	"value",
+	"type",
+}
+
+var requireKeysTable = []string{
+	"type",
+	"value",
+}
+
 // UnmarshalJSON decodes JSON.
 func (t *Table) UnmarshalJSON(data []byte) error {
 	var err error
@@ -449,11 +482,31 @@ func (t *Table) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysTable {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"table"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("table" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
+
+	for _, key := range knownKeysTable {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Table: %v", offendingKeys)
+	}
 
 	*t = Table(mt)
 
@@ -476,6 +529,66 @@ type Scalar struct {
 	Value string       `json:"value"` // Required.
 }
 
+type marshalScalar Scalar
+
+var knownKeysScalar = []string{
+	"type",
+	"value",
+}
+
+var requireKeysScalar = []string{
+	"type",
+	"value",
+}
+
+// UnmarshalJSON decodes JSON.
+func (s *Scalar) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ms := marshalScalar(*s)
+
+	err = json.Unmarshal(data, &ms)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range requireKeysScalar {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysScalar {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Scalar: %v", offendingKeys)
+	}
+
+	*s = Scalar(ms)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (s Scalar) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalScalar(s))
+}
+
 // Property structure is generated from "#/definitions/property".
 type Property struct {
 	Scalar *Scalar `json:"-"`
@@ -486,14 +599,27 @@ type Property struct {
 func (p *Property) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &p.Scalar)
 	if err != nil {
+		oneOfErrors["Scalar"] = err
 		p.Scalar = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &p.Table)
 	if err != nil {
+		oneOfErrors["Table"] = err
 		p.Table = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for Property with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -510,6 +636,16 @@ type ShortStr struct {
 }
 
 type marshalShortStr ShortStr
+
+var knownKeysShortStr = []string{
+	"value",
+	"type",
+}
+
+var requireKeysShortStr = []string{
+	"type",
+	"value",
+}
 
 // UnmarshalJSON decodes JSON.
 func (s *ShortStr) UnmarshalJSON(data []byte) error {
@@ -529,11 +665,31 @@ func (s *ShortStr) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysShortStr {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"shortstr"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("shortstr" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
+
+	for _, key := range knownKeysShortStr {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ShortStr: %v", offendingKeys)
+	}
 
 	*s = ShortStr(ms)
 
@@ -557,6 +713,16 @@ type PropertyOctet struct {
 
 type marshalPropertyOctet PropertyOctet
 
+var knownKeysPropertyOctet = []string{
+	"value",
+	"type",
+}
+
+var requireKeysPropertyOctet = []string{
+	"type",
+	"value",
+}
+
 // UnmarshalJSON decodes JSON.
 func (p *PropertyOctet) UnmarshalJSON(data []byte) error {
 	var err error
@@ -575,11 +741,31 @@ func (p *PropertyOctet) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysPropertyOctet {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"octet"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("octet" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
+
+	for _, key := range knownKeysPropertyOctet {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in PropertyOctet: %v", offendingKeys)
+	}
 
 	*p = PropertyOctet(mp)
 
@@ -603,6 +789,16 @@ type Timestamp struct {
 
 type marshalTimestamp Timestamp
 
+var knownKeysTimestamp = []string{
+	"value",
+	"type",
+}
+
+var requireKeysTimestamp = []string{
+	"type",
+	"value",
+}
+
 // UnmarshalJSON decodes JSON.
 func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	var err error
@@ -621,11 +817,31 @@ func (t *Timestamp) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysTimestamp {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"timestamp"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("timestamp" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
+
+	for _, key := range knownKeysTimestamp {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Timestamp: %v", offendingKeys)
+	}
 
 	*t = Timestamp(mt)
 

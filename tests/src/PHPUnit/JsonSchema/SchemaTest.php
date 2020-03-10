@@ -44,7 +44,7 @@ type Untitled1 struct {
 
 type marshalUntitled1 Untitled1
 
-var ignoreKeysUntitled1 = []string{
+var knownKeysUntitled1 = []string{
 	"sampleInt",
 	"sampleBool",
 	"sampleString",
@@ -71,7 +71,7 @@ func (u *Untitled1) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysUntitled1 {
+	for _, key := range knownKeysUntitled1 {
 		delete(rawMap, key)
 	}
 
@@ -108,6 +108,55 @@ func (u Untitled1) MarshalJSON() ([]byte, error) {
 type Another struct {
 	Hello bool   `json:"hello,omitempty"`
 	World string `json:"world,omitempty"`
+}
+
+type marshalAnother Another
+
+var knownKeysAnother = []string{
+	"hello",
+	"world",
+}
+
+// UnmarshalJSON decodes JSON.
+func (a *Another) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ma := marshalAnother(*a)
+
+	err = json.Unmarshal(data, &ma)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysAnother {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Another: %v", offendingKeys)
+	}
+
+	*a = Another(ma)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (a Another) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAnother(a))
 }
 
 

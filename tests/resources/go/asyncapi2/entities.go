@@ -29,7 +29,7 @@ type AsyncAPI struct {
 
 type marshalAsyncAPI AsyncAPI
 
-var ignoreKeysAsyncAPI = []string{
+var knownKeysAsyncAPI = []string{
 	"id",
 	"info",
 	"servers",
@@ -39,6 +39,12 @@ var ignoreKeysAsyncAPI = []string{
 	"tags",
 	"externalDocs",
 	"asyncapi",
+}
+
+var requireKeysAsyncAPI = []string{
+	"asyncapi",
+	"info",
+	"channels",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -59,13 +65,19 @@ func (a *AsyncAPI) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysAsyncAPI {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["asyncapi"]; !ok || string(v) != `"2.0.0"` {
 		return fmt.Errorf(`bad or missing const value for "asyncapi" ("2.0.0" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "asyncapi")
 
-	for _, key := range ignoreKeysAsyncAPI {
+	for _, key := range knownKeysAsyncAPI {
 		delete(rawMap, key)
 	}
 
@@ -92,6 +104,16 @@ func (a *AsyncAPI) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in AsyncAPI: %v", offendingKeys)
 	}
 
 	*a = AsyncAPI(ma)
@@ -130,13 +152,18 @@ type Info struct {
 
 type marshalInfo Info
 
-var ignoreKeysInfo = []string{
+var knownKeysInfo = []string{
 	"title",
 	"version",
 	"description",
 	"termsOfService",
 	"contact",
 	"license",
+}
+
+var requireKeysInfo = []string{
+	"version",
+	"title",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -157,7 +184,13 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysInfo {
+	for _, key := range requireKeysInfo {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysInfo {
 		delete(rawMap, key)
 	}
 
@@ -186,6 +219,16 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Info: %v", offendingKeys)
+	}
+
 	*i = Info(mi)
 
 	return nil
@@ -212,7 +255,7 @@ type Contact struct {
 
 type marshalContact Contact
 
-var ignoreKeysContact = []string{
+var knownKeysContact = []string{
 	"name",
 	"url",
 	"email",
@@ -236,7 +279,7 @@ func (c *Contact) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysContact {
+	for _, key := range knownKeysContact {
 		delete(rawMap, key)
 	}
 
@@ -265,6 +308,16 @@ func (c *Contact) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Contact: %v", offendingKeys)
+	}
+
 	*c = Contact(mc)
 
 	return nil
@@ -288,9 +341,13 @@ type License struct {
 
 type marshalLicense License
 
-var ignoreKeysLicense = []string{
+var knownKeysLicense = []string{
 	"name",
 	"url",
+}
+
+var requireKeysLicense = []string{
+	"name",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -311,7 +368,13 @@ func (l *License) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysLicense {
+	for _, key := range requireKeysLicense {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysLicense {
 		delete(rawMap, key)
 	}
 
@@ -338,6 +401,16 @@ func (l *License) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in License: %v", offendingKeys)
 	}
 
 	*l = License(ml)
@@ -368,7 +441,7 @@ type Server struct {
 
 type marshalServer Server
 
-var ignoreKeysServer = []string{
+var knownKeysServer = []string{
 	"url",
 	"description",
 	"protocol",
@@ -376,6 +449,11 @@ var ignoreKeysServer = []string{
 	"variables",
 	"security",
 	"bindings",
+}
+
+var requireKeysServer = []string{
+	"url",
+	"protocol",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -396,7 +474,13 @@ func (s *Server) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysServer {
+	for _, key := range requireKeysServer {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysServer {
 		delete(rawMap, key)
 	}
 
@@ -423,6 +507,16 @@ func (s *Server) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Server: %v", offendingKeys)
 	}
 
 	*s = Server(ms)
@@ -448,7 +542,7 @@ type ServerVariable struct {
 
 type marshalServerVariable ServerVariable
 
-var ignoreKeysServerVariable = []string{
+var knownKeysServerVariable = []string{
 	"enum",
 	"default",
 	"description",
@@ -473,7 +567,7 @@ func (s *ServerVariable) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysServerVariable {
+	for _, key := range knownKeysServerVariable {
 		delete(rawMap, key)
 	}
 
@@ -500,6 +594,16 @@ func (s *ServerVariable) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ServerVariable: %v", offendingKeys)
 	}
 
 	*s = ServerVariable(ms)
@@ -532,7 +636,7 @@ type ServerBindingsObject struct {
 
 type marshalServerBindingsObject ServerBindingsObject
 
-var ignoreKeysServerBindingsObject = []string{
+var knownKeysServerBindingsObject = []string{
 	"http",
 	"ws",
 	"amqp",
@@ -657,7 +761,7 @@ func (s *ServerBindingsObject) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysServerBindingsObject {
+	for _, key := range knownKeysServerBindingsObject {
 		delete(rawMap, key)
 	}
 
@@ -704,7 +808,7 @@ type ChannelItem struct {
 
 type marshalChannelItem ChannelItem
 
-var ignoreKeysChannelItem = []string{
+var knownKeysChannelItem = []string{
 	"$ref",
 	"parameters",
 	"description",
@@ -732,7 +836,7 @@ func (c *ChannelItem) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysChannelItem {
+	for _, key := range knownKeysChannelItem {
 		delete(rawMap, key)
 	}
 
@@ -761,6 +865,16 @@ func (c *ChannelItem) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ChannelItem: %v", offendingKeys)
+	}
+
 	*c = ChannelItem(mc)
 
 	return nil
@@ -784,7 +898,7 @@ type Parameter struct {
 
 type marshalParameter Parameter
 
-var ignoreKeysParameter = []string{
+var knownKeysParameter = []string{
 	"description",
 	"schema",
 	"location",
@@ -809,7 +923,7 @@ func (p *Parameter) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysParameter {
+	for _, key := range knownKeysParameter {
 		delete(rawMap, key)
 	}
 
@@ -838,6 +952,16 @@ func (p *Parameter) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Parameter: %v", offendingKeys)
+	}
+
 	*p = Parameter(mp)
 
 	return nil
@@ -863,7 +987,7 @@ type Operation struct {
 
 type marshalOperation Operation
 
-var ignoreKeysOperation = []string{
+var knownKeysOperation = []string{
 	"traits",
 	"summary",
 	"description",
@@ -892,7 +1016,7 @@ func (o *Operation) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysOperation {
+	for _, key := range knownKeysOperation {
 		delete(rawMap, key)
 	}
 
@@ -921,6 +1045,16 @@ func (o *Operation) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Operation: %v", offendingKeys)
+	}
+
 	*o = Operation(mo)
 
 	return nil
@@ -941,7 +1075,11 @@ type Reference struct {
 
 type marshalReference Reference
 
-var ignoreKeysReference = []string{
+var knownKeysReference = []string{
+	"$ref",
+}
+
+var requireKeysReference = []string{
 	"$ref",
 }
 
@@ -963,7 +1101,13 @@ func (r *Reference) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysReference {
+	for _, key := range requireKeysReference {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysReference {
 		delete(rawMap, key)
 	}
 
@@ -1009,7 +1153,7 @@ type OperationTrait struct {
 
 type marshalOperationTrait OperationTrait
 
-var ignoreKeysOperationTrait = []string{
+var knownKeysOperationTrait = []string{
 	"summary",
 	"description",
 	"tags",
@@ -1036,7 +1180,7 @@ func (o *OperationTrait) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysOperationTrait {
+	for _, key := range knownKeysOperationTrait {
 		delete(rawMap, key)
 	}
 
@@ -1065,6 +1209,16 @@ func (o *OperationTrait) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in OperationTrait: %v", offendingKeys)
+	}
+
 	*o = OperationTrait(mo)
 
 	return nil
@@ -1085,10 +1239,14 @@ type Tag struct {
 
 type marshalTag Tag
 
-var ignoreKeysTag = []string{
+var knownKeysTag = []string{
 	"name",
 	"description",
 	"externalDocs",
+}
+
+var requireKeysTag = []string{
+	"name",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -1109,7 +1267,13 @@ func (t *Tag) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysTag {
+	for _, key := range requireKeysTag {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysTag {
 		delete(rawMap, key)
 	}
 
@@ -1138,6 +1302,16 @@ func (t *Tag) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Tag: %v", offendingKeys)
+	}
+
 	*t = Tag(mt)
 
 	return nil
@@ -1161,8 +1335,12 @@ type ExternalDocs struct {
 
 type marshalExternalDocs ExternalDocs
 
-var ignoreKeysExternalDocs = []string{
+var knownKeysExternalDocs = []string{
 	"description",
+	"url",
+}
+
+var requireKeysExternalDocs = []string{
 	"url",
 }
 
@@ -1184,7 +1362,13 @@ func (e *ExternalDocs) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysExternalDocs {
+	for _, key := range requireKeysExternalDocs {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysExternalDocs {
 		delete(rawMap, key)
 	}
 
@@ -1211,6 +1395,16 @@ func (e *ExternalDocs) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ExternalDocs: %v", offendingKeys)
 	}
 
 	*e = ExternalDocs(me)
@@ -1246,7 +1440,7 @@ type OperationBindingsObject struct {
 
 type marshalOperationBindingsObject OperationBindingsObject
 
-var ignoreKeysOperationBindingsObject = []string{
+var knownKeysOperationBindingsObject = []string{
 	"http",
 	"ws",
 	"amqp",
@@ -1364,7 +1558,7 @@ func (o *OperationBindingsObject) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysOperationBindingsObject {
+	for _, key := range knownKeysOperationBindingsObject {
 		delete(rawMap, key)
 	}
 
@@ -1417,6 +1611,64 @@ type AMQP091OperationBindingObject struct {
 	BindingVersion AMQP091OperationBindingObjectBindingVersion `json:"bindingVersion,omitempty"` // The version of this binding. If omitted, "latest" MUST be assumed. Applies to Publish, Subscribe.
 }
 
+type marshalAMQP091OperationBindingObject AMQP091OperationBindingObject
+
+var knownKeysAMQP091OperationBindingObject = []string{
+	"expiration",
+	"userId",
+	"cc",
+	"priority",
+	"deliveryMode",
+	"mandatory",
+	"bcc",
+	"replyTo",
+	"timestamp",
+	"ack",
+	"bindingVersion",
+}
+
+// UnmarshalJSON decodes JSON.
+func (a *AMQP091OperationBindingObject) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ma := marshalAMQP091OperationBindingObject(*a)
+
+	err = json.Unmarshal(data, &ma)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysAMQP091OperationBindingObject {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in AMQP091OperationBindingObject: %v", offendingKeys)
+	}
+
+	*a = AMQP091OperationBindingObject(ma)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (a AMQP091OperationBindingObject) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAMQP091OperationBindingObject(a))
+}
+
 // OperationTraitsItems structure is generated from "#/definitions/operation->traits->items".
 type OperationTraitsItems struct {
 	Reference       *Reference      `json:"-"`
@@ -1428,19 +1680,35 @@ type OperationTraitsItems struct {
 func (o *OperationTraitsItems) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 3)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &o.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		o.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &o.OperationTrait)
 	if err != nil {
+		oneOfErrors["OperationTrait"] = err
 		o.OperationTrait = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &o.SliceOfAnything)
 	if err != nil {
+		oneOfErrors["SliceOfAnything"] = err
 		o.SliceOfAnything = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for OperationTraitsItems with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -1454,6 +1722,64 @@ func (o OperationTraitsItems) MarshalJSON() ([]byte, error) {
 // MessageOneOf1OneOf0 structure is generated from "#/definitions/message/oneOf/1/oneOf/0".
 type MessageOneOf1OneOf0 struct {
 	OneOf []Message `json:"oneOf,omitempty"` // Required.
+}
+
+type marshalMessageOneOf1OneOf0 MessageOneOf1OneOf0
+
+var knownKeysMessageOneOf1OneOf0 = []string{
+	"oneOf",
+}
+
+var requireKeysMessageOneOf1OneOf0 = []string{
+	"oneOf",
+}
+
+// UnmarshalJSON decodes JSON.
+func (m *MessageOneOf1OneOf0) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mm := marshalMessageOneOf1OneOf0(*m)
+
+	err = json.Unmarshal(data, &mm)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range requireKeysMessageOneOf1OneOf0 {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysMessageOneOf1OneOf0 {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in MessageOneOf1OneOf0: %v", offendingKeys)
+	}
+
+	*m = MessageOneOf1OneOf0(mm)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (m MessageOneOf1OneOf0) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalMessageOneOf1OneOf0(m))
 }
 
 // MessageOneOf1OneOf1 structure is generated from "#/definitions/message/oneOf/1/oneOf/1".
@@ -1478,7 +1804,7 @@ type MessageOneOf1OneOf1 struct {
 
 type marshalMessageOneOf1OneOf1 MessageOneOf1OneOf1
 
-var ignoreKeysMessageOneOf1OneOf1 = []string{
+var knownKeysMessageOneOf1OneOf1 = []string{
 	"schemaFormat",
 	"contentType",
 	"headers",
@@ -1521,7 +1847,7 @@ func (m *MessageOneOf1OneOf1) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysMessageOneOf1OneOf1 {
+	for _, key := range knownKeysMessageOneOf1OneOf1 {
 		delete(rawMap, key)
 	}
 
@@ -1550,6 +1876,16 @@ func (m *MessageOneOf1OneOf1) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in MessageOneOf1OneOf1: %v", offendingKeys)
+	}
+
 	*m = MessageOneOf1OneOf1(mm)
 
 	return nil
@@ -1572,8 +1908,12 @@ type CorrelationID struct {
 
 type marshalCorrelationID CorrelationID
 
-var ignoreKeysCorrelationID = []string{
+var knownKeysCorrelationID = []string{
 	"description",
+	"location",
+}
+
+var requireKeysCorrelationID = []string{
 	"location",
 }
 
@@ -1595,7 +1935,13 @@ func (c *CorrelationID) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysCorrelationID {
+	for _, key := range requireKeysCorrelationID {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	for _, key := range knownKeysCorrelationID {
 		delete(rawMap, key)
 	}
 
@@ -1624,6 +1970,16 @@ func (c *CorrelationID) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in CorrelationID: %v", offendingKeys)
+	}
+
 	*c = CorrelationID(mc)
 
 	return nil
@@ -1644,14 +2000,27 @@ type MessageOneOf1OneOf1CorrelationID struct {
 func (m *MessageOneOf1OneOf1CorrelationID) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &m.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		m.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &m.CorrelationID)
 	if err != nil {
+		oneOfErrors["CorrelationID"] = err
 		m.CorrelationID = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for MessageOneOf1OneOf1CorrelationID with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -1685,7 +2054,7 @@ type MessageBindingsObject struct {
 
 type marshalMessageBindingsObject MessageBindingsObject
 
-var ignoreKeysMessageBindingsObject = []string{
+var knownKeysMessageBindingsObject = []string{
 	"http",
 	"ws",
 	"amqp",
@@ -1803,7 +2172,7 @@ func (m *MessageBindingsObject) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysMessageBindingsObject {
+	for _, key := range knownKeysMessageBindingsObject {
 		delete(rawMap, key)
 	}
 
@@ -1848,6 +2217,56 @@ type AMQP091MessageBindingObject struct {
 	BindingVersion  AMQP091MessageBindingObjectBindingVersion `json:"bindingVersion,omitempty"`  // The version of this binding. If omitted, "latest" MUST be assumed.
 }
 
+type marshalAMQP091MessageBindingObject AMQP091MessageBindingObject
+
+var knownKeysAMQP091MessageBindingObject = []string{
+	"contentEncoding",
+	"messageType",
+	"bindingVersion",
+}
+
+// UnmarshalJSON decodes JSON.
+func (a *AMQP091MessageBindingObject) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ma := marshalAMQP091MessageBindingObject(*a)
+
+	err = json.Unmarshal(data, &ma)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysAMQP091MessageBindingObject {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in AMQP091MessageBindingObject: %v", offendingKeys)
+	}
+
+	*a = AMQP091MessageBindingObject(ma)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (a AMQP091MessageBindingObject) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAMQP091MessageBindingObject(a))
+}
+
 // MessageTrait structure is generated from "#/definitions/messageTrait".
 type MessageTrait struct {
 	SchemaFormat  string                     `json:"schemaFormat,omitempty"`
@@ -1868,7 +2287,7 @@ type MessageTrait struct {
 
 type marshalMessageTrait MessageTrait
 
-var ignoreKeysMessageTrait = []string{
+var knownKeysMessageTrait = []string{
 	"schemaFormat",
 	"contentType",
 	"headers",
@@ -1902,7 +2321,7 @@ func (m *MessageTrait) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysMessageTrait {
+	for _, key := range knownKeysMessageTrait {
 		delete(rawMap, key)
 	}
 
@@ -1931,6 +2350,16 @@ func (m *MessageTrait) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in MessageTrait: %v", offendingKeys)
+	}
+
 	*m = MessageTrait(mm)
 
 	return nil
@@ -1951,14 +2380,27 @@ type MessageTraitHeaders struct {
 func (m *MessageTraitHeaders) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &m.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		m.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &m.Schema)
 	if err != nil {
+		oneOfErrors["Schema"] = err
 		m.Schema = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for MessageTraitHeaders with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -1979,14 +2421,27 @@ type MessageTraitCorrelationID struct {
 func (m *MessageTraitCorrelationID) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &m.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		m.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &m.CorrelationID)
 	if err != nil {
+		oneOfErrors["CorrelationID"] = err
 		m.CorrelationID = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for MessageTraitCorrelationID with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -2008,19 +2463,35 @@ type MessageOneOf1OneOf1TraitsItems struct {
 func (m *MessageOneOf1OneOf1TraitsItems) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 3)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &m.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		m.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &m.MessageTrait)
 	if err != nil {
+		oneOfErrors["MessageTrait"] = err
 		m.MessageTrait = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &m.SliceOfAnything)
 	if err != nil {
+		oneOfErrors["SliceOfAnything"] = err
 		m.SliceOfAnything = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for MessageOneOf1OneOf1TraitsItems with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -2041,14 +2512,27 @@ type MessageOneOf1 struct {
 func (m *MessageOneOf1) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &m.OneOf0)
 	if err != nil {
+		oneOfErrors["OneOf0"] = err
 		m.OneOf0 = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &m.OneOf1)
 	if err != nil {
+		oneOfErrors["OneOf1"] = err
 		m.OneOf1 = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for MessageOneOf1 with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -2069,14 +2553,27 @@ type Message struct {
 func (m *Message) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &m.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		m.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &m.OneOf1)
 	if err != nil {
+		oneOfErrors["OneOf1"] = err
 		m.OneOf1 = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for Message with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -2110,7 +2607,7 @@ type ChannelBindingsObject struct {
 
 type marshalChannelBindingsObject ChannelBindingsObject
 
-var ignoreKeysChannelBindingsObject = []string{
+var knownKeysChannelBindingsObject = []string{
 	"http",
 	"ws",
 	"amqp",
@@ -2228,7 +2725,7 @@ func (c *ChannelBindingsObject) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysChannelBindingsObject {
+	for _, key := range knownKeysChannelBindingsObject {
 		delete(rawMap, key)
 	}
 
@@ -2274,6 +2771,57 @@ type AMQP091ChannelBindingObject struct {
 	BindingVersion AMQP091ChannelBindingObjectBindingVersion `json:"bindingVersion,omitempty"` // The version of this binding. If omitted, "latest" MUST be assumed.
 }
 
+type marshalAMQP091ChannelBindingObject AMQP091ChannelBindingObject
+
+var knownKeysAMQP091ChannelBindingObject = []string{
+	"is",
+	"exchange",
+	"queue",
+	"bindingVersion",
+}
+
+// UnmarshalJSON decodes JSON.
+func (a *AMQP091ChannelBindingObject) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ma := marshalAMQP091ChannelBindingObject(*a)
+
+	err = json.Unmarshal(data, &ma)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysAMQP091ChannelBindingObject {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in AMQP091ChannelBindingObject: %v", offendingKeys)
+	}
+
+	*a = AMQP091ChannelBindingObject(ma)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (a AMQP091ChannelBindingObject) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalAMQP091ChannelBindingObject(a))
+}
+
 // Exchange structure is generated from "#/definitions/exchange".
 //
 // When `is`=`routingKey`, this object defines the exchange properties.
@@ -2287,7 +2835,7 @@ type Exchange struct {
 
 type marshalExchange Exchange
 
-var ignoreKeysExchange = []string{
+var knownKeysExchange = []string{
 	"name",
 	"type",
 	"durable",
@@ -2312,7 +2860,7 @@ func (e *Exchange) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysExchange {
+	for _, key := range knownKeysExchange {
 		delete(rawMap, key)
 	}
 
@@ -2358,7 +2906,7 @@ type Queue struct {
 
 type marshalQueue Queue
 
-var ignoreKeysQueue = []string{
+var knownKeysQueue = []string{
 	"name",
 	"durable",
 	"exclusive",
@@ -2383,7 +2931,7 @@ func (q *Queue) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysQueue {
+	for _, key := range knownKeysQueue {
 		delete(rawMap, key)
 	}
 
@@ -2433,6 +2981,64 @@ type Components struct {
 	MessageBindings   map[string]MessageBindingsObject   `json:"messageBindings,omitempty"`
 }
 
+type marshalComponents Components
+
+var knownKeysComponents = []string{
+	"schemas",
+	"messages",
+	"securitySchemes",
+	"parameters",
+	"correlationIds",
+	"operationTraits",
+	"messageTraits",
+	"serverBindings",
+	"channelBindings",
+	"operationBindings",
+	"messageBindings",
+}
+
+// UnmarshalJSON decodes JSON.
+func (c *Components) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mc := marshalComponents(*c)
+
+	err = json.Unmarshal(data, &mc)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysComponents {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Components: %v", offendingKeys)
+	}
+
+	*c = Components(mc)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (c Components) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalComponents(c))
+}
+
 // UserPassword structure is generated from "#/definitions/userPassword".
 type UserPassword struct {
 	Description   string                 `json:"description,omitempty"`
@@ -2441,8 +3047,12 @@ type UserPassword struct {
 
 type marshalUserPassword UserPassword
 
-var ignoreKeysUserPassword = []string{
+var knownKeysUserPassword = []string{
 	"description",
+	"type",
+}
+
+var requireKeysUserPassword = []string{
 	"type",
 }
 
@@ -2464,13 +3074,19 @@ func (u *UserPassword) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysUserPassword {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"userPassword"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("userPassword" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysUserPassword {
+	for _, key := range knownKeysUserPassword {
 		delete(rawMap, key)
 	}
 
@@ -2499,6 +3115,16 @@ func (u *UserPassword) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in UserPassword: %v", offendingKeys)
+	}
+
 	*u = UserPassword(mu)
 
 	return nil
@@ -2523,10 +3149,15 @@ type APIKey struct {
 
 type marshalAPIKey APIKey
 
-var ignoreKeysAPIKey = []string{
+var knownKeysAPIKey = []string{
 	"in",
 	"description",
 	"type",
+}
+
+var requireKeysAPIKey = []string{
+	"type",
+	"in",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -2547,13 +3178,19 @@ func (a *APIKey) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysAPIKey {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"apiKey"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("apiKey" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysAPIKey {
+	for _, key := range knownKeysAPIKey {
 		delete(rawMap, key)
 	}
 
@@ -2582,6 +3219,16 @@ func (a *APIKey) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in APIKey: %v", offendingKeys)
+	}
+
 	*a = APIKey(ma)
 
 	return nil
@@ -2605,8 +3252,12 @@ type X509 struct {
 
 type marshalX509 X509
 
-var ignoreKeysX509 = []string{
+var knownKeysX509 = []string{
 	"description",
+	"type",
+}
+
+var requireKeysX509 = []string{
 	"type",
 }
 
@@ -2628,13 +3279,19 @@ func (x *X509) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysX509 {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"X509"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("X509" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysX509 {
+	for _, key := range knownKeysX509 {
 		delete(rawMap, key)
 	}
 
@@ -2663,6 +3320,16 @@ func (x *X509) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in X509: %v", offendingKeys)
+	}
+
 	*x = X509(mx)
 
 	return nil
@@ -2686,8 +3353,12 @@ type SymmetricEncryption struct {
 
 type marshalSymmetricEncryption SymmetricEncryption
 
-var ignoreKeysSymmetricEncryption = []string{
+var knownKeysSymmetricEncryption = []string{
 	"description",
+	"type",
+}
+
+var requireKeysSymmetricEncryption = []string{
 	"type",
 }
 
@@ -2709,13 +3380,19 @@ func (s *SymmetricEncryption) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysSymmetricEncryption {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"symmetricEncryption"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("symmetricEncryption" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysSymmetricEncryption {
+	for _, key := range knownKeysSymmetricEncryption {
 		delete(rawMap, key)
 	}
 
@@ -2744,6 +3421,16 @@ func (s *SymmetricEncryption) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in SymmetricEncryption: %v", offendingKeys)
+	}
+
 	*s = SymmetricEncryption(ms)
 
 	return nil
@@ -2767,8 +3454,12 @@ type AsymmetricEncryption struct {
 
 type marshalAsymmetricEncryption AsymmetricEncryption
 
-var ignoreKeysAsymmetricEncryption = []string{
+var knownKeysAsymmetricEncryption = []string{
 	"description",
+	"type",
+}
+
+var requireKeysAsymmetricEncryption = []string{
 	"type",
 }
 
@@ -2790,13 +3481,19 @@ func (a *AsymmetricEncryption) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysAsymmetricEncryption {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"asymmetricEncryption"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("asymmetricEncryption" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysAsymmetricEncryption {
+	for _, key := range knownKeysAsymmetricEncryption {
 		delete(rawMap, key)
 	}
 
@@ -2825,6 +3522,16 @@ func (a *AsymmetricEncryption) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in AsymmetricEncryption: %v", offendingKeys)
+	}
+
 	*a = AsymmetricEncryption(ma)
 
 	return nil
@@ -2849,15 +3556,26 @@ type NonBearerHTTPSecurityScheme struct {
 
 type marshalNonBearerHTTPSecurityScheme NonBearerHTTPSecurityScheme
 
-var ignoreKeysNonBearerHTTPSecurityScheme = []string{
+var knownKeysNonBearerHTTPSecurityScheme = []string{
 	"scheme",
 	"description",
+	"type",
+}
+
+var requireKeysNonBearerHTTPSecurityScheme = []string{
+	"scheme",
 	"type",
 }
 
 // UnmarshalJSON decodes JSON.
 func (n *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
+
+	var not NonBearerHTTPSecuritySchemeNot
+
+	if json.Unmarshal(data, &not) == nil {
+		return errors.New("not constraint failed for NonBearerHTTPSecurityScheme")
+	}
 
 	mn := marshalNonBearerHTTPSecurityScheme(*n)
 
@@ -2873,13 +3591,19 @@ func (n *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysNonBearerHTTPSecurityScheme {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"http"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("http" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysNonBearerHTTPSecurityScheme {
+	for _, key := range knownKeysNonBearerHTTPSecurityScheme {
 		delete(rawMap, key)
 	}
 
@@ -2908,6 +3632,16 @@ func (n *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in NonBearerHTTPSecurityScheme: %v", offendingKeys)
+	}
+
 	*n = NonBearerHTTPSecurityScheme(mn)
 
 	return nil
@@ -2923,6 +3657,56 @@ func (n NonBearerHTTPSecurityScheme) MarshalJSON() ([]byte, error) {
 	return marshalUnion(constNonBearerHTTPSecurityScheme, marshalNonBearerHTTPSecurityScheme(n), n.MapOfAnything)
 }
 
+// NonBearerHTTPSecuritySchemeNot structure is generated from "#/definitions/NonBearerHTTPSecurityScheme->not".
+type NonBearerHTTPSecuritySchemeNot struct {
+	AdditionalProperties map[string]interface{} `json:"-"` // All unmatched properties.
+}
+
+// UnmarshalJSON decodes JSON.
+func (n *NonBearerHTTPSecuritySchemeNot) UnmarshalJSON(data []byte) error {
+	var err error
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	if v, ok := rawMap["scheme"]; !ok || string(v) != `"bearer"` {
+		return fmt.Errorf(`bad or missing const value for "scheme" ("bearer" expected, %s received)`, v)
+	}
+
+	delete(rawMap, "scheme")
+
+	for key, rawValue := range rawMap {
+		if n.AdditionalProperties == nil {
+			n.AdditionalProperties = make(map[string]interface{}, 1)
+		}
+
+		var val interface{}
+
+		err = json.Unmarshal(rawValue, &val)
+		if err != nil {
+			return err
+		}
+
+		n.AdditionalProperties[key] = val
+	}
+
+	return nil
+}
+
+var (
+	// constNonBearerHTTPSecuritySchemeNot is unconditionally added to JSON.
+	constNonBearerHTTPSecuritySchemeNot = json.RawMessage(`{"scheme":"bearer"}`)
+)
+
+// MarshalJSON encodes JSON.
+func (n NonBearerHTTPSecuritySchemeNot) MarshalJSON() ([]byte, error) {
+	return marshalUnion(constNonBearerHTTPSecuritySchemeNot, n.AdditionalProperties)
+}
+
 // BearerHTTPSecurityScheme structure is generated from "#/definitions/BearerHTTPSecurityScheme".
 type BearerHTTPSecurityScheme struct {
 	BearerFormat  string                 `json:"bearerFormat,omitempty"`
@@ -2932,11 +3716,16 @@ type BearerHTTPSecurityScheme struct {
 
 type marshalBearerHTTPSecurityScheme BearerHTTPSecurityScheme
 
-var ignoreKeysBearerHTTPSecurityScheme = []string{
+var knownKeysBearerHTTPSecurityScheme = []string{
 	"bearerFormat",
 	"description",
 	"scheme",
 	"type",
+}
+
+var requireKeysBearerHTTPSecurityScheme = []string{
+	"type",
+	"scheme",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -2957,6 +3746,12 @@ func (b *BearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysBearerHTTPSecurityScheme {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["scheme"]; !ok || string(v) != `"bearer"` {
 		return fmt.Errorf(`bad or missing const value for "scheme" ("bearer" expected, %s received)`, v)
 	}
@@ -2969,7 +3764,7 @@ func (b *BearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysBearerHTTPSecurityScheme {
+	for _, key := range knownKeysBearerHTTPSecurityScheme {
 		delete(rawMap, key)
 	}
 
@@ -2998,6 +3793,16 @@ func (b *BearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in BearerHTTPSecurityScheme: %v", offendingKeys)
+	}
+
 	*b = BearerHTTPSecurityScheme(mb)
 
 	return nil
@@ -3023,11 +3828,17 @@ type APIKeyHTTPSecurityScheme struct {
 
 type marshalAPIKeyHTTPSecurityScheme APIKeyHTTPSecurityScheme
 
-var ignoreKeysAPIKeyHTTPSecurityScheme = []string{
+var knownKeysAPIKeyHTTPSecurityScheme = []string{
 	"name",
 	"in",
 	"description",
 	"type",
+}
+
+var requireKeysAPIKeyHTTPSecurityScheme = []string{
+	"type",
+	"name",
+	"in",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3048,13 +3859,19 @@ func (a *APIKeyHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysAPIKeyHTTPSecurityScheme {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"httpApiKey"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("httpApiKey" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysAPIKeyHTTPSecurityScheme {
+	for _, key := range knownKeysAPIKeyHTTPSecurityScheme {
 		delete(rawMap, key)
 	}
 
@@ -3083,6 +3900,16 @@ func (a *APIKeyHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in APIKeyHTTPSecurityScheme: %v", offendingKeys)
+	}
+
 	*a = APIKeyHTTPSecurityScheme(ma)
 
 	return nil
@@ -3109,19 +3936,35 @@ type HTTPSecurityScheme struct {
 func (h *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 3)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &h.NonBearerHTTPSecurityScheme)
 	if err != nil {
+		oneOfErrors["NonBearerHTTPSecurityScheme"] = err
 		h.NonBearerHTTPSecurityScheme = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &h.BearerHTTPSecurityScheme)
 	if err != nil {
+		oneOfErrors["BearerHTTPSecurityScheme"] = err
 		h.BearerHTTPSecurityScheme = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &h.APIKeyHTTPSecurityScheme)
 	if err != nil {
+		oneOfErrors["APIKeyHTTPSecurityScheme"] = err
 		h.APIKeyHTTPSecurityScheme = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for HTTPSecurityScheme with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3142,10 +3985,15 @@ type Oauth2Flows struct {
 
 type marshalOauth2Flows Oauth2Flows
 
-var ignoreKeysOauth2Flows = []string{
+var knownKeysOauth2Flows = []string{
 	"description",
 	"flows",
 	"type",
+}
+
+var requireKeysOauth2Flows = []string{
+	"type",
+	"flows",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3166,13 +4014,19 @@ func (o *Oauth2Flows) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysOauth2Flows {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysOauth2Flows {
+	for _, key := range knownKeysOauth2Flows {
 		delete(rawMap, key)
 	}
 
@@ -3239,6 +4093,57 @@ type Oauth2FlowsFlows struct {
 	AuthorizationCode *Oauth2Flow `json:"authorizationCode,omitempty"`
 }
 
+type marshalOauth2FlowsFlows Oauth2FlowsFlows
+
+var knownKeysOauth2FlowsFlows = []string{
+	"implicit",
+	"password",
+	"clientCredentials",
+	"authorizationCode",
+}
+
+// UnmarshalJSON decodes JSON.
+func (o *Oauth2FlowsFlows) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mo := marshalOauth2FlowsFlows(*o)
+
+	err = json.Unmarshal(data, &mo)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysOauth2FlowsFlows {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Oauth2FlowsFlows: %v", offendingKeys)
+	}
+
+	*o = Oauth2FlowsFlows(mo)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (o Oauth2FlowsFlows) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalOauth2FlowsFlows(o))
+}
+
 // Oauth2Flow structure is generated from "#/definitions/oauth2Flow".
 type Oauth2Flow struct {
 	AuthorizationURL string                 `json:"authorizationUrl,omitempty"` // Format: uri.
@@ -3250,7 +4155,7 @@ type Oauth2Flow struct {
 
 type marshalOauth2Flow Oauth2Flow
 
-var ignoreKeysOauth2Flow = []string{
+var knownKeysOauth2Flow = []string{
 	"authorizationUrl",
 	"tokenUrl",
 	"refreshUrl",
@@ -3275,7 +4180,7 @@ func (o *Oauth2Flow) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysOauth2Flow {
+	for _, key := range knownKeysOauth2Flow {
 		delete(rawMap, key)
 	}
 
@@ -3302,6 +4207,16 @@ func (o *Oauth2Flow) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Oauth2Flow: %v", offendingKeys)
 	}
 
 	*o = Oauth2Flow(mo)
@@ -3325,10 +4240,15 @@ type OpenIDConnect struct {
 
 type marshalOpenIDConnect OpenIDConnect
 
-var ignoreKeysOpenIDConnect = []string{
+var knownKeysOpenIDConnect = []string{
 	"description",
 	"openIdConnectUrl",
 	"type",
+}
+
+var requireKeysOpenIDConnect = []string{
+	"type",
+	"openIdConnectUrl",
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3349,13 +4269,19 @@ func (o *OpenIDConnect) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
+	for _, key := range requireKeysOpenIDConnect {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
 	if v, ok := rawMap["type"]; !ok || string(v) != `"openIdConnect"` {
 		return fmt.Errorf(`bad or missing const value for "type" ("openIdConnect" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysOpenIDConnect {
+	for _, key := range knownKeysOpenIDConnect {
 		delete(rawMap, key)
 	}
 
@@ -3382,6 +4308,16 @@ func (o *OpenIDConnect) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in OpenIDConnect: %v", offendingKeys)
 	}
 
 	*o = OpenIDConnect(mo)
@@ -3415,44 +4351,75 @@ type SecurityScheme struct {
 func (s *SecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 8)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &s.UserPassword)
 	if err != nil {
+		oneOfErrors["UserPassword"] = err
 		s.UserPassword = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.APIKey)
 	if err != nil {
+		oneOfErrors["APIKey"] = err
 		s.APIKey = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.X509)
 	if err != nil {
+		oneOfErrors["X509"] = err
 		s.X509 = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.SymmetricEncryption)
 	if err != nil {
+		oneOfErrors["SymmetricEncryption"] = err
 		s.SymmetricEncryption = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.AsymmetricEncryption)
 	if err != nil {
+		oneOfErrors["AsymmetricEncryption"] = err
 		s.AsymmetricEncryption = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.HTTPSecurityScheme)
 	if err != nil {
+		oneOfErrors["HTTPSecurityScheme"] = err
 		s.HTTPSecurityScheme = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.Oauth2Flows)
 	if err != nil {
+		oneOfErrors["Oauth2Flows"] = err
 		s.Oauth2Flows = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.OpenIDConnect)
 	if err != nil {
+		oneOfErrors["OpenIDConnect"] = err
 		s.OpenIDConnect = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for SecurityScheme with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3473,14 +4440,27 @@ type ComponentsSecuritySchemesWD struct {
 func (c *ComponentsSecuritySchemesWD) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &c.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		c.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &c.SecurityScheme)
 	if err != nil {
+		oneOfErrors["SecurityScheme"] = err
 		c.SecurityScheme = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for ComponentsSecuritySchemesWD with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3494,7 +4474,6 @@ func (c ComponentsSecuritySchemesWD) MarshalJSON() ([]byte, error) {
 // ComponentsSecuritySchemes structure is generated from "#/definitions/components->securitySchemes".
 type ComponentsSecuritySchemes struct {
 	MapOfComponentsSecuritySchemesWDValues map[string]ComponentsSecuritySchemesWD `json:"-"` // Key must match pattern: `^[\w\d\.\-_]+$`.
-	AdditionalProperties                   map[string]interface{}                 `json:"-"` // All unmatched properties.
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3533,19 +4512,14 @@ func (c *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for key, rawValue := range rawMap {
-		if c.AdditionalProperties == nil {
-			c.AdditionalProperties = make(map[string]interface{}, 1)
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
 		}
 
-		var val interface{}
-
-		err = json.Unmarshal(rawValue, &val)
-		if err != nil {
-			return err
-		}
-
-		c.AdditionalProperties[key] = val
+		return fmt.Errorf("additional properties not allowed in ComponentsSecuritySchemes: %v", offendingKeys)
 	}
 
 	return nil
@@ -3553,7 +4527,7 @@ func (c *ComponentsSecuritySchemes) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (c ComponentsSecuritySchemes) MarshalJSON() ([]byte, error) {
-	return marshalUnion(c.MapOfComponentsSecuritySchemesWDValues, c.AdditionalProperties)
+	return marshalUnion(c.MapOfComponentsSecuritySchemesWDValues)
 }
 
 // ComponentsCorrelationIdsWD structure is generated from "#/definitions/components->correlationIds->^[\w\d\.\-_]+$".
@@ -3566,14 +4540,27 @@ type ComponentsCorrelationIdsWD struct {
 func (c *ComponentsCorrelationIdsWD) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &c.Reference)
 	if err != nil {
+		oneOfErrors["Reference"] = err
 		c.Reference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &c.CorrelationID)
 	if err != nil {
+		oneOfErrors["CorrelationID"] = err
 		c.CorrelationID = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for ComponentsCorrelationIdsWD with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3587,7 +4574,6 @@ func (c ComponentsCorrelationIdsWD) MarshalJSON() ([]byte, error) {
 // ComponentsCorrelationIds structure is generated from "#/definitions/components->correlationIds".
 type ComponentsCorrelationIds struct {
 	MapOfComponentsCorrelationIdsWDValues map[string]ComponentsCorrelationIdsWD `json:"-"` // Key must match pattern: `^[\w\d\.\-_]+$`.
-	AdditionalProperties                  map[string]interface{}                `json:"-"` // All unmatched properties.
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3626,19 +4612,14 @@ func (c *ComponentsCorrelationIds) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for key, rawValue := range rawMap {
-		if c.AdditionalProperties == nil {
-			c.AdditionalProperties = make(map[string]interface{}, 1)
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
 		}
 
-		var val interface{}
-
-		err = json.Unmarshal(rawValue, &val)
-		if err != nil {
-			return err
-		}
-
-		c.AdditionalProperties[key] = val
+		return fmt.Errorf("additional properties not allowed in ComponentsCorrelationIds: %v", offendingKeys)
 	}
 
 	return nil
@@ -3646,7 +4627,7 @@ func (c *ComponentsCorrelationIds) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (c ComponentsCorrelationIds) MarshalJSON() ([]byte, error) {
-	return marshalUnion(c.MapOfComponentsCorrelationIdsWDValues, c.AdditionalProperties)
+	return marshalUnion(c.MapOfComponentsCorrelationIdsWDValues)
 }
 
 // AMQP091OperationBindingObjectDeliveryMode is an enum type.

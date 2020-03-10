@@ -20,7 +20,7 @@ use Swaggest\JsonSchema\Schema;
 use Swaggest\GoCodeBuilder\Templates\Type\Type as GoType;
 use Swaggest\JsonSchema\SchemaContract;
 use Swaggest\JsonSchema\SchemaExporter;
-use Swaggest\JsonSchemaMaker\JsonSchemaFromInstance;
+use Swaggest\JsonSchemaMaker\SchemaMaker;
 
 class TypeBuilder
 {
@@ -355,6 +355,10 @@ class TypeBuilder
                 $this->result[] = new Map(new GoType('string'), $goType);
             }
         }
+
+        if ($additionalProperties === false) {
+            $this->getGeneratedStruct()->marshalJson->forbidAdditionalProperties();
+        }
     }
 
     private function typeSwitch($type, $minimum = null, $maximum = null, $format = null)
@@ -666,7 +670,7 @@ GO
             $this->goBuilder->options->inheritSchemaFromExamples
             && empty($this->schema->type) && empty($this->schema->properties)
         ) {
-            $schemaMaker = new JsonSchemaFromInstance($this->schema);
+            $schemaMaker = new SchemaMaker($this->schema);
 
             if (
                 isset($this->schema->{self::EXAMPLES})

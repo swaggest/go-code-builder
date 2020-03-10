@@ -47,6 +47,54 @@ type Header struct {
 	Maximum float64 `json:"maximum,omitempty"`
 }
 
+type marshalHeader Header
+
+var knownKeysHeader = []string{
+	"maximum",
+}
+
+// UnmarshalJSON decodes JSON.
+func (h *Header) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mh := marshalHeader(*h)
+
+	err = json.Unmarshal(data, &mh)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysHeader {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Header: %v", offendingKeys)
+	}
+
+	*h = Header(mh)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (h Header) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalHeader(h))
+}
+
 
 GO;
 

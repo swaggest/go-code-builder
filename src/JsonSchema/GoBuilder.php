@@ -242,7 +242,6 @@ class GoBuilder
                     $fieldName,
                     $goPropertyType
                 );
-                $comment = '';
                 $property = self::unboolSchema($property);
 
                 if ($property instanceof Wrapper) {
@@ -321,6 +320,17 @@ class GoBuilder
                 }
 
                 $marshalJson->addNamedProperty($name);
+            }
+        }
+
+        if ($processProperties && !empty($schema->required) && !$this->options->ignoreRequired) {
+            $marshalJson->required = $schema->required;
+        }
+
+        if (!empty($schema->not)) {
+            $not = $schema->not;
+            if ($not instanceof Schema) {
+                $marshalJson->not = $this->getType($not, $path . '->not', $structDef);
             }
         }
 
