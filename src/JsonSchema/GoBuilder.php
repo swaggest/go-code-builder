@@ -329,7 +329,10 @@ class GoBuilder
         }
 
         if (!empty($schema->not)) {
-            $marshalJson->not = $this->getType($schema->not, $path . '->not', $structDef);
+            $not = $schema->not;
+            if ($not instanceof Schema) {
+                $marshalJson->not = $this->getType($not, $path . '->not', $structDef);
+            }
         }
 
         $structDef->getCode()->addSnippet($marshalJson);

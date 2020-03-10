@@ -680,7 +680,7 @@ GO;
 
         return <<<GO
 
-var not {$this->not}
+var not {$this->not->render()}
 
 if json.Unmarshal(data, &not) == nil {
     return errors.New("not constraint failed for :type")
