@@ -92,7 +92,7 @@ func (o *OpenAPI) WithMapOfAnythingItem(key string, val interface{}) *OpenAPI {
 
 type marshalOpenAPI OpenAPI
 
-var ignoreKeysOpenAPI = []string{
+var knownKeysOpenAPI = []string{
 	"openapi",
 	"info",
 	"externalDocs",
@@ -121,7 +121,7 @@ func (o *OpenAPI) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysOpenAPI {
+	for _, key := range knownKeysOpenAPI {
 		delete(rawMap, key)
 	}
 
@@ -148,6 +148,16 @@ func (o *OpenAPI) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in OpenAPI: %v", offendingKeys)
 	}
 
 	*o = OpenAPI(mo)
@@ -226,7 +236,7 @@ func (i *Info) WithMapOfAnythingItem(key string, val interface{}) *Info {
 
 type marshalInfo Info
 
-var ignoreKeysInfo = []string{
+var knownKeysInfo = []string{
 	"title",
 	"description",
 	"termsOfService",
@@ -253,7 +263,7 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysInfo {
+	for _, key := range knownKeysInfo {
 		delete(rawMap, key)
 	}
 
@@ -280,6 +290,16 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Info: %v", offendingKeys)
 	}
 
 	*i = Info(mi)
@@ -337,7 +357,7 @@ func (c *Contact) WithMapOfAnythingItem(key string, val interface{}) *Contact {
 
 type marshalContact Contact
 
-var ignoreKeysContact = []string{
+var knownKeysContact = []string{
 	"name",
 	"url",
 	"email",
@@ -361,7 +381,7 @@ func (c *Contact) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysContact {
+	for _, key := range knownKeysContact {
 		delete(rawMap, key)
 	}
 
@@ -388,6 +408,16 @@ func (c *Contact) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Contact: %v", offendingKeys)
 	}
 
 	*c = Contact(mc)
@@ -438,7 +468,7 @@ func (l *License) WithMapOfAnythingItem(key string, val interface{}) *License {
 
 type marshalLicense License
 
-var ignoreKeysLicense = []string{
+var knownKeysLicense = []string{
 	"name",
 	"url",
 }
@@ -461,7 +491,7 @@ func (l *License) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysLicense {
+	for _, key := range knownKeysLicense {
 		delete(rawMap, key)
 	}
 
@@ -488,6 +518,16 @@ func (l *License) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in License: %v", offendingKeys)
 	}
 
 	*l = License(ml)
@@ -540,7 +580,7 @@ func (e *ExternalDocumentation) WithMapOfAnythingItem(key string, val interface{
 
 type marshalExternalDocumentation ExternalDocumentation
 
-var ignoreKeysExternalDocumentation = []string{
+var knownKeysExternalDocumentation = []string{
 	"description",
 	"url",
 }
@@ -563,7 +603,7 @@ func (e *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysExternalDocumentation {
+	for _, key := range knownKeysExternalDocumentation {
 		delete(rawMap, key)
 	}
 
@@ -590,6 +630,16 @@ func (e *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ExternalDocumentation: %v", offendingKeys)
 	}
 
 	*e = ExternalDocumentation(me)
@@ -658,7 +708,7 @@ func (s *Server) WithMapOfAnythingItem(key string, val interface{}) *Server {
 
 type marshalServer Server
 
-var ignoreKeysServer = []string{
+var knownKeysServer = []string{
 	"url",
 	"description",
 	"variables",
@@ -682,7 +732,7 @@ func (s *Server) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysServer {
+	for _, key := range knownKeysServer {
 		delete(rawMap, key)
 	}
 
@@ -709,6 +759,16 @@ func (s *Server) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Server: %v", offendingKeys)
 	}
 
 	*s = Server(ms)
@@ -766,7 +826,7 @@ func (s *ServerVariable) WithMapOfAnythingItem(key string, val interface{}) *Ser
 
 type marshalServerVariable ServerVariable
 
-var ignoreKeysServerVariable = []string{
+var knownKeysServerVariable = []string{
 	"enum",
 	"default",
 	"description",
@@ -790,7 +850,7 @@ func (s *ServerVariable) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysServerVariable {
+	for _, key := range knownKeysServerVariable {
 		delete(rawMap, key)
 	}
 
@@ -817,6 +877,16 @@ func (s *ServerVariable) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ServerVariable: %v", offendingKeys)
 	}
 
 	*s = ServerVariable(ms)
@@ -874,7 +944,7 @@ func (t *Tag) WithMapOfAnythingItem(key string, val interface{}) *Tag {
 
 type marshalTag Tag
 
-var ignoreKeysTag = []string{
+var knownKeysTag = []string{
 	"name",
 	"description",
 	"externalDocs",
@@ -898,7 +968,7 @@ func (t *Tag) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysTag {
+	for _, key := range knownKeysTag {
 		delete(rawMap, key)
 	}
 
@@ -925,6 +995,16 @@ func (t *Tag) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Tag: %v", offendingKeys)
 	}
 
 	*t = Tag(mt)
@@ -1014,7 +1094,7 @@ func (p *PathItem) WithMapOfAnythingItem(key string, val interface{}) *PathItem 
 
 type marshalPathItem PathItem
 
-var ignoreKeysPathItem = []string{
+var knownKeysPathItem = []string{
 	"$ref",
 	"summary",
 	"description",
@@ -1040,7 +1120,7 @@ func (p *PathItem) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysPathItem {
+	for _, key := range knownKeysPathItem {
 		delete(rawMap, key)
 	}
 
@@ -1086,6 +1166,16 @@ func (p *PathItem) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in PathItem: %v", offendingKeys)
+	}
+
 	*p = PathItem(mp)
 
 	return nil
@@ -1107,6 +1197,54 @@ type ParameterReference struct {
 func (p *ParameterReference) WithRef(val string) *ParameterReference {
 	p.Ref = &val
 	return p
+}
+
+type marshalParameterReference ParameterReference
+
+var knownKeysParameterReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (p *ParameterReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mp := marshalParameterReference(*p)
+
+	err = json.Unmarshal(data, &mp)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysParameterReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ParameterReference: %v", offendingKeys)
+	}
+
+	*p = ParameterReference(mp)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (p ParameterReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalParameterReference(p))
 }
 
 // Parameter structure is generated from "#/definitions/Parameter".
@@ -1260,7 +1398,7 @@ func (p *Parameter) WithMapOfAnythingItem(key string, val interface{}) *Paramete
 
 type marshalParameter Parameter
 
-var ignoreKeysParameter = []string{
+var knownKeysParameter = []string{
 	"name",
 	"in",
 	"description",
@@ -1311,7 +1449,7 @@ func (p *Parameter) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysParameter {
+	for _, key := range knownKeysParameter {
 		delete(rawMap, key)
 	}
 
@@ -1338,6 +1476,16 @@ func (p *Parameter) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Parameter: %v", offendingKeys)
 	}
 
 	*p = Parameter(mp)
@@ -1630,7 +1778,7 @@ func (s *Schema) WithMapOfAnythingItem(key string, val interface{}) *Schema {
 
 type marshalSchema Schema
 
-var ignoreKeysSchema = []string{
+var knownKeysSchema = []string{
 	"title",
 	"multipleOf",
 	"maximum",
@@ -1700,7 +1848,7 @@ func (s *Schema) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysSchema {
+	for _, key := range knownKeysSchema {
 		delete(rawMap, key)
 	}
 
@@ -1729,6 +1877,16 @@ func (s *Schema) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Schema: %v", offendingKeys)
+	}
+
 	*s = Schema(ms)
 
 	return nil
@@ -1750,6 +1908,54 @@ type SchemaReference struct {
 func (s *SchemaReference) WithRef(val string) *SchemaReference {
 	s.Ref = &val
 	return s
+}
+
+type marshalSchemaReference SchemaReference
+
+var knownKeysSchemaReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (s *SchemaReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ms := marshalSchemaReference(*s)
+
+	err = json.Unmarshal(data, &ms)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysSchemaReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in SchemaReference: %v", offendingKeys)
+	}
+
+	*s = SchemaReference(ms)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (s SchemaReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalSchemaReference(s))
 }
 
 // SchemaOrRef structure is generated from "#/definitions/SchemaOrRef".
@@ -1774,14 +1980,27 @@ func (s *SchemaOrRef) WithSchemaReference(val SchemaReference) *SchemaOrRef {
 func (s *SchemaOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &s.Schema)
 	if err != nil {
+		oneOfErrors["Schema"] = err
 		s.Schema = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.SchemaReference)
 	if err != nil {
+		oneOfErrors["SchemaReference"] = err
 		s.SchemaReference = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for SchemaOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -1814,14 +2033,27 @@ func (s *SchemaAdditionalProperties) WithBool(val bool) *SchemaAdditionalPropert
 func (s *SchemaAdditionalProperties) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &s.SchemaOrRef)
 	if err != nil {
+		oneOfErrors["SchemaOrRef"] = err
 		s.SchemaOrRef = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.Bool)
 	if err != nil {
+		oneOfErrors["Bool"] = err
 		s.Bool = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for SchemaAdditionalProperties with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -1881,7 +2113,7 @@ func (d *Discriminator) WithAdditionalPropertiesItem(key string, val interface{}
 
 type marshalDiscriminator Discriminator
 
-var ignoreKeysDiscriminator = []string{
+var knownKeysDiscriminator = []string{
 	"propertyName",
 	"mapping",
 }
@@ -1904,7 +2136,7 @@ func (d *Discriminator) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysDiscriminator {
+	for _, key := range knownKeysDiscriminator {
 		delete(rawMap, key)
 	}
 
@@ -1996,7 +2228,7 @@ func (x *XML) WithMapOfAnythingItem(key string, val interface{}) *XML {
 
 type marshalXML XML
 
-var ignoreKeysXML = []string{
+var knownKeysXML = []string{
 	"name",
 	"namespace",
 	"prefix",
@@ -2022,7 +2254,7 @@ func (x *XML) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysXML {
+	for _, key := range knownKeysXML {
 		delete(rawMap, key)
 	}
 
@@ -2049,6 +2281,16 @@ func (x *XML) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in XML: %v", offendingKeys)
 	}
 
 	*x = XML(mx)
@@ -2135,7 +2377,7 @@ func (m *MediaType) WithMapOfAnythingItem(key string, val interface{}) *MediaTyp
 
 type marshalMediaType MediaType
 
-var ignoreKeysMediaType = []string{
+var knownKeysMediaType = []string{
 	"schema",
 	"example",
 	"examples",
@@ -2167,7 +2409,7 @@ func (m *MediaType) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysMediaType {
+	for _, key := range knownKeysMediaType {
 		delete(rawMap, key)
 	}
 
@@ -2196,6 +2438,16 @@ func (m *MediaType) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in MediaType: %v", offendingKeys)
+	}
+
 	*m = MediaType(mm)
 
 	return nil
@@ -2217,6 +2469,54 @@ type ExampleReference struct {
 func (e *ExampleReference) WithRef(val string) *ExampleReference {
 	e.Ref = &val
 	return e
+}
+
+type marshalExampleReference ExampleReference
+
+var knownKeysExampleReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (e *ExampleReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	me := marshalExampleReference(*e)
+
+	err = json.Unmarshal(data, &me)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysExampleReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ExampleReference: %v", offendingKeys)
+	}
+
+	*e = ExampleReference(me)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (e ExampleReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalExampleReference(e))
 }
 
 // Example structure is generated from "#/definitions/Example".
@@ -2271,7 +2571,7 @@ func (e *Example) WithMapOfAnythingItem(key string, val interface{}) *Example {
 
 type marshalExample Example
 
-var ignoreKeysExample = []string{
+var knownKeysExample = []string{
 	"summary",
 	"description",
 	"value",
@@ -2303,7 +2603,7 @@ func (e *Example) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysExample {
+	for _, key := range knownKeysExample {
 		delete(rawMap, key)
 	}
 
@@ -2330,6 +2630,16 @@ func (e *Example) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Example: %v", offendingKeys)
 	}
 
 	*e = Example(me)
@@ -2364,14 +2674,27 @@ func (e *ExampleOrRef) WithExample(val Example) *ExampleOrRef {
 func (e *ExampleOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &e.ExampleReference)
 	if err != nil {
+		oneOfErrors["ExampleReference"] = err
 		e.ExampleReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &e.Example)
 	if err != nil {
+		oneOfErrors["Example"] = err
 		e.Example = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for ExampleOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -2430,6 +2753,58 @@ func (e *Encoding) WithExplode(val bool) *Encoding {
 func (e *Encoding) WithAllowReserved(val bool) *Encoding {
 	e.AllowReserved = &val
 	return e
+}
+
+type marshalEncoding Encoding
+
+var knownKeysEncoding = []string{
+	"contentType",
+	"headers",
+	"style",
+	"explode",
+	"allowReserved",
+}
+
+// UnmarshalJSON decodes JSON.
+func (e *Encoding) UnmarshalJSON(data []byte) error {
+	var err error
+
+	me := marshalEncoding(*e)
+
+	err = json.Unmarshal(data, &me)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysEncoding {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Encoding: %v", offendingKeys)
+	}
+
+	*e = Encoding(me)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (e Encoding) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalEncoding(e))
 }
 
 // Header structure is generated from "#/definitions/Header".
@@ -2548,7 +2923,7 @@ func (h *Header) WithMapOfAnythingItem(key string, val interface{}) *Header {
 
 type marshalHeader Header
 
-var ignoreKeysHeader = []string{
+var knownKeysHeader = []string{
 	"description",
 	"required",
 	"deprecated",
@@ -2593,7 +2968,7 @@ func (h *Header) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysHeader {
+	for _, key := range knownKeysHeader {
 		delete(rawMap, key)
 	}
 
@@ -2620,6 +2995,16 @@ func (h *Header) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Header: %v", offendingKeys)
 	}
 
 	*h = Header(mh)
@@ -2681,7 +3066,7 @@ func (p *ParameterLocationOneOf0) WithAdditionalPropertiesItem(key string, val i
 
 type marshalParameterLocationOneOf0 ParameterLocationOneOf0
 
-var ignoreKeysParameterLocationOneOf0 = []string{
+var knownKeysParameterLocationOneOf0 = []string{
 	"style",
 	"in",
 	"required",
@@ -2717,7 +3102,7 @@ func (p *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "required")
 
-	for _, key := range ignoreKeysParameterLocationOneOf0 {
+	for _, key := range knownKeysParameterLocationOneOf0 {
 		delete(rawMap, key)
 	}
 
@@ -2786,7 +3171,7 @@ func (p *ParameterLocationOneOf1) WithAdditionalPropertiesItem(key string, val i
 
 type marshalParameterLocationOneOf1 ParameterLocationOneOf1
 
-var ignoreKeysParameterLocationOneOf1 = []string{
+var knownKeysParameterLocationOneOf1 = []string{
 	"style",
 	"in",
 }
@@ -2815,7 +3200,7 @@ func (p *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "in")
 
-	for _, key := range ignoreKeysParameterLocationOneOf1 {
+	for _, key := range knownKeysParameterLocationOneOf1 {
 		delete(rawMap, key)
 	}
 
@@ -3041,24 +3426,43 @@ func (p *ParameterLocation) WithOneOf3(val ParameterLocationOneOf3) *ParameterLo
 func (p *ParameterLocation) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 4)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &p.OneOf0)
 	if err != nil {
+		oneOfErrors["OneOf0"] = err
 		p.OneOf0 = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &p.OneOf1)
 	if err != nil {
+		oneOfErrors["OneOf1"] = err
 		p.OneOf1 = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &p.OneOf2)
 	if err != nil {
+		oneOfErrors["OneOf2"] = err
 		p.OneOf2 = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &p.OneOf3)
 	if err != nil {
+		oneOfErrors["OneOf3"] = err
 		p.OneOf3 = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for ParameterLocation with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3091,14 +3495,27 @@ func (p *ParameterOrRef) WithParameter(val Parameter) *ParameterOrRef {
 func (p *ParameterOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &p.ParameterReference)
 	if err != nil {
+		oneOfErrors["ParameterReference"] = err
 		p.ParameterReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &p.Parameter)
 	if err != nil {
+		oneOfErrors["Parameter"] = err
 		p.Parameter = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for ParameterOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3228,7 +3645,7 @@ func (o *Operation) WithMapOfAnythingItem(key string, val interface{}) *Operatio
 
 type marshalOperation Operation
 
-var ignoreKeysOperation = []string{
+var knownKeysOperation = []string{
 	"tags",
 	"summary",
 	"description",
@@ -3261,7 +3678,7 @@ func (o *Operation) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysOperation {
+	for _, key := range knownKeysOperation {
 		delete(rawMap, key)
 	}
 
@@ -3290,6 +3707,16 @@ func (o *Operation) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Operation: %v", offendingKeys)
+	}
+
 	*o = Operation(mo)
 
 	return nil
@@ -3311,6 +3738,54 @@ type RequestBodyReference struct {
 func (r *RequestBodyReference) WithRef(val string) *RequestBodyReference {
 	r.Ref = &val
 	return r
+}
+
+type marshalRequestBodyReference RequestBodyReference
+
+var knownKeysRequestBodyReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (r *RequestBodyReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mr := marshalRequestBodyReference(*r)
+
+	err = json.Unmarshal(data, &mr)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysRequestBodyReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in RequestBodyReference: %v", offendingKeys)
+	}
+
+	*r = RequestBodyReference(mr)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (r RequestBodyReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalRequestBodyReference(r))
 }
 
 // RequestBody structure is generated from "#/definitions/RequestBody".
@@ -3369,7 +3844,7 @@ func (r *RequestBody) WithMapOfAnythingItem(key string, val interface{}) *Reques
 
 type marshalRequestBody RequestBody
 
-var ignoreKeysRequestBody = []string{
+var knownKeysRequestBody = []string{
 	"description",
 	"content",
 	"required",
@@ -3393,7 +3868,7 @@ func (r *RequestBody) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysRequestBody {
+	for _, key := range knownKeysRequestBody {
 		delete(rawMap, key)
 	}
 
@@ -3420,6 +3895,16 @@ func (r *RequestBody) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in RequestBody: %v", offendingKeys)
 	}
 
 	*r = RequestBody(mr)
@@ -3454,14 +3939,27 @@ func (r *RequestBodyOrRef) WithRequestBody(val RequestBody) *RequestBodyOrRef {
 func (r *RequestBodyOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &r.RequestBodyReference)
 	if err != nil {
+		oneOfErrors["RequestBodyReference"] = err
 		r.RequestBodyReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &r.RequestBody)
 	if err != nil {
+		oneOfErrors["RequestBody"] = err
 		r.RequestBody = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for RequestBodyOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3521,7 +4019,7 @@ func (r *Responses) WithMapOfAnythingItem(key string, val interface{}) *Response
 
 type marshalResponses Responses
 
-var ignoreKeysResponses = []string{
+var knownKeysResponses = []string{
 	"default",
 }
 
@@ -3543,7 +4041,7 @@ func (r *Responses) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysResponses {
+	for _, key := range knownKeysResponses {
 		delete(rawMap, key)
 	}
 
@@ -3589,6 +4087,16 @@ func (r *Responses) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Responses: %v", offendingKeys)
+	}
+
 	*r = Responses(mr)
 
 	return nil
@@ -3610,6 +4118,54 @@ type ResponseReference struct {
 func (r *ResponseReference) WithRef(val string) *ResponseReference {
 	r.Ref = &val
 	return r
+}
+
+type marshalResponseReference ResponseReference
+
+var knownKeysResponseReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (r *ResponseReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mr := marshalResponseReference(*r)
+
+	err = json.Unmarshal(data, &mr)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysResponseReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ResponseReference: %v", offendingKeys)
+	}
+
+	*r = ResponseReference(mr)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (r ResponseReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalResponseReference(r))
 }
 
 // Response structure is generated from "#/definitions/Response".
@@ -3697,7 +4253,7 @@ func (r *Response) WithMapOfAnythingItem(key string, val interface{}) *Response 
 
 type marshalResponse Response
 
-var ignoreKeysResponse = []string{
+var knownKeysResponse = []string{
 	"description",
 	"headers",
 	"content",
@@ -3722,7 +4278,7 @@ func (r *Response) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysResponse {
+	for _, key := range knownKeysResponse {
 		delete(rawMap, key)
 	}
 
@@ -3751,6 +4307,16 @@ func (r *Response) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Response: %v", offendingKeys)
+	}
+
 	*r = Response(mr)
 
 	return nil
@@ -3772,6 +4338,54 @@ type HeaderReference struct {
 func (h *HeaderReference) WithRef(val string) *HeaderReference {
 	h.Ref = &val
 	return h
+}
+
+type marshalHeaderReference HeaderReference
+
+var knownKeysHeaderReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (h *HeaderReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mh := marshalHeaderReference(*h)
+
+	err = json.Unmarshal(data, &mh)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysHeaderReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in HeaderReference: %v", offendingKeys)
+	}
+
+	*h = HeaderReference(mh)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (h HeaderReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalHeaderReference(h))
 }
 
 // HeaderOrRef structure is generated from "#/definitions/HeaderOrRef".
@@ -3796,14 +4410,27 @@ func (h *HeaderOrRef) WithHeader(val Header) *HeaderOrRef {
 func (h *HeaderOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &h.HeaderReference)
 	if err != nil {
+		oneOfErrors["HeaderReference"] = err
 		h.HeaderReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &h.Header)
 	if err != nil {
+		oneOfErrors["Header"] = err
 		h.Header = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for HeaderOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -3825,6 +4452,54 @@ type LinkReference struct {
 func (l *LinkReference) WithRef(val string) *LinkReference {
 	l.Ref = &val
 	return l
+}
+
+type marshalLinkReference LinkReference
+
+var knownKeysLinkReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (l *LinkReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ml := marshalLinkReference(*l)
+
+	err = json.Unmarshal(data, &ml)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysLinkReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in LinkReference: %v", offendingKeys)
+	}
+
+	*l = LinkReference(ml)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (l LinkReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalLinkReference(l))
 }
 
 // Link structure is generated from "#/definitions/Link".
@@ -3904,7 +4579,7 @@ func (l *Link) WithMapOfAnythingItem(key string, val interface{}) *Link {
 
 type marshalLink Link
 
-var ignoreKeysLink = []string{
+var knownKeysLink = []string{
 	"operationId",
 	"operationRef",
 	"parameters",
@@ -3916,6 +4591,12 @@ var ignoreKeysLink = []string{
 // UnmarshalJSON decodes JSON.
 func (l *Link) UnmarshalJSON(data []byte) error {
 	var err error
+
+	var not interface{}
+
+	if json.Unmarshal(data, &not) == nil {
+		return errors.New("not constraint failed for Link")
+	}
 
 	ml := marshalLink(*l)
 
@@ -3938,7 +4619,7 @@ func (l *Link) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysLink {
+	for _, key := range knownKeysLink {
 		delete(rawMap, key)
 	}
 
@@ -3965,6 +4646,16 @@ func (l *Link) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Link: %v", offendingKeys)
 	}
 
 	*l = Link(ml)
@@ -3999,14 +4690,27 @@ func (l *LinkOrRef) WithLink(val Link) *LinkOrRef {
 func (l *LinkOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &l.LinkReference)
 	if err != nil {
+		oneOfErrors["LinkReference"] = err
 		l.LinkReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &l.Link)
 	if err != nil {
+		oneOfErrors["Link"] = err
 		l.Link = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for LinkOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -4039,14 +4743,27 @@ func (r *ResponseOrRef) WithResponse(val Response) *ResponseOrRef {
 func (r *ResponseOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &r.ResponseReference)
 	if err != nil {
+		oneOfErrors["ResponseReference"] = err
 		r.ResponseReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &r.Response)
 	if err != nil {
+		oneOfErrors["Response"] = err
 		r.Response = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for ResponseOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -4068,6 +4785,54 @@ type CallbackReference struct {
 func (c *CallbackReference) WithRef(val string) *CallbackReference {
 	c.Ref = &val
 	return c
+}
+
+type marshalCallbackReference CallbackReference
+
+var knownKeysCallbackReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (c *CallbackReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mc := marshalCallbackReference(*c)
+
+	err = json.Unmarshal(data, &mc)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysCallbackReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in CallbackReference: %v", offendingKeys)
+	}
+
+	*c = CallbackReference(mc)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (c CallbackReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalCallbackReference(c))
 }
 
 // Callback structure is generated from "#/definitions/Callback".
@@ -4191,14 +4956,27 @@ func (c *CallbackOrRef) WithCallback(val Callback) *CallbackOrRef {
 func (c *CallbackOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &c.CallbackReference)
 	if err != nil {
+		oneOfErrors["CallbackReference"] = err
 		c.CallbackReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &c.Callback)
 	if err != nil {
+		oneOfErrors["Callback"] = err
 		c.Callback = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for CallbackOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -4302,6 +5080,16 @@ func (p *Paths) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Paths: %v", offendingKeys)
+	}
+
 	return nil
 }
 
@@ -4397,7 +5185,7 @@ func (c *Components) WithMapOfAnythingItem(key string, val interface{}) *Compone
 
 type marshalComponents Components
 
-var ignoreKeysComponents = []string{
+var knownKeysComponents = []string{
 	"schemas",
 	"responses",
 	"parameters",
@@ -4427,7 +5215,7 @@ func (c *Components) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysComponents {
+	for _, key := range knownKeysComponents {
 		delete(rawMap, key)
 	}
 
@@ -4454,6 +5242,16 @@ func (c *Components) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in Components: %v", offendingKeys)
 	}
 
 	*c = Components(mc)
@@ -5073,6 +5871,54 @@ func (s *SecuritySchemeReference) WithRef(val string) *SecuritySchemeReference {
 	return s
 }
 
+type marshalSecuritySchemeReference SecuritySchemeReference
+
+var knownKeysSecuritySchemeReference = []string{
+	"$ref",
+}
+
+// UnmarshalJSON decodes JSON.
+func (s *SecuritySchemeReference) UnmarshalJSON(data []byte) error {
+	var err error
+
+	ms := marshalSecuritySchemeReference(*s)
+
+	err = json.Unmarshal(data, &ms)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range knownKeysSecuritySchemeReference {
+		delete(rawMap, key)
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in SecuritySchemeReference: %v", offendingKeys)
+	}
+
+	*s = SecuritySchemeReference(ms)
+
+	return nil
+}
+
+// MarshalJSON encodes JSON.
+func (s SecuritySchemeReference) MarshalJSON() ([]byte, error) {
+	return marshalUnion(marshalSecuritySchemeReference(s))
+}
+
 // APIKeySecurityScheme structure is generated from "#/definitions/APIKeySecurityScheme".
 type APIKeySecurityScheme struct {
 	Name          *string                 `json:"name,omitempty"`        // Required.
@@ -5118,7 +5964,7 @@ func (a *APIKeySecurityScheme) WithMapOfAnythingItem(key string, val interface{}
 
 type marshalAPIKeySecurityScheme APIKeySecurityScheme
 
-var ignoreKeysAPIKeySecurityScheme = []string{
+var knownKeysAPIKeySecurityScheme = []string{
 	"name",
 	"in",
 	"description",
@@ -5149,7 +5995,7 @@ func (a *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysAPIKeySecurityScheme {
+	for _, key := range knownKeysAPIKeySecurityScheme {
 		delete(rawMap, key)
 	}
 
@@ -5176,6 +6022,16 @@ func (a *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in APIKeySecurityScheme: %v", offendingKeys)
 	}
 
 	*a = APIKeySecurityScheme(ma)
@@ -5252,7 +6108,7 @@ func (h *HTTPSecurityScheme) WithMapOfAnythingItem(key string, val interface{}) 
 
 type marshalHTTPSecurityScheme HTTPSecurityScheme
 
-var ignoreKeysHTTPSecurityScheme = []string{
+var knownKeysHTTPSecurityScheme = []string{
 	"scheme",
 	"bearerFormat",
 	"description",
@@ -5270,14 +6126,27 @@ func (h *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &mh.OneOf0)
 	if err != nil {
+		oneOfErrors["OneOf0"] = err
 		mh.OneOf0 = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &mh.OneOf1)
 	if err != nil {
+		oneOfErrors["OneOf1"] = err
 		mh.OneOf1 = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for HTTPSecurityScheme with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	var rawMap map[string]json.RawMessage
@@ -5293,7 +6162,7 @@ func (h *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysHTTPSecurityScheme {
+	for _, key := range knownKeysHTTPSecurityScheme {
 		delete(rawMap, key)
 	}
 
@@ -5320,6 +6189,16 @@ func (h *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in HTTPSecurityScheme: %v", offendingKeys)
 	}
 
 	*h = HTTPSecurityScheme(mh)
@@ -5443,13 +6322,19 @@ func (h *HTTPSecuritySchemeOneOf1) WithAdditionalPropertiesItem(key string, val 
 
 type marshalHTTPSecuritySchemeOneOf1 HTTPSecuritySchemeOneOf1
 
-var ignoreKeysHTTPSecuritySchemeOneOf1 = []string{
+var knownKeysHTTPSecuritySchemeOneOf1 = []string{
 	"scheme",
 }
 
 // UnmarshalJSON decodes JSON.
 func (h *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 	var err error
+
+	var not interface{}
+
+	if json.Unmarshal(data, &not) == nil {
+		return errors.New("not constraint failed for HTTPSecuritySchemeOneOf1")
+	}
 
 	mh := marshalHTTPSecuritySchemeOneOf1(*h)
 
@@ -5472,7 +6357,7 @@ func (h *HTTPSecuritySchemeOneOf1) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	for _, key := range ignoreKeysHTTPSecuritySchemeOneOf1 {
+	for _, key := range knownKeysHTTPSecuritySchemeOneOf1 {
 		delete(rawMap, key)
 	}
 
@@ -5543,7 +6428,7 @@ func (o *OAuth2SecurityScheme) WithMapOfAnythingItem(key string, val interface{}
 
 type marshalOAuth2SecurityScheme OAuth2SecurityScheme
 
-var ignoreKeysOAuth2SecurityScheme = []string{
+var knownKeysOAuth2SecurityScheme = []string{
 	"flows",
 	"description",
 	"type",
@@ -5573,7 +6458,7 @@ func (o *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysOAuth2SecurityScheme {
+	for _, key := range knownKeysOAuth2SecurityScheme {
 		delete(rawMap, key)
 	}
 
@@ -5600,6 +6485,16 @@ func (o *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in OAuth2SecurityScheme: %v", offendingKeys)
 	}
 
 	*o = OAuth2SecurityScheme(mo)
@@ -5669,7 +6564,7 @@ func (o *OAuthFlows) WithMapOfAnythingItem(key string, val interface{}) *OAuthFl
 
 type marshalOAuthFlows OAuthFlows
 
-var ignoreKeysOAuthFlows = []string{
+var knownKeysOAuthFlows = []string{
 	"implicit",
 	"password",
 	"clientCredentials",
@@ -5694,7 +6589,7 @@ func (o *OAuthFlows) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysOAuthFlows {
+	for _, key := range knownKeysOAuthFlows {
 		delete(rawMap, key)
 	}
 
@@ -5721,6 +6616,16 @@ func (o *OAuthFlows) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in OAuthFlows: %v", offendingKeys)
 	}
 
 	*o = OAuthFlows(mo)
@@ -5791,7 +6696,7 @@ func (i *ImplicitOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *
 
 type marshalImplicitOAuthFlow ImplicitOAuthFlow
 
-var ignoreKeysImplicitOAuthFlow = []string{
+var knownKeysImplicitOAuthFlow = []string{
 	"authorizationUrl",
 	"refreshUrl",
 	"scopes",
@@ -5815,7 +6720,7 @@ func (i *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysImplicitOAuthFlow {
+	for _, key := range knownKeysImplicitOAuthFlow {
 		delete(rawMap, key)
 	}
 
@@ -5842,6 +6747,16 @@ func (i *ImplicitOAuthFlow) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ImplicitOAuthFlow: %v", offendingKeys)
 	}
 
 	*i = ImplicitOAuthFlow(mi)
@@ -5912,7 +6827,7 @@ func (p *PasswordOAuthFlow) WithMapOfAnythingItem(key string, val interface{}) *
 
 type marshalPasswordOAuthFlow PasswordOAuthFlow
 
-var ignoreKeysPasswordOAuthFlow = []string{
+var knownKeysPasswordOAuthFlow = []string{
 	"tokenUrl",
 	"refreshUrl",
 	"scopes",
@@ -5936,7 +6851,7 @@ func (p *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysPasswordOAuthFlow {
+	for _, key := range knownKeysPasswordOAuthFlow {
 		delete(rawMap, key)
 	}
 
@@ -5963,6 +6878,16 @@ func (p *PasswordOAuthFlow) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in PasswordOAuthFlow: %v", offendingKeys)
 	}
 
 	*p = PasswordOAuthFlow(mp)
@@ -6033,7 +6958,7 @@ func (c *ClientCredentialsFlow) WithMapOfAnythingItem(key string, val interface{
 
 type marshalClientCredentialsFlow ClientCredentialsFlow
 
-var ignoreKeysClientCredentialsFlow = []string{
+var knownKeysClientCredentialsFlow = []string{
 	"tokenUrl",
 	"refreshUrl",
 	"scopes",
@@ -6057,7 +6982,7 @@ func (c *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysClientCredentialsFlow {
+	for _, key := range knownKeysClientCredentialsFlow {
 		delete(rawMap, key)
 	}
 
@@ -6084,6 +7009,16 @@ func (c *ClientCredentialsFlow) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in ClientCredentialsFlow: %v", offendingKeys)
 	}
 
 	*c = ClientCredentialsFlow(mc)
@@ -6163,7 +7098,7 @@ func (a *AuthorizationCodeOAuthFlow) WithMapOfAnythingItem(key string, val inter
 
 type marshalAuthorizationCodeOAuthFlow AuthorizationCodeOAuthFlow
 
-var ignoreKeysAuthorizationCodeOAuthFlow = []string{
+var knownKeysAuthorizationCodeOAuthFlow = []string{
 	"authorizationUrl",
 	"tokenUrl",
 	"refreshUrl",
@@ -6188,7 +7123,7 @@ func (a *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	for _, key := range ignoreKeysAuthorizationCodeOAuthFlow {
+	for _, key := range knownKeysAuthorizationCodeOAuthFlow {
 		delete(rawMap, key)
 	}
 
@@ -6215,6 +7150,16 @@ func (a *AuthorizationCodeOAuthFlow) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in AuthorizationCodeOAuthFlow: %v", offendingKeys)
 	}
 
 	*a = AuthorizationCodeOAuthFlow(ma)
@@ -6267,7 +7212,7 @@ func (o *OpenIDConnectSecurityScheme) WithMapOfAnythingItem(key string, val inte
 
 type marshalOpenIDConnectSecurityScheme OpenIDConnectSecurityScheme
 
-var ignoreKeysOpenIDConnectSecurityScheme = []string{
+var knownKeysOpenIDConnectSecurityScheme = []string{
 	"openIdConnectUrl",
 	"description",
 	"type",
@@ -6297,7 +7242,7 @@ func (o *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 
 	delete(rawMap, "type")
 
-	for _, key := range ignoreKeysOpenIDConnectSecurityScheme {
+	for _, key := range knownKeysOpenIDConnectSecurityScheme {
 		delete(rawMap, key)
 	}
 
@@ -6324,6 +7269,16 @@ func (o *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 		if matched {
 			delete(rawMap, key)
 		}
+	}
+
+	if len(rawMap) != 0 {
+		offendingKeys := make([]string, 0, len(rawMap))
+
+		for key := range rawMap {
+			offendingKeys = append(offendingKeys, key)
+		}
+
+		return fmt.Errorf("additional properties not allowed in OpenIDConnectSecurityScheme: %v", offendingKeys)
 	}
 
 	*o = OpenIDConnectSecurityScheme(mo)
@@ -6377,24 +7332,43 @@ func (s *SecurityScheme) WithOpenIDConnectSecurityScheme(val OpenIDConnectSecuri
 func (s *SecurityScheme) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 4)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &s.APIKeySecurityScheme)
 	if err != nil {
+		oneOfErrors["APIKeySecurityScheme"] = err
 		s.APIKeySecurityScheme = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.HTTPSecurityScheme)
 	if err != nil {
+		oneOfErrors["HTTPSecurityScheme"] = err
 		s.HTTPSecurityScheme = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.OAuth2SecurityScheme)
 	if err != nil {
+		oneOfErrors["OAuth2SecurityScheme"] = err
 		s.OAuth2SecurityScheme = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.OpenIDConnectSecurityScheme)
 	if err != nil {
+		oneOfErrors["OpenIDConnectSecurityScheme"] = err
 		s.OpenIDConnectSecurityScheme = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for SecurityScheme with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil
@@ -6427,14 +7401,27 @@ func (s *SecuritySchemeOrRef) WithSecurityScheme(val SecurityScheme) *SecuritySc
 func (s *SecuritySchemeOrRef) UnmarshalJSON(data []byte) error {
 	var err error
 
+	oneOfErrors := make(map[string]error, 2)
+	oneOfValid := 0
+
 	err = json.Unmarshal(data, &s.SecuritySchemeReference)
 	if err != nil {
+		oneOfErrors["SecuritySchemeReference"] = err
 		s.SecuritySchemeReference = nil
+	} else {
+		oneOfValid++
 	}
 
 	err = json.Unmarshal(data, &s.SecurityScheme)
 	if err != nil {
+		oneOfErrors["SecurityScheme"] = err
 		s.SecurityScheme = nil
+	} else {
+		oneOfValid++
+	}
+
+	if oneOfValid != 1 {
+		return fmt.Errorf("oneOf constraint failed for SecuritySchemeOrRef with %d valid results: %v", oneOfValid, oneOfErrors)
 	}
 
 	return nil

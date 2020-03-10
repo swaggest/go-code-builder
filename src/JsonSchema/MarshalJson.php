@@ -8,7 +8,9 @@ use Swaggest\GoCodeBuilder\Templates\Code;
 use Swaggest\GoCodeBuilder\Templates\GoTemplate;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructDef;
 use Swaggest\GoCodeBuilder\Templates\Struct\StructProperty;
+use Swaggest\GoCodeBuilder\Templates\Type\AnyType;
 use Swaggest\GoCodeBuilder\Templates\Type\Map;
+use Swaggest\JsonSchema\Schema;
 
 class MarshalJson extends GoTemplate
 {
@@ -19,9 +21,12 @@ class MarshalJson extends GoTemplate
     private $propertyNames;
 
     /** @var string[] */
+    public $required;
+
+    /** @var string[] */
     public $distinctNullNames = [];
 
-    private $additionalPropertiesEnabled = false;
+    private $additionalPropertiesEnabled = null;
 
     /** @var StructProperty */
     private $additionalProperties;
@@ -30,6 +35,9 @@ class MarshalJson extends GoTemplate
     private $patternProperties;
 
     private $someOf;
+
+    /** @var AnyType */
+    public $not;
 
     private $code;
 
@@ -41,6 +49,12 @@ class MarshalJson extends GoTemplate
         $this->type = $type;
         $this->builder = $builder;
         $this->code = new Code();
+    }
+
+    public function forbidAdditionalProperties()
+    {
+        $this->additionalPropertiesEnabled = false;
+        return $this;
     }
 
     public function enableAdditionalProperties(StructProperty $structProperty)
@@ -86,9 +100,10 @@ class MarshalJson extends GoTemplate
     protected function toString()
     {
         if ($this->patternProperties === null
-            && $this->additionalPropertiesEnabled === false
+            && $this->additionalPropertiesEnabled === null
             && $this->someOf === null
-            && $this->constValues === null) {
+            && $this->constValues === null
+            && empty($this->required)) {
             return '';
         }
 
@@ -152,32 +167,43 @@ GO;
     }
 
 
-
-    private function renderIgnoreKeys()
+    private function renderKeyNames()
     {
+        $result = '';
 
         if (
             $this->propertyNames !== null &&
-            ($this->patternProperties || $this->additionalPropertiesEnabled)
+            ($this->patternProperties || $this->additionalPropertiesEnabled !== null)
         ) {
             // All known property names (including constant values) has to be removed from
             // pattern and additional properties matching.
-            $ignoreKeys = $this->propertyNames;
+            $knownKeys = $this->propertyNames;
             if (!empty($this->constValues)) {
                 foreach ($this->constValues as $propertyName => $value) {
-                    $ignoreKeys[] = $propertyName;
+                    $knownKeys[] = $propertyName;
                 }
             }
-            return <<<GO
-var ignoreKeys:type = []string{
-	"{$this->padLines("\t", implode("\",\n\"", $ignoreKeys))}",
+            $result .= <<<GO
+var knownKeys:type = []string{
+	"{$this->padLines("\t", implode("\",\n\"", $knownKeys))}",
 }
 
 
 GO;
         }
 
-        return '';
+        if (!empty($this->required)) {
+            $result .= <<<GO
+var requireKeys:type = []string{
+	"{$this->padLines("\t", implode("\",\n\"", $this->required))}",
+}
+
+
+GO;
+
+        }
+
+        return $result;
     }
 
     private function renderUnmarshal()
@@ -192,21 +218,22 @@ GO;
         }
 
         $mustUnmarshal = $this->renderMustUnmarshal();
-        $mayUnmarshal = $this->renderMayUnmarshal();
-        $withIgnoreKeys = false; // TODO move to renderer
+        $mayUnmarshal = $this->renderTypeUnmarshal() . $this->renderAnyOfUnmarshal() . $this->renderOneOfUnmarshal();
+        $withKnownKeys = false; // TODO move to renderer
 
         if (
             $this->propertyNames !== null &&
-            ($this->patternProperties || $this->additionalPropertiesEnabled)
+            ($this->patternProperties || $this->additionalPropertiesEnabled !== null)
         ) {
-            $withIgnoreKeys = true;
+            $withKnownKeys = true;
         }
 
         $mapUnmarshal = '';
         if ($this->patternProperties !== null
-            || $this->additionalPropertiesEnabled
+            || $this->additionalPropertiesEnabled !== null
             || $this->constValues !== null
-            || !empty($this->distinctNullNames)) {
+            || !empty($this->distinctNullNames)
+            || !empty($this->required)) {
             $this->code->imports()->addByName('encoding/json');
             $mapUnmarshal = <<<'GO'
 
@@ -220,6 +247,20 @@ if err != nil {
 
 GO;
 
+        }
+
+        if (!empty($this->required)) {
+            $this->code->imports()->addByName('errors');
+            $mapUnmarshal .= <<<GO
+
+for _, key := range requireKeys:type {
+    if _, found := rawMap[key]; !found {
+        return errors.New("required key missing: " + key)
+    }
+}
+
+
+GO;
         }
 
         if ($this->constValues !== null) {
@@ -253,10 +294,10 @@ GO;
 
         }
 
-        if ($mapUnmarshal && $withIgnoreKeys) {
+        if ($mapUnmarshal && $withKnownKeys) {
             $mapUnmarshal .= <<<'GO'
 
-for _, key := range ignoreKeys:type {
+for _, key := range knownKeys:type {
     delete(rawMap, key)
 }
 
@@ -346,11 +387,29 @@ for key, rawValue := range rawMap {
 GO;
         }
 
+        // Additional properties forbidden.
+        if ($this->additionalPropertiesEnabled === false) {
+            $mapUnmarshal .= <<<'GO'
+
+if len(rawMap) != 0 {
+    offendingKeys := make([]string, 0, len(rawMap))
+
+    for key := range rawMap {
+        offendingKeys = append(offendingKeys, key)
+    }
+
+    return fmt.Errorf("additional properties not allowed in :type: %v", offendingKeys)
+}
+
+GO;
+
+        }
+
 
         $funcBody = <<<GO
 var err error
 
-{$this->renderMainStructStart()}{$mustUnmarshal}{$mayUnmarshal}{$mapUnmarshal}
+{$this->renderNot()}{$this->renderMainStructStart()}{$mustUnmarshal}{$mayUnmarshal}{$mapUnmarshal}
 {$this->renderMainStructEnd()}
 
 return nil
@@ -358,7 +417,7 @@ GO;
 
 
         return <<<GO
-{$this->renderIgnoreKeys()}// UnmarshalJSON decodes JSON.
+{$this->renderKeyNames()}// UnmarshalJSON decodes JSON.
 func (:receiver *:type) UnmarshalJSON(data []byte) error {
 {$this->padLines("\t", $this->tabIndents($this->stripEmptyLines($funcBody)), false)}
 }
@@ -448,10 +507,14 @@ if err != nil {
 GO;
         }
 
-        if (isset($this->someOf['allOf'])) {
-            foreach ($this->someOf['allOf'] as $propertyName) {
-                $this->code->imports()->addByName('encoding/json');
-                $result .= <<<GO
+        $kind = Schema::names()->allOf;
+        if (!isset($this->someOf[$kind])) {
+            return $result;
+        }
+
+        foreach ($this->someOf[$kind] as $propertyName) {
+            $this->code->imports()->addByName('encoding/json');
+            $result .= <<<GO
 
 
 err = json.Unmarshal(data, &{$this->receiver()}.{$propertyName})
@@ -460,38 +523,173 @@ if err != nil {
 }
 
 GO;
-            }
         }
 
         return $result;
     }
 
-    private function renderMayUnmarshal()
+    private function renderOneOfUnmarshal()
     {
         $result = '';
-        if ($this->someOf !== null) {
-            foreach ($this->someOf as $kind => $unionPropertyNames) {
-                if ($kind === 'allOf') {
-                    continue;
-                }
 
-                foreach ($unionPropertyNames as $propertyName) {
-                    $this->code->imports()->addByName('encoding/json');
-                    $result .= <<<GO
+        $kind = Schema::names()->oneOf;
+        if (!isset($this->someOf[$kind])) {
+            return $result;
+        }
+
+        $this->code->imports()
+            ->addByName('encoding/json')
+            ->addByName('fmt');
+
+        $count = count($this->someOf[$kind]);
+        $result .= <<<GO
+
+
+oneOfErrors := make(map[string]error, $count)
+oneOfValid := 0
+
+GO;
+
+        foreach ($this->someOf[$kind] as $i => $propertyName) {
+            $result .= <<<GO
 
 
 err = json.Unmarshal(data, &{$this->receiver()}.{$propertyName})
 if err != nil {
+    oneOfErrors["$i"] = err
     {$this->receiver()}.{$propertyName} = nil
+} else {
+    oneOfValid++
 }
 
 GO;
-                }
-            }
         }
+
+        $result .= <<<'GO'
+
+
+if oneOfValid != 1 {
+    return fmt.Errorf("oneOf constraint failed for :type with %d valid results: %v", oneOfValid, oneOfErrors)
+}
+
+GO;
+
         return $result;
     }
 
+    private function renderAnyOfUnmarshal()
+    {
+        $result = '';
+
+        $kind = Schema::names()->anyOf;
+        if (!isset($this->someOf[$kind])) {
+            return $result;
+        }
+
+        $this->code->imports()
+            ->addByName('encoding/json')
+            ->addByName('fmt');
+
+        $count = count($this->someOf[$kind]);
+        $result .= <<<GO
+
+
+anyOfErrors := make(map[string]error, $count)
+anyOfValid := 0
+
+GO;
+
+        foreach ($this->someOf[$kind] as $i => $propertyName) {
+            $result .= <<<GO
+
+err = json.Unmarshal(data, &{$this->receiver()}.{$propertyName})
+if err != nil {
+    anyOfErrors["$i"] = err
+    {$this->receiver()}.{$propertyName} = nil
+} else {
+    anyOfValid++
+}
+
+GO;
+        }
+
+        $result .= <<<'GO'
+
+
+if anyOfValid == 0 {
+    return fmt.Errorf("anyOf constraint for :type failed with %d valid results: %v", anyOfValid, anyOfErrors)
+}
+
+GO;
+
+        return $result;
+    }
+
+    private function renderTypeUnmarshal()
+    {
+        $result = '';
+
+        $kind = Schema::names()->type;
+        if (!isset($this->someOf[$kind])) {
+            return $result;
+        }
+
+        $this->code->imports()
+            ->addByName('encoding/json');
+
+        $result .= <<<'GO'
+
+typeValid := false
+
+GO;
+
+
+        foreach ($this->someOf[$kind] as $i => $propertyName) {
+            $result .= <<<GO
+
+if !typeValid {
+    err = json.Unmarshal(data, &{$this->receiver()}.{$propertyName})
+    if err != nil {
+        {$this->receiver()}.{$propertyName} = nil
+    } else {
+        typeValid = true
+    }
+}
+
+GO;
+        }
+
+        $result .= <<<'GO'
+
+if !typeValid {
+    return err
+}
+
+GO;
+
+
+        return $result;
+    }
+
+
+    private function renderNot()
+    {
+        if (empty($this->not)) {
+            return '';
+        }
+
+        return <<<GO
+
+var not {$this->not}
+
+if json.Unmarshal(data, &not) == nil {
+    return errors.New("not constraint failed for :type")
+}
+
+
+GO;
+
+    }
 
     private function renderMainStructStart()
     {

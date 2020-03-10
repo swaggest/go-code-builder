@@ -78,19 +78,10 @@ JSON;
         $schema = Schema::import(json_decode($schemaData));
         $builder = new GoBuilder();
 
-        $builder->getType($schema);
-        $goFile = new GoFile('entities');
-        $goFile->fileComment = '';
-        $goFile->setComment('Package entities contains generated structures.');
-        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
-            $goFile->getCode()->addSnippet($generatedStruct->structDef);
-        }
-        $goFile->getCode()->addSnippet($builder->getCode());
+        $path = __DIR__ . '/../../../resources/go/advanced/string-or-object';
+        Helper::buildEntities($builder, $schema, $path, 'StringOrObject');
 
-        $filePath = __DIR__ . '/../../../resources/go/advanced/string-or-object/entities.go';
-        file_put_contents($filePath, $goFile->render());
-
-        exec('git diff ' . $filePath, $out);
+        exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
@@ -124,19 +115,11 @@ JSON;
         $schema = Schema::import(json_decode($schemaData));
         $builder = new GoBuilder();
 
-        $builder->getType($schema);
-        $goFile = new GoFile('entities');
-        $goFile->fileComment = '';
-        $goFile->setComment('Package entities contains generated structures.');
-        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
-            $goFile->getCode()->addSnippet($generatedStruct->structDef);
-        }
-        $goFile->getCode()->addSnippet($builder->getCode());
 
-        $filePath = __DIR__ . '/../../../resources/go/advanced/object-or-string/entities.go';
-        file_put_contents($filePath, $goFile->render());
+        $path = __DIR__ . '/../../../resources/go/advanced/object-or-string';
+        Helper::buildEntities($builder, $schema, $path, 'ObjectOrString');
 
-        exec('git diff ' . $filePath, $out);
+        exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
