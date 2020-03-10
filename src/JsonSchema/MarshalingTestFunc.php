@@ -27,8 +27,8 @@ var (
 require.NoError(t, json.Unmarshal(jsonValue, &v))
 
 marshaled, err := json.Marshal(v)
-
 require.NoError(t, err)
+require.NoError(t, json.Unmarshal(marshaled, &v))
 assertjson.Equal(t, jsonValue, marshaled)
 GO
             , [

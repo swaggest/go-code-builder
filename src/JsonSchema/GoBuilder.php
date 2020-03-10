@@ -324,7 +324,7 @@ class GoBuilder
             }
         }
 
-        if ($processProperties && !empty($schema->required)) {
+        if ($processProperties && !empty($schema->required) && !$this->options->ignoreRequired) {
             $marshalJson->required = $schema->required;
         }
 

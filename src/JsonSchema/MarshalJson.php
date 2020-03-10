@@ -636,16 +636,36 @@ GO;
             ->addByName('encoding/json')
             ->addByName('fmt');
 
+        $result .= <<<'GO'
+
+typeValid := false
+
+GO;
+
+
         foreach ($this->someOf[$kind] as $i => $propertyName) {
             $result .= <<<GO
 
-err = json.Unmarshal(data, &{$this->receiver()}.{$propertyName})
-if err != nil {
-    {$this->receiver()}.{$propertyName} = nil
+if !typeValid {
+    err = json.Unmarshal(data, &{$this->receiver()}.{$propertyName})
+    if err != nil {
+        {$this->receiver()}.{$propertyName} = nil
+    } else {
+        typeValid = true
+    }
 }
 
 GO;
         }
+
+        $result .= <<<'GO'
+
+if !typeValid {
+    return err
+}
+
+GO;
+
 
         return $result;
     }
