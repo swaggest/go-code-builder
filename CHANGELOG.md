@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.28] - 2020-03-10
+
+### Added
+- Added support for schema logic resolution based on `oneOf`, `anyOf`, `required`, `not`, `additionalPrperties`.
+- Added helper to generate tests for entities.
+
 ## [0.4.27] - 2020-02-25
 
 ### Added
@@ -169,6 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed unnecessary regexp dependency, #7.
 
+[0.4.28]: https://github.com/swaggest/go-code-builder/compare/v0.4.27...v0.4.28
 [0.4.27]: https://github.com/swaggest/go-code-builder/compare/v0.4.26...v0.4.27
 [0.4.26]: https://github.com/swaggest/go-code-builder/compare/v0.4.25...v0.4.26
 [0.4.25]: https://github.com/swaggest/go-code-builder/compare/v0.4.24...v0.4.25
