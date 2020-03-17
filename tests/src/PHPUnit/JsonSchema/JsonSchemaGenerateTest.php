@@ -26,9 +26,20 @@ class JsonSchemaGenerateTest extends \PHPUnit_Framework_TestCase
         $builder->options->ignoreNullable = false;
         $builder->options->defaultAdditionalProperties = true;
         $builder->options->fluentSetters = true;
+        $builder->options->renames = [
+            'CoreSchemaMetaSchema' => 'Schema',
+            'SimpleTypes' => 'SimpleType',
+            'SimpleTypeArray' => 'Array',
+            'SimpleTypeBoolean' => 'Boolean',
+            'SimpleTypeInteger' => 'Integer',
+            'SimpleTypeNull' => 'Null',
+            'SimpleTypeNumber' => 'Number',
+            'SimpleTypeObject' => 'Object',
+            'SimpleTypeString' => 'String',
+        ];
         $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
             if ('#' === $path) {
-                $structDef->setName('Schema');
+                $structDef->setName('SchemaOrBool');
             } elseif (0 === strpos($path, '#/definitions/')) {
                 $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
                 $structDef->setName($name);
