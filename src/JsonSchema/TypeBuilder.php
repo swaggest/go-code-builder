@@ -580,6 +580,10 @@ GO
                 $typeName = $this->goBuilder->codeBuilder->exportableName($this->parentStruct->getName() . $propertyName);
             }
 
+            if (isset($this->goBuilder->options->renames[$typeName])) {
+                $typeName = $this->goBuilder->options->renames[$typeName];
+            }
+
             $type = new GoType($typeName);
             $this->goBuilder->pathTypesDefined[$this->path] = $type;
 
@@ -602,10 +606,16 @@ GO
                     if (isset($schema->title)) {
                         $itemName = $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $schema->title);
                     }
+
                     if (isset($schema->description)) {
                         $comment = $schema->description;
                     }
                 }
+
+                if (isset($this->goBuilder->options->renames[$itemName])) {
+                    $itemName = $this->goBuilder->options->renames[$itemName];
+                }
+
                 $typeConstBlock->addValue($itemName, $item, $comment);
             }
 

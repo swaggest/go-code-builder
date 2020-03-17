@@ -97,6 +97,12 @@ class Options extends ClassStructure
     public $fluentSetters = false;
 
     /**
+     * Map of default exported symbol names to new ones, e.g. PoorlyGenerated:NicelyReadable.
+     * @var array
+     */
+    public $renames = [];
+
+    /**
      * @param Properties|static $properties
      * @param Schema $ownerSchema
      */

@@ -173,6 +173,10 @@ class GoBuilder
             }
         }
 
+        if (isset($this->options->renames[$structName])) {
+            $structName = $this->options->renames[$structName];
+        }
+
         if (isset($this->namesGenerated[$structName]) && $schema->getMeta(TypeBuilder::CONDITIONAL_META)) {
             $structName = $structName . 'Conditional';
         }
