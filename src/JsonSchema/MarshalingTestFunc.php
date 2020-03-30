@@ -11,12 +11,17 @@ use Swaggest\JsonSchemaMaker\InstanceFaker;
 
 class MarshalingTestFunc
 {
-    public static function make(GeneratedStruct $struct)
+    public static function make(GeneratedStruct $struct, Options $options = null)
     {
         $f = new FuncDef('Test' . $struct->structDef->getName() . '_MarshalJSON_roundtrip');
         $f->setArguments((new Arguments())->add('t', TypeUtil::fromString('*testing.T')));
 
-        $instanceFaker = new InstanceFaker($struct->schema);
+        $fakerOptions = new \Swaggest\JsonSchemaMaker\Options();
+        if ($options !== null) {
+            $fakerOptions->defaultAdditionalProperties = $options->defaultAdditionalProperties;
+        }
+
+        $instanceFaker = new InstanceFaker($struct->schema, $fakerOptions);
         $jsonValue = json_encode($instanceFaker->makeValue(), JSON_UNESCAPED_SLASHES);
         $c = new Code(new PlaceholderString(<<<GO
 var (
