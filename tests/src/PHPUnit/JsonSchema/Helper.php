@@ -43,7 +43,7 @@ class Helper
         foreach ($builder->getGeneratedStructs() as $generatedStruct) {
             $goFile->getCode()->addSnippet($generatedStruct->structDef);
 
-            $goTestFile->getCode()->addSnippet(MarshalingTestFunc::make($generatedStruct));
+            $goTestFile->getCode()->addSnippet(MarshalingTestFunc::make($generatedStruct, $builder->options));
         }
         $goFile->getCode()->addSnippet($builder->getCode());
 
