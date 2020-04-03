@@ -248,6 +248,11 @@ class GoBuilder
                 );
                 $property = self::unboolSchema($property);
 
+                if ($property->{TypeBuilder::X_GENERATE} === false ||
+                    ($this->options->requireXGenerate && empty($property->{TypeBuilder::X_GENERATE}))) {
+                    continue;
+                }
+
                 if ($property instanceof Wrapper) {
                     $property = $property->exportSchema();
                 }

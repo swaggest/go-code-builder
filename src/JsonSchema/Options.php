@@ -103,6 +103,12 @@ class Options extends ClassStructure
     public $renames = [];
 
     /**
+     * Only generate schemas that have `x-generate: true`.
+     * @var bool
+     */
+    public $requireXGenerate = false;
+
+    /**
      * @param Properties|static $properties
      * @param Schema $ownerSchema
      */
