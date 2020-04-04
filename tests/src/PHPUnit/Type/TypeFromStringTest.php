@@ -50,6 +50,14 @@ class TypeFromStringTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('nulltypes.NullString', $type->getType()->render());
     }
 
+    public function testGoTypeSimplified()
+    {
+        /** @var Slice $type */
+        $type = TypeUtil::fromString('[]blabla.com/go-null-types::nulltypes.NullString');
+        $this->assertSame('[]nulltypes.NullString', $type->render());
+        $this->assertSame('nulltypes.NullString', $type->getType()->render());
+    }
+
     public function testMapSlice()
     {
         /** @var Slice $type */

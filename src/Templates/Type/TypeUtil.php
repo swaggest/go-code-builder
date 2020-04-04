@@ -27,16 +27,28 @@ class TypeUtil
 
         $parts = explode('::', $typeString);
         $import = null;
-        if (false !== $dotPos = strrpos($parts[0], '.')) {
-            if (isset($parts[1])) {
-                list($packageName) = explode('.', $parts[1]);
-                $import = new Import(substr($parts[0], 0, $dotPos), null, $packageName);
-            } else {
-                $import = new Import(substr($parts[0], 0, $dotPos));
+
+        if (isset($parts[1])) {
+            // type with import not matching package name, e.g. "foo-go::foo.Symbol"
+            list($packageName, $typeName) = explode('.', $parts[1]);
+
+            $importPath = $parts[0];
+            if (false !== $dotPos = strrpos($importPath, '.')) {
+                if (substr($importPath, $dotPos + 1) === $typeName) {
+                    $importPath = substr($importPath, 0, $dotPos);
+                }
             }
-            $typeName = substr($parts[0], $dotPos + 1);
+            $import = new Import($importPath, null, $packageName);
         } else {
-            $typeName = $parts[0];
+            if (false !== $dotPos = strrpos($parts[0], '.')) {
+                // type import matching package name, e.g. "encoding/json.Marshaler"
+                $typeName = substr($parts[0], $dotPos + 1);
+                $importPath = substr($parts[0], 0, $dotPos);
+                $import = new Import($importPath);
+            } else {
+                // builtin type, e.g. "string"
+                $typeName = $parts[0];
+            }
         }
 
         return new Type($typeName, $import);
