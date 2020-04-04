@@ -60,7 +60,7 @@ If `$ignoreXGoType` option is `true` value of vendor extension is disregarded an
 
 Value examples:
 
-* `"[]myorg.com/go-null-types.NullString::nulltypes.NullString"`
+* `"[]myorg.com/go-null-types::nulltypes.NullString"`
 * `"myorg.com/my-app/order.Entity"`
 * `"float64"`
 * `{"import": {"package": "my-package/domain/orders"}, "type": "Order"}`
@@ -73,6 +73,12 @@ If `true` schema type is converted to `[<type>, "null"]`. Requires `$enableXNull
 ### `x-omitempty`
 
 A `boolean` value to control `,omitempty` presence.
+
+### `x-generate`
+
+A `boolean` value to control whether property should be added to generated `struct`. 
+Property with `"x-generate": true` will be skipped.
+If `GoBuilder` option `requireXGenerate` is set to `true` only properties with `"x-generate": true` will be generated. 
 
 ## CLI Tool
 
