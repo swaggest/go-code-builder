@@ -144,7 +144,7 @@ GO;
     }
 
 
-    function testNullable()
+    function testXFlags()
     {
         $prop = new Schema();
         $prop->type = [Schema::STRING, Schema::NULL];
@@ -153,6 +153,7 @@ GO;
         $propXNullable->type = Schema::STRING;
         $propXNullable->{TypeBuilder::X_NULLABLE} = true;
         $propXNullable->{TypeBuilder::X_OMIT_EMPTY} = true;
+        $propXNullable->{TypeBuilder::X_GENERATE} = true;
 
         $propNullable = new Schema();
         $propNullable->type = Schema::STRING;
@@ -162,12 +163,17 @@ GO;
         $propKeepEmpty->type = Schema::STRING;
         $propKeepEmpty->{TypeBuilder::X_OMIT_EMPTY} = false;
 
+        $propSkipGenerate = new Schema();
+        $propSkipGenerate->type = Schema::STRING;
+        $propSkipGenerate->{TypeBuilder::X_GENERATE} = false;
+
         $obj = Schema::object();
         $obj->setProperty('schema-nullable', $prop);
         $obj->setProperty('x-nullable', $propXNullable);
         $obj->setProperty('nullable', $propNullable);
         $obj->setProperty('regular', Schema::string());
         $obj->setProperty('keep-empty', $propKeepEmpty);
+        $obj->setProperty('skip-generate', $propSkipGenerate);
 
 
         $builder = new GoBuilder();
@@ -244,7 +250,6 @@ GO
             , $struct->structDef->render());
 
 
-
         $builder = new GoBuilder();
         $builder->options->defaultAdditionalProperties = false;
         $builder->options->enableXNullable = true;
@@ -269,6 +274,68 @@ type Untitled1 struct {
 GO
             , $struct->structDef->render());
 
+
+        $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
+        $builder->options->enableXNullable = true;
+        $builder->options->requireXGenerate = true;
+        $tb = new TypeBuilder($prop, '#', $builder);
+        $type = $tb->build();
+        $this->assertEquals('*string', $type->getTypeString());
+
+        $this->assertEquals('Untitled1', $builder->getType($obj)->getTypeString());
+        $struct = $builder->getGeneratedStruct($obj, '#');
+
+        $this->assertEquals(<<<'GO'
+// Untitled1 structure is generated from "#".
+type Untitled1 struct {
+	XNullable *string `json:"x-nullable,omitempty"`
+}
+
+
+GO
+            , $struct->structDef->render());
+
+    }
+
+    public function testXGenerate() {
+        $schemaJson = <<<'JSON'
+{
+    "type": "object",
+    "properties": {
+        "id": {"type": "integer", "x-generate": true},
+        "entity": {"$ref": "#/definitions/entity"}
+    },
+    "definitions": {
+        "entity": {
+            "type": "object",
+            "properties": {"prop1": {"type": "string"}}
+        }
+    }
+}
+JSON;
+        $schema = Schema::import(json_decode($schemaJson));
+
+        $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
+        $builder->options->requireXGenerate = true;
+        $tb = new TypeBuilder($schema, '#', $builder);
+        $tb->build();
+
+        $res = '';
+        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
+            $res .= $generatedStruct->structDef->render();
+        }
+
+        $this->assertEquals(<<<'GO'
+// Untitled1 structure is generated from "#".
+type Untitled1 struct {
+	ID int64 `json:"id,omitempty"`
+}
+
+
+GO
+            , $res);
 
     }
 

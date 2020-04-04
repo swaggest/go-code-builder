@@ -27,6 +27,7 @@ class TypeBuilder
     const X_GO_TYPE = 'x-go-type';
     const X_OMIT_EMPTY = 'x-omitempty';
     const X_NULLABLE = 'x-nullable';
+    const X_GENERATE = 'x-generate';
     const NULLABLE = 'nullable';
     const EXAMPLES = 'examples';
     const EXAMPLE = 'example';

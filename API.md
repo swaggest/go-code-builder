@@ -189,7 +189,7 @@
 
 | Visibility | Function |
 |:-----------|:---------|
-| public static | <strong>make(</strong><em>[\Swaggest\GoCodeBuilder\JsonSchema\GeneratedStruct](#class-swaggestgocodebuilderjsonschemageneratedstruct)</em> <strong>$struct</strong>)</strong> : <em>void</em> |
+| public static | <strong>make(</strong><em>[\Swaggest\GoCodeBuilder\JsonSchema\GeneratedStruct](#class-swaggestgocodebuilderjsonschemageneratedstruct)</em> <strong>$struct</strong>, <em>[\Swaggest\GoCodeBuilder\JsonSchema\Options](#class-swaggestgocodebuilderjsonschemaoptions)</em> <strong>$options=null</strong>)</strong> : <em>void</em> |
 
 <hr />
 
