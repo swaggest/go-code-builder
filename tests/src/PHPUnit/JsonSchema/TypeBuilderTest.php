@@ -298,4 +298,45 @@ GO
 
     }
 
+    public function testXGenerate() {
+        $schemaJson = <<<'JSON'
+{
+    "type": "object",
+    "properties": {
+        "id": {"type": "integer", "x-generate": true},
+        "entity": {"$ref": "#/definitions/entity"}
+    },
+    "definitions": {
+        "entity": {
+            "type": "object",
+            "properties": {"prop1": {"type": "string"}}
+        }
+    }
+}
+JSON;
+        $schema = Schema::import(json_decode($schemaJson));
+
+        $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
+        $builder->options->requireXGenerate = true;
+        $tb = new TypeBuilder($schema, '#', $builder);
+        $tb->build();
+
+        $res = '';
+        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
+            $res .= $generatedStruct->structDef->render();
+        }
+
+        $this->assertEquals(<<<'GO'
+// Untitled1 structure is generated from "#".
+type Untitled1 struct {
+	ID int64 `json:"id,omitempty"`
+}
+
+
+GO
+            , $res);
+
+    }
+
 }
