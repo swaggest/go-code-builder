@@ -77,7 +77,7 @@ A `boolean` value to control `,omitempty` presence.
 ### `x-generate`
 
 A `boolean` value to control whether property should be added to generated `struct`. 
-Property with `"x-generate": true` will be skipped.
+Property with `"x-generate": false` will be skipped.
 If `GoBuilder` option `requireXGenerate` is set to `true` only properties with `"x-generate": true` will be generated. 
 
 ## CLI Tool
