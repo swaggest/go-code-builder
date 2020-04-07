@@ -167,10 +167,28 @@ func (s *Schema) WithAdditionalItems(val SchemaOrBool) *Schema {
 	return s
 }
 
+// AdditionalItemsEns ensures returned AdditionalItems is not nil.
+func (s *Schema) AdditionalItemsEns() *SchemaOrBool {
+	if s.AdditionalItems == nil {
+		s.AdditionalItems = new(SchemaOrBool)
+	}
+
+	return s.AdditionalItems
+}
+
 // WithItems sets Items value.
 func (s *Schema) WithItems(val Items) *Schema {
 	s.Items = &val
 	return s
+}
+
+// ItemsEns ensures returned Items is not nil.
+func (s *Schema) ItemsEns() *Items {
+	if s.Items == nil {
+		s.Items = new(Items)
+	}
+
+	return s.Items
 }
 
 // WithMaxItems sets MaxItems value.
@@ -197,6 +215,15 @@ func (s *Schema) WithContains(val SchemaOrBool) *Schema {
 	return s
 }
 
+// ContainsEns ensures returned Contains is not nil.
+func (s *Schema) ContainsEns() *SchemaOrBool {
+	if s.Contains == nil {
+		s.Contains = new(SchemaOrBool)
+	}
+
+	return s.Contains
+}
+
 // WithMaxProperties sets MaxProperties value.
 func (s *Schema) WithMaxProperties(val int64) *Schema {
 	s.MaxProperties = &val
@@ -219,6 +246,15 @@ func (s *Schema) WithRequired(val ...string) *Schema {
 func (s *Schema) WithAdditionalProperties(val SchemaOrBool) *Schema {
 	s.AdditionalProperties = &val
 	return s
+}
+
+// AdditionalPropertiesEns ensures returned AdditionalProperties is not nil.
+func (s *Schema) AdditionalPropertiesEns() *SchemaOrBool {
+	if s.AdditionalProperties == nil {
+		s.AdditionalProperties = new(SchemaOrBool)
+	}
+
+	return s.AdditionalProperties
 }
 
 // WithDefinitions sets Definitions value.
@@ -295,6 +331,15 @@ func (s *Schema) WithPropertyNames(val SchemaOrBool) *Schema {
 	return s
 }
 
+// PropertyNamesEns ensures returned PropertyNames is not nil.
+func (s *Schema) PropertyNamesEns() *SchemaOrBool {
+	if s.PropertyNames == nil {
+		s.PropertyNames = new(SchemaOrBool)
+	}
+
+	return s.PropertyNames
+}
+
 // WithConst sets Const value.
 func (s *Schema) WithConst(val interface{}) *Schema {
 	s.Const = &val
@@ -311,6 +356,15 @@ func (s *Schema) WithEnum(val ...interface{}) *Schema {
 func (s *Schema) WithType(val Type) *Schema {
 	s.Type = &val
 	return s
+}
+
+// TypeEns ensures returned Type is not nil.
+func (s *Schema) TypeEns() *Type {
+	if s.Type == nil {
+		s.Type = new(Type)
+	}
+
+	return s.Type
 }
 
 // WithFormat sets Format value.
@@ -337,16 +391,43 @@ func (s *Schema) WithIf(val SchemaOrBool) *Schema {
 	return s
 }
 
+// IfEns ensures returned If is not nil.
+func (s *Schema) IfEns() *SchemaOrBool {
+	if s.If == nil {
+		s.If = new(SchemaOrBool)
+	}
+
+	return s.If
+}
+
 // WithThen sets Then value.
 func (s *Schema) WithThen(val SchemaOrBool) *Schema {
 	s.Then = &val
 	return s
 }
 
+// ThenEns ensures returned Then is not nil.
+func (s *Schema) ThenEns() *SchemaOrBool {
+	if s.Then == nil {
+		s.Then = new(SchemaOrBool)
+	}
+
+	return s.Then
+}
+
 // WithElse sets Else value.
 func (s *Schema) WithElse(val SchemaOrBool) *Schema {
 	s.Else = &val
 	return s
+}
+
+// ElseEns ensures returned Else is not nil.
+func (s *Schema) ElseEns() *SchemaOrBool {
+	if s.Else == nil {
+		s.Else = new(SchemaOrBool)
+	}
+
+	return s.Else
 }
 
 // WithAllOf sets AllOf value.
@@ -371,6 +452,15 @@ func (s *Schema) WithOneOf(val ...SchemaOrBool) *Schema {
 func (s *Schema) WithNot(val SchemaOrBool) *Schema {
 	s.Not = &val
 	return s
+}
+
+// NotEns ensures returned Not is not nil.
+func (s *Schema) NotEns() *SchemaOrBool {
+	if s.Not == nil {
+		s.Not = new(SchemaOrBool)
+	}
+
+	return s.Not
 }
 
 // WithExtraProperties sets ExtraProperties value.
@@ -519,6 +609,15 @@ func (s *SchemaOrBool) WithTypeObject(val Schema) *SchemaOrBool {
 	return s
 }
 
+// TypeObjectEns ensures returned TypeObject is not nil.
+func (s *SchemaOrBool) TypeObjectEns() *Schema {
+	if s.TypeObject == nil {
+		s.TypeObject = new(Schema)
+	}
+
+	return s.TypeObject
+}
+
 // WithTypeBoolean sets TypeBoolean value.
 func (s *SchemaOrBool) WithTypeBoolean(val bool) *SchemaOrBool {
 	s.TypeBoolean = &val
@@ -573,6 +672,15 @@ func (i *Items) WithSchemaOrBool(val SchemaOrBool) *Items {
 	return i
 }
 
+// SchemaOrBoolEns ensures returned SchemaOrBool is not nil.
+func (i *Items) SchemaOrBoolEns() *SchemaOrBool {
+	if i.SchemaOrBool == nil {
+		i.SchemaOrBool = new(SchemaOrBool)
+	}
+
+	return i.SchemaOrBool
+}
+
 // WithSchemaArray sets SchemaArray value.
 func (i *Items) WithSchemaArray(val ...SchemaOrBool) *Items {
 	i.SchemaArray = val
@@ -624,6 +732,15 @@ type DependenciesAdditionalProperties struct {
 func (d *DependenciesAdditionalProperties) WithSchemaOrBool(val SchemaOrBool) *DependenciesAdditionalProperties {
 	d.SchemaOrBool = &val
 	return d
+}
+
+// SchemaOrBoolEns ensures returned SchemaOrBool is not nil.
+func (d *DependenciesAdditionalProperties) SchemaOrBoolEns() *SchemaOrBool {
+	if d.SchemaOrBool == nil {
+		d.SchemaOrBool = new(SchemaOrBool)
+	}
+
+	return d.SchemaOrBool
 }
 
 // WithStringArray sets StringArray value.

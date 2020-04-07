@@ -21,6 +21,39 @@ class FluentSetter
         if ($map !== null) {
             $structDef->addFunc($map);
         }
+        $ensurer = self::makeEnsurer($structDef, $goProperty);
+        if ($ensurer !== null) {
+            $structDef->addFunc($ensurer);
+        }
+    }
+
+    public static function makeEnsurer(StructDef $structDef, StructProperty $goProperty) {
+        $type = $goProperty->getType();
+
+        if (!$type instanceof Pointer || !$type->getType() instanceof StructType) {
+            return null;
+        }
+
+        $receiver = strtolower($structDef->getType()->getName()[0]);
+
+        $ensurer = new FuncDef(
+            $goProperty->getName() . 'Ens',
+            $goProperty->getName() . 'Ens ensures returned ' . $goProperty->getName() . ' is not nil.'
+        );
+        $ensurer->setSelf(new Argument($receiver, new Pointer($structDef->getType())));
+
+        $ensurer->setResult((new Result())->add(null, $type));
+
+        $ensurer->setBody(new Code(<<<GO
+if {$receiver}.{$goProperty->getName()} == nil {
+    {$receiver}.{$goProperty->getName()} = new({$type->getType()->getTypeString()})
+}
+
+return {$receiver}.{$goProperty->getName()}
+GO
+        ));
+
+        return $ensurer;
     }
 
     public static function make(StructDef $structDef, StructProperty $goProperty)

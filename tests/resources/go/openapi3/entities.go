@@ -37,10 +37,28 @@ func (o *OpenAPI) WithInfo(val Info) *OpenAPI {
 	return o
 }
 
+// InfoEns ensures returned Info is not nil.
+func (o *OpenAPI) InfoEns() *Info {
+	if o.Info == nil {
+		o.Info = new(Info)
+	}
+
+	return o.Info
+}
+
 // WithExternalDocs sets ExternalDocs value.
 func (o *OpenAPI) WithExternalDocs(val ExternalDocumentation) *OpenAPI {
 	o.ExternalDocs = &val
 	return o
+}
+
+// ExternalDocsEns ensures returned ExternalDocs is not nil.
+func (o *OpenAPI) ExternalDocsEns() *ExternalDocumentation {
+	if o.ExternalDocs == nil {
+		o.ExternalDocs = new(ExternalDocumentation)
+	}
+
+	return o.ExternalDocs
 }
 
 // WithServers sets Servers value.
@@ -67,10 +85,28 @@ func (o *OpenAPI) WithPaths(val Paths) *OpenAPI {
 	return o
 }
 
+// PathsEns ensures returned Paths is not nil.
+func (o *OpenAPI) PathsEns() *Paths {
+	if o.Paths == nil {
+		o.Paths = new(Paths)
+	}
+
+	return o.Paths
+}
+
 // WithComponents sets Components value.
 func (o *OpenAPI) WithComponents(val Components) *OpenAPI {
 	o.Components = &val
 	return o
+}
+
+// ComponentsEns ensures returned Components is not nil.
+func (o *OpenAPI) ComponentsEns() *Components {
+	if o.Components == nil {
+		o.Components = new(Components)
+	}
+
+	return o.Components
 }
 
 // WithMapOfAnything sets MapOfAnything value.
@@ -205,10 +241,28 @@ func (i *Info) WithContact(val Contact) *Info {
 	return i
 }
 
+// ContactEns ensures returned Contact is not nil.
+func (i *Info) ContactEns() *Contact {
+	if i.Contact == nil {
+		i.Contact = new(Contact)
+	}
+
+	return i.Contact
+}
+
 // WithLicense sets License value.
 func (i *Info) WithLicense(val License) *Info {
 	i.License = &val
 	return i
+}
+
+// LicenseEns ensures returned License is not nil.
+func (i *Info) LicenseEns() *License {
+	if i.License == nil {
+		i.License = new(License)
+	}
+
+	return i.License
 }
 
 // WithVersion sets Version value.
@@ -925,6 +979,15 @@ func (t *Tag) WithExternalDocs(val ExternalDocumentation) *Tag {
 	return t
 }
 
+// ExternalDocsEns ensures returned ExternalDocs is not nil.
+func (t *Tag) ExternalDocsEns() *ExternalDocumentation {
+	if t.ExternalDocs == nil {
+		t.ExternalDocs = new(ExternalDocumentation)
+	}
+
+	return t.ExternalDocs
+}
+
 // WithMapOfAnything sets MapOfAnything value.
 func (t *Tag) WithMapOfAnything(val map[string]interface{}) *Tag {
 	t.MapOfAnything = val
@@ -1327,6 +1390,15 @@ func (p *Parameter) WithSchema(val SchemaOrRef) *Parameter {
 	return p
 }
 
+// SchemaEns ensures returned Schema is not nil.
+func (p *Parameter) SchemaEns() *SchemaOrRef {
+	if p.Schema == nil {
+		p.Schema = new(SchemaOrRef)
+	}
+
+	return p.Schema
+}
+
 // WithContent sets Content value.
 func (p *Parameter) WithContent(val map[string]MediaType) *Parameter {
 	p.Content = val
@@ -1373,10 +1445,28 @@ func (p *Parameter) WithSchemaXORContent(val SchemaXORContentOneOf1) *Parameter 
 	return p
 }
 
+// SchemaXORContentEns ensures returned SchemaXORContent is not nil.
+func (p *Parameter) SchemaXORContentEns() *SchemaXORContentOneOf1 {
+	if p.SchemaXORContent == nil {
+		p.SchemaXORContent = new(SchemaXORContentOneOf1)
+	}
+
+	return p.SchemaXORContent
+}
+
 // WithLocation sets Location value.
 func (p *Parameter) WithLocation(val ParameterLocation) *Parameter {
 	p.Location = &val
 	return p
+}
+
+// LocationEns ensures returned Location is not nil.
+func (p *Parameter) LocationEns() *ParameterLocation {
+	if p.Location == nil {
+		p.Location = new(ParameterLocation)
+	}
+
+	return p.Location
 }
 
 // WithMapOfAnything sets MapOfAnything value.
@@ -1646,6 +1736,15 @@ func (s *Schema) WithNot(val SchemaOrRef) *Schema {
 	return s
 }
 
+// NotEns ensures returned Not is not nil.
+func (s *Schema) NotEns() *SchemaOrRef {
+	if s.Not == nil {
+		s.Not = new(SchemaOrRef)
+	}
+
+	return s.Not
+}
+
 // WithAllOf sets AllOf value.
 func (s *Schema) WithAllOf(val ...SchemaOrRef) *Schema {
 	s.AllOf = val
@@ -1670,6 +1769,15 @@ func (s *Schema) WithItems(val SchemaOrRef) *Schema {
 	return s
 }
 
+// ItemsEns ensures returned Items is not nil.
+func (s *Schema) ItemsEns() *SchemaOrRef {
+	if s.Items == nil {
+		s.Items = new(SchemaOrRef)
+	}
+
+	return s.Items
+}
+
 // WithProperties sets Properties value.
 func (s *Schema) WithProperties(val map[string]SchemaOrRef) *Schema {
 	s.Properties = val
@@ -1691,6 +1799,15 @@ func (s *Schema) WithPropertiesItem(key string, val SchemaOrRef) *Schema {
 func (s *Schema) WithAdditionalProperties(val SchemaAdditionalProperties) *Schema {
 	s.AdditionalProperties = &val
 	return s
+}
+
+// AdditionalPropertiesEns ensures returned AdditionalProperties is not nil.
+func (s *Schema) AdditionalPropertiesEns() *SchemaAdditionalProperties {
+	if s.AdditionalProperties == nil {
+		s.AdditionalProperties = new(SchemaAdditionalProperties)
+	}
+
+	return s.AdditionalProperties
 }
 
 // WithDescription sets Description value.
@@ -1723,6 +1840,15 @@ func (s *Schema) WithDiscriminator(val Discriminator) *Schema {
 	return s
 }
 
+// DiscriminatorEns ensures returned Discriminator is not nil.
+func (s *Schema) DiscriminatorEns() *Discriminator {
+	if s.Discriminator == nil {
+		s.Discriminator = new(Discriminator)
+	}
+
+	return s.Discriminator
+}
+
 // WithReadOnly sets ReadOnly value.
 func (s *Schema) WithReadOnly(val bool) *Schema {
 	s.ReadOnly = &val
@@ -1747,6 +1873,15 @@ func (s *Schema) WithExternalDocs(val ExternalDocumentation) *Schema {
 	return s
 }
 
+// ExternalDocsEns ensures returned ExternalDocs is not nil.
+func (s *Schema) ExternalDocsEns() *ExternalDocumentation {
+	if s.ExternalDocs == nil {
+		s.ExternalDocs = new(ExternalDocumentation)
+	}
+
+	return s.ExternalDocs
+}
+
 // WithDeprecated sets Deprecated value.
 func (s *Schema) WithDeprecated(val bool) *Schema {
 	s.Deprecated = &val
@@ -1757,6 +1892,15 @@ func (s *Schema) WithDeprecated(val bool) *Schema {
 func (s *Schema) WithXML(val XML) *Schema {
 	s.XML = &val
 	return s
+}
+
+// XMLEns ensures returned XML is not nil.
+func (s *Schema) XMLEns() *XML {
+	if s.XML == nil {
+		s.XML = new(XML)
+	}
+
+	return s.XML
 }
 
 // WithMapOfAnything sets MapOfAnything value.
@@ -1970,10 +2114,28 @@ func (s *SchemaOrRef) WithSchema(val Schema) *SchemaOrRef {
 	return s
 }
 
+// SchemaEns ensures returned Schema is not nil.
+func (s *SchemaOrRef) SchemaEns() *Schema {
+	if s.Schema == nil {
+		s.Schema = new(Schema)
+	}
+
+	return s.Schema
+}
+
 // WithSchemaReference sets SchemaReference value.
 func (s *SchemaOrRef) WithSchemaReference(val SchemaReference) *SchemaOrRef {
 	s.SchemaReference = &val
 	return s
+}
+
+// SchemaReferenceEns ensures returned SchemaReference is not nil.
+func (s *SchemaOrRef) SchemaReferenceEns() *SchemaReference {
+	if s.SchemaReference == nil {
+		s.SchemaReference = new(SchemaReference)
+	}
+
+	return s.SchemaReference
 }
 
 // UnmarshalJSON decodes JSON.
@@ -2021,6 +2183,15 @@ type SchemaAdditionalProperties struct {
 func (s *SchemaAdditionalProperties) WithSchemaOrRef(val SchemaOrRef) *SchemaAdditionalProperties {
 	s.SchemaOrRef = &val
 	return s
+}
+
+// SchemaOrRefEns ensures returned SchemaOrRef is not nil.
+func (s *SchemaAdditionalProperties) SchemaOrRefEns() *SchemaOrRef {
+	if s.SchemaOrRef == nil {
+		s.SchemaOrRef = new(SchemaOrRef)
+	}
+
+	return s.SchemaOrRef
 }
 
 // WithBool sets Bool value.
@@ -2316,6 +2487,15 @@ type MediaType struct {
 func (m *MediaType) WithSchema(val SchemaOrRef) *MediaType {
 	m.Schema = &val
 	return m
+}
+
+// SchemaEns ensures returned Schema is not nil.
+func (m *MediaType) SchemaEns() *SchemaOrRef {
+	if m.Schema == nil {
+		m.Schema = new(SchemaOrRef)
+	}
+
+	return m.Schema
 }
 
 // WithExample sets Example value.
@@ -2664,10 +2844,28 @@ func (e *ExampleOrRef) WithExampleReference(val ExampleReference) *ExampleOrRef 
 	return e
 }
 
+// ExampleReferenceEns ensures returned ExampleReference is not nil.
+func (e *ExampleOrRef) ExampleReferenceEns() *ExampleReference {
+	if e.ExampleReference == nil {
+		e.ExampleReference = new(ExampleReference)
+	}
+
+	return e.ExampleReference
+}
+
 // WithExample sets Example value.
 func (e *ExampleOrRef) WithExample(val Example) *ExampleOrRef {
 	e.Example = &val
 	return e
+}
+
+// ExampleEns ensures returned Example is not nil.
+func (e *ExampleOrRef) ExampleEns() *Example {
+	if e.Example == nil {
+		e.Example = new(Example)
+	}
+
+	return e.Example
 }
 
 // UnmarshalJSON decodes JSON.
@@ -2862,6 +3060,15 @@ func (h *Header) WithAllowReserved(val bool) *Header {
 func (h *Header) WithSchema(val SchemaOrRef) *Header {
 	h.Schema = &val
 	return h
+}
+
+// SchemaEns ensures returned Schema is not nil.
+func (h *Header) SchemaEns() *SchemaOrRef {
+	if h.Schema == nil {
+		h.Schema = new(SchemaOrRef)
+	}
+
+	return h.Schema
 }
 
 // WithContent sets Content value.
@@ -3404,10 +3611,28 @@ func (p *ParameterLocation) WithOneOf0(val ParameterLocationOneOf0) *ParameterLo
 	return p
 }
 
+// OneOf0Ens ensures returned OneOf0 is not nil.
+func (p *ParameterLocation) OneOf0Ens() *ParameterLocationOneOf0 {
+	if p.OneOf0 == nil {
+		p.OneOf0 = new(ParameterLocationOneOf0)
+	}
+
+	return p.OneOf0
+}
+
 // WithOneOf1 sets OneOf1 value.
 func (p *ParameterLocation) WithOneOf1(val ParameterLocationOneOf1) *ParameterLocation {
 	p.OneOf1 = &val
 	return p
+}
+
+// OneOf1Ens ensures returned OneOf1 is not nil.
+func (p *ParameterLocation) OneOf1Ens() *ParameterLocationOneOf1 {
+	if p.OneOf1 == nil {
+		p.OneOf1 = new(ParameterLocationOneOf1)
+	}
+
+	return p.OneOf1
 }
 
 // WithOneOf2 sets OneOf2 value.
@@ -3416,10 +3641,28 @@ func (p *ParameterLocation) WithOneOf2(val ParameterLocationOneOf2) *ParameterLo
 	return p
 }
 
+// OneOf2Ens ensures returned OneOf2 is not nil.
+func (p *ParameterLocation) OneOf2Ens() *ParameterLocationOneOf2 {
+	if p.OneOf2 == nil {
+		p.OneOf2 = new(ParameterLocationOneOf2)
+	}
+
+	return p.OneOf2
+}
+
 // WithOneOf3 sets OneOf3 value.
 func (p *ParameterLocation) WithOneOf3(val ParameterLocationOneOf3) *ParameterLocation {
 	p.OneOf3 = &val
 	return p
+}
+
+// OneOf3Ens ensures returned OneOf3 is not nil.
+func (p *ParameterLocation) OneOf3Ens() *ParameterLocationOneOf3 {
+	if p.OneOf3 == nil {
+		p.OneOf3 = new(ParameterLocationOneOf3)
+	}
+
+	return p.OneOf3
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3485,10 +3728,28 @@ func (p *ParameterOrRef) WithParameterReference(val ParameterReference) *Paramet
 	return p
 }
 
+// ParameterReferenceEns ensures returned ParameterReference is not nil.
+func (p *ParameterOrRef) ParameterReferenceEns() *ParameterReference {
+	if p.ParameterReference == nil {
+		p.ParameterReference = new(ParameterReference)
+	}
+
+	return p.ParameterReference
+}
+
 // WithParameter sets Parameter value.
 func (p *ParameterOrRef) WithParameter(val Parameter) *ParameterOrRef {
 	p.Parameter = &val
 	return p
+}
+
+// ParameterEns ensures returned Parameter is not nil.
+func (p *ParameterOrRef) ParameterEns() *Parameter {
+	if p.Parameter == nil {
+		p.Parameter = new(Parameter)
+	}
+
+	return p.Parameter
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3567,6 +3828,15 @@ func (o *Operation) WithExternalDocs(val ExternalDocumentation) *Operation {
 	return o
 }
 
+// ExternalDocsEns ensures returned ExternalDocs is not nil.
+func (o *Operation) ExternalDocsEns() *ExternalDocumentation {
+	if o.ExternalDocs == nil {
+		o.ExternalDocs = new(ExternalDocumentation)
+	}
+
+	return o.ExternalDocs
+}
+
 // WithID sets ID value.
 func (o *Operation) WithID(val string) *Operation {
 	o.ID = &val
@@ -3585,10 +3855,28 @@ func (o *Operation) WithRequestBody(val RequestBodyOrRef) *Operation {
 	return o
 }
 
+// RequestBodyEns ensures returned RequestBody is not nil.
+func (o *Operation) RequestBodyEns() *RequestBodyOrRef {
+	if o.RequestBody == nil {
+		o.RequestBody = new(RequestBodyOrRef)
+	}
+
+	return o.RequestBody
+}
+
 // WithResponses sets Responses value.
 func (o *Operation) WithResponses(val Responses) *Operation {
 	o.Responses = &val
 	return o
+}
+
+// ResponsesEns ensures returned Responses is not nil.
+func (o *Operation) ResponsesEns() *Responses {
+	if o.Responses == nil {
+		o.Responses = new(Responses)
+	}
+
+	return o.Responses
 }
 
 // WithCallbacks sets Callbacks value.
@@ -3929,10 +4217,28 @@ func (r *RequestBodyOrRef) WithRequestBodyReference(val RequestBodyReference) *R
 	return r
 }
 
+// RequestBodyReferenceEns ensures returned RequestBodyReference is not nil.
+func (r *RequestBodyOrRef) RequestBodyReferenceEns() *RequestBodyReference {
+	if r.RequestBodyReference == nil {
+		r.RequestBodyReference = new(RequestBodyReference)
+	}
+
+	return r.RequestBodyReference
+}
+
 // WithRequestBody sets RequestBody value.
 func (r *RequestBodyOrRef) WithRequestBody(val RequestBody) *RequestBodyOrRef {
 	r.RequestBody = &val
 	return r
+}
+
+// RequestBodyEns ensures returned RequestBody is not nil.
+func (r *RequestBodyOrRef) RequestBodyEns() *RequestBody {
+	if r.RequestBody == nil {
+		r.RequestBody = new(RequestBody)
+	}
+
+	return r.RequestBody
 }
 
 // UnmarshalJSON decodes JSON.
@@ -3981,6 +4287,15 @@ type Responses struct {
 func (r *Responses) WithDefault(val ResponseOrRef) *Responses {
 	r.Default = &val
 	return r
+}
+
+// DefaultEns ensures returned Default is not nil.
+func (r *Responses) DefaultEns() *ResponseOrRef {
+	if r.Default == nil {
+		r.Default = new(ResponseOrRef)
+	}
+
+	return r.Default
 }
 
 // WithMapOfResponseOrRefValues sets MapOfResponseOrRefValues value.
@@ -4400,10 +4715,28 @@ func (h *HeaderOrRef) WithHeaderReference(val HeaderReference) *HeaderOrRef {
 	return h
 }
 
+// HeaderReferenceEns ensures returned HeaderReference is not nil.
+func (h *HeaderOrRef) HeaderReferenceEns() *HeaderReference {
+	if h.HeaderReference == nil {
+		h.HeaderReference = new(HeaderReference)
+	}
+
+	return h.HeaderReference
+}
+
 // WithHeader sets Header value.
 func (h *HeaderOrRef) WithHeader(val Header) *HeaderOrRef {
 	h.Header = &val
 	return h
+}
+
+// HeaderEns ensures returned Header is not nil.
+func (h *HeaderOrRef) HeaderEns() *Header {
+	if h.Header == nil {
+		h.Header = new(Header)
+	}
+
+	return h.Header
 }
 
 // UnmarshalJSON decodes JSON.
@@ -4560,6 +4893,15 @@ func (l *Link) WithServer(val Server) *Link {
 	return l
 }
 
+// ServerEns ensures returned Server is not nil.
+func (l *Link) ServerEns() *Server {
+	if l.Server == nil {
+		l.Server = new(Server)
+	}
+
+	return l.Server
+}
+
 // WithMapOfAnything sets MapOfAnything value.
 func (l *Link) WithMapOfAnything(val map[string]interface{}) *Link {
 	l.MapOfAnything = val
@@ -4680,10 +5022,28 @@ func (l *LinkOrRef) WithLinkReference(val LinkReference) *LinkOrRef {
 	return l
 }
 
+// LinkReferenceEns ensures returned LinkReference is not nil.
+func (l *LinkOrRef) LinkReferenceEns() *LinkReference {
+	if l.LinkReference == nil {
+		l.LinkReference = new(LinkReference)
+	}
+
+	return l.LinkReference
+}
+
 // WithLink sets Link value.
 func (l *LinkOrRef) WithLink(val Link) *LinkOrRef {
 	l.Link = &val
 	return l
+}
+
+// LinkEns ensures returned Link is not nil.
+func (l *LinkOrRef) LinkEns() *Link {
+	if l.Link == nil {
+		l.Link = new(Link)
+	}
+
+	return l.Link
 }
 
 // UnmarshalJSON decodes JSON.
@@ -4733,10 +5093,28 @@ func (r *ResponseOrRef) WithResponseReference(val ResponseReference) *ResponseOr
 	return r
 }
 
+// ResponseReferenceEns ensures returned ResponseReference is not nil.
+func (r *ResponseOrRef) ResponseReferenceEns() *ResponseReference {
+	if r.ResponseReference == nil {
+		r.ResponseReference = new(ResponseReference)
+	}
+
+	return r.ResponseReference
+}
+
 // WithResponse sets Response value.
 func (r *ResponseOrRef) WithResponse(val Response) *ResponseOrRef {
 	r.Response = &val
 	return r
+}
+
+// ResponseEns ensures returned Response is not nil.
+func (r *ResponseOrRef) ResponseEns() *Response {
+	if r.Response == nil {
+		r.Response = new(Response)
+	}
+
+	return r.Response
 }
 
 // UnmarshalJSON decodes JSON.
@@ -4946,10 +5324,28 @@ func (c *CallbackOrRef) WithCallbackReference(val CallbackReference) *CallbackOr
 	return c
 }
 
+// CallbackReferenceEns ensures returned CallbackReference is not nil.
+func (c *CallbackOrRef) CallbackReferenceEns() *CallbackReference {
+	if c.CallbackReference == nil {
+		c.CallbackReference = new(CallbackReference)
+	}
+
+	return c.CallbackReference
+}
+
 // WithCallback sets Callback value.
 func (c *CallbackOrRef) WithCallback(val Callback) *CallbackOrRef {
 	c.Callback = &val
 	return c
+}
+
+// CallbackEns ensures returned Callback is not nil.
+func (c *CallbackOrRef) CallbackEns() *Callback {
+	if c.Callback == nil {
+		c.Callback = new(Callback)
+	}
+
+	return c.Callback
 }
 
 // UnmarshalJSON decodes JSON.
@@ -5118,10 +5514,28 @@ func (c *Components) WithSchemas(val ComponentsSchemas) *Components {
 	return c
 }
 
+// SchemasEns ensures returned Schemas is not nil.
+func (c *Components) SchemasEns() *ComponentsSchemas {
+	if c.Schemas == nil {
+		c.Schemas = new(ComponentsSchemas)
+	}
+
+	return c.Schemas
+}
+
 // WithResponses sets Responses value.
 func (c *Components) WithResponses(val ComponentsResponses) *Components {
 	c.Responses = &val
 	return c
+}
+
+// ResponsesEns ensures returned Responses is not nil.
+func (c *Components) ResponsesEns() *ComponentsResponses {
+	if c.Responses == nil {
+		c.Responses = new(ComponentsResponses)
+	}
+
+	return c.Responses
 }
 
 // WithParameters sets Parameters value.
@@ -5130,10 +5544,28 @@ func (c *Components) WithParameters(val ComponentsParameters) *Components {
 	return c
 }
 
+// ParametersEns ensures returned Parameters is not nil.
+func (c *Components) ParametersEns() *ComponentsParameters {
+	if c.Parameters == nil {
+		c.Parameters = new(ComponentsParameters)
+	}
+
+	return c.Parameters
+}
+
 // WithExamples sets Examples value.
 func (c *Components) WithExamples(val ComponentsExamples) *Components {
 	c.Examples = &val
 	return c
+}
+
+// ExamplesEns ensures returned Examples is not nil.
+func (c *Components) ExamplesEns() *ComponentsExamples {
+	if c.Examples == nil {
+		c.Examples = new(ComponentsExamples)
+	}
+
+	return c.Examples
 }
 
 // WithRequestBodies sets RequestBodies value.
@@ -5142,10 +5574,28 @@ func (c *Components) WithRequestBodies(val ComponentsRequestBodies) *Components 
 	return c
 }
 
+// RequestBodiesEns ensures returned RequestBodies is not nil.
+func (c *Components) RequestBodiesEns() *ComponentsRequestBodies {
+	if c.RequestBodies == nil {
+		c.RequestBodies = new(ComponentsRequestBodies)
+	}
+
+	return c.RequestBodies
+}
+
 // WithHeaders sets Headers value.
 func (c *Components) WithHeaders(val ComponentsHeaders) *Components {
 	c.Headers = &val
 	return c
+}
+
+// HeadersEns ensures returned Headers is not nil.
+func (c *Components) HeadersEns() *ComponentsHeaders {
+	if c.Headers == nil {
+		c.Headers = new(ComponentsHeaders)
+	}
+
+	return c.Headers
 }
 
 // WithSecuritySchemes sets SecuritySchemes value.
@@ -5154,16 +5604,43 @@ func (c *Components) WithSecuritySchemes(val ComponentsSecuritySchemes) *Compone
 	return c
 }
 
+// SecuritySchemesEns ensures returned SecuritySchemes is not nil.
+func (c *Components) SecuritySchemesEns() *ComponentsSecuritySchemes {
+	if c.SecuritySchemes == nil {
+		c.SecuritySchemes = new(ComponentsSecuritySchemes)
+	}
+
+	return c.SecuritySchemes
+}
+
 // WithLinks sets Links value.
 func (c *Components) WithLinks(val ComponentsLinks) *Components {
 	c.Links = &val
 	return c
 }
 
+// LinksEns ensures returned Links is not nil.
+func (c *Components) LinksEns() *ComponentsLinks {
+	if c.Links == nil {
+		c.Links = new(ComponentsLinks)
+	}
+
+	return c.Links
+}
+
 // WithCallbacks sets Callbacks value.
 func (c *Components) WithCallbacks(val ComponentsCallbacks) *Components {
 	c.Callbacks = &val
 	return c
+}
+
+// CallbacksEns ensures returned Callbacks is not nil.
+func (c *Components) CallbacksEns() *ComponentsCallbacks {
+	if c.Callbacks == nil {
+		c.Callbacks = new(ComponentsCallbacks)
+	}
+
+	return c.Callbacks
 }
 
 // WithMapOfAnything sets MapOfAnything value.
@@ -6083,10 +6560,28 @@ func (h *HTTPSecurityScheme) WithOneOf0(val HTTPSecuritySchemeOneOf0) *HTTPSecur
 	return h
 }
 
+// OneOf0Ens ensures returned OneOf0 is not nil.
+func (h *HTTPSecurityScheme) OneOf0Ens() *HTTPSecuritySchemeOneOf0 {
+	if h.OneOf0 == nil {
+		h.OneOf0 = new(HTTPSecuritySchemeOneOf0)
+	}
+
+	return h.OneOf0
+}
+
 // WithOneOf1 sets OneOf1 value.
 func (h *HTTPSecurityScheme) WithOneOf1(val HTTPSecuritySchemeOneOf1) *HTTPSecurityScheme {
 	h.OneOf1 = &val
 	return h
+}
+
+// OneOf1Ens ensures returned OneOf1 is not nil.
+func (h *HTTPSecurityScheme) OneOf1Ens() *HTTPSecuritySchemeOneOf1 {
+	if h.OneOf1 == nil {
+		h.OneOf1 = new(HTTPSecuritySchemeOneOf1)
+	}
+
+	return h.OneOf1
 }
 
 // WithMapOfAnything sets MapOfAnything value.
@@ -6403,6 +6898,15 @@ func (o *OAuth2SecurityScheme) WithFlows(val OAuthFlows) *OAuth2SecurityScheme {
 	return o
 }
 
+// FlowsEns ensures returned Flows is not nil.
+func (o *OAuth2SecurityScheme) FlowsEns() *OAuthFlows {
+	if o.Flows == nil {
+		o.Flows = new(OAuthFlows)
+	}
+
+	return o.Flows
+}
+
 // WithDescription sets Description value.
 func (o *OAuth2SecurityScheme) WithDescription(val string) *OAuth2SecurityScheme {
 	o.Description = &val
@@ -6527,10 +7031,28 @@ func (o *OAuthFlows) WithImplicit(val ImplicitOAuthFlow) *OAuthFlows {
 	return o
 }
 
+// ImplicitEns ensures returned Implicit is not nil.
+func (o *OAuthFlows) ImplicitEns() *ImplicitOAuthFlow {
+	if o.Implicit == nil {
+		o.Implicit = new(ImplicitOAuthFlow)
+	}
+
+	return o.Implicit
+}
+
 // WithPassword sets Password value.
 func (o *OAuthFlows) WithPassword(val PasswordOAuthFlow) *OAuthFlows {
 	o.Password = &val
 	return o
+}
+
+// PasswordEns ensures returned Password is not nil.
+func (o *OAuthFlows) PasswordEns() *PasswordOAuthFlow {
+	if o.Password == nil {
+		o.Password = new(PasswordOAuthFlow)
+	}
+
+	return o.Password
 }
 
 // WithClientCredentials sets ClientCredentials value.
@@ -6539,10 +7061,28 @@ func (o *OAuthFlows) WithClientCredentials(val ClientCredentialsFlow) *OAuthFlow
 	return o
 }
 
+// ClientCredentialsEns ensures returned ClientCredentials is not nil.
+func (o *OAuthFlows) ClientCredentialsEns() *ClientCredentialsFlow {
+	if o.ClientCredentials == nil {
+		o.ClientCredentials = new(ClientCredentialsFlow)
+	}
+
+	return o.ClientCredentials
+}
+
 // WithAuthorizationCode sets AuthorizationCode value.
 func (o *OAuthFlows) WithAuthorizationCode(val AuthorizationCodeOAuthFlow) *OAuthFlows {
 	o.AuthorizationCode = &val
 	return o
+}
+
+// AuthorizationCodeEns ensures returned AuthorizationCode is not nil.
+func (o *OAuthFlows) AuthorizationCodeEns() *AuthorizationCodeOAuthFlow {
+	if o.AuthorizationCode == nil {
+		o.AuthorizationCode = new(AuthorizationCodeOAuthFlow)
+	}
+
+	return o.AuthorizationCode
 }
 
 // WithMapOfAnything sets MapOfAnything value.
@@ -7310,10 +7850,28 @@ func (s *SecurityScheme) WithAPIKeySecurityScheme(val APIKeySecurityScheme) *Sec
 	return s
 }
 
+// APIKeySecuritySchemeEns ensures returned APIKeySecurityScheme is not nil.
+func (s *SecurityScheme) APIKeySecuritySchemeEns() *APIKeySecurityScheme {
+	if s.APIKeySecurityScheme == nil {
+		s.APIKeySecurityScheme = new(APIKeySecurityScheme)
+	}
+
+	return s.APIKeySecurityScheme
+}
+
 // WithHTTPSecurityScheme sets HTTPSecurityScheme value.
 func (s *SecurityScheme) WithHTTPSecurityScheme(val HTTPSecurityScheme) *SecurityScheme {
 	s.HTTPSecurityScheme = &val
 	return s
+}
+
+// HTTPSecuritySchemeEns ensures returned HTTPSecurityScheme is not nil.
+func (s *SecurityScheme) HTTPSecuritySchemeEns() *HTTPSecurityScheme {
+	if s.HTTPSecurityScheme == nil {
+		s.HTTPSecurityScheme = new(HTTPSecurityScheme)
+	}
+
+	return s.HTTPSecurityScheme
 }
 
 // WithOAuth2SecurityScheme sets OAuth2SecurityScheme value.
@@ -7322,10 +7880,28 @@ func (s *SecurityScheme) WithOAuth2SecurityScheme(val OAuth2SecurityScheme) *Sec
 	return s
 }
 
+// OAuth2SecuritySchemeEns ensures returned OAuth2SecurityScheme is not nil.
+func (s *SecurityScheme) OAuth2SecuritySchemeEns() *OAuth2SecurityScheme {
+	if s.OAuth2SecurityScheme == nil {
+		s.OAuth2SecurityScheme = new(OAuth2SecurityScheme)
+	}
+
+	return s.OAuth2SecurityScheme
+}
+
 // WithOpenIDConnectSecurityScheme sets OpenIDConnectSecurityScheme value.
 func (s *SecurityScheme) WithOpenIDConnectSecurityScheme(val OpenIDConnectSecurityScheme) *SecurityScheme {
 	s.OpenIDConnectSecurityScheme = &val
 	return s
+}
+
+// OpenIDConnectSecuritySchemeEns ensures returned OpenIDConnectSecurityScheme is not nil.
+func (s *SecurityScheme) OpenIDConnectSecuritySchemeEns() *OpenIDConnectSecurityScheme {
+	if s.OpenIDConnectSecurityScheme == nil {
+		s.OpenIDConnectSecurityScheme = new(OpenIDConnectSecurityScheme)
+	}
+
+	return s.OpenIDConnectSecurityScheme
 }
 
 // UnmarshalJSON decodes JSON.
@@ -7391,10 +7967,28 @@ func (s *SecuritySchemeOrRef) WithSecuritySchemeReference(val SecuritySchemeRefe
 	return s
 }
 
+// SecuritySchemeReferenceEns ensures returned SecuritySchemeReference is not nil.
+func (s *SecuritySchemeOrRef) SecuritySchemeReferenceEns() *SecuritySchemeReference {
+	if s.SecuritySchemeReference == nil {
+		s.SecuritySchemeReference = new(SecuritySchemeReference)
+	}
+
+	return s.SecuritySchemeReference
+}
+
 // WithSecurityScheme sets SecurityScheme value.
 func (s *SecuritySchemeOrRef) WithSecurityScheme(val SecurityScheme) *SecuritySchemeOrRef {
 	s.SecurityScheme = &val
 	return s
+}
+
+// SecuritySchemeEns ensures returned SecurityScheme is not nil.
+func (s *SecuritySchemeOrRef) SecuritySchemeEns() *SecurityScheme {
+	if s.SecurityScheme == nil {
+		s.SecurityScheme = new(SecurityScheme)
+	}
+
+	return s.SecurityScheme
 }
 
 // UnmarshalJSON decodes JSON.
