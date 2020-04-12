@@ -584,10 +584,6 @@ func (s *Scalar) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (s Scalar) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalScalar(s))
-}
 
 // Property structure is generated from "#/definitions/property".
 type Property struct {
@@ -923,8 +919,7 @@ func (i *StringedType) UnmarshalJSON(data []byte) error {
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {
-	result := make([]byte, 1, 100)
-	result[0] = '{'
+	result := []byte("{")
 	isObject := true
 
 	for _, m := range maps {

@@ -1411,10 +1411,6 @@ func (s *StreamFramingOneOf0) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (s StreamFramingOneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalStreamFramingOneOf0(s))
-}
 
 // StreamFramingOneOf1 structure is generated from "#/definitions/stream->framing/oneOf/1".
 type StreamFramingOneOf1 struct {
@@ -1466,10 +1462,6 @@ func (s *StreamFramingOneOf1) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (s StreamFramingOneOf1) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalStreamFramingOneOf1(s))
-}
 
 // StreamFraming structure is generated from "#/definitions/stream->framing".
 //
@@ -1702,10 +1694,6 @@ func (c *Components) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (c Components) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalComponents(c))
-}
 
 // Reference structure is generated from "#/definitions/Reference".
 type Reference struct {
@@ -3661,8 +3649,7 @@ func (i *APIKeyHTTPSecuritySchemeIn) UnmarshalJSON(data []byte) error {
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {
-	result := make([]byte, 1, 100)
-	result[0] = '{'
+	result := []byte("{")
 	isObject := true
 
 	for _, m := range maps {

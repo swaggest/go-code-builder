@@ -109,7 +109,10 @@ class MarshalJson extends GoTemplate
 
         $result = '';
 
-        if ($this->propertyNames !== null) {
+        $renderUnmarshal = $this->renderUnmarshal();
+        $renderMarshal = $this->renderMarshal();
+
+        if ($this->propertyNames !== null && ($renderUnmarshal !== '' || $renderMarshal !== '')) {
             $result .= <<<'GO'
 type marshal:type :type
 
@@ -119,16 +122,10 @@ GO;
 
         $result .= <<<GO
 {$this->padLines('',
-            $this->renderUnmarshal()
-            . $this->renderMarshal())}
+            $renderUnmarshal
+            . $renderMarshal)}
 
 GO;
-        if (!$this->builder->options->skipMarshal) {
-            if (null === $this->builder->marshalUnion) {
-                $this->builder->marshalUnion = new MarshalUnion();
-                $this->builder->getCode()->addSnippet($this->builder->marshalUnion, false, 'marshal_union');
-            }
-        }
         if (!$this->builder->options->skipUnmarshal) {
             $this->builder->getCode()->addSnippet($this->builder->unmarshalUnion, false, 'unmarshal_union');
             if ($this->patternProperties !== null) {
@@ -466,6 +463,11 @@ GO;
             }
         }
 
+        // Return if only marshaling original struct.
+        if ($maps === ', marshal:type(:receiver)') {
+            return '';
+        }
+
         $maps = substr($maps, 2);
 
         $earlyReturn = '';
@@ -478,6 +480,13 @@ GO;
 
 GO;
 
+        }
+
+        if (!$this->builder->options->skipMarshal) {
+            if (null === $this->builder->marshalUnion) {
+                $this->builder->marshalUnion = new MarshalUnion();
+                $this->builder->getCode()->addSnippet($this->builder->marshalUnion, false, 'marshal_union');
+            }
         }
 
         return <<<GO

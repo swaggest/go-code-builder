@@ -355,12 +355,6 @@ type Components struct {
 	Parameters      map[string]Parameter              `json:"parameters,omitempty"`      // JSON objects describing re-usable topic parameters.
 }
 
-type marshalComponents Components
-
-// MarshalJSON encodes JSON.
-func (c Components) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalComponents(c))
-}
 
 // Reference structure is generated from "#/definitions/Reference".
 type Reference struct {
@@ -733,8 +727,7 @@ func (i APIKeyHTTPSecuritySchemeIn) MarshalJSON() ([]byte, error) {
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {
-	result := make([]byte, 1, 100)
-	result[0] = '{'
+	result := []byte("{")
 	isObject := true
 
 	for _, m := range maps {

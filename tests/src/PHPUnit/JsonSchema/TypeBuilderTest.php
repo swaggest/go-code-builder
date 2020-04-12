@@ -90,10 +90,6 @@ func (h *Header) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (h Header) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHeader(h))
-}
 
 
 GO;

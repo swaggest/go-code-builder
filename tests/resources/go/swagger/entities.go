@@ -2155,10 +2155,6 @@ func (j *JSONReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (j JSONReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalJSONReference(j))
-}
 
 // ParametersListItems structure is generated from "#/definitions/parametersList->items".
 type ParametersListItems struct {
@@ -4230,8 +4226,7 @@ func (i *APIKeySecurityIn) UnmarshalJSON(data []byte) error {
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {
-	result := make([]byte, 1, 100)
-	result[0] = '{'
+	result := []byte("{")
 	isObject := true
 
 	for _, m := range maps {

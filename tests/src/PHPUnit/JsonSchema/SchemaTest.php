@@ -154,10 +154,6 @@ func (a *Another) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (a Another) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAnother(a))
-}
 
 
 GO;

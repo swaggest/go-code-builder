@@ -86,37 +86,22 @@ JSON;
         $this->assertSame('', $out, "Generated files changed");
     }
 
-    public function testObjectOrString()
+    public function testObjectOrNull()
     {
         $schemaData = <<<'JSON'
 {
-    "items": {
-        "$ref": "#/definitions/element"
-    },
-    "type": "array",
-    "definitions": {
-        "element": {
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "val": {
-                    "type": "integer"
-                }
-            },
-            "type": [
-                "object",
-                "string"
-            ]
-        }
+    "type": ["null", "object"],
+    "required": ["a"],
+    "properties": {
+        "a": {"type": "string"}
     }
 }
 JSON;
         $schema = Schema::import(json_decode($schemaData));
         $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
 
-
-        $path = __DIR__ . '/../../../resources/go/advanced/object-or-string';
+        $path = __DIR__ . '/../../../resources/go/advanced/object-or-null';
         Helper::buildEntities($builder, $schema, $path, 'ObjectOrString');
 
         exec('git diff ' . $path, $out);

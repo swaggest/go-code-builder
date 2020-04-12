@@ -215,7 +215,13 @@ class GoBuilder
         // Properties are only processed if type has object semantic.
         // This removes properties from multi-type and non-object (e.g. boolean) structures.
         $processProperties = false;
-        if ($schema->type === null || $schema->type === Schema::OBJECT) {
+        if ($schema->type === null
+            || $schema->type === Schema::OBJECT
+            || (is_array($schema->type)
+                && in_array(Schema::OBJECT, $schema->type)
+                && in_array(Schema::NULL, $schema->type)
+                && count($schema->type) === 2)
+        ) {
             $processProperties = true;
         }
 

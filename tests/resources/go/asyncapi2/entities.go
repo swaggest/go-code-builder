@@ -1664,10 +1664,6 @@ func (a *AMQP091OperationBindingObject) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (a AMQP091OperationBindingObject) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAMQP091OperationBindingObject(a))
-}
 
 // OperationTraitsItems structure is generated from "#/definitions/operation->traits->items".
 type OperationTraitsItems struct {
@@ -1777,10 +1773,6 @@ func (m *MessageOneOf1OneOf0) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (m MessageOneOf1OneOf0) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalMessageOneOf1OneOf0(m))
-}
 
 // MessageOneOf1OneOf1 structure is generated from "#/definitions/message/oneOf/1/oneOf/1".
 type MessageOneOf1OneOf1 struct {
@@ -2262,10 +2254,6 @@ func (a *AMQP091MessageBindingObject) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (a AMQP091MessageBindingObject) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAMQP091MessageBindingObject(a))
-}
 
 // MessageTrait structure is generated from "#/definitions/messageTrait".
 type MessageTrait struct {
@@ -2817,10 +2805,6 @@ func (a *AMQP091ChannelBindingObject) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (a AMQP091ChannelBindingObject) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalAMQP091ChannelBindingObject(a))
-}
 
 // Exchange structure is generated from "#/definitions/exchange".
 //
@@ -3034,10 +3018,6 @@ func (c *Components) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (c Components) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalComponents(c))
-}
 
 // UserPassword structure is generated from "#/definitions/userPassword".
 type UserPassword struct {
@@ -4139,10 +4119,6 @@ func (o *Oauth2FlowsFlows) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (o Oauth2FlowsFlows) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalOauth2FlowsFlows(o))
-}
 
 // Oauth2Flow structure is generated from "#/definitions/oauth2Flow".
 type Oauth2Flow struct {
@@ -5011,8 +4987,7 @@ func (i *APIKeyHTTPSecuritySchemeIn) UnmarshalJSON(data []byte) error {
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {
-	result := make([]byte, 1, 100)
-	result[0] = '{'
+	result := []byte("{")
 	isObject := true
 
 	for _, m := range maps {

@@ -1305,10 +1305,6 @@ func (p *ParameterReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (p ParameterReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalParameterReference(p))
-}
 
 // Parameter structure is generated from "#/definitions/Parameter".
 type Parameter struct {
@@ -2097,10 +2093,6 @@ func (s *SchemaReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (s SchemaReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSchemaReference(s))
-}
 
 // SchemaOrRef structure is generated from "#/definitions/SchemaOrRef".
 type SchemaOrRef struct {
@@ -2694,10 +2686,6 @@ func (e *ExampleReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (e ExampleReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalExampleReference(e))
-}
 
 // Example structure is generated from "#/definitions/Example".
 type Example struct {
@@ -3000,10 +2988,6 @@ func (e *Encoding) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (e Encoding) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalEncoding(e))
-}
 
 // Header structure is generated from "#/definitions/Header".
 type Header struct {
@@ -4071,10 +4055,6 @@ func (r *RequestBodyReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (r RequestBodyReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalRequestBodyReference(r))
-}
 
 // RequestBody structure is generated from "#/definitions/RequestBody".
 type RequestBody struct {
@@ -4478,10 +4458,6 @@ func (r *ResponseReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (r ResponseReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalResponseReference(r))
-}
 
 // Response structure is generated from "#/definitions/Response".
 type Response struct {
@@ -4698,10 +4674,6 @@ func (h *HeaderReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (h HeaderReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalHeaderReference(h))
-}
 
 // HeaderOrRef structure is generated from "#/definitions/HeaderOrRef".
 type HeaderOrRef struct {
@@ -4830,10 +4802,6 @@ func (l *LinkReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (l LinkReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalLinkReference(l))
-}
 
 // Link structure is generated from "#/definitions/Link".
 type Link struct {
@@ -5208,10 +5176,6 @@ func (c *CallbackReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (c CallbackReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalCallbackReference(c))
-}
 
 // Callback structure is generated from "#/definitions/Callback".
 type Callback struct {
@@ -6391,10 +6355,6 @@ func (s *SecuritySchemeReference) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON encodes JSON.
-func (s SecuritySchemeReference) MarshalJSON() ([]byte, error) {
-	return marshalUnion(marshalSecuritySchemeReference(s))
-}
 
 // APIKeySecurityScheme structure is generated from "#/definitions/APIKeySecurityScheme".
 type APIKeySecurityScheme struct {
@@ -8636,8 +8596,7 @@ func (i *APIKeySecuritySchemeIn) UnmarshalJSON(data []byte) error {
 }
 
 func marshalUnion(maps ...interface{}) ([]byte, error) {
-	result := make([]byte, 1, 100)
-	result[0] = '{'
+	result := []byte("{")
 	isObject := true
 
 	for _, m := range maps {
