@@ -189,7 +189,7 @@ var knownKeys:type = []string{
 GO;
         }
 
-        if (!empty($this->required)) {
+        if (!empty($this->required) && $this->builder->options->validateRequired) {
             $result .= <<<GO
 var requireKeys:type = []string{
 	"{$this->padLines("\t", implode("\",\n\"", $this->required))}",
@@ -246,7 +246,7 @@ GO;
 
         }
 
-        if (!empty($this->required)) {
+        if (!empty($this->required) && $this->builder->options->validateRequired) {
             $this->code->imports()->addByName('errors');
             $mapUnmarshal .= <<<GO
 

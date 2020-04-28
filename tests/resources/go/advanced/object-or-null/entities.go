@@ -3,7 +3,6 @@ package entities
 
 import (
 	"encoding/json"
-	"errors"
 )
 
 // ObjectOrString structure is generated from "#".
@@ -12,10 +11,6 @@ type ObjectOrString struct {
 }
 
 type marshalObjectOrString ObjectOrString
-
-var requireKeysObjectOrString = []string{
-	"a",
-}
 
 // UnmarshalJSON decodes JSON.
 func (o *ObjectOrString) UnmarshalJSON(data []byte) error {
@@ -33,12 +28,6 @@ func (o *ObjectOrString) UnmarshalJSON(data []byte) error {
 	err = json.Unmarshal(data, &rawMap)
 	if err != nil {
 		rawMap = nil
-	}
-
-	for _, key := range requireKeysObjectOrString {
-		if _, found := rawMap[key]; !found {
-			return errors.New("required key missing: " + key)
-		}
 	}
 
 	*o = ObjectOrString(mo)
