@@ -100,6 +100,7 @@ JSON;
         $schema = Schema::import(json_decode($schemaData));
         $builder = new GoBuilder();
         $builder->options->defaultAdditionalProperties = false;
+        $builder->options->validateRequired = false;
 
         $path = __DIR__ . '/../../../resources/go/advanced/object-or-null';
         Helper::buildEntities($builder, $schema, $path, 'ObjectOrString');

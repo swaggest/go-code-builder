@@ -67,6 +67,12 @@ class Options extends ClassStructure
     public $ignoreRequired = false;
 
     /**
+     * Validate that required properties are present when unmarshaling.
+     * @var bool
+     */
+    public $validateRequired = true;
+
+    /**
      * Add omitempty to nullable values.
      * @var bool
      */
