@@ -768,7 +768,6 @@ GO
                 $this->nullable ||
                 ($this->goBuilder->options->withZeroValues && false !== $this->schema->{self::X_OMIT_EMPTY})
             ) {
-                $aa = 11;
                 if (
                     (!$type instanceof Pointer) &&
                     (!$type instanceof Map) &&

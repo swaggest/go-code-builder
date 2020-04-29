@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.37] - 2020-04-29
+
+### Fixed
+- Rendering of required x-nullable fields.
+
 ## [0.4.36] - 2020-04-29
 
 ### Fixed
@@ -218,6 +223,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed unnecessary regexp dependency, #7.
 
+[0.4.37]: https://github.com/swaggest/go-code-builder/compare/v0.4.36...v0.4.37
 [0.4.36]: https://github.com/swaggest/go-code-builder/compare/v0.4.35...v0.4.36
 [0.4.35]: https://github.com/swaggest/go-code-builder/compare/v0.4.34...v0.4.35
 [0.4.34]: https://github.com/swaggest/go-code-builder/compare/v0.4.33...v0.4.34

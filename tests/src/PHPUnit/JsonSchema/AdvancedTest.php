@@ -116,14 +116,30 @@ JSON;
         $schemaData = <<<'JSON'
 {
     "type": ["null", "object"],
-    "required": ["a", "b"],
+    "required": ["a", "an", "axn", "b"],
     "properties": {
         "a": {"$ref": "#/definitions/def"},
+        "an": {"$ref": "#/definitions/defNullable"},
+        "axn": {"$ref": "#/definitions/defXNullable"},
         "b": {"type": ["null", "string"]}
     },
     "definitions": {
         "def": {
             "type": ["object", "null"],
+            "properties": {
+                "b": {"type": "string"}
+            }
+        },
+        "defNullable": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+                "b": {"type": "string"}
+            }
+        },
+        "defXNullable": {
+            "type": "object",
+            "x-nullable": true,
             "properties": {
                 "b": {"type": "string"}
             }
@@ -136,6 +152,7 @@ JSON;
         $builder->options->defaultAdditionalProperties = false;
         $builder->options->validateRequired = false;
         $builder->options->ignoreRequired = false;
+        $builder->options->enableXNullable = true;
 
         $path = __DIR__ . '/../../../resources/go/advanced/required-nullable';
         Helper::buildEntities($builder, $schema, $path, 'RequiredNullable');

@@ -253,7 +253,7 @@ class GoBuilder
                 if ($goPropertyType instanceof StructType) {
                     if (!$isRequired
                         || $this->options->ignoreRequired
-                        || (is_array($property->type) && in_array(Schema::NULL, $property->type))
+                        || $this->isNullable($property)
                     ) {
                         $goPropertyType = new Pointer($goPropertyType);
                     }
@@ -405,5 +405,24 @@ class GoBuilder
         } else {
             return $schema;
         }
+    }
+
+    public function isNullable(Schema $schema)
+    {
+        if ($schema->type === Schema::NULL) {
+            return true;
+        }
+
+        if (is_array($schema->type) && in_array(Schema::NULL, $schema->type)) {
+            return true;
+        }
+
+        if ($this->options->enableXNullable) {
+            if ($schema->{TypeBuilder::X_NULLABLE} === true || $schema->{TypeBuilder::NULLABLE} === true) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
