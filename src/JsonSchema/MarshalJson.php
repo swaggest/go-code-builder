@@ -103,7 +103,7 @@ class MarshalJson extends GoTemplate
             && $this->additionalPropertiesEnabled === null
             && $this->someOf === null
             && $this->constValues === null
-            && empty($this->required)) {
+            && (empty($this->required) || $this->builder->options->ignoreRequired || !$this->builder->options->validateRequired)) {
             return '';
         }
 
@@ -230,7 +230,8 @@ GO;
             || $this->additionalPropertiesEnabled !== null
             || $this->constValues !== null
             || !empty($this->distinctNullNames)
-            || !empty($this->required)) {
+            || (!empty($this->required) && $this->builder->options->validateRequired && !$this->builder->options->ignoreRequired)
+        ) {
             $this->code->imports()->addByName('encoding/json');
             $mapUnmarshal = <<<'GO'
 
@@ -246,7 +247,7 @@ GO;
 
         }
 
-        if (!empty($this->required) && $this->builder->options->validateRequired) {
+        if (!empty($this->required) && $this->builder->options->validateRequired && !$this->builder->options->ignoreRequired) {
             $this->code->imports()->addByName('errors');
             $mapUnmarshal .= <<<GO
 

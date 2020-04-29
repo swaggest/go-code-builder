@@ -251,7 +251,10 @@ class GoBuilder
                 $isRequired = (null !== $schema->required) && in_array($name, $schema->required);
                 $goPropertyType = $this->getType($property, $path . '->' . $name, $structDef, $isRequired);
                 if ($goPropertyType instanceof StructType) {
-                    if (!$isRequired || $this->options->ignoreRequired) {
+                    if (!$isRequired
+                        || $this->options->ignoreRequired
+                        || (is_array($property->type) && in_array(Schema::NULL, $property->type))
+                    ) {
                         $goPropertyType = new Pointer($goPropertyType);
                     }
                 }
