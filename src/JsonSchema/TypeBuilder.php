@@ -54,7 +54,7 @@ class TypeBuilder
     private $parentStruct;
 
     /** @var bool indicates type of required property */
-    private $isRequired = false;
+    private $isRequired;
 
     /**
      * TypeBuilder constructor.
@@ -768,11 +768,12 @@ GO
                 $this->nullable ||
                 ($this->goBuilder->options->withZeroValues && false !== $this->schema->{self::X_OMIT_EMPTY})
             ) {
+                $aa = 11;
                 if (
                     (!$type instanceof Pointer) &&
                     (!$type instanceof Map) &&
                     (!$type instanceof Slice) &&
-                    (!$this->isRequired || $this->goBuilder->options->ignoreRequired) &&
+                    (!$this->isRequired || $this->goBuilder->options->ignoreRequired || $this->nullable) &&
                     ($type->getTypeString() !== 'interface{}')
                 ) {
                     $type = new Pointer($type);

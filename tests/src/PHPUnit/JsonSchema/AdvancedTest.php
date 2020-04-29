@@ -103,11 +103,47 @@ JSON;
         $builder->options->validateRequired = false;
 
         $path = __DIR__ . '/../../../resources/go/advanced/object-or-null';
-        Helper::buildEntities($builder, $schema, $path, 'ObjectOrString');
+        Helper::buildEntities($builder, $schema, $path, 'ObjectOrNull');
 
         exec('git diff ' . $path, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
+
+
+    public function testRequiredNullable()
+    {
+        $schemaData = <<<'JSON'
+{
+    "type": ["null", "object"],
+    "required": ["a", "b"],
+    "properties": {
+        "a": {"$ref": "#/definitions/def"},
+        "b": {"type": ["null", "string"]}
+    },
+    "definitions": {
+        "def": {
+            "type": ["object", "null"],
+            "properties": {
+                "b": {"type": "string"}
+            }
+        }
+    }
+}
+JSON;
+        $schema = Schema::import(json_decode($schemaData));
+        $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
+        $builder->options->validateRequired = false;
+        $builder->options->ignoreRequired = false;
+
+        $path = __DIR__ . '/../../../resources/go/advanced/required-nullable';
+        Helper::buildEntities($builder, $schema, $path, 'RequiredNullable');
+
+        exec('git diff ' . $path, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
+    }
+
 
 }

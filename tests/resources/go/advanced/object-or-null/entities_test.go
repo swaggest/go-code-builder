@@ -8,10 +8,10 @@ import (
 	"github.com/swaggest/assertjson"
 )
 
-func TestObjectOrString_MarshalJSON_roundtrip(t *testing.T) {
+func TestObjectOrNull_MarshalJSON_roundtrip(t *testing.T) {
 	var (
 		jsonValue = []byte(`{"a":"aeff"}`)
-		v ObjectOrString
+		v ObjectOrNull
 	)
 
 	require.NoError(t, json.Unmarshal(jsonValue, &v))
