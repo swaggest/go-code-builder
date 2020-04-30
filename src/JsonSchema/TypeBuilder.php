@@ -237,9 +237,13 @@ class TypeBuilder
         if ($index < $itemsLen) {
         } else {
             if ($additionalItems instanceof Schema) {
-                $this->result[] = new Slice(Pointer::tryDereferenceOnce(
+                $sliceType = new Slice(Pointer::tryDereferenceOnce(
                     $this->goBuilder->getType($additionalItems, $this->path . '->' . $pathItems))
                 );
+                if ($this->nullable) {
+                    $sliceType = new Pointer($sliceType);
+                }
+                $this->result[] = $sliceType;
             }
         }
     }
@@ -353,7 +357,12 @@ class TypeBuilder
                     $this->getGeneratedStruct()->marshalJson->enableAdditionalProperties($structProperty);
                 }
             } elseif ($additionalProperties instanceof Schema) {
-                $this->result[] = new Map(new GoType('string'), $goType);
+                $mapType = new Map(new GoType('string'), $goType);
+                if ($this->nullable) {
+                    $mapType = new Pointer($mapType);
+                }
+
+                $this->result[] = $mapType;
             }
         }
 

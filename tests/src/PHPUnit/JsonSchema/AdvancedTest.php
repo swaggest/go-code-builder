@@ -162,5 +162,39 @@ JSON;
         $this->assertSame('', $out, "Generated files changed");
     }
 
+    public function testNullableOmitemptyMapSlice()
+    {
+        $schemaData = <<<'JSON'
+{
+    "type": "object",
+    "properties": {
+        "slice": {
+            "type": "array",
+            "items": {"type":"string"},
+            "x-nullable": true,
+            "x-omitempty": true
+        },
+        "map": {
+            "type": "object",
+            "additionalProperties": {"type":"string"},
+            "x-nullable": true,
+            "x-omitempty": true
+        }
+    }
+}
+JSON;
+        $schema = Schema::import(json_decode($schemaData));
+        $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
+        $builder->options->validateRequired = false;
+        $builder->options->ignoreRequired = false;
+        $builder->options->enableXNullable = true;
 
+        $path = __DIR__ . '/../../../resources/go/advanced/nullable-omitempty-map-slice';
+        Helper::buildEntities($builder, $schema, $path, 'RequiredNullable');
+
+        exec('git diff ' . $path, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
+    }
 }
