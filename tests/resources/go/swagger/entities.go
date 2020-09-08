@@ -89,8 +89,8 @@ func (s *SwaggerSchema) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["swagger"]; !ok || string(v) != `"2.0"` {
-		return fmt.Errorf(`bad or missing const value for "swagger" ("2.0" expected, %s received)`, v)
+	if v, exists := rawMap["swagger"]; exists && string(v) != `"2.0"` {
+		return fmt.Errorf(`bad const value for "swagger" ("2.0" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "swagger")
@@ -874,8 +874,8 @@ func (b *BodyParameter) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"body"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("body" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"body"` {
+		return fmt.Errorf(`bad const value for "in" ("body" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
@@ -1366,8 +1366,8 @@ func (h *HeaderParameterSubSchema) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"header"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("header" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"header"` {
+		return fmt.Errorf(`bad const value for "in" ("header" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
@@ -1622,8 +1622,8 @@ func (f *FormDataParameterSubSchema) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"formData"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("formData" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"formData"` {
+		return fmt.Errorf(`bad const value for "in" ("formData" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
@@ -1760,8 +1760,8 @@ func (q *QueryParameterSubSchema) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"query"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("query" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"query"` {
+		return fmt.Errorf(`bad const value for "in" ("query" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
@@ -1905,14 +1905,14 @@ func (p *PathParameterSubSchema) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["required"]; !ok || string(v) != "true" {
-		return fmt.Errorf(`bad or missing const value for "required" (true expected, %s received)`, v)
+	if v, exists := rawMap["required"]; exists && string(v) != "true" {
+		return fmt.Errorf(`bad const value for "required" (true expected, %s received)`, v)
 	}
 
 	delete(rawMap, "required")
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"path"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("path" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"path"` {
+		return fmt.Errorf(`bad const value for "in" ("path" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
@@ -2349,8 +2349,8 @@ func (f *FileSchema) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"file"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("file" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"file"` {
+		return fmt.Errorf(`bad const value for "type" ("file" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -2820,8 +2820,8 @@ func (b *BasicAuthenticationSecurity) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"basic"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("basic" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"basic"` {
+		return fmt.Errorf(`bad const value for "type" ("basic" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -2927,8 +2927,8 @@ func (a *APIKeySecurity) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"apiKey"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("apiKey" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"apiKey"` {
+		return fmt.Errorf(`bad const value for "type" ("apiKey" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3037,14 +3037,14 @@ func (o *Oauth2ImplicitSecurity) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"oauth2"` {
+		return fmt.Errorf(`bad const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	if v, ok := rawMap["flow"]; !ok || string(v) != `"implicit"` {
-		return fmt.Errorf(`bad or missing const value for "flow" ("implicit" expected, %s received)`, v)
+	if v, exists := rawMap["flow"]; exists && string(v) != `"implicit"` {
+		return fmt.Errorf(`bad const value for "flow" ("implicit" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "flow")
@@ -3153,14 +3153,14 @@ func (o *Oauth2PasswordSecurity) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"oauth2"` {
+		return fmt.Errorf(`bad const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	if v, ok := rawMap["flow"]; !ok || string(v) != `"password"` {
-		return fmt.Errorf(`bad or missing const value for "flow" ("password" expected, %s received)`, v)
+	if v, exists := rawMap["flow"]; exists && string(v) != `"password"` {
+		return fmt.Errorf(`bad const value for "flow" ("password" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "flow")
@@ -3269,14 +3269,14 @@ func (o *Oauth2ApplicationSecurity) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"oauth2"` {
+		return fmt.Errorf(`bad const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	if v, ok := rawMap["flow"]; !ok || string(v) != `"application"` {
-		return fmt.Errorf(`bad or missing const value for "flow" ("application" expected, %s received)`, v)
+	if v, exists := rawMap["flow"]; exists && string(v) != `"application"` {
+		return fmt.Errorf(`bad const value for "flow" ("application" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "flow")
@@ -3390,14 +3390,14 @@ func (o *Oauth2AccessCodeSecurity) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"oauth2"` {
+		return fmt.Errorf(`bad const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
 
-	if v, ok := rawMap["flow"]; !ok || string(v) != `"accessCode"` {
-		return fmt.Errorf(`bad or missing const value for "flow" ("accessCode" expected, %s received)`, v)
+	if v, exists := rawMap["flow"]; exists && string(v) != `"accessCode"` {
+		return fmt.Errorf(`bad const value for "flow" ("accessCode" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "flow")

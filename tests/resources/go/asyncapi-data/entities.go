@@ -120,14 +120,14 @@ func (b *Book) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["entity_type"]; !ok || string(v) != `"book"` {
-		return fmt.Errorf(`bad or missing const value for "entity_type" ("book" expected, %s received)`, v)
+	if v, exists := rawMap["entity_type"]; exists && string(v) != `"book"` {
+		return fmt.Errorf(`bad const value for "entity_type" ("book" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "entity_type")
 
-	if v, ok := rawMap["reason"]; !ok || string(v) != `"premium"` {
-		return fmt.Errorf(`bad or missing const value for "reason" ("premium" expected, %s received)`, v)
+	if v, exists := rawMap["reason"]; exists && string(v) != `"premium"` {
+		return fmt.Errorf(`bad const value for "reason" ("premium" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "reason")

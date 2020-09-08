@@ -266,8 +266,8 @@ GO;
             foreach ($this->constValues as $name => $value) {
                 $mapUnmarshal .= <<<GO
 
-if v, ok := rawMap[{$this->escapeValue($name)}]; !ok || string(v) != {$this->escapeValue(json_encode($value))} {
-	return fmt.Errorf({$this->escapeValue('bad or missing const value for "' . $name . '" (' . json_encode($value) . ' expected, %s received)')}, v)
+if v, exists := rawMap[{$this->escapeValue($name)}]; exists && string(v) != {$this->escapeValue(json_encode($value))} {
+	return fmt.Errorf({$this->escapeValue('bad const value for "' . $name . '" (' . json_encode($value) . ' expected, %s received)')}, v)
 }
 
 delete(rawMap, {$this->escapeValue($name)})

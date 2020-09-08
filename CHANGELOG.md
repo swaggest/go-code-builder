@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.39] - 2020-08-09
+
+### Fixed
+- Redundant `const` check for missing properties.
+
 ## [0.4.38] - 2020-04-30
 
 ### Fixed
@@ -228,6 +233,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed unnecessary regexp dependency, #7.
 
+[0.4.39]: https://github.com/swaggest/go-code-builder/compare/v0.4.38...v0.4.39
 [0.4.38]: https://github.com/swaggest/go-code-builder/compare/v0.4.37...v0.4.38
 [0.4.37]: https://github.com/swaggest/go-code-builder/compare/v0.4.36...v0.4.37
 [0.4.36]: https://github.com/swaggest/go-code-builder/compare/v0.4.35...v0.4.36

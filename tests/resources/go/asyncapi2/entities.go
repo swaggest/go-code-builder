@@ -71,8 +71,8 @@ func (a *AsyncAPI) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["asyncapi"]; !ok || string(v) != `"2.0.0"` {
-		return fmt.Errorf(`bad or missing const value for "asyncapi" ("2.0.0" expected, %s received)`, v)
+	if v, exists := rawMap["asyncapi"]; exists && string(v) != `"2.0.0"` {
+		return fmt.Errorf(`bad const value for "asyncapi" ("2.0.0" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "asyncapi")
@@ -3060,8 +3060,8 @@ func (u *UserPassword) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"userPassword"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("userPassword" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"userPassword"` {
+		return fmt.Errorf(`bad const value for "type" ("userPassword" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3164,8 +3164,8 @@ func (a *APIKey) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"apiKey"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("apiKey" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"apiKey"` {
+		return fmt.Errorf(`bad const value for "type" ("apiKey" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3265,8 +3265,8 @@ func (x *X509) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"X509"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("X509" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"X509"` {
+		return fmt.Errorf(`bad const value for "type" ("X509" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3366,8 +3366,8 @@ func (s *SymmetricEncryption) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"symmetricEncryption"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("symmetricEncryption" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"symmetricEncryption"` {
+		return fmt.Errorf(`bad const value for "type" ("symmetricEncryption" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3467,8 +3467,8 @@ func (a *AsymmetricEncryption) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"asymmetricEncryption"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("asymmetricEncryption" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"asymmetricEncryption"` {
+		return fmt.Errorf(`bad const value for "type" ("asymmetricEncryption" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3577,8 +3577,8 @@ func (n *NonBearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"http"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("http" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"http"` {
+		return fmt.Errorf(`bad const value for "type" ("http" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3653,8 +3653,8 @@ func (n *NonBearerHTTPSecuritySchemeNot) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["scheme"]; !ok || string(v) != `"bearer"` {
-		return fmt.Errorf(`bad or missing const value for "scheme" ("bearer" expected, %s received)`, v)
+	if v, exists := rawMap["scheme"]; exists && string(v) != `"bearer"` {
+		return fmt.Errorf(`bad const value for "scheme" ("bearer" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "scheme")
@@ -3732,14 +3732,14 @@ func (b *BearerHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["scheme"]; !ok || string(v) != `"bearer"` {
-		return fmt.Errorf(`bad or missing const value for "scheme" ("bearer" expected, %s received)`, v)
+	if v, exists := rawMap["scheme"]; exists && string(v) != `"bearer"` {
+		return fmt.Errorf(`bad const value for "scheme" ("bearer" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "scheme")
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"http"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("http" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"http"` {
+		return fmt.Errorf(`bad const value for "type" ("http" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -3845,8 +3845,8 @@ func (a *APIKeyHTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"httpApiKey"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("httpApiKey" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"httpApiKey"` {
+		return fmt.Errorf(`bad const value for "type" ("httpApiKey" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -4000,8 +4000,8 @@ func (o *Oauth2Flows) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"oauth2"` {
+		return fmt.Errorf(`bad const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -4251,8 +4251,8 @@ func (o *OpenIDConnect) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"openIdConnect"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("openIdConnect" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"openIdConnect"` {
+		return fmt.Errorf(`bad const value for "type" ("openIdConnect" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")

@@ -3146,8 +3146,8 @@ func (h *Header) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["style"]; !ok || string(v) != `"simple"` {
-		return fmt.Errorf(`bad or missing const value for "style" ("simple" expected, %s received)`, v)
+	if v, exists := rawMap["style"]; exists && string(v) != `"simple"` {
+		return fmt.Errorf(`bad const value for "style" ("simple" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "style")
@@ -3281,14 +3281,14 @@ func (p *ParameterLocationOneOf0) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"path"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("path" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"path"` {
+		return fmt.Errorf(`bad const value for "in" ("path" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
 
-	if v, ok := rawMap["required"]; !ok || string(v) != "true" {
-		return fmt.Errorf(`bad or missing const value for "required" (true expected, %s received)`, v)
+	if v, exists := rawMap["required"]; exists && string(v) != "true" {
+		return fmt.Errorf(`bad const value for "required" (true expected, %s received)`, v)
 	}
 
 	delete(rawMap, "required")
@@ -3385,8 +3385,8 @@ func (p *ParameterLocationOneOf1) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"query"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("query" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"query"` {
+		return fmt.Errorf(`bad const value for "in" ("query" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
@@ -3462,14 +3462,14 @@ func (p *ParameterLocationOneOf2) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"header"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("header" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"header"` {
+		return fmt.Errorf(`bad const value for "in" ("header" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
 
-	if v, ok := rawMap["style"]; !ok || string(v) != `"simple"` {
-		return fmt.Errorf(`bad or missing const value for "style" ("simple" expected, %s received)`, v)
+	if v, exists := rawMap["style"]; exists && string(v) != `"simple"` {
+		return fmt.Errorf(`bad const value for "style" ("simple" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "style")
@@ -3539,14 +3539,14 @@ func (p *ParameterLocationOneOf3) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["in"]; !ok || string(v) != `"cookie"` {
-		return fmt.Errorf(`bad or missing const value for "in" ("cookie" expected, %s received)`, v)
+	if v, exists := rawMap["in"]; exists && string(v) != `"cookie"` {
+		return fmt.Errorf(`bad const value for "in" ("cookie" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "in")
 
-	if v, ok := rawMap["style"]; !ok || string(v) != `"form"` {
-		return fmt.Errorf(`bad or missing const value for "style" ("form" expected, %s received)`, v)
+	if v, exists := rawMap["style"]; exists && string(v) != `"form"` {
+		return fmt.Errorf(`bad const value for "style" ("form" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "style")
@@ -6426,8 +6426,8 @@ func (a *APIKeySecurityScheme) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"apiKey"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("apiKey" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"apiKey"` {
+		return fmt.Errorf(`bad const value for "type" ("apiKey" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -6611,8 +6611,8 @@ func (h *HTTPSecurityScheme) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"http"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("http" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"http"` {
+		return fmt.Errorf(`bad const value for "type" ("http" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -6708,8 +6708,8 @@ func (h *HTTPSecuritySchemeOneOf0) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["scheme"]; !ok || string(v) != `"bearer"` {
-		return fmt.Errorf(`bad or missing const value for "scheme" ("bearer" expected, %s received)`, v)
+	if v, exists := rawMap["scheme"]; exists && string(v) != `"bearer"` {
+		return fmt.Errorf(`bad const value for "scheme" ("bearer" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "scheme")
@@ -6916,8 +6916,8 @@ func (o *OAuth2SecurityScheme) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"oauth2"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("oauth2" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"oauth2"` {
+		return fmt.Errorf(`bad const value for "type" ("oauth2" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -7736,8 +7736,8 @@ func (o *OpenIDConnectSecurityScheme) UnmarshalJSON(data []byte) error {
 		rawMap = nil
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"openIdConnect"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("openIdConnect" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"openIdConnect"` {
+		return fmt.Errorf(`bad const value for "type" ("openIdConnect" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")

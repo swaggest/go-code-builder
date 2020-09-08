@@ -488,8 +488,8 @@ func (t *Table) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"table"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("table" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"table"` {
+		return fmt.Errorf(`bad const value for "type" ("table" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -667,8 +667,8 @@ func (s *ShortStr) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"shortstr"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("shortstr" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"shortstr"` {
+		return fmt.Errorf(`bad const value for "type" ("shortstr" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -743,8 +743,8 @@ func (p *PropertyOctet) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"octet"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("octet" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"octet"` {
+		return fmt.Errorf(`bad const value for "type" ("octet" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
@@ -819,8 +819,8 @@ func (t *Timestamp) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	if v, ok := rawMap["type"]; !ok || string(v) != `"timestamp"` {
-		return fmt.Errorf(`bad or missing const value for "type" ("timestamp" expected, %s received)`, v)
+	if v, exists := rawMap["type"]; exists && string(v) != `"timestamp"` {
+		return fmt.Errorf(`bad const value for "type" ("timestamp" expected, %s received)`, v)
 	}
 
 	delete(rawMap, "type")
