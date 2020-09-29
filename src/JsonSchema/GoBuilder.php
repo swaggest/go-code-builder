@@ -286,6 +286,12 @@ class GoBuilder
                     $goProperty->getTags()->setTag('json', $name . ',omitempty');
                 }
 
+                if (!empty($this->options->nameTags)) {
+                    foreach ($this->options->nameTags as $nameTag) {
+                        $goProperty->getTags()->setTag($nameTag, $name);
+                    }
+                }
+
                 $comment = '';
                 if ($property->title) {
                     $comment .= Comment::sentence($property->title) . "\n";

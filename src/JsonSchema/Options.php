@@ -115,6 +115,12 @@ class Options extends ClassStructure
     public $requireXGenerate = false;
 
     /**
+     * Set additional field tags with property name.
+     * @var string[]
+     */
+    public $nameTags = [];
+
+    /**
      * @param Properties|static $properties
      * @param Schema $ownerSchema
      */

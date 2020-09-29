@@ -28,18 +28,19 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
 
 
         $builder = new GoBuilder();
+        $builder->options->nameTags = ['msgp', 'bson'];
         $type = $builder->getType($schema);
 
         $expectedStructs = <<<'GO'
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
-	SampleInt            int64                  `json:"sampleInt,omitempty"`
-	SampleBool           bool                   `json:"sampleBool,omitempty"`
-	SampleString         string                 `json:"sampleString,omitempty"`
-	SampleNumber         float64                `json:"sampleNumber,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`                      // All unmatched properties.
-	SampleSelf           *Untitled1             `json:"sampleSelf,omitempty"`
-	Another              *Another               `json:"another,omitempty"`
+	SampleInt            int64                  `json:"sampleInt,omitempty" msgp:"sampleInt" bson:"sampleInt"`
+	SampleBool           bool                   `json:"sampleBool,omitempty" msgp:"sampleBool" bson:"sampleBool"`
+	SampleString         string                 `json:"sampleString,omitempty" msgp:"sampleString" bson:"sampleString"`
+	SampleNumber         float64                `json:"sampleNumber,omitempty" msgp:"sampleNumber" bson:"sampleNumber"`
+	AdditionalProperties map[string]interface{} `json:"-"`                                                              // All unmatched properties.
+	SampleSelf           *Untitled1             `json:"sampleSelf,omitempty" msgp:"sampleSelf" bson:"sampleSelf"`
+	Another              *Another               `json:"another,omitempty" msgp:"another" bson:"another"`
 }
 
 type marshalUntitled1 Untitled1
@@ -106,8 +107,8 @@ func (u Untitled1) MarshalJSON() ([]byte, error) {
 
 // Another structure is generated from "#->another".
 type Another struct {
-	Hello bool   `json:"hello,omitempty"`
-	World string `json:"world,omitempty"`
+	Hello bool   `json:"hello,omitempty" msgp:"hello" bson:"hello"`
+	World string `json:"world,omitempty" msgp:"world" bson:"world"`
 }
 
 type marshalAnother Another
