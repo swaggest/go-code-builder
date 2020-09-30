@@ -271,6 +271,7 @@ class GoBuilder
                     $property = new Schema();
                 }
 
+                $isOmitEmpty = false;
                 // Nullable properties need `null` explicitly available in json payload.
                 if (
                     false === $property->{TypeBuilder::X_OMIT_EMPTY} ||
@@ -283,6 +284,7 @@ class GoBuilder
                 ) {
                     $goProperty->getTags()->setTag('json', $name);
                 } else {
+                    $isOmitEmpty = true;
                     $goProperty->getTags()->setTag('json', $name . ',omitempty');
                 }
 
@@ -331,7 +333,7 @@ class GoBuilder
                 }
 
                 if ($goPropertyType->getTypeString() === 'interface{}') {
-                    if ($this->options->distinctNull) {
+                    if ($this->options->distinctNull && $isOmitEmpty) {
                         $goPropertyType = new Pointer($goPropertyType);
                         $goProperty->setType($goPropertyType);
                         $marshalJson->distinctNullNames[$goProperty->getName()] = $name;

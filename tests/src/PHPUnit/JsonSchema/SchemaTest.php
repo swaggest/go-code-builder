@@ -181,4 +181,76 @@ GO;
         $this->assertSame('interface{}', $builder->getType(Schema::null())->getTypeString());
     }
 
+    public function testRequiredAny()
+    {
+        $builder = new GoBuilder();
+        $builder->options->defaultAdditionalProperties = false;
+
+        $schemaData = json_decode(<<<'JSON'
+{
+    "type": "object",
+    "properties": {
+        "foo": {}
+    },
+    "required": ["foo"]
+}
+JSON
+);
+        $expectedStructs = <<<'GO'
+// Untitled1 structure is generated from "#".
+type Untitled1 struct {
+	Foo interface{} `json:"foo"` // Required.
+}
+
+type marshalUntitled1 Untitled1
+
+var requireKeysUntitled1 = []string{
+	"foo",
+}
+
+// UnmarshalJSON decodes JSON.
+func (u *Untitled1) UnmarshalJSON(data []byte) error {
+	var err error
+
+	mu := marshalUntitled1(*u)
+
+	err = json.Unmarshal(data, &mu)
+	if err != nil {
+		return err
+	}
+
+	var rawMap map[string]json.RawMessage
+
+	err = json.Unmarshal(data, &rawMap)
+	if err != nil {
+		rawMap = nil
+	}
+
+	for _, key := range requireKeysUntitled1 {
+		if _, found := rawMap[key]; !found {
+			return errors.New("required key missing: " + key)
+		}
+	}
+
+	*u = Untitled1(mu)
+
+	return nil
+}
+
+
+
+GO;
+
+
+        $schema = Schema::import($schemaData);
+
+        $builder->getType($schema);
+        $actualStructs = '';
+        foreach ($builder->getGeneratedStructs() as $class) {
+            $actualStructs .= $class->structDef;
+        }
+
+        $this->assertSame($expectedStructs, $actualStructs);
+
+    }
 }
