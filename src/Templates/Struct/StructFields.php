@@ -56,7 +56,7 @@ GO;
                 }
             }
 
-            if (null === $property->getName()) {
+            if ($property->isEmbedded()) {
                 $rows [] = array(
                     '1' => $property->getType()->render(),
                     '3' => $property->getTags()->render(),

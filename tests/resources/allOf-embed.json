@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "ownProperty": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/anotherTrait"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "aoOne": {
+          "type": "string"
+        },
+        "aoTwo": {
+          "type": "boolean"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "anotherTrait": {
+      "properties": {
+        "atOne": {
+          "type": "integer"
+        },
+        "atTwo": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
