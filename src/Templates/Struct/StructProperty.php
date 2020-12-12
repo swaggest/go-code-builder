@@ -10,16 +10,28 @@ class StructProperty extends GoTemplate
     /** @var string|null */
     private $name;
     private $type;
+    private $embedded = false;
     private $tags;
 
     public function __construct($name, AnyType $type, Tags $tags = null)
     {
+        // Embedded property.
+        if ($name === null) {
+            $this->embedded = true;
+            $name = $type->getTypeString();
+        }
+
         $this->name = $name;
         $this->type = $type;
         if ($tags === null) {
             $tags = new Tags();
         }
         $this->tags = $tags;
+    }
+
+    public function isEmbedded()
+    {
+        return $this->embedded;
     }
 
     /**

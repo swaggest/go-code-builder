@@ -102,6 +102,71 @@ class TypeBuilder
     }
 
     /**
+     * @param Schema $schema
+     * @return bool
+     */
+    private function isSimpleObject(Schema $schema)
+    {
+        if ($schema->type !== null && $schema->type !== Schema::OBJECT) {
+            return false;
+        }
+
+        if (empty($schema->properties)) {
+            return false;
+        }
+
+        if (isset($schema->additionalProperties) && $schema->additionalProperties !== true) {
+            return false;
+        }
+
+        $names = Schema::names();
+        // Not a simple object if has additional logical constraints.
+        foreach ([
+                     $names->anyOf,
+                     $names->oneOf,
+                     $names->if,
+                     $names->not,
+                     $names->patternProperties,
+                     $names->else,
+                 ] as $name) {
+            if (isset($schema->$name)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Schema[]|SchemaContract[] $allOfs
+     */
+    private function processAllOfEmbeddableObject($allOfs)
+    {
+        $allProperties = array();
+        foreach ($allOfs as $allOf) {
+            if (!$this->isSimpleObject($allOf)) {
+                return false;
+            }
+
+            foreach ($allOf->properties as $propertyName => $property) {
+                if (isset($allProperties[$propertyName])) {
+                    return false;
+                }
+
+                $allProperties[$propertyName] = true;
+            }
+        }
+
+        $result = $this->makeResultStruct();
+        foreach ($allOfs as $i => $allOf) {
+            $type = $this->goBuilder->getType($allOf, $this->path . '/allOf/' . $i, $result);
+            $result->addProperty(new StructProperty(null, $type));
+        }
+
+        return true;
+    }
+
+    /**
      * @param Schema[]|SchemaContract[] $orSchemas
      * @param string|mixed $kind
      * @throws Exception
@@ -207,7 +272,9 @@ class TypeBuilder
             return;
         }
         if ($this->schema->allOf !== null) {
-            $this->processOr($this->schema->allOf, Schema::names()->allOf);
+            if (!$this->processAllOfEmbeddableObject($this->schema->allOf)) {
+                $this->processOr($this->schema->allOf, Schema::names()->allOf);
+            }
         } elseif ($this->schema->anyOf !== null) {
             $this->processOr($this->schema->anyOf, Schema::names()->anyOf);
         } elseif ($this->schema->oneOf !== null) {
