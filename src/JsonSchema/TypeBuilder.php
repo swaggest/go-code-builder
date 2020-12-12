@@ -105,7 +105,7 @@ class TypeBuilder
      * @param Schema $schema
      * @return bool
      */
-    private function isSimpleObject(Schema $schema)
+    private function isSimpleObject($schema)
     {
         if ($schema->type !== null && $schema->type !== Schema::OBJECT) {
             return false;
@@ -144,7 +144,11 @@ class TypeBuilder
     {
         $allProperties = array();
         foreach ($allOfs as $allOf) {
-            if (!$this->isSimpleObject($allOf)) {
+            if (!$allOf instanceof Schema) {
+                return false;
+            }
+
+            if (!$this->isSimpleObject($allOf) || null === $allOf->properties) {
                 return false;
             }
 
@@ -159,6 +163,10 @@ class TypeBuilder
 
         $result = $this->makeResultStruct();
         foreach ($allOfs as $i => $allOf) {
+            if (!$allOf instanceof Schema) {
+                return false;
+            }
+
             $type = $this->goBuilder->getType($allOf, $this->path . '/allOf/' . $i, $result);
             $result->addProperty(new StructProperty(null, $type));
         }
