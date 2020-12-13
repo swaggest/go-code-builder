@@ -11,7 +11,7 @@ test:
 	@php -derror_reporting="E_ALL & ~E_DEPRECATED" vendor/bin/phpunit --configuration phpunit.xml
 
 test-coverage:
-	@php -derror_reporting="E_ALL & ~E_DEPRECATED" -dzend_extension=xdebug.so vendor/bin/phpunit --configuration phpunit.xml --coverage-text --coverage-clover=coverage.xml
+	@php -derror_reporting="E_ALL & ~E_DEPRECATED" -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit --configuration phpunit.xml --coverage-text --coverage-clover=coverage.xml
 
 test-go:
 	@cd tests/resources/go && GO111MODULE=on go test ./...
