@@ -432,7 +432,7 @@ class GoBuilder
 
     /**
      * @param Schema $schema
-     * @param $path
+     * @param string $path
      * @param StructDef|null $parentStruct
      */
     public function typeName($schema, $path, $parentStruct = null)
@@ -462,7 +462,7 @@ class GoBuilder
         $i = 2;
 
         while (isset($this->pathByTypeName[$typeName]) && $this->pathByTypeName[$typeName] !== $path) {
-            $typeName = $tn . 'Type' + $i;
+            $typeName = $tn . 'Type' . $i;
             $i++;
         }
 
