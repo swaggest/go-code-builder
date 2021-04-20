@@ -51,6 +51,12 @@ class GoBuilder
     /** @var Type[] */
     public $pathTypesDefined = [];
 
+    /** @var string[] */
+    public $pathByTypeName = [];
+
+    /** @var string[] */
+    private $typeNameByPath = [];
+
     public function __construct()
     {
         $this->code = new Code();
@@ -160,22 +166,12 @@ class GoBuilder
         $this->generatedStructsBySchema->attach($schema, $generatedStruct);
         $generatedStruct->schema = $schema;
 
-        $structName = '';
-        if ($schema->title) {
-            $structName = $this->codeBuilder->exportableName($schema->title);
+        $pathToName = $this->pathToName($path);
+        if ($path === '#' && empty($schema->title)) {
+            $pathToName = 'Untitled' . ++$this->untitledIndex;
         }
 
-        if (empty($structName)) {
-            if ($path === '#') {
-                $structName = 'Untitled' . ++$this->untitledIndex;
-            } else {
-                $structName = $this->codeBuilder->exportableName($this->pathToName($path));
-            }
-        }
-
-        if (isset($this->options->renames[$structName])) {
-            $structName = $this->options->renames[$structName];
-        }
+        $structName = $this->typeName($schema, $pathToName);
 
         if (isset($this->namesGenerated[$structName]) && $schema->getMeta(TypeBuilder::CONDITIONAL_META)) {
             $structName = $structName . 'Conditional';
@@ -432,5 +428,47 @@ class GoBuilder
         }
 
         return false;
+    }
+
+    /**
+     * @param Schema $schema
+     * @param string $path
+     * @param StructDef|null $parentStruct
+     */
+    public function typeName($schema, $path, $parentStruct = null)
+    {
+        if (isset($this->typeNameByPath[$path])) {
+            return $this->typeNameByPath[$path];
+        }
+
+        if (!empty($schema->title)) {
+            $typeName = $this->codeBuilder->exportableName($schema->title, true);
+        }
+
+        if (empty($typeName) || (isset($this->pathByTypeName[$typeName]) && $this->pathByTypeName[$typeName] !== $path)) {
+            $typeName = $this->codeBuilder->exportableName($path);
+        }
+
+        if ($parentStruct && false !== $pos = strrpos($path, '->')) {
+            $propertyName = substr($path, $pos);
+            $typeName = $this->codeBuilder->exportableName($parentStruct->getName() . $propertyName);
+        }
+
+        if (isset($this->options->renames[$typeName])) {
+            $typeName = $this->options->renames[$typeName];
+        }
+
+        $tn = $typeName;
+        $i = 2;
+
+        while (isset($this->pathByTypeName[$typeName]) && $this->pathByTypeName[$typeName] !== $path) {
+            $typeName = $tn . 'Type' . $i;
+            $i++;
+        }
+
+        $this->pathByTypeName[$typeName] = $path;
+        $this->typeNameByPath[$path] = $typeName;
+
+        return $typeName;
     }
 }

@@ -525,7 +525,7 @@ class TypeBuilder
     {
         if ($this->schema->const !== null) { // todo properly process null const
             $path = $this->goBuilder->pathToName($this->path);
-            $typeName = $this->goBuilder->codeBuilder->exportableName($path);
+            $typeName = $this->goBuilder->typeName($this->schema, $path, $this->parentStruct);
             if ($this->parentStruct && false !== $pos = strrpos($path, '->')) {
                 $propertyName = substr($path, $pos);
                 $typeName = $this->goBuilder->codeBuilder->exportableName($this->parentStruct->getName() . $propertyName);
@@ -659,16 +659,7 @@ GO
             }
             $path = $this->goBuilder->pathToName($this->path);
 
-            $typeName = $this->goBuilder->codeBuilder->exportableName($path);
-            if ($this->parentStruct && false !== $pos = strrpos($path, '->')) {
-                $propertyName = substr($path, $pos);
-                $typeName = $this->goBuilder->codeBuilder->exportableName($this->parentStruct->getName() . $propertyName);
-            }
-
-            if (isset($this->goBuilder->options->renames[$typeName])) {
-                $typeName = $this->goBuilder->options->renames[$typeName];
-            }
-
+            $typeName = $this->goBuilder->typeName($this->schema, $path, $this->parentStruct);
             $type = new GoType($typeName);
             $this->goBuilder->pathTypesDefined[$this->path] = $type;
 
@@ -681,7 +672,6 @@ type $typeName {$baseType->getName()}
 
 GO
             );
-
 
             foreach ($enum as $index => $item) {
                 $itemName = $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $item);
