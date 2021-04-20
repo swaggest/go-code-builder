@@ -387,6 +387,7 @@ GO;
 
         // Additional properties forbidden.
         if ($this->additionalPropertiesEnabled === false) {
+            $this->code->imports()->addByName('fmt');
             $mapUnmarshal .= <<<'GO'
 
 if len(rawMap) != 0 {
@@ -575,6 +576,7 @@ if err != nil {
 GO;
         }
 
+        $this->code->imports()->addByName('fmt');
         $result .= <<<'GO'
 
 
@@ -596,10 +598,6 @@ GO;
             return $result;
         }
 
-        $this->code->imports()
-            ->addByName('encoding/json')
-            ->addByName('fmt');
-
         $count = count($this->someOf[$kind]);
         $result .= <<<GO
 
@@ -609,6 +607,7 @@ anyOfValid := 0
 
 GO;
 
+        $this->code->imports()->addByName('encoding/json');
         foreach ($this->someOf[$kind] as $i => $propertyName) {
             $result .= <<<GO
 
@@ -623,6 +622,7 @@ if err != nil {
 GO;
         }
 
+        $this->code->imports()->addByName('fmt');
         $result .= <<<'GO'
 
 
@@ -688,6 +688,7 @@ GO;
             return '';
         }
 
+        $this->code->imports()->addByName('errors');
         return <<<GO
 
 var not {$this->not->render()}

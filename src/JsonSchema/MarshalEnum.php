@@ -77,7 +77,9 @@ GO;
             return '';
         }
 
-        $this->code->imports()->addByName('encoding/json');
+        $this->code->imports()
+            ->addByName('encoding/json')
+            ->addByName('fmt');
         return <<<GO
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
@@ -143,7 +145,9 @@ GO;
             return '';
         }
 
-        $this->code->imports()->addByName('encoding/json');
+        $this->code->imports()
+            ->addByName('encoding/json')
+            ->addByName('fmt');
         return <<<GO
 // UnmarshalJSON decodes JSON.
 func (i *:type) UnmarshalJSON(data []byte) error {
