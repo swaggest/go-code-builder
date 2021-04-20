@@ -88,9 +88,9 @@ abstract class GoTemplate extends AbstractTemplate
     {
         if (is_string($value)) {
             if (strpos($value, '"') === false && strpos($value, '\\') === false) {
-                $value = '"' . addslashes($value) . '"';
+                $value = '"' . str_replace(["\n", "\t", "\r", '"'], ['\n', '\t', '\r', '\"'], $value) . '"';
             } elseif (strpos($value, '`')) {
-                $value = '"' . addslashes($value) . '"';
+                $value = '"' . str_replace(["\n", "\t", "\r", '"'], ['\n', '\t', '\r', '\"'], $value) . '"';
             } else {
                 $value = '`' . $value . '`';
             }

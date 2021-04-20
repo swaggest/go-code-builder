@@ -294,7 +294,8 @@ GO
 
     }
 
-    public function testXGenerate() {
+    public function testXGenerate()
+    {
         $schemaJson = <<<'JSON'
 {
     "type": "object",
@@ -327,6 +328,80 @@ JSON;
 // Untitled1 structure is generated from "#".
 type Untitled1 struct {
 	ID int64 `json:"id,omitempty"`
+}
+
+
+GO
+            , $res);
+
+    }
+
+    public function testEscape()
+    {
+        $schemaJson = <<<'JSON'
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "string",
+    "title": "Escape Issue",
+    "enum": [
+        "Doesn't Generate Correctly",
+        "Does Generate"
+    ]
+}
+JSON;
+        $schema = Schema::import(json_decode($schemaJson));
+
+        $builder = new GoBuilder();
+        $tb = new TypeBuilder($schema, '#', $builder);
+        $tb->build();
+
+        $res = $builder->getCode()->render();
+
+        $this->assertEquals(<<<'GO'
+// EscapeIssue is an enum type.
+type EscapeIssue string
+
+// EscapeIssue values enumeration.
+const (
+	EscapeIssueDoesnTGenerateCorrectly = EscapeIssue("Doesn't Generate Correctly")
+	EscapeIssueDoesGenerate = EscapeIssue("Does Generate")
+)
+
+// MarshalJSON encodes JSON.
+func (i EscapeIssue) MarshalJSON() ([]byte, error) {
+	switch i {
+	case EscapeIssueDoesnTGenerateCorrectly:
+	case EscapeIssueDoesGenerate:
+
+	default:
+		return nil, fmt.Errorf("unexpected EscapeIssue value: %v", i)
+	}
+
+	return json.Marshal(string(i))
+}
+
+// UnmarshalJSON decodes JSON.
+func (i *EscapeIssue) UnmarshalJSON(data []byte) error {
+	var ii string
+
+	err := json.Unmarshal(data, &ii)
+	if err != nil {
+		return err
+	}
+
+	v := EscapeIssue(ii)
+
+	switch v {
+	case EscapeIssueDoesnTGenerateCorrectly:
+	case EscapeIssueDoesGenerate:
+
+	default:
+		return fmt.Errorf("unexpected EscapeIssue value: %v", v)
+	}
+
+	*i = v
+
+	return nil
 }
 
 
