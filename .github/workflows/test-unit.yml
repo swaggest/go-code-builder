@@ -34,4 +34,4 @@ jobs:
         run: '[ -e vendor ] || composer install'
 
       - name: Run Tests
-        run: make deps test
+        run: make test
