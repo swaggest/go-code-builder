@@ -346,7 +346,8 @@ GO
     "title": "Escape Issue",
     "enum": [
         "Doesn't Generate Correctly",
-        "Does Generate"
+        "Does Generate",
+        ""
     ]
 }
 JSON;
@@ -366,6 +367,7 @@ type EscapeIssue string
 const (
 	EscapeIssueDoesnTGenerateCorrectly = EscapeIssue("Doesn't Generate Correctly")
 	EscapeIssueDoesGenerate = EscapeIssue("Does Generate")
+	EscapeIssueEmpty = EscapeIssue("")
 )
 
 // MarshalJSON encodes JSON.
@@ -373,6 +375,7 @@ func (i EscapeIssue) MarshalJSON() ([]byte, error) {
 	switch i {
 	case EscapeIssueDoesnTGenerateCorrectly:
 	case EscapeIssueDoesGenerate:
+	case EscapeIssueEmpty:
 
 	default:
 		return nil, fmt.Errorf("unexpected EscapeIssue value: %v", i)
@@ -395,6 +398,7 @@ func (i *EscapeIssue) UnmarshalJSON(data []byte) error {
 	switch v {
 	case EscapeIssueDoesnTGenerateCorrectly:
 	case EscapeIssueDoesGenerate:
+	case EscapeIssueEmpty:
 
 	default:
 		return fmt.Errorf("unexpected EscapeIssue value: %v", v)

@@ -559,8 +559,17 @@ type $typeName {$baseType->getName()}
 GO
             );
 
+            $constName = $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $this->schema->const);
+            if ($constName === $typeName) {
+                $constName .= 'Empty';
+            }
+
+            if (isset($this->goBuilder->options->renames[$constName])) {
+                $constName = $this->goBuilder->options->renames[$constName];
+            }
+
             $typeConstBlock->addValue(
-                $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $this->schema->const),
+                $constName,
                 $this->schema->const
             );
 
@@ -675,6 +684,11 @@ GO
 
             foreach ($enum as $index => $item) {
                 $itemName = $this->goBuilder->codeBuilder->exportableName($typeName . '_' . $item);
+
+                if ($itemName === $typeName) {
+                    $itemName .= 'Empty';
+                }
+
                 $comment = null;
                 if (isset($enumSchemas[$index])) {
                     $schema = $enumSchemas[$index];
