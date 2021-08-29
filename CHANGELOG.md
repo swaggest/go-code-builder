@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.46] - 2021-08-29
+
+### Fixed
+- Infinite recursion with JSON Schema draft-07 reference in 3rd party schema.
+
 ## [0.4.45] - 2021-07-16
 
 ### Fixed
@@ -267,6 +272,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed unnecessary regexp dependency, #7.
 
+[0.4.46]: https://github.com/swaggest/go-code-builder/compare/v0.4.45...v0.4.46
 [0.4.45]: https://github.com/swaggest/go-code-builder/compare/v0.4.44...v0.4.45
 [0.4.44]: https://github.com/swaggest/go-code-builder/compare/v0.4.43...v0.4.44
 [0.4.43]: https://github.com/swaggest/go-code-builder/compare/v0.4.42...v0.4.43

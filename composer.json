@@ -19,7 +19,7 @@
     "swaggest/code-builder": "^0.3.1|dev-master",
     "php": ">=5.6.0",
     "phplang/scope-exit": "^1.0",
-    "swaggest/json-schema": "^0.12.4",
+    "swaggest/json-schema": "^0.12.37",
     "swaggest/json-schema-maker": "^0.3.2"
   },
   "require-dev": {
