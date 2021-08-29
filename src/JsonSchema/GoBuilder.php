@@ -73,7 +73,7 @@ class GoBuilder
     }
 
     /**
-     * @param Schema $schema
+     * @param Schema|\stdClass $schema
      * @param string $path
      * @param StructDef|null $parentStruct
      * @param bool $isRequired
