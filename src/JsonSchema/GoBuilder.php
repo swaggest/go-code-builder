@@ -73,7 +73,7 @@ class GoBuilder
     }
 
     /**
-     * @param Schema $schema
+     * @param Schema|\stdClass $schema
      * @param string $path
      * @param StructDef|null $parentStruct
      * @param bool $isRequired
@@ -88,11 +88,13 @@ class GoBuilder
             return $this->generatedStructs[$path]->structDef->getType();
         }
 
-        if (!is_bool($schema) && (null !== $refs = $schema->getFromRefs()) && !in_array(false, $refs)) {
+        if (!is_bool($schema) && !$schema instanceof \stdClass
+            && (null !== $refs = $schema->getFromRefs()) && !in_array(false, $refs)) {
             foreach ($refs as $ref) {
                 if (isset($this->generatedStructs[$ref])) {
                     return $this->generatedStructs[$ref]->structDef->getType();
                 }
+                $path = $ref;
             }
         }
 
@@ -106,6 +108,11 @@ class GoBuilder
         if ($s instanceof \stdClass) {
             $s = Schema::import($s);
         }
+
+        if ($s->id === 'http://json-schema.org/draft-04/schema#') {
+            $path = 'jsonSchema';
+        }
+
         $typeBuilder = new TypeBuilder($s, $path, $this, $parentStruct, $isRequired);
         $result = $typeBuilder->build();
         return $result;
@@ -226,7 +233,11 @@ class GoBuilder
             foreach ($schema->properties->toArray() as $name => $property) {
                 $property = self::unboolSchema($property);
 
-                if ($property->{TypeBuilder::X_GENERATE} === false ||
+                if ($property instanceof Wrapper) {
+                    $property = $property->exportSchema();
+                }
+
+                if ((isset($property->{TypeBuilder::X_GENERATE}) && $property->{TypeBuilder::X_GENERATE} === false) ||
                     ($this->options->requireXGenerate && empty($property->{TypeBuilder::X_GENERATE}))) {
                     continue;
                 }
