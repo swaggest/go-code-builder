@@ -38,7 +38,7 @@ GO;
             return '';
         }
         foreach ($properties as $property) {
-            $commentLines = explode("\n", trim($property->getComment()));
+            $commentLines = empty($property->getComment()) ? array('') : explode("\n", trim($property->getComment()));
             $commentLine = count($commentLines) > 1 ? '' : $commentLines[0];
             if ($commentLine) {
                 $commentLine = '// ' . $commentLine;
