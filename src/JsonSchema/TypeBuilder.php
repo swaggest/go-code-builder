@@ -658,6 +658,11 @@ GO
             $enumSchemas = null;
         }
 
+        if ($enum !== null && count($enum) === 2
+            && $this->schema->type === Schema::BOOLEAN) {
+            return $baseType;
+        }
+
         if ($enum !== null) {
             if ($this->goBuilder->options->hideConstProperties && count($enum) === 1) {
                 return $baseType;
