@@ -41,7 +41,13 @@ class TypeConstBlock extends GoTemplate
             if (!is_scalar($value)) {
                 continue;
             }
-            $value = $this->escapeValue($value);
+            if ($value === true) {
+                $value = 'true';
+            } elseif ($value === false) {
+                $value = 'false';
+            } else {
+                $value = $this->escapeValue($value);
+            }
 
             if (isset($this->comments[$name])) {
                 $result .= "\t//" . $name . ' ' . $this->comments[$name] . "\n";
