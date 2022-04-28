@@ -4,10 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.47] - 2022-01-02
+## [0.4.49] - 2022-04-28
+
+### Fixed
+
+- Boolean values handling in enum/const block 
+
+## [0.4.48] - 2022-01-02
 
 ### Added
 - Support for PHP 8.1
+
+## [0.4.47] - 2022-01-02
+
+### Fixed
+- Code generation for AsyncAPI 2.1.0 schema
 
 ## [0.4.46] - 2021-08-29
 
@@ -277,6 +288,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed unnecessary regexp dependency, #7.
 
+[0.4.49]: https://github.com/swaggest/go-code-builder/compare/v0.4.48...v0.4.49
+[0.4.48]: https://github.com/swaggest/go-code-builder/compare/v0.4.47...v0.4.48
 [0.4.47]: https://github.com/swaggest/go-code-builder/compare/v0.4.46...v0.4.47
 [0.4.46]: https://github.com/swaggest/go-code-builder/compare/v0.4.45...v0.4.46
 [0.4.45]: https://github.com/swaggest/go-code-builder/compare/v0.4.44...v0.4.45
