@@ -40,7 +40,7 @@ class AsyncApi2Test extends \PHPUnit_Framework_TestCase
 
 
         $filePath = __DIR__ . '/../../../resources/go/asyncapi2/entities.go';
-        file_put_contents($filePath,$goFile->render());
+        file_put_contents($filePath, $goFile->render());
 
         exec('git diff ' . $filePath, $out);
         $out = implode("\n", $out);
@@ -76,10 +76,50 @@ class AsyncApi2Test extends \PHPUnit_Framework_TestCase
 
 
         $filePath = __DIR__ . '/../../../resources/go/asyncapi21/entities.go';
-        file_put_contents($filePath,$goFile->render());
+        file_put_contents($filePath, $goFile->render());
 
         exec('git diff ' . $filePath, $out);
         $out = implode("\n", $out);
         $this->assertSame('', $out, "Generated files changed");
     }
+
+    public function testGen24()
+    {
+        chdir(__DIR__ . '/../../../resources/');
+        $schemaData = json_decode(file_get_contents(__DIR__ . '/../../../resources/asyncapi-2.4.0-fixed.json'));
+        $schema = Schema::import($schemaData);
+
+
+        $builder = new GoBuilder();
+        $builder->options->hideConstProperties = true;
+        $builder->options->trimParentFromPropertyNames = true;
+        $builder->structCreatedHook = new StructHookCallback(function (StructDef $structDef, $path, $schema) use ($builder) {
+            if ('#' === $path) {
+                $structDef->setName('AsyncAPI');
+            } elseif (0 === strpos($path, '#/definitions/')) {
+                $name = $builder->codeBuilder->exportableName(substr($path, strlen('#/definitions/')));
+                $structDef->setName($name);
+            }
+        });
+        $builder->options->rewrites = [
+            '/HTTPAsyncapiComDefinitions240([\w\d]+)JSON([\w\d]+)?/i' => '${1}${2}'
+        ];
+        $builder->getType($schema);
+
+        $goFile = new GoFile('entities');
+        $goFile->fileComment = '';
+        foreach ($builder->getGeneratedStructs() as $generatedStruct) {
+            $goFile->getCode()->addSnippet($generatedStruct->structDef);
+        }
+        $goFile->getCode()->addSnippet($builder->getCode());
+
+
+        $filePath = __DIR__ . '/../../../resources/go/asyncapi24/entities.go';
+        file_put_contents($filePath, $goFile->render());
+
+        exec('git diff ' . $filePath, $out);
+        $out = implode("\n", $out);
+        $this->assertSame('', $out, "Generated files changed");
+    }
+
 }

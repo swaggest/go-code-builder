@@ -786,13 +786,13 @@ func (d DependenciesAdditionalProperties) MarshalJSON() ([]byte, error) {
 
 // Type structure is generated from "#[object]->type".
 type Type struct {
-	SimpleTypes             *SimpleType  `json:"-"`
+	SimpleType              *SimpleType  `json:"-"`
 	SliceOfSimpleTypeValues []SimpleType `json:"-"`
 }
 
-// WithSimpleTypes sets SimpleTypes value.
-func (t *Type) WithSimpleTypes(val SimpleType) *Type {
-	t.SimpleTypes = &val
+// WithSimpleType sets SimpleType value.
+func (t *Type) WithSimpleType(val SimpleType) *Type {
+	t.SimpleType = &val
 	return t
 }
 
@@ -809,10 +809,10 @@ func (t *Type) UnmarshalJSON(data []byte) error {
 	anyOfErrors := make(map[string]error, 2)
 	anyOfValid := 0
 
-	err = json.Unmarshal(data, &t.SimpleTypes)
+	err = json.Unmarshal(data, &t.SimpleType)
 	if err != nil {
-		anyOfErrors["SimpleTypes"] = err
-		t.SimpleTypes = nil
+		anyOfErrors["SimpleType"] = err
+		t.SimpleType = nil
 	} else {
 		anyOfValid++
 	}
@@ -834,7 +834,7 @@ func (t *Type) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON encodes JSON.
 func (t Type) MarshalJSON() ([]byte, error) {
-	return marshalUnion(t.SimpleTypes, t.SliceOfSimpleTypeValues)
+	return marshalUnion(t.SimpleType, t.SliceOfSimpleTypeValues)
 }
 
 // SimpleType is an enum type.

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.51] - 2022-09-15
+
+### Added
+
+- Symbol rewrites using regular expressions
+
+### Fixed
+
+- Missing replaces in field names
+
 ## [0.4.50] - 2022-04-28
 
 ### Fixed
@@ -294,6 +304,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed unnecessary regexp dependency, #7.
 
+[0.4.51]: https://github.com/swaggest/go-code-builder/compare/v0.4.50...v0.4.51
 [0.4.50]: https://github.com/swaggest/go-code-builder/compare/v0.4.49...v0.4.50
 [0.4.49]: https://github.com/swaggest/go-code-builder/compare/v0.4.48...v0.4.49
 [0.4.48]: https://github.com/swaggest/go-code-builder/compare/v0.4.47...v0.4.48

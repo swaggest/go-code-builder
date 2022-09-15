@@ -68,6 +68,4 @@ class StructProperty extends GoTemplate
         // no op
         return '';
     }
-
-
 }
