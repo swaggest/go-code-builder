@@ -465,9 +465,7 @@ class GoBuilder
             $typeName = $this->codeBuilder->exportableName($parentStruct->getName() . $propertyName);
         }
 
-        if (isset($this->options->renames[$typeName])) {
-            $typeName = $this->options->renames[$typeName];
-        }
+        $typeName = $this->replace($typeName);
 
         $tn = $typeName;
         $i = 2;
@@ -481,5 +479,28 @@ class GoBuilder
         $this->typeNameByPath[$path] = $typeName;
 
         return $typeName;
+    }
+
+    /**
+     * @param string $symbol
+     * @return mixed
+     */
+    public function replace($symbol)
+    {
+        if (empty($symbol)) {
+            return $symbol;
+        }
+
+        if (isset($this->options->renames[$symbol])) {
+            return $this->options->renames[$symbol];
+        }
+
+        if (!empty($this->options->rewrites)) {
+            foreach ($this->options->rewrites as $from => $to) {
+                $symbol = preg_replace($from, $to, $symbol);
+            }
+        }
+
+        return $symbol;
     }
 }

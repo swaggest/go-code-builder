@@ -80,7 +80,10 @@ class TypeBuilder
             return $type->getName();
         }
         if ($type instanceof StructType) {
-            return $type->getName();
+            $name = $type->getName();
+            $name = $this->goBuilder->replace($name);
+
+            return $name;
         }
         if ($type instanceof NamedType) {
             if ($type->getName() === 'interface{}') {
@@ -231,6 +234,8 @@ class TypeBuilder
                     $betterName = $this->makeName($itemType);
                     $betterName = $this->goBuilder->codeBuilder->exportableName($betterName, true);
                 }
+
+                $betterName = $this->goBuilder->replace($betterName);
 
                 if (!empty($betterName) && !isset($props[$betterName])) {
                     $name = $betterName;
@@ -564,9 +569,7 @@ GO
                 $constName .= 'Empty';
             }
 
-            if (isset($this->goBuilder->options->renames[$constName])) {
-                $constName = $this->goBuilder->options->renames[$constName];
-            }
+            $constName = $this->goBuilder->replace($constName);
 
             $typeConstBlock->addValue(
                 $constName,
@@ -706,9 +709,7 @@ GO
                     }
                 }
 
-                if (isset($this->goBuilder->options->renames[$itemName])) {
-                    $itemName = $this->goBuilder->options->renames[$itemName];
-                }
+                $itemName = $this->goBuilder->replace($itemName);
 
                 $typeConstBlock->addValue($itemName, $item, $comment);
             }
