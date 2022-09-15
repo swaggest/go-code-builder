@@ -497,7 +497,9 @@ class GoBuilder
 
         if (!empty($this->options->rewrites)) {
             foreach ($this->options->rewrites as $from => $to) {
-                $symbol = preg_replace($from, $to, $symbol);
+                if (is_string($from) && is_string($to) && is_string($symbol)) {
+                    $symbol = preg_replace($from, $to, $symbol);
+                }
             }
         }
 
